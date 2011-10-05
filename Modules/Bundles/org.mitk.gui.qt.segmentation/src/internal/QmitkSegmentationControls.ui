@@ -32,17 +32,20 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_6">
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string/>
-     </property>
+    <widget class="QWidget" name="widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="margin">
+       <number>0</number>
+      </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <item>
          <widget class="QLabel" name="lblRefImage">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -60,14 +63,14 @@
            </size>
           </property>
           <property name="text">
-           <string>Reference image</string>
+           <string>Reference image:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QmitkDataStorageComboBox" name="refImageSelector">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -81,6 +84,12 @@
       </item>
       <item>
        <widget class="QLabel" name="lblReferenceImageSelectionWarning">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="palette">
          <palette>
           <active>
@@ -188,12 +197,18 @@
         <item>
          <widget class="QLabel" name="lblSegImage">
           <property name="text">
-           <string>Segmentation image</string>
+           <string>Segmentation image:</string>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="lblSegmentation">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -215,7 +230,7 @@
         <x>0</x>
         <y>0</y>
         <width>228</width>
-        <height>374</height>
+        <height>390</height>
        </rect>
       </property>
       <attribute name="icon">
@@ -556,7 +571,7 @@
         <x>0</x>
         <y>0</y>
         <width>228</width>
-        <height>374</height>
+        <height>390</height>
        </rect>
       </property>
       <attribute name="label">
@@ -610,7 +625,7 @@
         <x>0</x>
         <y>0</y>
         <width>228</width>
-        <height>374</height>
+        <height>390</height>
        </rect>
       </property>
       <attribute name="label">
@@ -664,7 +679,7 @@
         <x>0</x>
         <y>0</y>
         <width>228</width>
-        <height>374</height>
+        <height>390</height>
        </rect>
       </property>
       <attribute name="label">
