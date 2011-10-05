@@ -418,13 +418,14 @@ void QmitkSegmentationView::OnComboBoxSelectionChanged( const mitk::DataNode* no
   mitk::DataNode* selectedNode = const_cast<mitk::DataNode*>(node);
  if( selectedNode != NULL )
   {
-    m_Controls->refImageSelector->show();
+    m_Controls->refImageSelector->setEnabled(true);
     m_Controls->lblReferenceImageSelectionWarning->hide();
     this->OnSelectionChanged( const_cast<mitk::DataNode*>(node) );
   }
   else
   {
-    m_Controls->refImageSelector->hide();
+    m_Controls->refImageSelector->setCurrentIndex(-1);
+    m_Controls->refImageSelector->setEnabled(false);
     m_Controls->lblReferenceImageSelectionWarning->show();
   }
 }
@@ -854,7 +855,7 @@ void QmitkSegmentationView::CreateQtPartControl(QWidget* parent)
   if( m_Controls->refImageSelector->GetSelectedNode().IsNotNull() )
     m_Controls->lblReferenceImageSelectionWarning->hide();
   else
-    m_Controls->refImageSelector->hide();
+    m_Controls->refImageSelector->setEnabled(false);
 
 
   mitk::ToolManager* toolManager = m_Controls->m_ManualToolSelectionBox->GetToolManager();
