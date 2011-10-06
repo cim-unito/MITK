@@ -33,56 +33,56 @@
   <layout class="QVBoxLayout" name="verticalLayout_6">
    <item>
     <widget class="QWidget" name="widget" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <layout class="QGridLayout" name="gridLayout">
       <property name="margin">
        <number>0</number>
       </property>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="spacing">
-         <number>6</number>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblRefImage">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <item>
-         <widget class="QLabel" name="lblRefImage">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Reference image:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QmitkDataStorageComboBox" name="refImageSelector">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Reference image:</string>
+        </property>
+       </widget>
       </item>
-      <item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="lblSegImage">
+        <property name="text">
+         <string>Segmentation image:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="lblSegmentation">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
        <widget class="QLabel" name="lblReferenceImageSelectionWarning">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -192,29 +192,18 @@
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="lblSegImage">
-          <property name="text">
-           <string>Segmentation image:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblSegmentation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
+      <item row="0" column="2">
+       <widget class="QmitkDataStorageComboBox" name="refImageSelector">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -230,7 +219,7 @@
         <x>0</x>
         <y>0</y>
         <width>228</width>
-        <height>390</height>
+        <height>394</height>
        </rect>
       </property>
       <attribute name="icon">
@@ -570,8 +559,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>228</width>
-        <height>390</height>
+        <width>100</width>
+        <height>30</height>
        </rect>
       </property>
       <attribute name="label">
@@ -624,8 +613,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>228</width>
-        <height>390</height>
+        <width>100</width>
+        <height>30</height>
        </rect>
       </property>
       <attribute name="label">
@@ -678,8 +667,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>228</width>
-        <height>390</height>
+        <width>226</width>
+        <height>100</height>
        </rect>
       </property>
       <attribute name="label">
