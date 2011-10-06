@@ -1,0 +1,24 @@
+From 72e8efa5cb20c93df752ea05e4ee6ecd88b3bdb8 Mon Sep 17 00:00:00 2001
+From: Miklos Espak <espakm@gmail.com>
+Date: Mon, 10 Oct 2011 12:03:43 +0200
+Subject: [PATCH] Missing header (stddef.h) included
+
+---
+ Utilities/vtkmetaio/metaUtils.cxx |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/Utilities/vtkmetaio/metaUtils.cxx b/Utilities/vtkmetaio/metaUtils.cxx
+index 08d3e8d..0de8be8 100644
+--- a/Utilities/vtkmetaio/metaUtils.cxx
++++ b/Utilities/vtkmetaio/metaUtils.cxx
+@@ -21,6 +21,7 @@
+ 
+ #include "metaUtils.h"
+ 
++#include <stddef.h>
+ #include <stdio.h>
+ #include <ctype.h>
+ 
+-- 
+1.7.5.4
+

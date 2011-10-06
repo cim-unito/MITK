@@ -32,6 +32,7 @@ IF(NOT DEFINED VTK_DIR)
     URL http://mitk.org/download/thirdparty/vtk-5.6.1.tar.gz
     BINARY_DIR ${proj}-build
     INSTALL_COMMAND ""
+    PATCH_COMMAND patch -p1 < ${MITK_SOURCE_DIR}/CMakeExternals/VTK-fix-stddef.patch
     CMAKE_GENERATOR ${gen}
     CMAKE_ARGS
         ${ep_common_args}
