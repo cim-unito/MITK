@@ -24,6 +24,7 @@ IF(NOT DEFINED ITK_DIR)
      URL http://mitk.org/download/thirdparty/InsightToolkit-3.20.0.tar.gz
      BINARY_DIR ${proj}-build
      INSTALL_COMMAND ""
+     PATCH_COMMAND patch -p1 < ${MITK_SOURCE_DIR}/CMakeExternals/ITK-fix-stddef.patch
      CMAKE_GENERATOR ${gen}
      CMAKE_ARGS
        ${ep_common_args}
