@@ -53,9 +53,17 @@ public:
 
     void ShowViewToolbar(bool show);
 
+    void ShowPerspectiveToolbar(bool show);
+
     void ShowVersionInfo(bool show);
 
     void ShowMitkVersionInfo(bool show);
+
+    void ShowViewMenuItem(bool show);
+
+    void ShowNewWindowMenuItem(bool show);
+
+    void ShowClosePerspectiveMenuItem(bool show);
 
     //TODO should be removed when product support is here
     void SetProductName(const std::string& product);
@@ -118,8 +126,12 @@ private:
 
   berry::WorkbenchAdvisor* wbAdvisor;
   bool showViewToolbar;
+  bool showPerspectiveToolbar;
   bool showVersionInfo;
   bool showMitkVersionInfo;
+  bool showViewMenuItem;
+  bool showNewWindowMenuItem;
+  bool showClosePerspectiveMenuItem;
   std::string productName;
   std::string windowIcon;
 

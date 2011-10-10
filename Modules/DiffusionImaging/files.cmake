@@ -84,13 +84,16 @@ SET(CPP_FILES
   Rendering/mitkFiberBundleMapper3D.cpp
   Rendering/mitkFiberBundleXMapper3D.cpp
   Rendering/mitkFiberBundleXThreadMonitorMapper3D.cpp
-  
+
 # Interactions
   Interactions/mitkFiberBundleInteractor.cpp
 
   # Algorithms
   Algorithms/mitkPartialVolumeAnalysisHistogramCalculator.cpp
   Algorithms/mitkPartialVolumeAnalysisClusteringCalculator.cpp
+
+ # Tractography
+ Tractography/itkStochasticTractographyFilter.h
 )
 
 SET(H_FILES
@@ -108,6 +111,10 @@ SET(H_FILES
   Reconstruction/itkAnalyticalDiffusionQballReconstructionImageFilter.h
   Reconstruction/itkPointShell.h
   Reconstruction/itkOrientationDistributionFunction.h
+  Reconstruction/itkDiffusionIntravoxelIncoherentMotionReconstructionImageFilter.h
+  Reconstruction/itkRegularizedIVIMLocalVariationImageFilter.h
+  Reconstruction/itkRegularizedIVIMReconstructionFilter.h
+  Reconstruction/itkRegularizedIVIMReconstructionSingleIteration.h
 
   # IO Datastructures
   IODataStructures/DiffusionWeightedImages/mitkDiffusionImage.h
@@ -127,6 +134,7 @@ SET(H_FILES
 
   # Tractography
   Tractography/itkGibbsTrackingFilter.h
+  Tractography/itkStochasticTractographyFilter.h
 
   # Algorithms
   Algorithms/itkDiffusionQballGeneralizedFaImageFilter.h
@@ -137,7 +145,6 @@ SET(H_FILES
   Algorithms/itkTensorImageToDiffusionImageFilter.h
   Algorithms/itkTensorToL2NormImageFilter.h
   Algorithms/itkTractsToProbabilityImageFilter.h
-  Algorithms/itkTractsToDWIImageFilter.h
   Algorithms/itkTractsToFiberEndingsImageFilter.h
   Algorithms/itkGaussianInterpolateImageFunction.h
   Algorithms/mitkPartialVolumeAnalysisHistogramCalculator.h

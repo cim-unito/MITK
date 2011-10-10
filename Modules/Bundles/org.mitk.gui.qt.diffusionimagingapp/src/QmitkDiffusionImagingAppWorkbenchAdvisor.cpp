@@ -93,16 +93,19 @@ QmitkDiffusionImagingAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
 //  viewExcludeList.push_back( std::string("org.mitk.views.volumevisualization") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.simplemeasurement") );
 
-  configurer->SetShowPerspectiveBar(true);
   configurer->SetInitialSize(berry::Point(1000,770));
 
   QmitkExtWorkbenchWindowAdvisor* advisor = new QmitkExtWorkbenchWindowAdvisor(this, configurer);
+  advisor->ShowViewMenuItem(false);
+  advisor->ShowNewWindowMenuItem(false);
+  advisor->ShowClosePerspectiveMenuItem(false);
   advisor->SetPerspectiveExcludeList(perspExcludeList);
   advisor->SetViewExcludeList(viewExcludeList);
   advisor->ShowViewToolbar(false);
+  advisor->ShowPerspectiveToolbar(true);
   advisor->ShowVersionInfo(false);
   advisor->ShowMitkVersionInfo(false);
-  advisor->SetProductName("MITK Diffusion Imaging App");
+  advisor->SetProductName("MITK Diffusion");
   advisor->SetWindowIcon(":/org.mitk.gui.qt.diffusionimagingapp/app-icon.png");
   return advisor;
 }
