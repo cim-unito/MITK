@@ -94,7 +94,7 @@ int QmitkDataStorageTreeModel::rowCount(const QModelIndex &parent) const
 Qt::ItemFlags QmitkDataStorageTreeModel::flags( const QModelIndex& index ) const
 {
   if (index.isValid())
-    return Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable
+    return Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable
       | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
   else
     return Qt::ItemIsDropEnabled;
