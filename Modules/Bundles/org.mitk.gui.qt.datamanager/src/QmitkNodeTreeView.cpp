@@ -139,11 +139,11 @@ QmitkNodeTreeView::tileImage(mitk::Image::Pointer image, unsigned timeNo)
 {
   typedef itk::Image<unsigned char, 3> Mask3D;
   typedef itk::Image<unsigned char, 4> Mask4D;
-  typename Mask3D::Pointer itkImage;
+  Mask3D::Pointer itkImage;
   mitk::CastToItkImage(image, itkImage);
 
   typedef itk::TileImageFilter<Mask3D, Mask4D> Tiler;
-  typename Tiler::Pointer tiler = Tiler::New();
+  Tiler::Pointer tiler = Tiler::New();
 
   itk::FixedArray<unsigned, 4> layout;
   layout[0] = 1;
