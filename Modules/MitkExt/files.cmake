@@ -7,6 +7,7 @@ SET(CPP_FILES
   Algorithms/mitkAutoCropImageFilter.cpp
   Algorithms/mitkBoundingObjectCutter.cpp
   Algorithms/mitkCalculateSegmentationVolume.cpp
+  Algorithms/mitkCloneImageFilter.cpp
   Algorithms/mitkContourSetToPointSetFilter.cpp
   Algorithms/mitkContourUtils.cpp
   Algorithms/mitkCorrectorAlgorithm.cpp
