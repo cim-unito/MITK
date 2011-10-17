@@ -49,6 +49,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QmitkCustomVariants.h>
 #include "src/internal/QmitkNodeTableViewKeyFilter.h"
 #include "src/internal/QmitkInfoDialog.h"
+#include "QmitkNodeTreeView.h"
+
 //## Berry
 #include <berryIEditorPart.h>
 #include <berryIWorkbenchPage.h>
@@ -145,7 +147,7 @@ void QmitkDataManagerView::CreateQtPartControl(QWidget* parent)
   m_SurfaceDecimation = prefs->GetBool("Use surface decimation", false);
 
   //# Tree View (experimental)
-  m_NodeTreeView = new QTreeView;
+  m_NodeTreeView = new QmitkNodeTreeView;
   m_NodeTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   m_NodeTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_NodeTreeView->setAlternatingRowColors(true);
