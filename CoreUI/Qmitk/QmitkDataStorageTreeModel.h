@@ -36,6 +36,8 @@
 
 class QMITK_EXPORT QmitkDataStorageTreeModel : public QAbstractItemModel
 {
+  Q_OBJECT
+
 //# CONSTANTS,TYPEDEFS
 public:
   static const std::string COLUMN_NAME;
