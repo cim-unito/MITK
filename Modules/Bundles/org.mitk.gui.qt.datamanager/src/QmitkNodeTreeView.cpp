@@ -10,6 +10,8 @@
 
 #include <QDropEvent>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QLineEdit>
 #include <QDebug>
 
 #include <exception>
@@ -38,53 +40,74 @@ void
 QmitkNodeTreeView::dropEvent(QDropEvent* event)
 {
   QmitkDataStorageTreeModel* m = qobject_cast<QmitkDataStorageTreeModel*>(model());
-  QModelIndex draggedNodeIndex = this->currentIndex();
+  mitk::DataStorage::Pointer ds = m->GetDataStorage();
 
-  mitk::DataNode::Pointer draggedNode = m->GetNode(draggedNodeIndex);
-  std::string draggedNodeName = draggedNode->GetName();
-  qDebug() << "dragged node:" << QString::fromStdString(draggedNodeName);
+  mitk::DataNode::Pointer draggedNode = m->GetNode(currentIndex());
+  const QModelIndex& dropOntoNodeIndex = indexAt(event->pos());
+  mitk::DataNode::Pointer dropOntoNode = m->GetNode(dropOntoNodeIndex);
+  mitk::DataNode::Pointer parentOfDraggedNode = m->GetNode(dropOntoNodeIndex.parent());
 
-  QModelIndex dropOntoNodeIndex = indexAt(event->pos());
-  mitk::DataNode* dropOntoNode = m->GetNode(dropOntoNodeIndex);
-  qDebug() << "drop onto node:" << QString::fromStdString(dropOntoNode->GetName());
+  Qt::DropAction dropAction = event->dropAction();
 
   mitk::DataNode::Pointer clonedNode;
-  try {
+  try
+  {
     bool binary = false;
     draggedNode->GetBoolProperty("binary", binary);
-    if (binary) {
-      clonedNode = cloneMask(draggedNode, dropOntoNode);
-    }
-    else {
+    bool dropOntoGroup = dropOntoNode->GetData() == 0;
+    if (dropOntoGroup)
+    {
       clonedNode = cloneNode(draggedNode);
     }
+    else {
+      if (binary)
+      {
+        clonedNode = cloneMask(draggedNode, dropOntoNode);
+      }
+      else
+      {
+        QMessageBox::information(this, tr("Information"),
+            tr("It is not supported to copy a node containing a normal\n"
+               "image (not segmentation) onto a not empty node."));
+        return;
+      }
+    }
   }
-  catch (std::exception& exception) {
-    QMessageBox::critical(0,
-        tr("Error"),
-        tr("Some error occurred during cloning the image.\n"));
+  catch (std::exception& exception)
+  {
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Error");
+    msgBox.setText(tr("Error occurred during copying the image.\n"));
+    msgBox.setDetailedText(tr(exception.what()));
+    msgBox.exec();
     return;
   }
-  catch (...) {
-    QMessageBox::critical(0,
-        tr("Error"),
-        tr("Some error occurred during cloning the image.\n"));
+  catch (...)
+  {
+    QMessageBox::critical(this, tr("Error"), tr("Error occurred during copying the image.\n"));
     return;
   }
 
-  mitk::DataNode::Pointer parentOfDraggedNode = m->GetNode(dropOntoNodeIndex.parent());
+  if (clonedNode.IsNull())
+  {
+    return;
+  }
+
   std::string name = draggedNode->GetName();
-  if (parentOfDraggedNode == dropOntoNode) {
-    QString qname = QString::fromStdString(name);
-    // check if there is a serial number in the name
-    qname += "'";
-    clonedNode->SetName(qname.toStdString());
+  QString qname = QString::fromStdString(name);
+  bool ok = false;
+  while (ds->GetNamedDerivedNode(name.c_str(), parentOfDraggedNode, true) &&
+      !qname.isNull())
+  {
+    qname = QInputDialog::getText(this,
+        tr(""),
+        tr("An image with this name already exists.\n"
+           "Please choose a different name:"),
+           QLineEdit::Normal, qname, &ok);
   }
-  else {
-    clonedNode->SetName(name);
-  }
+  clonedNode->SetName(qname.toStdString());
 
-  m->GetDataStorage()->Add(clonedNode, dropOntoNode);
+  ds->Add(clonedNode, dropOntoNode);
 }
 
 mitk::DataNode::Pointer
@@ -115,18 +138,55 @@ QmitkNodeTreeView::cloneMask(mitk::DataNode::Pointer node, mitk::DataNode::Point
 
   mitk::Image::Pointer clonedImage;
 
-  if (dim == dropOntoDim) {
+  if (dim == dropOntoDim)
+  {
+    for (int i = 0; i < dim; ++i)
+    {
+      if (image->GetDimension(i) != dropOntoImage->GetDimension(i))
+      {
+        QMessageBox::critical(this, tr("Error"),
+            tr("The dimensions of the segmentation must be equal to\n"
+               "the dimension of the image that it is copied to."));
+        return 0;
+      }
+    }
+
     mitk::CloneImageFilter::Pointer cloner = mitk::CloneImageFilter::New();
     cloner->SetInput(image);
     cloner->Update();
     clonedImage = cloner->GetOutput();
   }
-  else if (dim == 3 && dropOntoDim == 4) {
-    int timeNo = dropOntoImage->GetDimension(3);
+  else if (dropOntoDim == dim + 1)
+  {
+    for (int i = 0; i < dim; ++i)
+    {
+      if (image->GetDimension(i) != dropOntoImage->GetDimension(i))
+      {
+        QMessageBox::critical(this, tr("Error"),
+            tr("The dimensions of the segmentation must be equal to\n"
+               "the dimension of the image that it is copied to."));
+        return 0;
+      }
+    }
+    // This gets the last dimenstion that is the time in 3D+t images:
+    int timeNo = dropOntoImage->GetDimension(dim);
+//    QMessageBox::StandardButton answer =
+//        QMessageBox::question(this, tr(""),
+//            tr("You are dragging a 3D segmentation image onto a 3D+t\n"
+//                "reference image. This will result in a 3D+t segmentation\n"
+//                "image. As default, the copied segmentation will be\n"
+//                "propagated to all time steps. If you want to copy the\n"
+//                "segmentation only to the first time step, select \"No\".\n"
+//                "Do you want to copy the segmentation to all time steps?"),
+//            QMessageBox::Yes | QMessageBox::No);
     clonedImage = tileImage(image, timeNo);
   }
-  else {
-    throw std::runtime_error("dimensions not equal");
+  else
+  {
+    QString message = QString("Copying a %1D segmentation onto a %2D image\n"
+           "is not supported.").arg(dim).arg(dropOntoDim);
+    QMessageBox::critical(this, tr("Error"), message);
+    return 0;
   }
 
   mitk::DataNode::Pointer clonedNode = mitk::DataNode::New();
@@ -134,11 +194,13 @@ QmitkNodeTreeView::cloneMask(mitk::DataNode::Pointer node, mitk::DataNode::Point
   return clonedNode;
 }
 
+// This should be generalized to other dimensions as well.
 mitk::Image::Pointer
 QmitkNodeTreeView::tileImage(mitk::Image::Pointer image, unsigned timeNo)
 {
   typedef itk::Image<unsigned char, 3> Mask3D;
   typedef itk::Image<unsigned char, 4> Mask4D;
+
   Mask3D::Pointer itkImage;
   mitk::CastToItkImage(image, itkImage);
 
@@ -152,7 +214,8 @@ QmitkNodeTreeView::tileImage(mitk::Image::Pointer image, unsigned timeNo)
   layout[3] = 0;
   tiler->SetLayout(layout);
 
-  for (unsigned i = 0; i < timeNo; ++i) {
+  for (unsigned i = 0; i < timeNo; ++i)
+  {
     tiler->SetInput(i, itkImage);
   }
   tiler->Update();
