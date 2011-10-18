@@ -83,6 +83,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QColor>
 #include <QColorDialog>
 #include <QSizePolicy>
+#include <QInputDialog>
+#include <QLineEdit>
 
 #include "mitkDataNodeObject.h"
 #include "mitkIContextMenuAction.h"
@@ -206,6 +208,11 @@ void QmitkDataManagerView::CreateQtPartControl(QWidget* parent)
   QObject::connect( m_ReinitAction, SIGNAL( triggered(bool) )
     , this, SLOT( ReinitSelectedNodes(bool) ) );
   unknownDataNodeDescriptor->AddAction(m_ReinitAction);
+
+  m_RenameAction = new QAction("Rename...", this);
+  QObject::connect( m_RenameAction, SIGNAL( triggered(bool) )
+    , this, SLOT( RenameSelectedNode() ) );
+  unknownDataNodeDescriptor->AddAction(m_RenameAction);
 
   // find contextMenuAction extension points and add them to the node descriptor
   berry::IExtensionPointService::Pointer extensionPointService = berry::Platform::GetExtensionPointService();
@@ -650,6 +657,28 @@ void QmitkDataManagerView::SaveSelectedNodes( bool )
           QMessageBox::critical( m_Parent, "Error saving...", error );
       }
     }
+  }
+}
+
+void QmitkDataManagerView::RenameSelectedNode()
+{
+  QModelIndexList indexesOfSelectedRows = m_NodeTreeView->selectionModel()->selectedRows();
+
+  if (indexesOfSelectedRows.size() != 1)
+  {
+    return;
+  }
+  mitk::DataNode* node = m_NodeTreeModel->GetNode(indexesOfSelectedRows.at(0));
+  if ( node == 0 )
+  {
+    return;
+  }
+  bool ok = false;
+  QString oldName = QString::fromStdString(node->GetName());
+  QString newName = QInputDialog::getText(m_Parent, tr(""), tr("New name:"), QLineEdit::Normal, oldName, &ok);
+  if (ok)
+  {
+    node->SetName(newName.toStdString());
   }
 }
 

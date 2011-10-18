@@ -123,6 +123,10 @@ public slots:
   ///
   void SaveSelectedNodes( bool checked = false );
   ///
+  /// \brief Invoked when an element should be renamed.
+  ///
+  void RenameSelectedNode();
+  ///
   /// \brief Invoked when an element should be removed.
   ///
   void RemoveSelectedNodes( bool checked = false );
@@ -232,6 +236,8 @@ protected:
   QAction* m_GlobalReinitAction;
   /// Save Action
   QAction* m_SaveAction;
+  /// Rename Action
+  QAction* m_RenameAction;
   /// Remove Action
   QAction* m_RemoveAction;
   /// Reinit Action
