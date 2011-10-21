@@ -1,8 +1,0 @@
-set(CTEST_PROJECT_NAME_SUPERBUILD "MITK-superbuild")
-set(CTEST_PROJECT_NAME "MITK")
-set(CTEST_NIGHTLY_START_TIME "22:00:00 EST")
-
-set(CTEST_DROP_METHOD "http")
-set(CTEST_DROP_SITE "miles.biotec.unito.it")
-set(CTEST_DROP_LOCATION "/CDash/submit.php?project=MITK")
-set(CTEST_DROP_SITE_CDASH TRUE)
