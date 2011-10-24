@@ -107,10 +107,10 @@ m_Precision(2)
   QHBoxLayout *mitkWidgetLayout3 = new QHBoxLayout(mitkWidget3Container);
   QHBoxLayout *mitkWidgetLayout4 = new QHBoxLayout(mitkWidget4Container);
 
-  mitkWidgetLayout1->setMargin(0);
-  mitkWidgetLayout2->setMargin(0);
-  mitkWidgetLayout3->setMargin(0);
-  mitkWidgetLayout4->setMargin(0);
+  mitkWidgetLayout1->setContentsMargins(0,0,0,0);
+  mitkWidgetLayout2->setContentsMargins(0,0,0,0);
+  mitkWidgetLayout3->setContentsMargins(0,0,0,0);
+  mitkWidgetLayout4->setContentsMargins(0,0,0,0);
 
   //set Layout to Widget Container  
   mitkWidget1Container->setLayout(mitkWidgetLayout1); 
@@ -497,6 +497,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DImagesUp()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //Set Layout to widget
   this->setLayout(QmitkStdMultiWidgetLayout);
@@ -570,6 +571,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DImagesLeft()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -639,6 +641,7 @@ void QmitkStdMultiWidget::changeLayoutToDefault()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -702,6 +705,7 @@ void QmitkStdMultiWidget::changeLayoutToBig3D()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -745,6 +749,7 @@ void QmitkStdMultiWidget::changeLayoutToWidget1()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -788,6 +793,7 @@ void QmitkStdMultiWidget::changeLayoutToWidget2()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -831,6 +837,7 @@ void QmitkStdMultiWidget::changeLayoutToWidget3()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -874,6 +881,7 @@ void QmitkStdMultiWidget::changeLayoutToRowWidget3And4()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -928,6 +936,7 @@ void QmitkStdMultiWidget::changeLayoutToColumnWidget3And4()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -992,6 +1001,7 @@ void QmitkStdMultiWidget::changeLayoutToSmallUpperWidget2Big3and4()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -1057,6 +1067,7 @@ void QmitkStdMultiWidget::changeLayoutTo2x2Dand3DWidget()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -1118,6 +1129,7 @@ void QmitkStdMultiWidget::changeLayoutToLeft2Dand3DRight2D()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //create main splitter
   m_MainSplit = new QSplitter( this );
@@ -1179,6 +1191,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DUpAnd3DDown()
 
   //create Main Layout
   QmitkStdMultiWidgetLayout =  new QHBoxLayout( this );
+  QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //Set Layout to widget
   this->setLayout(QmitkStdMultiWidgetLayout);
