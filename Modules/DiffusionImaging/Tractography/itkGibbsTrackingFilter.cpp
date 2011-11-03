@@ -20,6 +20,10 @@
 
 #include "GibbsTracking/reparametrize_arclen2.cpp"
 #include <fstream>
+#include <QCoreApplication>
+#include <itkRescaleIntensityImageFilter.h>
+#include <itkOrientationDistributionFunction.h>
+#include <itkImageDuplicator.h>
 
 struct LessDereference {
   template <class T>
@@ -54,7 +58,8 @@ namespace itk{
       m_Sampler(NULL),
       m_Steps(10),
       m_Memory(0),
-      m_ProposalAcceptance(0)
+      m_ProposalAcceptance(0),
+      m_GfaImage(NULL)
   {
     //this->m_MeasurementFrame.set_identity();
     this->SetNumberOfRequiredInputs(2); //Filter needs a DWI image + a Mask Image
@@ -153,7 +158,7 @@ namespace itk{
 
 //    vnl_vector_fixed<double,4> coeff = vnl_matrix_inverse<double>(T).pinverse()*beta;
 
-//    MITK_INFO << "Bessel oefficients: " << coeff;
+//    MITK_INFO << "itkGibbsTrackingFilter: Bessel oefficients: " << coeff;
 
     BESSEL_APPROXCOEFF = new float[4];
 
@@ -173,7 +178,7 @@ namespace itk{
       GibbsTrackingFilter< TInputOdfImage, TInputROIImage >
       ::BuildFibers(float* points, int numPoints)
   {
-    MITK_INFO << "Building fibers ...";
+    MITK_INFO << "itkGibbsTrackingFilter: Building fibers ...";
 
     typename InputQBallImageType::Pointer odfImage
         = dynamic_cast<InputQBallImageType*>(this->GetInput(0));
@@ -189,7 +194,7 @@ namespace itk{
     int numFibers = ccana.iterate(m_FiberLength);
 
     if (numFibers<=0){
-      MITK_INFO << "0 fibers accepted";
+      MITK_INFO << "itkGibbsTrackingFilter: 0 fibers accepted";
       return;
     }
 
@@ -248,6 +253,88 @@ namespace itk{
     return 0;
   }
 
+  template< class TInputOdfImage, class TInputROIImage >
+  bool
+      GibbsTrackingFilter< TInputOdfImage, TInputROIImage >
+      ::EstimateParticleWeight(){
+
+    if (m_GfaImage.IsNull())
+    {
+      MITK_INFO << "no gfa image found";
+      return false;
+    }
+
+    float samplingStart = 1.0;
+    float samplingStop = 0.66;
+
+    // copy GFA image (original should not be changed)
+    typedef itk::ImageDuplicator< GfaImageType > DuplicateFilterType;
+    DuplicateFilterType::Pointer duplicator = DuplicateFilterType::New();
+    duplicator->SetInputImage( m_GfaImage );
+    duplicator->Update();
+    m_GfaImage = duplicator->GetOutput();
+
+    //// GFA iterator ////
+    typedef ImageRegionIterator< GfaImageType > GfaIteratorType;
+    GfaIteratorType gfaIt(m_GfaImage, m_GfaImage->GetLargestPossibleRegion() );
+
+    //// Mask iterator ////
+    typedef ImageRegionConstIterator< MaskImageType > MaskIteratorType;
+    MaskIteratorType maskIt(m_MaskImage, m_MaskImage->GetLargestPossibleRegion() );
+
+    // set unmasked region of gfa image to 0
+    gfaIt.GoToBegin();
+    maskIt.GoToBegin();
+    while( !gfaIt.IsAtEnd() )
+    {
+      if(maskIt.Get()<=0)
+        gfaIt.Set(0);
+      ++gfaIt;
+      ++maskIt;
+    }
+
+    // rescale gfa image to [0,1]
+    typedef itk::RescaleIntensityImageFilter< GfaImageType, GfaImageType > RescaleFilterType;
+    RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
+    rescaleFilter->SetInput( m_GfaImage );
+    rescaleFilter->SetOutputMaximum( samplingStart );
+    rescaleFilter->SetOutputMinimum( 0 );
+    rescaleFilter->Update();
+    m_GfaImage = rescaleFilter->GetOutput();
+    gfaIt = GfaIteratorType(m_GfaImage, m_GfaImage->GetLargestPossibleRegion() );
+
+    //// Input iterator ////
+    typedef ImageRegionConstIterator< InputQBallImageType > InputIteratorType;
+    InputIteratorType git(m_ItkQBallImage, m_ItkQBallImage->GetLargestPossibleRegion() );
+
+    float upper = 0;
+    int count = 0;
+    for(float thr=samplingStart; thr>samplingStop; thr-=0.01)
+    {
+      git.GoToBegin();
+      gfaIt.GoToBegin();
+      while( !gfaIt.IsAtEnd() )
+      {
+        if(gfaIt.Get()>thr)
+        {
+          itk::OrientationDistributionFunction<float, QBALL_ODFSIZE> odf(git.Get().GetDataPointer());
+          upper += odf.GetMaxValue()-odf.GetMeanValue();
+
+          ++count;
+        }
+        ++gfaIt;
+        ++git;
+      }
+    }
+    if (count>0)
+      upper /= count;
+    else
+      return false;
+
+    m_ParticleWeight = upper/6;
+    return true;
+  }
+
   // perform global tracking
   template< class TInputOdfImage, class TInputROIImage >
   void
@@ -272,8 +359,8 @@ namespace itk{
     // make sure image has enough slices
     if (qBallImageSize[1]<3 || qBallImageSize[2]<3 || qBallImageSize[3]<3)
     {
-      MITK_INFO << "image size < 3 not supported";
-      return;
+      MITK_INFO << "itkGibbsTrackingFilter: image size < 3 not supported";
+      m_AbortTracking = true;
     }
 
     // calculate rotation matrix
@@ -286,8 +373,8 @@ namespace itk{
     directionMatrix.set_column(2, d2);
     vnl_matrix_fixed<double, 3, 3> I = directionMatrix*directionMatrix.transpose();
     if(!I.is_identity(mitk::eps)){
-      MITK_INFO << "Image direction is not a rotation matrix. Tracking not possible!";
-      return;
+      MITK_INFO << "itkGibbsTrackingFilter: image direction is not a rotation matrix. Tracking not possible!";
+      m_AbortTracking = true;
     }
 
     // generate local working copy of image buffer
@@ -335,8 +422,16 @@ namespace itk{
     int mask_oversamp_mult = maskImageSize[0]/qBallImageSize[1];
 
     // load lookuptable
+    QString applicationDir = QCoreApplication::applicationDirPath();
+
+    if (applicationDir.endsWith("bin"))
+      applicationDir.append("/");
+    else
+      applicationDir.append("\\..\\");
+
     ifstream BaryCoords;
-    BaryCoords.open("/opt/mitk-bins/mitk-release/MBI-build/bin/FiberTrackingLUTBaryCoords.bin", ios::in | ios::binary);
+    QString lutPath(applicationDir+"FiberTrackingLUTBaryCoords.bin");
+    BaryCoords.open(lutPath.toStdString().c_str(), ios::in | ios::binary);
     float* coords;
     if (BaryCoords.is_open())
     {
@@ -352,12 +447,13 @@ namespace itk{
     }
     else
     {
-      MITK_INFO << "Unable to open barycoords file";
-      return;
+      MITK_INFO << "itkGibbsTrackingFilter: unable to open barycoords file";
+      m_AbortTracking = true;
     }
 
     ifstream Indices;
-    Indices.open("/opt/mitk-bins/mitk-release/MBI-build/bin/FiberTrackingLUTIndices.bin", ios::in | ios::binary);
+    lutPath = applicationDir+"FiberTrackingLUTIndices.bin";
+    Indices.open(lutPath.toStdString().c_str(), ios::in | ios::binary);
     int* ind;
     if (Indices.is_open())
     {
@@ -373,8 +469,8 @@ namespace itk{
     }
     else
     {
-      MITK_INFO << "Unable to open indices file";
-      return;
+      MITK_INFO << "itkGibbsTrackingFilter: unable to open indices file";
+      m_AbortTracking = true;
     }
 
     // initialize sphere interpolator with lookuptables
@@ -394,7 +490,12 @@ namespace itk{
     if(m_ParticleWidth == 0)
       m_ParticleWidth = 0.5*minSpacing;
     if(m_ParticleWeight == 0)
-      m_ParticleWeight = 0.01;
+      if (!EstimateParticleWeight())
+      {
+        MITK_INFO << "could not estimate particle weight!";
+        m_ParticleWeight = 0.0001;
+      }
+    MITK_INFO << "Particle Weight: " << m_ParticleWeight;
     m_CurrentStep = 0;
     m_Memory = 0;
 
@@ -406,8 +507,8 @@ namespace itk{
       m_Steps = 10;
     if (m_Steps>m_NumIt)
     {
-      MITK_INFO << "not enough iterations!";
-      return;
+      MITK_INFO << "itkGibbsTrackingFilter: not enough iterations!";
+      m_AbortTracking = true;
     }
     unsigned long singleIts = (unsigned long)((1.0*m_NumIt) / (1.0*m_Steps));
 
@@ -432,15 +533,15 @@ namespace itk{
 
       m_CurrentStep = step+1;
       float temperature = m_TempStart * exp(alpha*(((1.0)*step)/((1.0)*m_Steps)));
-      MITK_INFO << "iterating step " << m_CurrentStep;
+      MITK_INFO << "itkGibbsTrackingFilter: iterating step " << m_CurrentStep;
 
       m_Sampler->SetTemperature(temperature);
       m_Sampler->Iterate(&m_ProposalAcceptance, &m_NumConnections, &m_NumParticles, &m_AbortTracking);
 
-      MITK_INFO << "proposal acceptance: " << 100*m_ProposalAcceptance << "%";
-      MITK_INFO << "particles: " << m_NumParticles;
-      MITK_INFO << "connections: " << m_NumConnections;
-      MITK_INFO << "progress: " << 100*(float)step/m_Steps << "%";
+      MITK_INFO << "itkGibbsTrackingFilter: proposal acceptance: " << 100*m_ProposalAcceptance << "%";
+      MITK_INFO << "itkGibbsTrackingFilter: particles: " << m_NumParticles;
+      MITK_INFO << "itkGibbsTrackingFilter: connections: " << m_NumConnections;
+      MITK_INFO << "itkGibbsTrackingFilter: progress: " << 100*(float)step/m_Steps << "%";
 
       if (m_BuildFibers)
       {
@@ -466,7 +567,7 @@ namespace itk{
     m_AbortTracking = true;
     m_BuildFibers = false;
 
-    MITK_INFO << "done generate data";
+    MITK_INFO << "itkGibbsTrackingFilter: done generate data";
   }
 }
 

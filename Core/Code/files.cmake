@@ -9,6 +9,8 @@ SET(H_FILES
   Algorithms/itkTotalVariationDenoisingImageFilter.txx
   Algorithms/itkTotalVariationSingleIterationImageFilter.h
   Algorithms/itkTotalVariationSingleIterationImageFilter.txx
+  Algorithms/mitkBilateralFilter.h
+  Algorithms/mitkBilateralFilter.cpp
 
   Algorithms/mitkImageAccessByItk.h
   Algorithms/mitkImageCast.h
@@ -188,6 +190,7 @@ SET(CPP_FILES
   DataManagement/mitkThinPlateSplineCurvedGeometry.cpp
   DataManagement/mitkTimeSlicedGeometry.cpp
   DataManagement/mitkTransferFunction.cpp
+  DataManagement/mitkTransferFunctionProperty.cpp
   DataManagement/mitkTransferFunctionInitializer.cpp
   DataManagement/mitkVector.cpp
   DataManagement/mitkVtkInterpolationProperty.cpp

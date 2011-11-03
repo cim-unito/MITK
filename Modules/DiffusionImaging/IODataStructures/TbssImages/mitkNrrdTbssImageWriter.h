@@ -31,57 +31,56 @@ namespace mitk
  * Writes diffusion volumes to a file
  * @ingroup Process
  */
-template < class TPixelType >
+
 class MitkDiffusionImaging_EXPORT NrrdTbssImageWriter : public mitk::FileWriterWithInformation
 {
 public:
 
-    mitkClassMacro( NrrdTbssImageWriter, mitk::FileWriterWithInformation );
+    mitkClassMacro( NrrdTbssImageWriter, mitk::FileWriterWithInformation )
 
-    mitkWriterMacro;
+    mitkWriterMacro
 
-    itkNewMacro( Self );
+    itkNewMacro( Self )
     
-    typedef mitk::TbssImage<TPixelType> InputType;
+    typedef mitk::TbssImage InputType;
     
     /**
      * Sets the filename of the file to write.
      * @param FileName the nameInputType of the file to write.
      */
-    itkSetStringMacro( FileName );
+    itkSetStringMacro( FileName )
 
     /**
      * @returns the name of the file to be written to disk.
      */
-    itkGetStringMacro( FileName );
+    itkGetStringMacro( FileName )
 
     /**
      * @warning multiple write not (yet) supported
      */
-    itkSetStringMacro( FilePrefix );
+    itkSetStringMacro( FilePrefix )
 
     /**
      * @warning multiple write not (yet) supported
      */
-    itkGetStringMacro( FilePrefix );
+    itkGetStringMacro( FilePrefix )
 
     /**
      * @warning multiple write not (yet) supported
      */
-    itkSetStringMacro( FilePattern );
+    itkSetStringMacro( FilePattern )
 
     /**
      * @warning multiple write not (yet) supported
      */
-    itkGetStringMacro( FilePattern );
+    itkGetStringMacro( FilePattern )
 
     /**image
      * Sets the input object for the filter.
      * @param input the diffusion volumes to write to file.
      */
     void SetInput( InputType* input );
-
-    /**
+    /**itk::VectorImage<TPixelType, 3>
      * @returns the 0'th input object of the filter.
      */
     InputType* GetInput();
@@ -89,7 +88,7 @@ public:
     /**
      * Returns false if an error happened during writing
      */
-    itkGetMacro( Success, bool );
+    itkGetMacro( Success, bool )
    
     /**
     * @return possible file extensions for the data type associated with the writer
@@ -102,13 +101,13 @@ public:
     virtual const char * GetDefaultExtension() { return ".tbss"; }
     virtual bool CanWriteBaseDataType(BaseData::Pointer data)
     {
-      return (dynamic_cast<mitk::TbssImage<TPixelType>*>(data.GetPointer()) != NULL);
+      return (dynamic_cast<mitk::TbssImage*>(data.GetPointer()) != NULL);
     }
 
 
     virtual void DoWrite(BaseData::Pointer data) { 
       if (CanWriteBaseDataType(data)) {
-        this->SetInput(dynamic_cast<mitk::TbssImage<TPixelType>*>(data.GetPointer()));
+        this->SetInput(dynamic_cast<mitk::TbssImage*>(data.GetPointer()));
         this->Update(); 
       }
     }
@@ -128,12 +127,15 @@ protected:
     std::string m_FilePattern;
     
     bool m_Success;
+
+
+    std::string RetrieveString(mitk::TbssImage::MetaDataFunction meta);
             
 };    
        
 
 } // end of namespace mitk
 
-#include "mitkNrrdTbssImageWriter.cpp"
+
 
 #endif

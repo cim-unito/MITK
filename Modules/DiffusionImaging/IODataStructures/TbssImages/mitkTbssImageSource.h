@@ -27,32 +27,24 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace mitk {
 
-  template<typename TPixelType>
+
 
   class TbssImage;
-  /*class DiffusionImage<double>;
-  class DiffusionImage<int>;
-  class DiffusionImage<unsigned int>;
-  class DiffusionImage<short>;
-  class DiffusionImage<unsigned short>;
-  class DiffusionImage<char>;
-  class DiffusionImage<unsigned char>;
-  class DiffusionImage<long>;
-  class DiffusionImage<unsigned long>;*/
+
 
 //##Documentation
 //## @brief Superclass of all classes generating diffusion volumes (instances 
 //## of class DiffusionImage) as output. 
 //##
 //## @ingroup Process
-template<typename TPixelType>
+
 class MitkDiffusionImaging_EXPORT TbssImageSource : public ImageSource
 {
 public:
   mitkClassMacro(TbssImageSource, BaseProcess)
   itkNewMacro(Self)
 
-  typedef TbssImage<TPixelType> OutputType;
+  typedef TbssImage OutputType;
   typedef itk::DataObject::Pointer DataObjectPointer;
 
   virtual DataObjectPointer MakeOutput(unsigned int idx);
@@ -78,7 +70,7 @@ protected:
 
 } // namespace mitk
 
-#include "mitkTbssImageSource.cpp"
+//#include "mitkTbssImageSource.cpp"
 
 
 #endif /* _MITK_DIFFUSION_IMAGE_DATA_SOURCE_H_HEADER_ */

@@ -16,7 +16,7 @@
  =========================================================================*/
 
 
-#include "mitkProperties.h"
+#include <mitkProperties.h>
 #include "mitkFiberBundleMapper3D.h"
 
 
@@ -27,418 +27,32 @@
 #include <vtkPolyLine.h>
 #include <vtkPolyData.h>
 #include <vtkPointData.h>
-#include <vtkTubeFilter.h>
-#include <vtkCamera.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include "vtkVertex.h"
 
-#include <vtkOpenGLRenderer.h>
+
 #include <vtkLookupTable.h>
 #include <vtkKochanekSpline.h>
 #include <vtkParametricSpline.h>
 #include <vtkParametricFunctionSource.h>
 
 #include "mitkFiberBundleInteractor.h"
-#include "mitkGlobalInteraction.h"
+#include <mitkGlobalInteraction.h>
 
 //template<class TPixelType>
 mitk::FiberBundleMapper3D::FiberBundleMapper3D() 
-: m_vtkFiberList(NULL),
-//m_VtkFiberDataMapperGL(NULL),
- m_VtkFiberDataMapperGL(vtkOpenGLPolyDataMapper::New()),
-m_vtkTubeMapper(NULL)
-
+: m_VtkFiberDataMapperGL(vtkOpenGLPolyDataMapper::New())
+, m_FiberActor(vtkOpenGLActor::New())
+, m_FiberAssembly(vtkPropAssembly::New())
+, m_vtkTubeMapper(vtkOpenGLPolyDataMapper::New())
+, m_tubes(vtkTubeFilter::New())
+, m_TubeActor(vtkOpenGLActor::New())
 {
-  MITK_INFO << "FiberBundleMapper3D()";
-  m_FiberAssembly = vtkPropAssembly::New();
-  m_FiberActor = vtkOpenGLActor::New();
-  m_TubeActor = vtkOpenGLActor::New();
-  
-  
-  /*
-   vtkUnsignedCharArray *colorsT = vtkUnsignedCharArray::New();
-   colorsT->SetName("Colors");
-   colorsT->SetNumberOfComponents(4);
-   
-   unsigned char red1[4] =      {255, 0,    0 ,    10};
-   colorsT->InsertNextTupleValue(red1);
-   
-   unsigned char red2[4] =      {255,0,    0 ,    255};
-   colorsT->InsertNextTupleValue(red2);
-   
-   colorsT->SetValue(3, (unsigned char)(255));
-   colorsT->SetValue(7, (unsigned char)(255));
-   
-   
-   
-   
-   
-   
-   
-   //Create points for polyline1.
-   double origin[3] = {100.0, 400.0, 0.0};
-   double p0[3] = {300.0, 400.0, 0.0};
-   double p1[3] = {300.0, 200.0, 0.0};
-   double p2[3] = {100.0, 300.0, 0.0};
-   double p3[3] = {130.0, 250.0, 0.0};
-   
-   //create points for polyline2
-   //double p01[3] = {50.0, 50.0, 13.0};
-   //double p11[3] = {200.0, 100.0, 13.0};
-   
-   //insert points to vtkPointarray
-   vtkPoints *pnts = vtkPoints::New();
-   pnts->InsertPoint(0,origin);
-   pnts->InsertPoint(1,p0);
-   pnts->InsertPoint(2,p1);
-   pnts->InsertPoint(3,p2);
-   //pnts->InsertPoint(4,p01);
-   //pnts->InsertPoint(5,p11);
-   pnts->InsertPoint(4,p3);
-   
-   //generate and define polyline1
-   vtkPolyLine *polyLine = vtkPolyLine::New();
-   polyLine->GetPointIds()->SetNumberOfIds(4);
-   polyLine->GetPointIds()->SetId(0,0);
-   polyLine->GetPointIds()->SetId(1,1);
-   polyLine->GetPointIds()->SetId(2,2);
-   polyLine->GetPointIds()->SetId(3,3);
-   
-   /*generate and define polyline2
-   vtkPolyLine *polyLine2 = vtkPolyLine::New();
-   polyLine2->GetPointIds()->SetNumberOfIds(2);
-   polyLine2->GetPointIds()->SetId(0,4);
-   polyLine2->GetPointIds()->SetId(1,5);
-   */
-  
-  /*
-   vtkVertex *vtx = vtkVertex::New();
-   vtx->GetPointIds()->SetNumberOfIds(1);
-   vtx->GetPointIds()->SetId(0,4);
-   
-   vtkCellArray *lines = vtkCellArray::New();
-   lines->InsertNextCell(polyLine);
-   //lines->InsertNextCell(vtx);
-   //lines->InsertNextCell(polyLine2);
-   
-   
-   vtkCellArray *vertx = vtkCellArray::New();
-   vertx->InsertNextCell(vtx);
-   
-   vtkPolyData *polyDataT = vtkPolyData::New();
-   polyDataT->SetPoints(pnts);
-   polyDataT->SetLines(lines);
-   polyDataT->SetVerts(vertx);
-   
-   //color and opacity handling
-   vtkUnsignedCharArray *colorT = vtkUnsignedCharArray::New();
-   colorT->SetName("Colors");
-   
-   colorT->SetNumberOfComponents(4); //4 components cuz of RGBA
-   unsigned char rgba[4] = {255,0,0,255};
-   unsigned char rgba2[4] = {0,255,0,255};
-   
-   //if just 1 point in there
-   colorT->InsertNextTupleValue(rgba);
-   colorT->InsertNextTupleValue(rgba2);
-   colorT->InsertNextTupleValue(rgba);
-   colorT->InsertNextTupleValue(rgba2);
-   colorT->InsertNextTupleValue(rgba);
-   
-   /*for(int i=0; i<6; i++)
-   {
-   
-   
-   double vtkPntTmp[3];
-   pnts->GetPoint(i, vtkPntTmp);
-   double vtkPntTmpNxt[3];
-   pnts->GetPoint(i+1, vtkPntTmpNxt);
-   
-   vnl_vector_fixed< double, 3 > tmpPntvtk( vtkPntTmp[0], vtkPntTmp[1],vtkPntTmp[2]);
-   vnl_vector_fixed< double, 3 > nxttmpPntvtk(vtkPntTmpNxt[0], vtkPntTmpNxt[1], vtkPntTmpNxt[2]);
-   
-   vnl_vector_fixed< double, 3 > diff;
-   diff = tmpPntvtk - nxttmpPntvtk;
-   diff.normalize();
-   
-   rgba[0] = (unsigned char) (255.0 * std::abs(diff[0]));
-   rgba[1] = (unsigned char) (255.0 * std::abs(diff[1]));
-   rgba[2] = (unsigned char) (255.0 * std::abs(diff[2]));
-   rgba[3] = (unsigned char) (255.0);
-   
-   
-   if(i==3)
-   {
-   colorT->InsertNextTupleValue(rgba);
-   colorT->InsertNextTupleValue(rgba);
-   }else if(i==4)
-   {
-   //do nothing                                 
-   }else{
-   colorT->InsertNextTupleValue(rgba);
-   }
-   
-   
-   
-   }
-   
-   /*
-   unsigned char red[4] =      {255, 0,    0 ,    20};
-   unsigned char green[4] =    {0,   255,  0 ,    190};
-   unsigned char blue[4] =     {0,   0,    255,   255};
-   unsigned char white[4] =    {255, 255, 255,    255};
-   
-   colorT->InsertNextTupleValue(red); //color for point0
-   colorT->InsertNextTupleValue(green); //color for point1
-   colorT->InsertNextTupleValue(blue);
-   colorT->InsertNextTupleValue(white);
-   colorT->InsertNextTupleValue(white);
-   colorT->InsertNextTupleValue(white); //color for point5
-   
-   polyDataT->GetPointData()->AddArray(colorT);
-   
-   
-   vtkTubeFilter *tube =  vtkTubeFilter::New();
-   tube->SetInput(polyDataT);
-   tube->SetNumberOfSides(8);
-   tube->SetRadius(5);
-   
-   vtkSmartPointer<vtkOpenGLPolyDataMapper> mapper =
-   vtkSmartPointer<vtkOpenGLPolyDataMapper>::New();
-   mapper->SetInput(polyDataT);
-   //mapper->SetInputConnection(tube->GetOutputPort());
-   mapper->ScalarVisibilityOn();
-   mapper->SetScalarModeToUsePointFieldData();
-   //mapper->SetColorModeToMapScalars();
-   mapper->SelectColorArray("Colors");
-   
-   vtkSmartPointer<vtkOpenGLActor> actor =
-   vtkSmartPointer<vtkOpenGLActor>::New();
-   actor->SetMapper(mapper);
-   actor->GetProperty()->SetOpacity(1.0);
-   //actor->GetProperty()->SetLineWidth(20);
-   actor->GetProperty()->SetPointSize(5.0);
-   
-   
-   vtkSmartPointer<vtkOpenGLRenderer> renderer =
-   vtkSmartPointer<vtkOpenGLRenderer>::New();
-   renderer->AddActor(actor);
-   //renderer->SetBackground(.2, .3, .4);
-   
-   // Make an oblique view
-   renderer->GetActiveCamera()->Azimuth(30);
-   renderer->GetActiveCamera()->Elevation(30);
-   renderer->ResetCamera();
-   
-   vtkSmartPointer<vtkRenderWindow> renWin =
-   vtkSmartPointer<vtkRenderWindow>::New();
-   vtkSmartPointer<vtkRenderWindowInteractor>
-   iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-   
-   iren->SetRenderWindow(renWin);
-   renWin->AddRenderer(renderer);
-   //renWin->LineSmoothingOff();
-   renWin->SetSize(500, 500);
-   renWin->Render();
-   
-   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
-   vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-   iren->SetInteractorStyle(style);
-   
-   iren->Start();
-   MITK_INFO << "swerwas";
-   
-   /*
-   
-   
-   // Spiral tube
-   double vX, vY, vZ;
-   unsigned int nV = 256;      // No. of vertices
-   unsigned int nCyc = 5;      // No. of spiral cycles
-   double rT1 = 0.1, rT2 = 0.5;// Start/end tube radii
-   double rS = 2;              // Spiral radius
-   double h = 10;              // Height
-   unsigned int nTv = 8;       // No. of surface elements for each tube vertex
-   
-   unsigned int i;
-   
-   // Create points and cells for the spiral
-   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-   for(i = 0; i < nV; i++)
-   {
-   // Spiral coordinates
-   vX = rS * cos(2 * 3 * nCyc * i / (nV - 1));
-   vY = rS * sin(2 * 3 * nCyc * i / (nV - 1));
-   vZ = h * i / nV;
-   points->InsertPoint(i, vX, vY, vZ);
-   }
-   
-   vtkSmartPointer<vtkCellArray> lines =
-   vtkSmartPointer<vtkCellArray>::New();
-   lines->InsertNextCell(nV);
-   for (i = 0; i < nV; i++)
-   {
-   lines->InsertCellPoint(i);
-   }
-   
-   
-   vtkSmartPointer<vtkPolyData> polyData =
-   vtkSmartPointer<vtkPolyData>::New();
-   polyData->SetPoints(points);
-   polyData->SetLines(lines);
-   
-   
-   // RBG array (could add Alpha channel too I guess...)
-   // Varying from blue to red
-   vtkSmartPointer<vtkUnsignedCharArray> colors =
-   vtkSmartPointer<vtkUnsignedCharArray>::New();
-   colors->SetName("Colors");
-   colors->SetNumberOfComponents(3);
-   colors->SetNumberOfTuples(nV);
-   for (i = 0; i < nV ;i++)
-   {
-   
-   unsigned char red[3] = {char(255 * i/ (nV - 1)),0,char(255 * (nV - 1 - i)/(nV - 1))};
-   
-   colors->InsertNextTupleValue( red);
-   }
-   polyData->GetPointData()->AddArray(colors);
-   
-   
-   
-   vtkSmartPointer<vtkPolyDataMapper> mapper =
-   vtkSmartPointer<vtkPolyDataMapper>::New();
-   mapper->SetInput(polyData);
-   mapper->ScalarVisibilityOn();
-   mapper->SetScalarModeToUsePointFieldData();
-   mapper->SelectColorArray("Colors");
-   
-   vtkSmartPointer<vtkActor> actor =
-   vtkSmartPointer<vtkActor>::New();
-   actor->SetMapper(mapper);
-   
-   vtkSmartPointer<vtkRenderer> renderer =
-   vtkSmartPointer<vtkRenderer>::New();
-   renderer->AddActor(actor);
-   renderer->SetBackground(.2, .3, .4);
-   
-   // Make an oblique view
-   renderer->GetActiveCamera()->Azimuth(30);
-   renderer->GetActiveCamera()->Elevation(30);
-   renderer->ResetCamera();
-   
-   vtkSmartPointer<vtkRenderWindow> renWin =
-   vtkSmartPointer<vtkRenderWindow>::New();
-   vtkSmartPointer<vtkRenderWindowInteractor>
-   iren = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-   
-   iren->SetRenderWindow(renWin);
-   renWin->AddRenderer(renderer);
-   renWin->SetSize(500, 500);
-   renWin->Render();
-   
-   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
-   vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-   iren->SetInteractorStyle(style);
-   
-   iren->Start();
-   
-   
-   
-   
-   /*  
-   
-   double origin[3] = {0.0, 0.0, 0.0};
-   double p0[3] = {10.0, 0.0, 0.0};
-   double p1[3] = {10.0, 10.0, 0.0};
-   double p2[3] = {0.0, 10.0, 0.0};
-   double p3[3] = {10.0, 10.0, 0.0};
-   double p4[3] = {10.0, 20.0, 0.0};
-   double p5[3] = {0.0, 20.0, 0.0};
-   
-   //create a vtkPoints object and store the points in it
-   vtkSmartPointer<vtkPoints> points =
-   vtkSmartPointer<vtkPoints>::New();
-   points->InsertNextPoint(origin);
-   points->InsertNextPoint(p0);
-   points->InsertNextPoint(p1);
-   points->InsertNextPoint(p2);
-   points->InsertNextPoint(p3);
-   points->InsertNextPoint(p4);
-   points->InsertNextPoint(p5);
-   
-   vtkSmartPointer<vtkPolyLine> polyLine = 
-   vtkSmartPointer<vtkPolyLine>::New();
-   polyLine->GetPointIds()->SetNumberOfIds(7);
-   for(unsigned int i = 0; i < 7; i++)
-   {
-   polyLine->GetPointIds()->SetId(i,i);
-   }
-   
-   double origin2[3] = {30.0, 0.0, 0.0};
-   double p02[3] = {40.0, 0.0, 0.0};
-   double p12[3] = {40.0, 20.0, 0.0};
-   double p22[3] = {30.0, 20.0, 0.0};
-   double p23[3] = {30.0, 0.0, 0.0};
-   
-   
-   points->InsertNextPoint(origin2);
-   points->InsertNextPoint(p02);
-   points->InsertNextPoint(p12);
-   points->InsertNextPoint(p22);
-   points->InsertNextPoint(p23);
-   
-   vtkSmartPointer<vtkPolyLine> polyLine2 = 
-   vtkSmartPointer<vtkPolyLine>::New();
-   polyLine2->GetPointIds()->SetNumberOfIds(5);
-   for(unsigned int i = 0; i < 5; i++)
-   {
-   polyLine2->GetPointIds()->SetId(i,i+7);
-   }
-   
-   //Create a cell array to store the lines in and add the lines to it
-   vtkSmartPointer<vtkCellArray> cells = 
-   vtkSmartPointer<vtkCellArray>::New();
-   cells->InsertNextCell(polyLine);
-   cells->InsertNextCell(polyLine2);
-   
-   
-   //Create a polydata to store everything in
-   vtkSmartPointer<vtkPolyData> polyData = 
-   vtkSmartPointer<vtkPolyData>::New();
-   
-   //add the points to the dataset
-   polyData->SetPoints(points);
-   
-   //add the lines to the dataset
-   polyData->SetLines(cells);
-   //setup actor and mapper
-   vtkSmartPointer<vtkPolyDataMapper> mapper = 
-   vtkSmartPointer<vtkPolyDataMapper>::New();
-   mapper->SetInput(polyData);
-   
-   vtkSmartPointer<vtkActor> actor = 
-   vtkSmartPointer<vtkActor>::New();
-   actor->SetMapper(mapper);
-   
-   m_FiberAssembly->AddPart(actor);
-   */
-  
-  
-  
+
+
 }
 
-//template<class TPixelType>
 mitk::FiberBundleMapper3D::~FiberBundleMapper3D()
 {
-  MITK_INFO << "FiberBundleMapper3D(destructor)";
-  m_FiberActor->Delete();
-  m_FiberAssembly->Delete();
-  //m_vtkFiberList->Delete();
-  //m_VtkFiberDataMapperGL->Delete();
-  //m_VtkFiberDataMapper->Delete();
-  
+
 }
 
 
@@ -477,23 +91,23 @@ void mitk::FiberBundleMapper3D::GenerateData()
   /* ######## VTK FIBER REPRESENTATION  ######## */
   //create a vtkPoints object and store the all the brainFiber points in it
   
-  vtkPoints* vtkSmoothPoints = vtkPoints::New(); //in smoothpoints the interpolated points representing a fiber are stored.
+ vtkSmartPointer<vtkPoints> vtkSmoothPoints = vtkPoints::New(); //in smoothpoints the interpolated points representing a fiber are stored.
   
   //in vtkcells all polylines are stored, actually all id's of them are stored
-  vtkCellArray *vtkSmoothCells = vtkCellArray::New(); //cellcontainer for smoothed lines
+  vtkSmartPointer<vtkCellArray> vtkSmoothCells = vtkCellArray::New(); //cellcontainer for smoothed lines
   
   //in some cases a fiber includes just 1 point, so put it in here
-  vtkCellArray *vtkVrtxs = vtkCellArray::New(); 
+  vtkSmartPointer<vtkCellArray> vtkVrtxs = vtkCellArray::New(); 
   
   //colors and alpha value for each single point, RGBA = 4 components
-  vtkUnsignedCharArray *colorsT = vtkUnsignedCharArray::New();
+  vtkSmartPointer<vtkUnsignedCharArray> colorsT = vtkUnsignedCharArray::New();
   colorsT->SetNumberOfComponents(4);
   colorsT->SetName("ColorValues");
   
-  vtkDoubleArray *faColors = vtkDoubleArray::New();
+  vtkSmartPointer<vtkDoubleArray> faColors = vtkDoubleArray::New();
   faColors->SetName("FaColors");
   
-  vtkDoubleArray *tubeRadius = vtkDoubleArray::New();
+  vtkSmartPointer<vtkDoubleArray> tubeRadius = vtkDoubleArray::New();
   tubeRadius->SetName("TubeRadius");
   
   
@@ -519,7 +133,7 @@ void mitk::FiberBundleMapper3D::GenerateData()
   
     //MITK_INFO << "REAL AMOUNT OF FIBERS: " << fibrNrPnts;
     
-    vtkPoints *vtkpointsDTI =  vtkPoints::New();
+    vtkSmartPointer<vtkPoints> vtkpointsDTI =  vtkPoints::New();
     
     if (fibrNrPnts <= 0) { //this should never occour! but who knows
       MITK_INFO << "HyperERROR in fiberBundleMapper3D.cpp ...no point in fiberBundle!!! .. check ur trackingAlgorithm";
@@ -555,18 +169,18 @@ void mitk::FiberBundleMapper3D::GenerateData()
     
     
     /////PROCESS POLYLINE SMOOTHING/////
-    vtkKochanekSpline* xSpline = vtkKochanekSpline::New();
-    vtkKochanekSpline* ySpline = vtkKochanekSpline::New();
-    vtkKochanekSpline* zSpline = vtkKochanekSpline::New();
+    vtkSmartPointer<vtkKochanekSpline> xSpline = vtkKochanekSpline::New();
+    vtkSmartPointer<vtkKochanekSpline> ySpline = vtkKochanekSpline::New();
+    vtkSmartPointer<vtkKochanekSpline> zSpline = vtkKochanekSpline::New();
     
-    vtkParametricSpline* spline = vtkParametricSpline::New();
+    vtkSmartPointer<vtkParametricSpline> spline = vtkParametricSpline::New();
     spline->SetXSpline(xSpline);
     spline->SetYSpline(ySpline);
     spline->SetZSpline(zSpline);
     spline->SetPoints(vtkpointsDTI);
     
     
-    vtkParametricFunctionSource* functionSource = vtkParametricFunctionSource::New();
+    vtkSmartPointer<vtkParametricFunctionSource> functionSource = vtkParametricFunctionSource::New();
     functionSource->SetParametricFunction(spline);
     functionSource->SetUResolution(200);
     functionSource->SetVResolution(200);
@@ -578,7 +192,7 @@ void mitk::FiberBundleMapper3D::GenerateData()
     vtkPolyData* outputFunction = functionSource->GetOutput();
     vtkPoints* tmpSmoothPnts = outputFunction->GetPoints(); //smoothPoints of current fiber
        
-    vtkPolyLine* smoothLine = vtkPolyLine::New();
+    vtkSmartPointer<vtkPolyLine> smoothLine = vtkPolyLine::New();
     smoothLine->GetPointIds()->SetNumberOfIds(tmpSmoothPnts->GetNumberOfPoints());
 //    MITK_INFO << "SMOOTHED AMOUNT OF POINTS:" << tmpSmoothPnts->GetNumberOfPoints();
 
@@ -691,7 +305,7 @@ void mitk::FiberBundleMapper3D::GenerateData()
   //vtkcells->InitTraversal();
   
   // Put points and lines together in one polyData structure
-  vtkPolyData *polyData = vtkPolyData::New();
+  vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::New();
   polyData->SetPoints(vtkSmoothPoints);
   polyData->SetLines(vtkSmoothCells);
   
@@ -703,7 +317,7 @@ void mitk::FiberBundleMapper3D::GenerateData()
   //polyData->GetPointData()->AddArray(tubeRadius);
   
   
-  vtkLookupTable *lut = vtkLookupTable::New();
+  vtkSmartPointer<vtkLookupTable> lut = vtkLookupTable::New();
   lut->Build();
   
   
@@ -715,8 +329,7 @@ void mitk::FiberBundleMapper3D::GenerateData()
   //m_VtkFiberDataMapperGL->SelectColorArray("FaColors");
   m_VtkFiberDataMapperGL->SelectColorArray("ColorValues");
   m_VtkFiberDataMapperGL->SetLookupTable(lut);
-  
-  m_vtkTubeMapper = vtkOpenGLPolyDataMapper::New();
+
   
   //m_FiberActor = vtkOpenGLActor::New();
   m_FiberActor->SetMapper(m_VtkFiberDataMapperGL);
@@ -1009,7 +622,7 @@ void mitk::FiberBundleMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *ren
     vtkPolyData *tmpPolyData = m_VtkFiberDataMapperGL->GetInput();
     
     
-    m_tubes = vtkTubeFilter::New();
+  
     m_tubes->SetInput(tmpPolyData);
     m_tubes->SidesShareVerticesOn();
     m_tubes->SetRadius((double)(tmpRadius));

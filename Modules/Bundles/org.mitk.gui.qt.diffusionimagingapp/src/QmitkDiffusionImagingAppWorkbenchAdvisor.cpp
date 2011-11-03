@@ -46,8 +46,8 @@ QmitkDiffusionImagingAppWorkbenchAdvisor::Initialize(berry::IWorkbenchConfigurer
   QString collectionFile = mitkPluginActivator::GetDefault()->GetQtHelpCollectionFile();
   if (!collectionFile.isEmpty())
   {
-//    berry::QtAssistantUtil::SetHelpCollectionFile(collectionFile);
-//    berry::QtAssistantUtil::SetDefaultHelpUrl("qthelp://org.mitk.gui.qt.diffusionimagingapp/bundle/index.html");
+    berry::QtAssistantUtil::SetHelpCollectionFile(collectionFile);
+    berry::QtAssistantUtil::SetDefaultHelpUrl("qthelp://org.mitk.gui.qt.diffusionimagingapp/bundle/index.html");
 
     typedef std::vector<berry::IBundle::Pointer> BundleContainer;
     BundleContainer bundles = berry::Platform::GetBundles();
@@ -81,7 +81,7 @@ QmitkDiffusionImagingAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
 //  viewExcludeList.push_back( std::string("org.mitk.views.tensorreconstruction") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.perspectiveswitcher") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.basicimageprocessing") );
-//  viewExcludeList.push_back( std::string("org.mitk.views.fiberbundleoperations") );
+//  viewExcludeList.push_back( std::string("org.mitk.views.fiberprocessing") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.measurement") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.moviemaker") );
 //  viewExcludeList.push_back( std::string("org.mitk.views.odfdetails") );

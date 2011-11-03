@@ -56,7 +56,7 @@ mitk::DicomDiffusionImageHeaderReader::~DicomDiffusionImageHeaderReader()
 {
 }
 
-mitk::DicomDiffusionImageHeaderReader::SupportedVendors 
+mitk::DicomDiffusionImageHeaderReader::SupportedVendors
 mitk::DicomDiffusionImageHeaderReader::GetVendorID()
 {
   // adapted from namic-sandbox
@@ -81,7 +81,7 @@ mitk::DicomDiffusionImageHeaderReader::GetVendorID()
     return SV_UNKNOWN_VENDOR;
   }
 
-  VolumeReaderType::DictionaryArrayRawPointer inputDict 
+  VolumeReaderType::DictionaryArrayRawPointer inputDict
     = m_VolumeReader->GetMetaDataDictionaryArray();
 
   std::string vendor;
@@ -196,7 +196,7 @@ void mitk::DicomDiffusionImageHeaderReader::Update()
 }
 
 // return output
-mitk::DiffusionImageHeaderInformation::Pointer 
+mitk::DiffusionImageHeaderInformation::Pointer
 mitk::DicomDiffusionImageHeaderReader::GetOutput()
 {
   return m_Output;
@@ -211,7 +211,6 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
   {
     try
     {
-      MITK_INFO << " ** Changing locale from " << setlocale(LC_ALL, NULL) << " to '" << locale << "'";
       setlocale(LC_ALL, locale.c_str());
     }
     catch(...)
@@ -220,11 +219,11 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
     }
   }
 
-  VolumeReaderType::DictionaryArrayRawPointer inputDict 
+  VolumeReaderType::DictionaryArrayRawPointer inputDict
     = m_VolumeReader->GetMetaDataDictionaryArray();
 
   // load in all public tags
-  m_nSlice = inputDict->size();   
+  m_nSlice = inputDict->size();
   std::string tag;
 
   tag.clear();
@@ -264,14 +263,14 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
   this->m_Output->sliceSpacing = atof( tag.c_str() );
 
   // figure out how many slices are there in a volume, each unique
-  // SliceLocation represent one slice 
+  // SliceLocation represent one slice
   for (int k = 0; k < m_nSlice; k++)
   {
     tag.clear();
     itk::ExposeMetaData<std::string> ( *(*inputDict)[k], "0020|1041",  tag);
     float sliceLocation = atof( tag.c_str() );
     InsertUnique( m_sliceLocations, sliceLocation );
-  }    
+  }
 
   // check ImageOrientationPatient and figure out slice direction in
   // L-P-I (right-handed) system.
@@ -281,9 +280,6 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
   itk::ExposeMetaData<std::string> ( *(*inputDict)[0], "0020|0037", tag );
   float xRow, yRow, zRow, xCol, yCol, zCol, xSlice, ySlice, zSlice /*, orthoSliceSpacing*/;
   sscanf( tag.c_str(), "%f\\%f\\%f\\%f\\%f\\%f", &xRow, &yRow, &zRow, &xCol, &yCol, &zCol );
-  //std::cout << "ImageOrientationPatient (0020:0037): ";
-  //std::cout << xRow << ", " << yRow << ", " << zRow << "; ";
-  //std::cout << xCol << ", " << yCol << ", " << zCol << "\n";
 
   // In Dicom, the measurement frame is L-P by default. Look at
   // http://medical.nema.org/dicom/2007/07_03pu.pdf ,  page 301, in
@@ -322,7 +318,6 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
 
   try
   {
-    MITK_INFO << " ** Changing locale back from " << setlocale(LC_ALL, NULL) << " to '" << currLocale << "'";
     setlocale(LC_ALL, currLocale.c_str());
   }
   catch(...)
@@ -331,10 +326,6 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags()
   }
 }
 
-//  nRows, nCols, xRes, yRes, xOrigin,yOrigin, 
-//  zOrigin, sliceThickness, sliceSpacing,nSliceInVolume, xRow, yRow, 
-//  zRow, xCol,yCol, zCol, xSlice, ySlice, zSlice,bValues[0], DiffusionVectors[0], 
-//  vendor,SliceMosaic
 
 void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags2()
 {
@@ -346,22 +337,11 @@ void mitk::DicomDiffusionImageHeaderReader::ReadPublicTags2()
     this->m_Output->zSlice = -this->m_Output->zSlice;
   }
 
-  //std::cout << "Row: " << this->m_Output->xRow << ", " << this->m_Output->yRow << ", " << this->m_Output->zRow << std::endl;
-  //std::cout << "Col: " << this->m_Output->xCol << ", " << this->m_Output->yCol << ", " << this->m_Output->zCol << std::endl;
-  //std::cout << "Sli: " << this->m_Output->xSlice << ", " << this->m_Output->ySlice << ", " << this->m_Output->zSlice << std::endl;
-
-  //orthoSliceSpacing = fabs(zSlice);
-
-  //int nVolume;
-
-  //float maxBvalue = 0;
-  //int nBaseline = 0;
-
 }
 
 void mitk::DicomDiffusionImageHeaderReader::TransformGradients()
 {
-  // transform gradient directions into RAS frame 
+  // transform gradient directions into RAS frame
     if ( !m_SliceOrderIS )
     {
       this->m_Output->DiffusionVector[2] = -this->m_Output->DiffusionVector[2];  // I -> S

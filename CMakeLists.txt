@@ -116,6 +116,10 @@ endif()
 option(MITK_BUILD_ALL_PLUGINS "Build all MITK plugins" OFF)
 option(MITK_BUILD_TUTORIAL "Build the MITK tutorial" ON)
 option(MITK_USE_Boost "Use the Boost C++ library" OFF)
+if(MITK_USE_Boost)
+  option(MITK_USE_SYSTEM_Boost "Use the system Boost" OFF)
+  set(MITK_USE_Boost_LIBRARIES "" CACHE STRING "A semi-colon separated list of required Boost libraries")
+endif()
 option(MITK_USE_BLUEBERRY "Build the BlueBerry platform" ON)
 option(MITK_USE_CTK "Use CTK in MITK" ${MITK_USE_BLUEBERRY})
 option(MITK_USE_DCMTK "EXEPERIMENTAL, superbuild only: Use DCMTK in MITK" OFF)
@@ -540,16 +544,12 @@ if(MITK_USE_BLUEBERRY)
   FunctionCreateProvisioningFile(
     FILE ${MITK_COREAPP_PROVISIONING_FILE}
     INCLUDE "${BLUEBERRY_PLUGIN_PROVISIONING_FILE}"
-    PLUGIN_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins"
     PLUGINS ${mitk_core_plugins_fullpath}
   )
 
   set(MITK_EXTAPP_PROVISIONING_FILE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ExtApp.provisioning")
   FunctionCreateProvisioningFile(
     FILE ${MITK_EXTAPP_PROVISIONING_FILE}
-    INCLUDE "${BLUEBERRY_PLUGIN_PROVISIONING_FILE}"
-    PLUGIN_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins"
-    PLUGINS ${mitk_core_plugins_fullpath} ${mitk_ext_plugins_fullpath}
   )
 
   set(MITK_PLUGIN_USE_FILE "${MITK_BINARY_DIR}/MitkPluginUseFile.cmake")
@@ -571,7 +571,16 @@ if(QT4_FOUND)
   set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${QT_LIBRARY_DIR}/../bin")
 endif()
 if(MITK_USE_BLUEBERRY)
-  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_RUNTIME_LIBRARY_DIRS}/@VS_BUILD_TYPE@;${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/@VS_BUILD_TYPE@")
+  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_RUNTIME_LIBRARY_DIRS}/@VS_BUILD_TYPE@")
+  if(DEFINED CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY)
+    if(IS_ABSOLUTE "${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}")
+      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/@VS_BUILD_TYPE@")
+    else()
+      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/@VS_BUILD_TYPE@")
+    endif()
+  else()
+    set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/@VS_BUILD_TYPE@")
+  endif()
 endif()
 if(GDCM_DIR)
   set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${GDCM_DIR}/bin/@VS_BUILD_TYPE@")
@@ -583,6 +592,9 @@ endif()
 #if(DCMTK_DIR)
 #  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${DCMTK_DIR}/bin/@VS_BUILD_TYPE@")
 #endif()
+if(MITK_USE_Boost AND MITK_USE_Boost_LIBRARIES AND NOT MITK_USE_SYSTEM_Boost)
+  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${Boost_LIBRARY_DIRS}")
+endif()
 
 # Add applications directory
 add_subdirectory(Applications)

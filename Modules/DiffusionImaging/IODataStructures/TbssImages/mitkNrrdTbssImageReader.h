@@ -22,6 +22,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkFileReader.h"
 #include "mitkTbssImageSource.h"
 #include "itkImage.h"
+#include "itkVectorImage.h"
+#include "mitkTbssImage.h"
 
 namespace mitk
 {
@@ -29,14 +31,14 @@ namespace mitk
   /** \brief 
   */
 
-  template < class TPixelType >
-  class MitkDiffusionImaging_EXPORT NrrdTbssImageReader : public mitk::TbssImageSource<TPixelType>, public FileReader
+
+  class MitkDiffusionImaging_EXPORT NrrdTbssImageReader : public mitk::TbssImageSource, public FileReader
   {
   public:
 
-    typedef mitk::TbssImage<TPixelType> OutputType;
-    typedef itk::Image<TPixelType,3>     ImageType;
-    typedef TbssImageSource<TPixelType>  TbssVolSourceType;
+    typedef mitk::TbssImage OutputType;
+    typedef itk::VectorImage<float,3>     ImageType;
+    typedef TbssImageSource  TbssVolSourceType;
 
 
 
@@ -56,15 +58,38 @@ namespace mitk
 
     /** Does the real work. */
     virtual void GenerateData();
+    virtual void GenerateOutputInformation();
 
-    void ReadRoiInfo(itk::MetaDataDictionary dict);
 
     std::string m_FileName;
     std::string m_FilePrefix;
     std::string m_FilePattern;
 
-    typename OutputType::Pointer m_OutputCache;
+    std::vector< std::pair<std::string, int> > m_GroupInfo;
+
+    OutputType::Pointer m_OutputCache;
     itk::TimeStamp m_CacheTime;
+
+
+    void Tokenize(const std::string& str,
+                  std::vector<std::string>& tokens,
+                  const std::string& delimiters = " ")
+    {
+      // Skip delimiters at beginning.
+      std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+      // Find first "non-delimiter".
+      std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+      while (std::string::npos != pos || std::string::npos != lastPos)
+      {
+          // Found a token, add it to the vector.
+          tokens.push_back(str.substr(lastPos, pos - lastPos));
+          // Skip delimiters.  Note the "not_of"
+          lastPos = str.find_first_not_of(delimiters, pos);
+          // Find next "non-delimiter"
+          pos = str.find_first_of(delimiters, lastPos);
+      }
+    }
 
 
 
@@ -74,6 +99,6 @@ namespace mitk
 
 } //namespace MITK
 
-#include "mitkNrrdTbssImageReader.cpp"
+//#include "mitkNrrdTbssImageReader.cpp"
 
 #endif // __mitkNrrdTbssImageReader_h
