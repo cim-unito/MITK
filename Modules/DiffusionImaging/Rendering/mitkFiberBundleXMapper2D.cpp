@@ -7,9 +7,9 @@
  *
  */
 
-#include "mitkFiberBundleMapper2D.h"
+#include "mitkFiberBundleXMapper2D.h"
 #include <mitkBaseRenderer.h>
-#include "mitkFiberBundleMapper3D.h"
+
 
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -38,25 +38,25 @@
 #include <QCoreApplication>
 #include <QFile>
 
-mitk::FiberBundleMapper2D::FiberBundleMapper2D()
+mitk::FiberBundleXMapper2D::FiberBundleXMapper2D()
 {
 
 
 }
 
-mitk::FiberBundleMapper2D::~FiberBundleMapper2D()
+mitk::FiberBundleXMapper2D::~FiberBundleXMapper2D()
 {
 }
 
 
-const mitk::FiberBundle* mitk::FiberBundleMapper2D::GetInput()
+const mitk::FiberBundleX* mitk::FiberBundleXMapper2D::GetInput()
 {
-    return dynamic_cast<const mitk::FiberBundle * > ( GetData() );
+    return dynamic_cast<const mitk::FiberBundleX * > ( GetData() );
 }
 
 
 
-void mitk::FiberBundleMapper2D::Update(mitk::BaseRenderer * renderer)
+void mitk::FiberBundleXMapper2D::Update(mitk::BaseRenderer * renderer)
 {
 
     if ( !this->IsVisible( renderer ) )
@@ -70,7 +70,7 @@ void mitk::FiberBundleMapper2D::Update(mitk::BaseRenderer * renderer)
     this->CalculateTimeStep( renderer );
 
     //check if updates occured in the node or on the display
-    FBLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
+    FBXLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
     const DataNode *node = this->GetDataNode();
     if ( (localStorage->m_LastUpdateTime < node->GetMTime())
          || (localStorage->m_LastUpdateTime < node->GetPropertyList()->GetMTime()) //was a property modified?
@@ -89,9 +89,9 @@ void mitk::FiberBundleMapper2D::Update(mitk::BaseRenderer * renderer)
 
 }
 
-void mitk::FiberBundleMapper2D::UpdateShaderParameter(mitk::BaseRenderer * renderer)
+void mitk::FiberBundleXMapper2D::UpdateShaderParameter(mitk::BaseRenderer * renderer)
 {
-    FBLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
+    FBXLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
     // MITK_INFO << "uSERWAAAAAAAS, da shader brauchat a poor neue zoin";
     //get information about current position of views
     mitk::SliceNavigationController::Pointer sliceContr = renderer->GetSliceNavigationController();
@@ -149,11 +149,11 @@ void mitk::FiberBundleMapper2D::UpdateShaderParameter(mitk::BaseRenderer * rende
 
 // ALL RAW DATA FOR VISUALIZATION IS GENERATED HERE.
 // vtkActors and Mappers are feeded here
-void mitk::FiberBundleMapper2D::GenerateDataForRenderer(mitk::BaseRenderer *renderer)
+void mitk::FiberBundleXMapper2D::GenerateDataForRenderer(mitk::BaseRenderer *renderer)
 {
 
     //the handler of local storage gets feeded in this method with requested data for related renderwindow
-    FBLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
+    FBXLocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
 
     //this procedure is depricated,
     //not needed after initializaton anymore
@@ -169,35 +169,17 @@ void mitk::FiberBundleMapper2D::GenerateDataForRenderer(mitk::BaseRenderer *rend
 
 
 
-
-    mitk::FiberBundleMapper3D::Pointer FBMapper3D = dynamic_cast< mitk::FiberBundleMapper3D* > (node->GetMapper( 2 ));
-    if ( FBMapper3D->GetInput() == NULL )
-    {
-        MITK_INFO << "check FBMapper3D Input: ....[Fail] ";
-        return;
-    }
-
-
-
-
-    //feed local storage with data we want to visualize
-    //  localStorage->m_SlicedResult = FBMapper3D->GetCut(planeOrigin, planeN, cutParams);
-    // localStorage->m_SlicedResult = FBMapper3D->GetVtkFBPolyDataMapper();
-    localStorage->m_SlicedResult = (vtkPolyData*) FBMapper3D->getVtkFiberBundleMapper()->GetInputAsDataSet();
-    //MITK_INFO << renderer->GetName() << " OutputPoints#: " << localStorage->m_SlicedResult->GetNumberOfPoints();
-
-
+///THIS GET INPUT
+    const mitk::FiberBundleX* fbx = this->GetInput();
+//extract polydata
+    //todo
+    
     vtkSmartPointer<vtkLookupTable> lut = vtkLookupTable::New();
     lut->Build();
     localStorage->m_PointMapper->SetScalarModeToUsePointFieldData();
     //m_VtkFiberDataMapperGL->SelectColorArray("FaColors");
     localStorage->m_PointMapper->SelectColorArray("ColorValues");
     localStorage->m_PointMapper->SetLookupTable(lut);  //apply the properties after the slice was set
-    //this->ApplyProperties( renderer );
-
-    //setup the camera according to the actor with zooming/panning etc.
-    // this->AdjustCamera( renderer, planeGeo );
-
 
 
     //  feed the vtk fiber mapper with point data ...TODO do in constructor
@@ -226,7 +208,7 @@ void mitk::FiberBundleMapper2D::GenerateDataForRenderer(mitk::BaseRenderer *rend
 }
 
 
-vtkProp* mitk::FiberBundleMapper2D::GetVtkProp(mitk::BaseRenderer *renderer)
+vtkProp* mitk::FiberBundleXMapper2D::GetVtkProp(mitk::BaseRenderer *renderer)
 {
 
     //MITK_INFO << "FiberBundleMapper2D GetVtkProp(renderer)";
@@ -236,14 +218,12 @@ vtkProp* mitk::FiberBundleMapper2D::GetVtkProp(mitk::BaseRenderer *renderer)
 }
 
 
-void mitk::FiberBundleMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::BaseRenderer* renderer, bool overwrite)
+void mitk::FiberBundleXMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::BaseRenderer* renderer, bool overwrite)
 {    //add shader to datano
 
 
     //####### load shader from file #########
     QString applicationDir = QCoreApplication::applicationDirPath();
-    MITK_INFO << "pathAppdir: " << QCoreApplication::applicationDirPath().toStdString().c_str();
-
 
     if (applicationDir.endsWith("bin"))
         applicationDir.append("/");
@@ -257,31 +237,8 @@ void mitk::FiberBundleMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk:
     }else
         applicationDir.append("\\..\\");
 
-//    applicationDir.append("/"); //directory to look when building installer
-
     mitk::StandardFileLocations::GetInstance()->AddDirectoryForSearch( applicationDir.toStdString().c_str(), false );
     mitk::ShaderRepository::Pointer shaderRepository = mitk::ShaderRepository::GetGlobalShaderRepository();
-
-//    std::string filepath = mitk::StandardFileLocations::GetInstance()->FindFile("mitkShaderFiberClipping.xml");
-//    if ( filepath.empty() )
-//    {
-//        applicationDir = QCoreApplication::applicationDirPath();
-//        applicationDir.append("/../../"); //directory to look when developing in MITK
-//        mitk::StandardFileLocations::GetInstance()->AddDirectoryForSearch( applicationDir.toStdString().c_str(), false );
-//        filepath = mitk::StandardFileLocations::GetInstance()->FindFile("mitkShaderFiberClipping.xml");
-
-//        if ( filepath.empty() )
-//        { //for windows systems
-//            applicationDir = QCoreApplication::applicationDirPath();
-//            applicationDir.append("\\..\\");
-//            mitk::StandardFileLocations::GetInstance()->AddDirectoryForSearch( applicationDir.toStdString().c_str(), false );
-
-//        }
-
-//    }
-
-
-
     shaderRepository->LoadShader(mitk::StandardFileLocations::GetInstance()->FindFile("mitkShaderFiberClipping.xml"));
 
 
@@ -305,7 +262,7 @@ void mitk::FiberBundleMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk:
 
 // following methods are essential, they actually call the GetVtkProp() method
 // which returns the desired actors
-void mitk::FiberBundleMapper2D::MitkRenderOverlay(BaseRenderer* renderer)
+void mitk::FiberBundleXMapper2D::MitkRenderOverlay(BaseRenderer* renderer)
 {
     //   MITK_INFO << "FiberBundleMapper2D MitkRenderOVerlay(renderer)";
     if ( this->IsVisible(renderer)==false )
@@ -317,7 +274,7 @@ void mitk::FiberBundleMapper2D::MitkRenderOverlay(BaseRenderer* renderer)
     }
 }
 
-void mitk::FiberBundleMapper2D::MitkRenderOpaqueGeometry(BaseRenderer* renderer)
+void mitk::FiberBundleXMapper2D::MitkRenderOpaqueGeometry(BaseRenderer* renderer)
 {
     //  MITK_INFO << "FiberBundleMapper2D MitkRenderOpaqueGeometry(renderer)";
     if ( this->IsVisible( renderer )==false )
@@ -326,7 +283,7 @@ void mitk::FiberBundleMapper2D::MitkRenderOpaqueGeometry(BaseRenderer* renderer)
     if ( this->GetVtkProp(renderer)->GetVisibility() )
         this->GetVtkProp(renderer)->RenderOpaqueGeometry( renderer->GetVtkRenderer() );
 }
-void mitk::FiberBundleMapper2D::MitkRenderTranslucentGeometry(BaseRenderer* renderer)
+void mitk::FiberBundleXMapper2D::MitkRenderTranslucentGeometry(BaseRenderer* renderer)
 {
     //  MITK_INFO << "FiberBundleMapper2D MitkRenderTranslucentGeometry(renderer)";
     if ( this->IsVisible(renderer)==false )
@@ -337,7 +294,7 @@ void mitk::FiberBundleMapper2D::MitkRenderTranslucentGeometry(BaseRenderer* rend
         this->GetVtkProp(renderer)->RenderTranslucentPolygonalGeometry(renderer->GetVtkRenderer());
 
 }
-void mitk::FiberBundleMapper2D::MitkRenderVolumetricGeometry(BaseRenderer* renderer)
+void mitk::FiberBundleXMapper2D::MitkRenderVolumetricGeometry(BaseRenderer* renderer)
 {
     //  MITK_INFO << "FiberBundleMapper2D MitkRenderVolumentricGeometry(renderer)";
     if(IsVisible(renderer)==false)
@@ -349,7 +306,7 @@ void mitk::FiberBundleMapper2D::MitkRenderVolumetricGeometry(BaseRenderer* rende
 
 }
 
-mitk::FiberBundleMapper2D::FBLocalStorage::FBLocalStorage()
+mitk::FiberBundleXMapper2D::FBXLocalStorage::FBXLocalStorage()
 {
     m_PointActor = vtkSmartPointer<vtkActor>::New();
     m_PointMapper = vtkSmartPointer<vtkPolyDataMapper>::New();

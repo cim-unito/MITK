@@ -55,6 +55,8 @@ public:
 
 //# GETTER
 public:
+
+  typedef std::map<mitk::DataNode*, unsigned long> NodeTagMapType;
   ///
   /// Get node at a specific model index.
   /// This function is used to get a node from a QModelIndex
@@ -278,6 +280,8 @@ protected:
   bool m_ShowHelperObjects;
   bool m_ShowNodesContainingNoData;
   TreeItem* m_Root;
+
+  NodeTagMapType  m_HelperObjectObserverTags;
 };
 
 #endif /* QMITKDATASTORAGETREEMODEL_H_ */
