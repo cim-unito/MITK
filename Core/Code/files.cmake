@@ -114,6 +114,7 @@ SET(CPP_FILES
   Controllers/mitkFocusManager.cpp
   Controllers/mitkLimitedLinearUndo.cpp
   Controllers/mitkOperationEvent.cpp
+  Controllers/mitkPlanePositionManager.cpp
   Controllers/mitkProgressBar.cpp
   Controllers/mitkRenderingManager.cpp
   Controllers/mitkSliceNavigationController.cpp
@@ -178,6 +179,7 @@ SET(CPP_FILES
   DataManagement/mitkPointSet.cpp
   DataManagement/mitkProperties.cpp
   DataManagement/mitkPropertyList.cpp
+  DataManagement/mitkRestorePlanePositionOperation.cpp
   DataManagement/mitkRotationOperation.cpp
   DataManagement/mitkSlicedData.cpp
   DataManagement/mitkSlicedGeometry3D.cpp
