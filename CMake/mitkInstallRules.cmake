@@ -36,7 +36,7 @@ if(WIN32)
   # Since this file is also included from external projects, you
   # can only use variables which are made available through MITKConfig.cmake
   if(MITK_USE_BLUEBERRY)
-    if(MINGW)
+    if(MINGW OR "${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles")
       MITK_INSTALL(FILES ${MITK_BINARY_DIR}/bin/plugins/liborg_blueberry_osgi.dll)
     else()
       if(NOT APPLE)
