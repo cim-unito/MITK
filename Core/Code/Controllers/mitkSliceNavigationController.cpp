@@ -63,7 +63,9 @@ SliceNavigationController::SliceNavigationController( const char *type )
   m_BlockUpdate( false ),
   m_SliceLocked( false ),
   m_SliceRotationLocked( false ),
-  m_OldPos(0)
+  m_OldPos(0),
+  m_ExponentialFormat(false),
+  m_Precision(2)
 {
   typedef itk::SimpleMemberCommand< SliceNavigationController > SNCCommandType;
   SNCCommandType::Pointer sliceStepperChangedCommand, timeStepperChangedCommand;
@@ -688,16 +690,13 @@ SliceNavigationController
                   image3D->GetGeometry()->WorldToIndex(worldposition, p);
                   stream.precision(2);
                   stream<<"Position: <" << std::fixed <<worldposition[0] << ", " << std::fixed << worldposition[1] << ", " << std::fixed << worldposition[2] << "> mm";
-                  stream<<"; Index: <"<<p[0] << ", " << p[1] << ", " << p[2] << "> ";
+                  stream<<"; Index: <"<<p[0] << ", " << p[1] << ", " << p[2] << "> "
+                        << "; Time: " << baseRenderer->GetTime() << " ms; Pixel value: ";
                   mitk::ScalarType pixelValue = image3D->GetPixelValueByIndex(p, baseRenderer->GetTimeStep());
-                  if (fabs(pixelValue)>1000000)
-                  {
-                    stream<<"; Time: " << baseRenderer->GetTime() << " ms; Pixelvalue: "<<std::scientific<<image3D->GetPixelValueByIndex(p, baseRenderer->GetTimeStep())<<"  ";
+                  if (m_ExponentialFormat) {
+                    stream << std::scientific;
                   }
-                  else
-                  {
-                    stream<<"; Time: " << baseRenderer->GetTime() << " ms; Pixelvalue: "<<image3D->GetPixelValueByIndex(p, baseRenderer->GetTimeStep())<<"  ";
-                  }
+                  stream << setprecision(m_Precision) << pixelValue << "  ";
                 }
                 else
                 {

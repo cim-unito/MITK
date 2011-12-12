@@ -438,6 +438,11 @@ class MITK_CORE_EXPORT SliceNavigationController : public BaseController
      */
     void AdjustSliceStepperRange();
 
+    itkSetMacro(ExponentialFormat, bool);
+    itkGetMacro(ExponentialFormat, bool);
+
+    itkSetMacro(Precision, int);
+    itkGetMacro(Precision, int);
 
   protected:
     SliceNavigationController(const char * type = NULL);
@@ -505,6 +510,9 @@ class MITK_CORE_EXPORT SliceNavigationController : public BaseController
     bool m_SliceLocked;
     bool m_SliceRotationLocked;
     unsigned int m_OldPos;
+
+    bool m_ExponentialFormat;
+    int m_Precision;
 };
 
 } // namespace mitk
