@@ -28,7 +28,8 @@ IF(MITK_USE_CTK)
     ENDFOREACH()
   
     ExternalProject_Add(${proj}
-      GIT_REPOSITORY http://github.com/commontk/CTK.git
+#      GIT_REPOSITORY http://github.com/commontk/CTK.git
+      GIT_REPOSITORY http://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
       BINARY_DIR ${proj}-build
       UPDATE_COMMAND ""
