@@ -2153,10 +2153,18 @@ void QmitkStdMultiWidget::SetExponentialFormat(bool value)
 {
   m_ExponentialFormat = value;
   levelWindowWidget->SetExponentialFormat(value);
+  mitkWidget1->GetSliceNavigationController()->SetExponentialFormat(value);
+  mitkWidget2->GetSliceNavigationController()->SetExponentialFormat(value);
+  mitkWidget3->GetSliceNavigationController()->SetExponentialFormat(value);
+  mitkWidget4->GetSliceNavigationController()->SetExponentialFormat(value);
 }
 
 void QmitkStdMultiWidget::SetPrecision(int precision)
 {
   m_Precision = precision;
   levelWindowWidget->SetPrecision(precision);
+  mitkWidget1->GetSliceNavigationController()->SetPrecision(precision);
+  mitkWidget2->GetSliceNavigationController()->SetPrecision(precision);
+  mitkWidget3->GetSliceNavigationController()->SetPrecision(precision);
+  mitkWidget4->GetSliceNavigationController()->SetPrecision(precision);
 }
