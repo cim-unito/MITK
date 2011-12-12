@@ -1,0 +1,2 @@
+MITK_CREATE_MODULE(MitkGraphAlgorithms
+DEPENDS Mitk ImageStatistics )
