@@ -21,7 +21,6 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QmitkExports.h>
 
 #include "mitkPositionTracker.h"
-#include "mitkDisplayVectorInteractor.h"
 #include "mitkSlicesRotator.h"
 #include "mitkSlicesSwiveller.h"
 #include "mitkRenderWindowFrame.h"
@@ -29,6 +28,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkGradientBackground.h"
 #include "mitkCoordinateSupplier.h"
 #include "mitkDataStorage.h"
+
+#include "mitkMouseModeSwitcher.h"
 
 #include <qwidget.h>
 #include <qsplitter.h>
@@ -63,7 +64,8 @@ public:
 
   void ForceImmediateUpdate();
 
-  mitk::DisplayVectorInteractor* GetMoveAndZoomInteractor();
+  mitk::MouseModeSwitcher* GetMouseModeSwitcher();
+
 
   QmitkRenderWindow* GetRenderWindow1() const;
 
@@ -221,6 +223,8 @@ public slots:
 
   void SetPrecision(int precision);
 
+  void MouseModeSelected( mitk::MouseModeSwitcher::MouseMode mouseMode );
+
 signals:
 
   void LeftMouseClicked(mitk::Point3D pointValue);
@@ -284,7 +288,8 @@ protected:
   mitk::GradientBackground::Pointer m_GradientBackground3;
   bool m_GradientBackgroundFlag;
   
-  mitk::DisplayVectorInteractor::Pointer m_MoveAndZoomInteractor;
+
+  mitk::MouseModeSwitcher::Pointer m_MouseModeSwitcher;
   mitk::CoordinateSupplier::Pointer m_LastLeftClickPositionSupplier;
   mitk::PositionTracker::Pointer m_PositionTracker;
   mitk::SliceNavigationController::Pointer m_TimeNavigationController;

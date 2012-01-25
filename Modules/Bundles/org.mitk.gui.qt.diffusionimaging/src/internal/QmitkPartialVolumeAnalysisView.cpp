@@ -73,7 +73,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include <vnl/vnl_vector.h>
 
-#define PVA_PI 3.141592653589793238462643383
+#define _USE_MATH_DEFINES
+#include <math.h>
+
+#define PVA_PI M_PI
 
 const std::string QmitkPartialVolumeAnalysisView::VIEW_ID =
 "org.mitk.views.partialvolumeanalysisview";
@@ -109,7 +112,7 @@ inline bool my_isnan(float x)
 
 }
 
-QmitkPartialVolumeAnalysisView::QmitkPartialVolumeAnalysisView(QObject */*parent*/, const char */*name*/)
+QmitkPartialVolumeAnalysisView::QmitkPartialVolumeAnalysisView(QObject * /*parent*/, const char * /*name*/)
   : QmitkFunctionality(),
   m_Controls( NULL ),
   m_TimeStepperAdapter( NULL ),
@@ -1289,7 +1292,7 @@ void QmitkPartialVolumeAnalysisView::UpdateStatistics()
     {
 
       mitk::PixelType pixelType = m_SelectedImageMask->GetPixelType();
-      std::cout << pixelType.GetType() << std::endl;
+      std::cout << pixelType.GetItkTypeAsString() << std::endl;
 
       if(pixelType.GetBitsPerComponent() == 16)
       {

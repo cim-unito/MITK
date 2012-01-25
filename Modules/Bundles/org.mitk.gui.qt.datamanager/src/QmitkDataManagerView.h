@@ -80,6 +80,7 @@ public:
   /// \brief Returns all selected nodes in a vector
   ///
   std::vector<mitk::DataNode*> GetSelectedNodes() const;
+
 public slots:
   ///
   /// Invoked when the opacity slider changed

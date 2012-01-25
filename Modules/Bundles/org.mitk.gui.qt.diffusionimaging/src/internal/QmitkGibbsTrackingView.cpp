@@ -109,7 +109,6 @@ QmitkGibbsTrackingView::QmitkGibbsTrackingView()
   , m_FiberBundleNode(NULL)
   , m_TrackingWorker(this)
   , m_QBallSelected(false)
-  , m_FibSelected(false)
   , m_Iterations(10000000)
   , m_LastStep(0)
 {
@@ -280,7 +279,7 @@ void QmitkGibbsTrackingView::SetIterations(int value)
   switch(value)
   {
   case 0:
-    m_Controls->m_IterationsLabel->setText("Iterations: 10^4");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^4");
     m_Iterations = 10000;
     break;
   case 1:
@@ -288,7 +287,7 @@ void QmitkGibbsTrackingView::SetIterations(int value)
     m_Iterations = 50000;
     break;
   case 2:
-    m_Controls->m_IterationsLabel->setText("Iterations: 10^5");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^5");
     m_Iterations = 100000;
     break;
   case 3:
@@ -296,7 +295,7 @@ void QmitkGibbsTrackingView::SetIterations(int value)
     m_Iterations = 500000;
     break;
   case 4:
-    m_Controls->m_IterationsLabel->setText("Iterations: 10^6");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^6");
     m_Iterations = 1000000;
     break;
   case 5:
@@ -304,7 +303,7 @@ void QmitkGibbsTrackingView::SetIterations(int value)
     m_Iterations = 5000000;
     break;
   case 6:
-    m_Controls->m_IterationsLabel->setText("Iterations: 10^7");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^7");
     m_Iterations = 10000000;
     break;
   case 7:
@@ -312,7 +311,7 @@ void QmitkGibbsTrackingView::SetIterations(int value)
     m_Iterations = 50000000;
     break;
   case 8:
-    m_Controls->m_IterationsLabel->setText("10^8");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^8");
     m_Iterations = 100000000;
     break;
   case 9:
@@ -320,12 +319,8 @@ void QmitkGibbsTrackingView::SetIterations(int value)
     m_Iterations = 500000000;
     break;
   case 10:
-    m_Controls->m_IterationsLabel->setText("Iterations: 10^9");
+    m_Controls->m_IterationsLabel->setText("Iterations: 1x10^9");
     m_Iterations = 1000000000;
-    break;
-  case 11:
-    m_Controls->m_IterationsLabel->setText("Iterations: 5x10^9");
-    m_Iterations = 5000000000;
     break;
   }
 
@@ -345,7 +340,6 @@ void QmitkGibbsTrackingView::StdMultiWidgetNotAvailable()
 void QmitkGibbsTrackingView::OnSelectionChanged( std::vector<mitk::DataNode*> nodes )
 {
   m_QBallSelected = false;
-  m_FibSelected = false;
 
   // iterate all selected objects
   for( std::vector<mitk::DataNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it )
@@ -356,11 +350,6 @@ void QmitkGibbsTrackingView::OnSelectionChanged( std::vector<mitk::DataNode*> no
     {
       m_QBallSelected = true;
       m_QBallImageNode = node;
-    }
-    else if (node.IsNotNull() && dynamic_cast<mitk::FiberBundle*>(node->GetData()))
-    {
-      m_FibSelected = true;
-      m_FiberBundleNode = node;
     }
   }
 
@@ -604,27 +593,24 @@ void QmitkGibbsTrackingView::GenerateFiberBundle()
   if (m_GlobalTracker.IsNull() || m_ItkQBallImage.IsNull() || m_QBallImage.IsNull() || (!m_Controls->m_VisualizationCheckbox->isChecked() && m_ThreadIsRunning))
     return;
 
-  m_FiberBundle = mitk::FiberBundle::New();
 
   typedef std::vector< itk::Point<float, 3> > FiberTractType;
   typedef std::vector< FiberTractType > FiberBundleType;
 
-  FiberBundleType* fiberBundle = m_GlobalTracker->GetFiberBundle();
+  vtkSmartPointer<vtkPolyData> fiberBundle = m_GlobalTracker->GetFiberBundle();
 
-  for (int i=0; i<fiberBundle->size(); i++)
-  {
-    FiberTractType* tract = &fiberBundle->at(i);
-    for (int j=0; j<tract->size(); j++)
-      m_FiberBundle->PushPoint(i, tract->at(j));
-  }
-  m_FiberBundle->initFiberGroup();
+  m_FiberBundle = mitk::FiberBundleX::New(fiberBundle);
 
-  float bounds[] = {0,0,0};
-  bounds[0] = m_ItkQBallImage->GetLargestPossibleRegion().GetSize().GetElement(0);
-  bounds[1] = m_ItkQBallImage->GetLargestPossibleRegion().GetSize().GetElement(1);
-  bounds[2] = m_ItkQBallImage->GetLargestPossibleRegion().GetSize().GetElement(2);
-  m_FiberBundle->SetBounds(bounds);
-  m_FiberBundle->SetGeometry(m_QBallImage->GetGeometry());
+  double qBallImageSpacing[3] = {m_ItkQBallImage->GetSpacing().GetElement(0),m_ItkQBallImage->GetSpacing().GetElement(1),m_ItkQBallImage->GetSpacing().GetElement(2)};
+  float minSpacing;
+  if(qBallImageSpacing[0]<qBallImageSpacing[1] && qBallImageSpacing[0]<qBallImageSpacing[2])
+      minSpacing = qBallImageSpacing[0];
+  else if (qBallImageSpacing[1] < qBallImageSpacing[2])
+      minSpacing = qBallImageSpacing[1];
+  else
+      minSpacing = qBallImageSpacing[2];
+
+  m_FiberBundle->ResampleFibers(minSpacing);
 
   if (m_FiberBundleNode.IsNotNull()){
     GetDefaultDataStorage()->Remove(m_FiberBundleNode);

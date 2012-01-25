@@ -1,9 +1,7 @@
-
 # tests with no extra command line parameter
 SET(MODULE_TESTS
   mitkAccessByItkTest.cpp
   mitkCoreObjectFactoryTest.cpp
-  mitkPointSetWriterTest.cpp
   mitkMaterialTest.cpp
   mitkActionTest.cpp
   mitkEnumerationPropertyTest.cpp
@@ -31,6 +29,8 @@ SET(MODULE_TESTS
   mitkPlaneGeometryTest.cpp
   mitkPointSetFileIOTest.cpp
   mitkPointSetTest.cpp
+  mitkPointSetWriterTest.cpp
+  mitkPointSetReaderTest.cpp
   mitkPointSetInteractorTest.cpp
   mitkPropertyTest.cpp
   mitkPropertyListTest.cpp
@@ -41,7 +41,7 @@ SET(MODULE_TESTS
   mitkSliceNavigationControllerTest.cpp
   mitkStateMachineTest.cpp
   mitkStateTest.cpp
-  mitkSurfaceTest.cpp
+  #mitkSurfaceTest.cpp
   mitkSurfaceToSurfaceFilterTest.cpp
   mitkTimeSlicedGeometryTest.cpp
   mitkTransitionTest.cpp
@@ -51,7 +51,6 @@ SET(MODULE_TESTS
   mitkWeakPointerTest.cpp
   mitkTransferFunctionTest.cpp
   #mitkAbstractTransformGeometryTest.cpp
-  #mitkPicFileIOTest.cpp
   mitkStepperTest.cpp
   itkTotalVariationDenoisingImageFilterTest.cpp
   mitkRenderingManagerTest.cpp
@@ -59,16 +58,15 @@ SET(MODULE_TESTS
   mitkNodePredicateSourceTest.cpp
   mitkVectorTest.cpp
   mitkClippedSurfaceBoundsCalculatorTest.cpp
+  #QmitkRenderingTestHelper.cpp
 )
 
 # test with image filename as an extra command line parameter
 SET(MODULE_IMAGE_TESTS
   mitkPlanePositionManagerTest.cpp
   mitkSurfaceVtkWriterTest.cpp
-  mitkPicFileWriterTest.cpp
   #mitkImageSliceSelectorTest.cpp
   mitkImageTimeSelectorTest.cpp
-  mitkPicFileReaderTest.cpp
   # mitkVtkPropRendererTest.cpp
   mitkDataNodeFactoryTest.cpp
   #mitkSTLFileReaderTest.cpp
@@ -76,10 +74,11 @@ SET(MODULE_IMAGE_TESTS
 
 # list of images for which the tests are run
 SET(MODULE_TESTIMAGES
-  US4DCyl.pic.gz
-  Pic3D.pic.gz
-  Pic2DplusT.pic.gz
-  BallBinary30x30x30.pic.gz
+ # Pic-Factory no more available in Core, test images now in .nrrd format
+  US4DCyl.nrrd
+  Pic3D.nrrd
+  Pic2DplusT.nrrd
+  BallBinary30x30x30.nrrd
   binary.stl
   ball.stl
 )
@@ -97,6 +96,7 @@ SET(MODULE_CUSTOM_TESTS
     mitkPointSetLocaleTest.cpp
     mitkImageTest.cpp
     mitkImageWriterTest.cpp
+    mitkImageVtkMapper2DTest.cpp
 )
 
 # Create an artificial module initializing class for
@@ -113,7 +113,7 @@ SET(MODULE_QT_BOOL "false")
 
 SET(testdriver_init_file "${CMAKE_CURRENT_BINARY_DIR}/MitkTestDriver_init.cpp")
 CONFIGURE_FILE("${MITK_SOURCE_DIR}/CMake/mitkModuleInit.cpp" ${testdriver_init_file} @ONLY)
-SET(TEST_CPP_FILES ${testdriver_init_file})
+SET(TEST_CPP_FILES ${testdriver_init_file} mitkRenderingTestHelper.cpp)
 
 SET(MODULE_NAME ${module_name_orig})
 SET(MODULE_LIBNAME ${module_libname_orig})

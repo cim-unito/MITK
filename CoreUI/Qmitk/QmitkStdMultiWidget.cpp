@@ -359,9 +359,7 @@ void QmitkStdMultiWidget::InitializeWidget()
   mitkWidget4->GetSliceNavigationController()
     ->ConnectGeometryTimeEvent(m_TimeNavigationController.GetPointer(), false);
 
-  // instantiate display interactor
-  m_MoveAndZoomInteractor = mitk::DisplayVectorInteractor::New(
-    "moveNzoom", new mitk::DisplayInteractor() );
+  m_MouseModeSwitcher = mitk::MouseModeSwitcher::New( mitk::GlobalInteraction::GetInstance() );
 
   m_LastLeftClickPositionSupplier =
     mitk::CoordinateSupplier::New("navigation", NULL);
@@ -1428,12 +1426,6 @@ void QmitkStdMultiWidget::leaveEvent ( QEvent * /*e*/  )
   m_SlicesRotator->ResetMouseCursor();
 }
 
-mitk::DisplayVectorInteractor* QmitkStdMultiWidget::GetMoveAndZoomInteractor()
-{
-  return m_MoveAndZoomInteractor.GetPointer();
-}
-
-
 QmitkRenderWindow* QmitkStdMultiWidget::GetRenderWindow1() const
 {
   return mitkWidget1;
@@ -1838,6 +1830,9 @@ void QmitkStdMultiWidget::SetWidgetPlaneMode( int userMode )
 {
   MITK_DEBUG << "Changing crosshair mode to " << userMode;
 
+  // first of all reset left mouse button interaction to default if PACS interaction style is active
+  m_MouseModeSwitcher->SelectMouseMode( mitk::MouseModeSwitcher::MousePointer );
+
   emit WidgetNotifyNewCrossHairMode( userMode );
   
   int mode = m_PlaneMode;
@@ -2168,3 +2163,21 @@ void QmitkStdMultiWidget::SetPrecision(int precision)
   mitkWidget3->GetSliceNavigationController()->SetPrecision(precision);
   mitkWidget4->GetSliceNavigationController()->SetPrecision(precision);
 }
+
+mitk::MouseModeSwitcher* QmitkStdMultiWidget::GetMouseModeSwitcher()
+{
+  return m_MouseModeSwitcher;
+}
+
+void QmitkStdMultiWidget::MouseModeSelected( mitk::MouseModeSwitcher::MouseMode mouseMode )
+{
+  if ( mouseMode == 0 )
+  {
+    this->EnableNavigationControllerEventListening();
+  }
+  else
+  {
+    this->DisableNavigationControllerEventListening();
+  }
+}
+

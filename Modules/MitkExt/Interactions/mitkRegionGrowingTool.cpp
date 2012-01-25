@@ -142,7 +142,8 @@ bool mitk::RegionGrowingTool::OnMousePressed (Action* action, const StateEvent* 
         //  temporarySlice = ImportItkImage( correctPixelTypeImage );
           CastToMitkImage( correctPixelTypeImage, temporarySlice );
 
-          mitkIpPicDescriptor* workingPicSlice = temporarySlice->GetSliceData()->GetPicDescriptor();
+          mitkIpPicDescriptor* workingPicSlice = mitkIpPicNew();
+          CastToIpPicDescriptor(temporarySlice, workingPicSlice);
          
           int initialWorkingOffset = projectedPointInWorkingSlice2D[1] * workingPicSlice->n[0] + projectedPointInWorkingSlice2D[0];
 
@@ -163,7 +164,8 @@ bool mitk::RegionGrowingTool::OnMousePressed (Action* action, const StateEvent* 
             {
               MITK_INFO << "OnMousePressed: got reference slice" << std::endl;
 
-              m_OriginalPicSlice = m_ReferenceSlice->GetSliceData()->GetPicDescriptor();
+              m_OriginalPicSlice = mitkIpPicNew();
+              CastToIpPicDescriptor(m_ReferenceSlice, m_OriginalPicSlice);
 
               // 3.1. Switch depending on the pixel value
               if (inside)
@@ -285,18 +287,14 @@ bool mitk::RegionGrowingTool::OnMousePressedOutside(Action* itkNotUsed( action )
       LevelWindow lw(0, 500);
       m_ToolManager->GetReferenceData(0)->GetLevelWindow(lw); // will fill lw if levelwindow property is present, otherwise won't touch it.
 
-      m_VisibleWindow = lw.GetWindow();
-      // necessary for limiting the upper and lower threshold to the maximum gray values
-      m_DefaultWindow = lw.GetDefaultWindow();
+      ScalarType currentVisibleWindow = lw.GetWindow();
 
-      static bool initializedAlready = false; // just evaluated once
-
-      if (!initializedAlready)
+      if (!mitk::Equal(currentVisibleWindow, m_VisibleWindow))
       {
-        m_InitialLowerThreshold = static_cast<int>(m_VisibleWindow / 10.0); // 20% of the visible gray values
-        m_InitialUpperThreshold = static_cast<int>(m_VisibleWindow / 10.0);
+        m_InitialLowerThreshold = currentVisibleWindow / 10.0; // 20% of the visible gray values
+        m_InitialUpperThreshold = currentVisibleWindow / 10.0;
 
-        initializedAlready = true;
+        m_VisibleWindow = currentVisibleWindow;
       }
       
       m_LowerThreshold = m_InitialLowerThreshold;
@@ -342,15 +340,11 @@ bool mitk::RegionGrowingTool::OnMouseMoved   (Action* action, const StateEvent* 
         m_ScreenYDifference += cursor->GetCursorPosition()[1] - m_LastScreenPosition[1];
         cursor->SetCursorPosition( m_LastScreenPosition );
 
-        m_LowerThreshold = m_InitialLowerThreshold + static_cast<int>( m_ScreenYDifference * m_MouseDistanceScaleFactor );
-        if (m_LowerThreshold < 1) m_LowerThreshold = 1;
-        if (m_LowerThreshold > m_VisibleWindow / 2) m_LowerThreshold = m_VisibleWindow / 2;
+        m_LowerThreshold = m_InitialLowerThreshold + m_ScreenYDifference * m_MouseDistanceScaleFactor ;
         
-        m_UpperThreshold = m_InitialUpperThreshold + static_cast<int>( m_ScreenYDifference * m_MouseDistanceScaleFactor );
-        if (m_UpperThreshold < 1) m_UpperThreshold = 1;
-        if (m_UpperThreshold > m_VisibleWindow / 2) m_UpperThreshold = m_VisibleWindow / 2;
+        m_UpperThreshold = m_InitialUpperThreshold + m_ScreenYDifference * m_MouseDistanceScaleFactor ;
 
-        //MITK_INFO << "new interval: l " << m_LowerThreshold << " u " << m_UpperThreshold << std::endl;
+        //MITK_INFO << "new interval: l " << m_LowerThreshold << " u " << m_UpperThreshold << "MouseScaleFactor: "<<m_MouseDistanceScaleFactor << std::endl;
         
         // 2. Perform region growing again and show the result
         mitkIpPicDescriptor* result = PerformRegionGrowingAndUpdateContour();

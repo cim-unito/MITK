@@ -5,6 +5,7 @@
 #include <mitkShowSegmentationAsSurface.h>
 #include <mitkProgressBar.h>
 #include <mitkStatusBar.h>
+#include <QmitkStdMultiWidget.h>
 
 // Blueberry
 #include <berryIPreferencesService.h>
@@ -15,6 +16,7 @@ using namespace mitk;
 using namespace std;
 
 QmitkCreatePolygonModelAction::QmitkCreatePolygonModelAction()
+  : m_StdMultiWidget(0)
 {
 }
 
@@ -74,7 +76,10 @@ void QmitkCreatePolygonModelAction::Run(const vector<DataNode *> &selectedNodes)
 
       surfaceFilter->SetDataStorage(*m_DataStorage);
       surfaceFilter->SetPointerParameter("Input", image);
-      surfaceFilter->SetPointerParameter("Group node", selectedNode);      
+      surfaceFilter->SetPointerParameter("Group node", selectedNode);
+
+      int timeNr = m_StdMultiWidget != 0 ? m_StdMultiWidget->GetTimeNavigationController()->GetTime()->GetPos() : 0;
+      surfaceFilter->SetParameter("TimeNr", timeNr);
 
       IPreferencesService::Pointer prefService = Platform::GetServiceRegistry().GetServiceById<IPreferencesService>(IPreferencesService::ID);
       IPreferences::Pointer segPref = prefService->GetSystemPreferences()->Node("/org.mitk.views.segmentation");
@@ -82,6 +87,7 @@ void QmitkCreatePolygonModelAction::Run(const vector<DataNode *> &selectedNodes)
       bool smoothingHint = segPref->GetBool("smoothing hint", true);
       float smoothing = (float)segPref->GetDouble("smoothing value", 1.0);
       float decimation = (float)segPref->GetDouble("decimation rate", 0.5);
+      float closing = (float)segPref->GetDouble("closing ratio", 0.0);
       
       if (smoothingHint)
       {
@@ -94,6 +100,7 @@ void QmitkCreatePolygonModelAction::Run(const vector<DataNode *> &selectedNodes)
 
       surfaceFilter->SetParameter("Smoothing", smoothing);
       surfaceFilter->SetParameter("Decimation", decimation);
+      surfaceFilter->SetParameter("Closing", closing);
 
       ProgressBar::GetInstance()->AddStepsToDo(8);
       StatusBar::GetInstance()->DisplayText("Smoothed surface creation started in background...");
@@ -115,6 +122,11 @@ void QmitkCreatePolygonModelAction::OnSurfaceCalculationDone()
 void QmitkCreatePolygonModelAction::SetDataStorage(DataStorage *dataStorage)
 {
   m_DataStorage = dataStorage;
+}
+
+void QmitkCreatePolygonModelAction::SetStdMultiWidget(QmitkStdMultiWidget *stdMultiWidget)
+{
+  m_StdMultiWidget = stdMultiWidget;
 }
 
 void QmitkCreatePolygonModelAction::SetSmoothed(bool smoothed)

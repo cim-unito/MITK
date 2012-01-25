@@ -150,6 +150,7 @@ void InternalPlatform::Initialize(int& argc, char** argv, Poco::Util::AbstractCo
     dataLocation += QString::number(qHash(QCoreApplication::applicationDirPath())) + "/";
     m_UserPath.assign(dataLocation.toStdString());
   }
+  BERRY_INFO(m_ConsoleLog) << "Framework storage dir: " << m_UserPath.toString();
 
   Poco::File userFile(m_UserPath);
   
@@ -169,19 +170,22 @@ void InternalPlatform::Initialize(int& argc, char** argv, Poco::Util::AbstractCo
   // Initialize the CTK Plugin Framework
   ctkProperties fwProps;
   fwProps.insert(ctkPluginConstants::FRAMEWORK_STORAGE, QString::fromStdString(userFile.path()));
-#if defined(Q_CC_GNU) && ((__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 5)))
-  fwProps.insert(ctkPluginConstants::FRAMEWORK_PLUGIN_LOAD_HINTS, QVariant::fromValue<QLibrary::LoadHints>(QLibrary::ExportExternalSymbolsHint));
-#endif
   if (this->GetConfiguration().hasProperty(Platform::ARG_CLEAN))
   {
     fwProps.insert(ctkPluginConstants::FRAMEWORK_STORAGE_CLEAN, ctkPluginConstants::FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
   }
   if (this->GetConfiguration().hasProperty(Platform::ARG_CONSOLELOG))
   {
+    fwProps.insert("org.commontk.pluginfw.debug.framework", true);
     fwProps.insert("org.commontk.pluginfw.debug.errors", true);
     fwProps.insert("org.commontk.pluginfw.debug.pluginfw", true);
     fwProps.insert("org.commontk.pluginfw.debug.lazy_activation", true);
     fwProps.insert("org.commontk.pluginfw.debug.resolve", true);
+  }
+  if (this->GetConfiguration().hasProperty(Platform::ARG_PRELOAD_LIBRARY))
+  {
+    QString preloadLibs = QString::fromStdString(this->GetConfiguration().getString(Platform::ARG_PRELOAD_LIBRARY));
+    fwProps.insert(ctkPluginConstants::FRAMEWORK_PRELOAD_LIBRARIES, preloadLibs.split(',', QString::SkipEmptyParts));
   }
   m_ctkPluginFrameworkFactory = new ctkPluginFrameworkFactory(fwProps);
   QSharedPointer<ctkPluginFramework> pfw = m_ctkPluginFrameworkFactory->getFramework();
@@ -191,6 +195,7 @@ void InternalPlatform::Initialize(int& argc, char** argv, Poco::Util::AbstractCo
   std::string provisioningFile = this->GetConfiguration().getString(Platform::ARG_PROVISIONING);
   if (!provisioningFile.empty())
   {
+    BERRY_INFO(m_ConsoleLog) << "Using provisioning file: " << provisioningFile;
     ProvisioningInfo provInfo(QString::fromStdString(provisioningFile));
     foreach(QString pluginPath, provInfo.getPluginDirs())
     {
@@ -207,6 +212,7 @@ void InternalPlatform::Initialize(int& argc, char** argv, Poco::Util::AbstractCo
       }
       try
       {
+        BERRY_INFO(m_ConsoleLog) << "Installing CTK plug-in from: " << pluginUrl.toString().toStdString();
         QSharedPointer<ctkPlugin> plugin = pfwContext->installPlugin(pluginUrl);
         if (pluginsToStart.contains(pluginUrl))
         {
@@ -218,6 +224,10 @@ void InternalPlatform::Initialize(int& argc, char** argv, Poco::Util::AbstractCo
         BERRY_ERROR << "Failed to install: " << pluginUrl.toString().toStdString() << ",\n" << e.what();
       }
     }
+  }
+  else
+  {
+    BERRY_INFO << "No provisioning file set.";
   }
 
   m_BaseStatePath = m_UserPath;
@@ -382,7 +392,7 @@ void InternalPlatform::Shutdown()
   this->uninitialize();
 
   // wait 10 seconds for the CTK plugin framework to stop
-  ctkPluginFW->waitForStop(30000);
+  ctkPluginFW->waitForStop(10000);
 
   {
     Poco::Mutex::ScopedLock lock(m_Mutex);
@@ -497,6 +507,10 @@ void InternalPlatform::defineOptions(Poco::Util::OptionSet& options)
   helpOption.callback(Poco::Util::OptionCallback<InternalPlatform>(this, &InternalPlatform::PrintHelp));
   options.addOption(helpOption);
 
+  Poco::Util::Option newInstanceOption(Platform::ARG_NEWINSTANCE, "", "forces a new instance of this application");
+  newInstanceOption.binding(Platform::ARG_NEWINSTANCE);
+  options.addOption(newInstanceOption);
+
   Poco::Util::Option cleanOption(Platform::ARG_CLEAN, "", "cleans the plugin cache");
   cleanOption.binding(Platform::ARG_CLEAN);
   options.addOption(cleanOption);
@@ -517,6 +531,10 @@ void InternalPlatform::defineOptions(Poco::Util::OptionSet& options)
   forcePluginOption.binding(Platform::ARG_FORCE_PLUGIN_INSTALL);
   options.addOption(forcePluginOption);
 
+  Poco::Util::Option preloadLibsOption(Platform::ARG_PRELOAD_LIBRARY, "", "preload a library");
+  preloadLibsOption.argument("<library>").repeatable(true).callback(Poco::Util::OptionCallback<InternalPlatform>(this, &InternalPlatform::handlePreloadLibraryOption));
+  options.addOption(preloadLibsOption);
+
   Poco::Util::Option testPluginOption(Platform::ARG_TESTPLUGIN, "", "the plug-in to be tested");
   testPluginOption.argument("<id>").binding(Platform::ARG_TESTPLUGIN);
   options.addOption(testPluginOption);
@@ -530,6 +548,16 @@ void InternalPlatform::defineOptions(Poco::Util::OptionSet& options)
   options.addOption(xargsOption);
 
   Poco::Util::Application::defineOptions(options);
+}
+
+void InternalPlatform::handlePreloadLibraryOption(const std::string& name, const std::string& value)
+{
+  std::string oldVal;
+  if (this->config().hasProperty(Platform::ARG_PRELOAD_LIBRARY))
+  {
+    oldVal = this->config().getString(Platform::ARG_PRELOAD_LIBRARY);
+  }
+  this->config().setString(Platform::ARG_PRELOAD_LIBRARY, oldVal + "," + value);
 }
 
 int InternalPlatform::main(const std::vector<std::string>& args)
@@ -549,6 +577,8 @@ int InternalPlatform::main(const std::vector<std::string>& args)
   m_ctkPluginFrameworkFactory->getFramework()->start();
   foreach(long pluginId, m_CTKPluginsToStart)
   {
+    BERRY_INFO(m_ConsoleLog) << "Starting CTK plug-in: " << context->getPlugin(pluginId)->getSymbolicName().toStdString()
+                             << " [" << pluginId << "]";
     // do not change the autostart setting of this plugin
     context->getPlugin(pluginId)->start(ctkPlugin::START_TRANSIENT | ctkPlugin::START_ACTIVATION_POLICY);
   }

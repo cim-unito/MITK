@@ -9,11 +9,15 @@ SET(INTERNAL_CPP_FILES
   QmitkThresholdAction.cpp
   QmitkCreatePolygonModelAction.cpp
   QmitkStatisticsAction.cpp
-  QmitkAutocropAction.cpp  
+  QmitkAutocropAction.cpp
+  QmitkBooleanOperationsView.cpp
+  QmitkDeformableClippingPlaneView.cpp
 )
 
 SET(UI_FILES
   src/internal/QmitkSegmentationControls.ui
+  src/internal/QmitkBooleanOperationsView.ui
+  src/internal/QmitkDeformableClippingPlaneViewControls.ui
 )
 
 SET(MOC_H_FILES
@@ -25,15 +29,20 @@ SET(MOC_H_FILES
   src/internal/QmitkCreatePolygonModelAction.h
   src/internal/QmitkStatisticsAction.h
   src/internal/QmitkAutocropAction.h
+  src/internal/QmitkBooleanOperationsView.h
+  src/internal/QmitkDeformableClippingPlaneView.h
 )
 
 SET(CACHED_RESOURCE_FILES
   resources/segmentation.png
+  resources/boolean.png
+  resources/deformablePlane.png
   plugin.xml
 )
 
 SET(QRC_FILES
   resources/segmentation.qrc
+  resources/boolean.qrc
 )
 
 

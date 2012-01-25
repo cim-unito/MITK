@@ -24,6 +24,7 @@ QmitkRenderingManagerFactory.cpp
 QmitkRenderWindow.cpp
 QmitkSliderLevelWindowWidget.cpp
 QmitkStdMultiWidget.cpp
+QmitkMouseModeSwitcher.cpp
 )
 
 SET(MOC_H_FILES
@@ -46,7 +47,9 @@ QmitkRenderingManager.h
 QmitkRenderWindow.h
 QmitkSliderLevelWindowWidget.h
 QmitkStdMultiWidget.h
+QmitkMouseModeSwitcher.h
 )
+
 SET(UI_FILES
 QmitkLevelWindowPresetDefinition.ui
 QmitkLevelWindowWidget.ui

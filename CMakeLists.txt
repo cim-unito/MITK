@@ -68,6 +68,9 @@ set(CMAKE_MODULE_PATH
 
 include(mitkMacroEmptyExternalProject)
 include(mitkFunctionGenerateProjectXml)
+include(mitkFunctionSuppressWarnings)
+
+SUPPRESS_VC_DEPRECATED_WARNINGS()
 
 #-----------------------------------------------------------------------------
 # Output directories.
@@ -288,7 +291,8 @@ option(USE_ITKZLIB "Use the ITK zlib for pic compression." ON)
 mark_as_advanced(USE_ITKZLIB)
 
 if(NOT MITK_FAST_TESTING)
-  if(DEFINED MITK_CTEST_SCRIPT_MODE AND MITK_CTEST_SCRIPT_MODE STREQUAL "continuous")
+  if(DEFINED MITK_CTEST_SCRIPT_MODE 
+      AND (MITK_CTEST_SCRIPT_MODE STREQUAL "continuous" OR MITK_CTEST_SCRIPT_MODE STREQUAL "experimental") )
     set(MITK_FAST_TESTING 1)
   endif()
 endif()
@@ -351,6 +355,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 
   mitkFunctionCheckCompilerFlags("-fdiagnostics-show-option" cflags)
   mitkFunctionCheckCompilerFlags("-Wl,--no-undefined" cflags)
+  mitkFunctionCheckCompilerFlags("-Wl,--as-needed" cflags)
 
   if(MITK_USE_C++0x)
     mitkFunctionCheckCompilerFlags("-std=c++0x" MITK_CXX_FLAGS)
@@ -617,32 +622,32 @@ endif()
 # Construct a list of paths containing runtime directories
 # for MITK applications on Windows
 set(MITK_RUNTIME_PATH 
-    "${VTK_LIBRARY_DIRS}/@VS_BUILD_TYPE@;${ITK_LIBRARY_DIRS}/@VS_BUILD_TYPE@;${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/@VS_BUILD_TYPE@"
+    "${VTK_LIBRARY_DIRS}/%VS_BUILD_TYPE%;${ITK_LIBRARY_DIRS}/%VS_BUILD_TYPE%;${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/%VS_BUILD_TYPE%"
     )
 if(QT4_FOUND)
   set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${QT_LIBRARY_DIR}/../bin")
 endif()
 if(MITK_USE_BLUEBERRY)
-  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_RUNTIME_LIBRARY_DIRS}/@VS_BUILD_TYPE@")
+  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_RUNTIME_LIBRARY_DIRS}/%VS_BUILD_TYPE%")
   if(DEFINED CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY)
     if(IS_ABSOLUTE "${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}")
-      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/@VS_BUILD_TYPE@")
+      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/%VS_BUILD_TYPE%")
     else()
-      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/@VS_BUILD_TYPE@")
+      set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CTK_PLUGIN_RUNTIME_OUTPUT_DIRECTORY}/%VS_BUILD_TYPE%")
     endif()
   else()
-    set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/@VS_BUILD_TYPE@")
+    set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins/%VS_BUILD_TYPE%")
   endif()
 endif()
 if(GDCM_DIR)
-  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${GDCM_DIR}/bin/@VS_BUILD_TYPE@")
+  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${GDCM_DIR}/bin/%VS_BUILD_TYPE%")
 endif()
 if(OpenCV_DIR)
-  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${OpenCV_DIR}/bin/@VS_BUILD_TYPE@")
+  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${OpenCV_DIR}/bin/%VS_BUILD_TYPE%")
 endif()
 # DCMTK is statically build
 #if(DCMTK_DIR)
-#  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${DCMTK_DIR}/bin/@VS_BUILD_TYPE@")
+#  set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${DCMTK_DIR}/bin/%VS_BUILD_TYPE%")
 #endif()
 if(MITK_USE_Boost AND MITK_USE_Boost_LIBRARIES AND NOT MITK_USE_SYSTEM_Boost)
   set(MITK_RUNTIME_PATH "${MITK_RUNTIME_PATH};${Boost_LIBRARY_DIRS}")

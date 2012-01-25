@@ -19,6 +19,7 @@ PURPOSE.  See the above copyright notices for more information.
 #define mitkRegionGrowingTool_h_Included
 
 #include "mitkFeedbackContourTool.h"
+#include "mitkLegacyAdaptors.h"
 #include "MitkExtExports.h"
 
 struct mitkIpPicDescriptor;
@@ -81,10 +82,10 @@ class MitkExt_EXPORT RegionGrowingTool : public FeedbackContourTool
     Image::Pointer m_ReferenceSlice;
     Image::Pointer m_WorkingSlice;
 
-    int m_LowerThreshold;
-    int m_UpperThreshold;
-    int m_InitialLowerThreshold;
-    int m_InitialUpperThreshold;
+    ScalarType m_LowerThreshold;
+    ScalarType m_UpperThreshold;
+    ScalarType m_InitialLowerThreshold;
+    ScalarType m_InitialUpperThreshold;
 
     Point2I m_LastScreenPosition;
     int m_ScreenYDifference;

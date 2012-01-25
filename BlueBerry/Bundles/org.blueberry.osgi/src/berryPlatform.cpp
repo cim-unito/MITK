@@ -53,6 +53,7 @@ int Platform::ARCH_SPARC = BERRY_ARCH_SPARC;
 int Platform::ARCH_AMD64 = BERRY_ARCH_AMD64;
 int Platform::ARCH_ARM = BERRY_ARCH_ARM;
 
+std::string Platform::ARG_NEWINSTANCE = "BlueBerry.newInstance";
 std::string Platform::ARG_CLEAN = "BlueBerry.clean";
 std::string Platform::ARG_APPLICATION = "BlueBerry.application";
 std::string Platform::ARG_HOME = "BlueBerry.home";
@@ -60,6 +61,7 @@ std::string Platform::ARG_STORAGE_DIR = "BlueBerry.storageDir";
 std::string Platform::ARG_PLUGIN_CACHE = "BlueBerry.plugin_cache_dir";
 std::string Platform::ARG_PLUGIN_DIRS = "BlueBerry.plugin_dirs";
 std::string Platform::ARG_FORCE_PLUGIN_INSTALL = "BlueBerry.forcePlugins";
+std::string Platform::ARG_PRELOAD_LIBRARY = "BlueBerry.preloadLibrary";
 std::string Platform::ARG_PROVISIONING = "BlueBerry.provisioning";
 std::string Platform::ARG_CONSOLELOG = "BlueBerry.consoleLog";
 std::string Platform::ARG_TESTPLUGIN = "BlueBerry.testplugin";
@@ -180,6 +182,11 @@ std::vector<std::string> Platform::GetApplicationArgs()
 std::string Platform::GetExtendedApplicationArgs()
 {
   return InternalPlatform::GetInstance()->GetConfiguration().getString(ARG_XARGS, "");
+}
+
+void Platform::GetOptionSet(Poco::Util::OptionSet& os)
+{
+  InternalPlatform::GetInstance()->defineOptions(os);
 }
 
 Poco::Util::LayeredConfiguration& Platform::GetConfiguration()

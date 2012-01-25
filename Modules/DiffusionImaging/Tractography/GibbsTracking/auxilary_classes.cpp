@@ -181,10 +181,11 @@ public:
     z = sz;
   }
 
-  INLINE float* GetXYZ()
+  INLINE void GetXYZ(float *xyz)
   {
-    float xyz[3] = {x,y,z};
-    return xyz;
+    xyz[0] = x;
+    xyz[1] = y;
+    xyz[2] = z;
   }
 
   INLINE float GetX()
@@ -245,6 +246,8 @@ public:
         return y;
       case 2:
         return z;
+      default:
+        return 0.0f;
     }
   }
 

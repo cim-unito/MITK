@@ -506,7 +506,7 @@ void QmitkSlicesInterpolator::Interpolate( mitk::PlaneGeometry* plane, unsigned 
   }
 }
 
-void QmitkSlicesInterpolator::SurfaceInterpolationFinished/*InterpolateSurface*/()
+void QmitkSlicesInterpolator::SurfaceInterpolationFinished()
 {
   mitk::Surface::Pointer interpolatedSurface = m_SurfaceInterpolator->GetInterpolationResult();
 
@@ -585,7 +585,7 @@ void QmitkSlicesInterpolator::AcceptAllInterpolations(unsigned int windowID)
     // create a diff image for the undo operation
     mitk::Image::Pointer diffImage = mitk::Image::New();
     diffImage->Initialize( m_Segmentation );
-    mitk::PixelType pixelType( typeid(short signed int) );
+    mitk::PixelType pixelType( mitk::MakeScalarPixelType<short signed int>()  );
     diffImage->Initialize( pixelType, 3, m_Segmentation->GetDimensions() );
     
     memset( diffImage->GetData(), 0, (pixelType.GetBpe() >> 3) * diffImage->GetDimension(0) * diffImage->GetDimension(1) * diffImage->GetDimension(2) );
@@ -774,7 +774,7 @@ void QmitkSlicesInterpolator::OnInterpolationActivated(bool on)
 
 void QmitkSlicesInterpolator::Run3DInterpolation()
 {
-    m_SurfaceInterpolator->Interpolate();
+  m_SurfaceInterpolator->Interpolate();
 }
 
 void QmitkSlicesInterpolator::StartUpdateInterpolationTimer()
@@ -833,6 +833,7 @@ void QmitkSlicesInterpolator::On3DInterpolationActivated(bool on)
 
             if (m_Watcher.isRunning())
                 m_Watcher.waitForFinished();
+
             m_Future = QtConcurrent::run(this, &QmitkSlicesInterpolator::Run3DInterpolation);
             m_Watcher.setFuture(m_Future);
           }

@@ -5,6 +5,8 @@ SET(module_dirs
     PlanarFigure
     ImageExtraction
     ImageStatistics
+    LegacyAdaptors
+    IpPicSupport
     MitkExt
     SceneSerialization
     QmitkExt
@@ -23,7 +25,8 @@ SET(module_dirs
     InputDevices
     ToFHardware
     ToFProcessing
-    ToFUI    
+    ToFUI
+	ClippingTools
 )
 
 SET(MITK_DEFAULT_SUBPROJECTS MITK-Modules)

@@ -84,7 +84,7 @@ int mitkSurfaceToImageFilterTest(int argc, char* argv[])
   std::cout << "Testing creation of mitk::Image with same Geometry as Surface: " << std::flush;
   mitk::Image::Pointer image = mitk::Image::New();
   //surface->UpdateOutputInformation(); //is not necessary anymore (bug #1536), should never be neccessary
-  image->Initialize(typeid(unsigned int), *surface->GetGeometry());
+  image->Initialize( mitk::MakeScalarPixelType<unsigned int>(), *surface->GetGeometry());
 
   std::cout << "Testing mitk::SurfaceToImageFilter::MakeOutputBinaryOn(): " << std::flush;
   s2iFilter->MakeOutputBinaryOn();
@@ -105,7 +105,8 @@ int mitkSurfaceToImageFilterTest(int argc, char* argv[])
 #ifdef WIN32     // Unix based systems do not seem to resolve pixel type correctly
 
   std::cout << "Testing if result image is of type unsigned char: " << std::flush;
-  std::string typeId = s2iFilter->GetOutput()->GetPixelType().GetItkTypeAsString();
+  //std::string typeId = s2iFilter->GetOutput()->GetPixelType().GetItkTypeAsString();
+  std::string typeId = s2iFilter->GetOutput()->GetPixelType().GetComponentTypeAsString();
   std::cout << std::endl << "XXX: " << typeId << std::endl;
   if( typeId != "unsigned char" )
   {
