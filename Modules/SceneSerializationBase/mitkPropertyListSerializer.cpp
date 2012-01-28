@@ -60,6 +60,10 @@ std::string mitk::PropertyListSerializer::Serialize()
   fullname += "/";
   fullname += filename;
   fullname = itksys::SystemTools::ConvertToOutputPath(fullname.c_str());
+  if (fullname[0] == '"')
+  {
+	fullname = fullname.substr(1, fullname.length() - 2);
+  }
 
   TiXmlDocument document;
   TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" ); // TODO what to write here? encoding? etc....
