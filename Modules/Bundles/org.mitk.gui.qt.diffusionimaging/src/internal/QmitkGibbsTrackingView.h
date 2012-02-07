@@ -101,7 +101,6 @@ protected slots:
   void BeforeThread();
   void TimerUpdate();
   void SetMask();
-  void SetGfaImage();
   void AdvancedSettings();
   void SaveTrackingParameters();
   void LoadTrackingParameters();
@@ -113,11 +112,13 @@ protected slots:
   void SetParticleWeight(int value);
   void SetStartTemp(int value);
   void SetEndTemp(int value);
+  void SetCurvatureThreshold(int value);
+  void SetOutputFile();
 
 private:
 
   // Visualization & GUI
-  void GenerateFiberBundle();
+  void GenerateFiberBundle(bool smoothFibers);
   void UpdateGUI();
   void UpdateTrackingStatus();
 
@@ -135,14 +136,12 @@ private:
   // data objects
   mitk::FiberBundleX::Pointer m_FiberBundle;
   MaskImgType::Pointer        m_MaskImage;
-  MaskImgType::Pointer        m_GfaImage;
   mitk::QBallImage::Pointer   m_QBallImage;
   ItkQBallImgType::Pointer    m_ItkQBallImage;
 
   // data nodes
   mitk::DataNode::Pointer m_QBallImageNode;
   mitk::DataNode::Pointer m_MaskImageNode;
-  mitk::DataNode::Pointer m_GfaImageNode;
   mitk::DataNode::Pointer m_FiberBundleNode;
 
   // flags etc.
@@ -154,6 +153,8 @@ private:
   bool            m_FibSelected;
   unsigned long   m_Iterations;
   int             m_LastStep;
+  QString         m_OutputFileName;
+  int m_SaveCounter;
 
   // global tracker and friends
   itk::SmartPointer<GibbsTrackingFilterType> m_GlobalTracker;

@@ -18,7 +18,6 @@
 #include "QmitkExtAppWorkbenchAdvisor.h"
 #include "internal/QmitkExtApplicationPlugin.h"
 
-#include <berryQtAssistantUtil.h>
 #include <QmitkExtWorkbenchWindowAdvisor.h>
 
 const std::string QmitkExtAppWorkbenchAdvisor::DEFAULT_PERSPECTIVE_ID =
@@ -30,14 +29,6 @@ QmitkExtAppWorkbenchAdvisor::Initialize(berry::IWorkbenchConfigurer::Pointer con
   berry::QtWorkbenchAdvisor::Initialize(configurer);
 
   configurer->SetSaveAndRestore(true);
-
-  if (!berry::QtAssistantUtil::GetHelpCollectionFile().isEmpty())
-  {
-    typedef std::vector<berry::IBundle::Pointer> BundleContainer;
-    BundleContainer bundles = berry::Platform::GetBundles();
-    berry::QtAssistantUtil::RegisterQCHFiles(bundles);
-  }
-
 }
 
 berry::WorkbenchWindowAdvisor*
@@ -46,6 +37,14 @@ QmitkExtAppWorkbenchAdvisor::CreateWorkbenchWindowAdvisor(
 {
   QmitkExtWorkbenchWindowAdvisor* advisor = new
     QmitkExtWorkbenchWindowAdvisor(this, configurer);
+
+  // Exclude the help perspective from org.blueberry.ui.qt.help from
+  // the normal perspective list.
+  // The perspective gets a dedicated menu entry in the help menu
+  std::vector<std::string> excludePerspectives;
+  excludePerspectives.push_back("org.blueberry.perspectives.help");
+  advisor->SetPerspectiveExcludeList(excludePerspectives);
+
   advisor->SetWindowIcon(":/QmitkExtApplication/icon_research.xpm");
   return advisor;
   //return new QmitkExtWorkbenchWindowAdvisor(this, configurer);

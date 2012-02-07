@@ -189,11 +189,11 @@ void QmitkStdMultiWidgetEditorPreferencePage::Update()
 {
   m_EnableFlexibleZooming->setChecked(m_StdMultiWidgetEditorPreferencesNode->GetBool("Use constrained zooming and padding", true));
   m_ShowLevelWindowWidget->setChecked(m_StdMultiWidgetEditorPreferencesNode->GetBool("Show level/window widget", true));
-  m_PACSLikeMouseMode->setChecked(m_StdMultiWidgetEditorPreferencesNode->GetBool("PACS like mouse interaction", true));
   // 0: Level / Window, 1: Window Bounds
   m_IntensityRangeType->setCurrentIndex(m_StdMultiWidgetEditorPreferencesNode->GetBool("Window bounds intensity range", false));
   m_ExponentialFormat->setChecked(m_StdMultiWidgetEditorPreferencesNode->GetBool("Exponential format", false));
   m_Precision->setText(QString::number(m_StdMultiWidgetEditorPreferencesNode->GetInt("Precision", 2)));
+  m_PACSLikeMouseMode->setChecked(m_StdMultiWidgetEditorPreferencesNode->GetBool("PACS like mouse interaction", false));
   m_FirstColorStyleSheet = QString::fromStdString(m_StdMultiWidgetEditorPreferencesNode->Get("first background color style sheet", ""));
   m_SecondColorStyleSheet = QString::fromStdString(m_StdMultiWidgetEditorPreferencesNode->Get("second background color style sheet", ""));
   m_FirstColor = m_StdMultiWidgetEditorPreferencesNode->GetByteArray("first background color", "");

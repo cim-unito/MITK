@@ -38,7 +38,6 @@
 #include <mitkGlobalInteraction.h>
 #include <mitkImageAccessByItk.h>
 #include <mitkDataNodeObject.h>
-#include <mitkSurface.h>
 #include <mitkDiffusionImage.h>
 
 // ITK
@@ -49,6 +48,8 @@
 #include <itkTractDensityImageFilter.h>
 #include <itkImageRegion.h>
 #include <itkTractsToRgbaImageFilter.h>
+
+#include <math.h>
 
 
 const std::string QmitkFiberProcessingView::VIEW_ID = "org.mitk.views.fiberprocessing";
@@ -84,9 +85,7 @@ void QmitkFiberProcessingView::CreateQtPartControl( QWidget *parent )
     m_Controls->PFCompoANDButton->setDisabled(true);
     m_Controls->PFCompoORButton->setDisabled(true);
     m_Controls->PFCompoNOTButton->setDisabled(true);
-    m_Controls->m_CircleButton->setEnabled(false);
-    m_Controls->m_PolygonButton->setEnabled(false);
-    m_Controls->m_RectangleButton->setEnabled(false);
+    m_Controls->m_PlanarFigureButtonsFrame->setEnabled(false);
     m_Controls->m_RectangleButton->setVisible(false);
 
     connect( m_Controls->doExtractFibersButton, SIGNAL(clicked()), this, SLOT(DoFiberExtraction()) );
@@ -102,6 +101,7 @@ void QmitkFiberProcessingView::CreateQtPartControl( QWidget *parent )
 
     connect(m_Controls->m_Extract3dButton, SIGNAL(clicked()), this, SLOT(Extract3d()));
     connect( m_Controls->m_ProcessFiberBundleButton, SIGNAL(clicked()), this, SLOT(ProcessSelectedBundles()) );
+    connect( m_Controls->m_ResampleFibersButton, SIGNAL(clicked()), this, SLOT(ResampleSelectedBundles()) );
   }
 }
 
@@ -712,10 +712,17 @@ void QmitkFiberProcessingView::UpdateGui()
     m_Controls->m_SubstractBundles->setEnabled(false);
     m_Controls->m_ProcessFiberBundleButton->setEnabled(false);
     m_Controls->doExtractFibersButton->setEnabled(false);
+    m_Controls->m_Extract3dButton->setEnabled(false);
+    m_Controls->m_ResampleFibersButton->setEnabled(false);
   }
   else
   {
+    m_Controls->m_PlanarFigureButtonsFrame->setEnabled(true);
     m_Controls->m_ProcessFiberBundleButton->setEnabled(true);
+    m_Controls->m_ResampleFibersButton->setEnabled(true);
+
+    if (m_Surfaces.size()>0)
+      m_Controls->m_Extract3dButton->setEnabled(true);
 
     // one bundle and one planar figure needed to extract fibers
     if (!m_SelectedPF.empty())
@@ -773,6 +780,7 @@ void QmitkFiberProcessingView::OnSelectionChanged( std::vector<mitk::DataNode*> 
   //reset existing Vectors containing FiberBundles and PlanarFigures from a previous selection
   m_SelectedFB.clear();
   m_SelectedPF.clear();
+  m_Surfaces.clear();
   m_SelectedImage = NULL;
 
   for( std::vector<mitk::DataNode*>::iterator it = nodes.begin(); it != nodes.end(); ++it )
@@ -784,6 +792,8 @@ void QmitkFiberProcessingView::OnSelectionChanged( std::vector<mitk::DataNode*> 
       m_SelectedPF.push_back(node);
     else if (dynamic_cast<mitk::Image*>(node->GetData()))
       m_SelectedImage = dynamic_cast<mitk::Image*>(node->GetData());
+    else if (dynamic_cast<mitk::Surface*>(node->GetData()))
+      m_Surfaces.push_back(dynamic_cast<mitk::Surface*>(node->GetData()));
   }
   UpdateGui();
   GenerateStats();
@@ -1027,12 +1037,11 @@ void QmitkFiberProcessingView::DoFiberExtraction()
     mitk::FiberBundleX::Pointer fib = dynamic_cast<mitk::FiberBundleX*>(m_SelectedFB.at(i)->GetData());
     mitk::PlanarFigure::Pointer roi = dynamic_cast<mitk::PlanarFigure*> (m_SelectedPF.at(0)->GetData());
 
-//    std::vector<int> extFBset = fib->extractFibersByPF(roi);
-//    mitk::FiberBundleX::Pointer extFB = fib->extractFibersById(extFBset);
+    mitk::FiberBundleX::Pointer extFB = fib->ExtractFiberSubset(roi);
 
     mitk::DataNode::Pointer node;
     node = mitk::DataNode::New();
-    //fbNode->SetData(extFB);
+    node->SetData(extFB);
     QString name(m_SelectedFB.at(0)->GetName().c_str());
     name += "_extracted";
     node->SetName(name.toStdString());
@@ -1471,19 +1480,18 @@ void QmitkFiberProcessingView::GenerateStats()
         float l=0;
         for (unsigned int j=0; j<numPoints-1; j++)
         {
-          double p1[3] = {0,0,0};
-          fiberPolyData->GetPoint(points[j], p1);
-          double p2[3] = {0,0,0};
-          fiberPolyData->GetPoint(points[j+1], p2);
+          itk::Point<double> p1;
+          itk::Point<double> p2;
+          fiberPolyData->GetPoint(points[j], p1.GetDataPointer());
+          fiberPolyData->GetPoint(points[j+1], p2.GetDataPointer());
 
-          float a = p1[0]-p2[0];
-          float b = p1[1]-p2[1];
-          float c = p1[2]-p2[2];
-
-          float dist = std::sqrt(a*a+b*b+c*c);
+          float dist = p1.EuclideanDistanceTo(p2);
           length += dist;
           l += dist;
         }
+        itk::Point<double> p2;
+        fiberPolyData->GetPoint(points[numPoints-1], p2.GetDataPointer());
+
         lengths.push_back(l);
       }
 
@@ -1504,28 +1512,28 @@ void QmitkFiberProcessingView::GenerateStats()
         float l=0;
         for (unsigned int j=0; j<numPoints-1; j++)
         {
-          double p1[3] = {0,0,0};
-          fiberPolyData->GetPoint(points[j], p1);
-          double p2[3] = {0,0,0};
-          fiberPolyData->GetPoint(points[j+1], p2);
+          itk::Point<double> p1;
+          itk::Point<double> p2;
+          fiberPolyData->GetPoint(points[j], p1.GetDataPointer());
+          fiberPolyData->GetPoint(points[j+1], p2.GetDataPointer());
 
-          float a = p1[0]-p2[0];
-          float b = p1[1]-p2[1];
-          float c = p1[2]-p2[2];
-
-          float dist = std::sqrt(a*a+b*b+c*c);
+          float dist = p1.EuclideanDistanceTo(p2);
           l += dist;
         }
         dev += (length-l)*(length-l);
         count++;
       }
 
-      if (numberOfLines>0)
-        dev /= numberOfLines;
+      if (numberOfLines>1)
+        dev /= (numberOfLines-1);
+      else
+        dev = 0;
 
-      stats += "Mean fiber length: "+ QString::number(length/10) + "cm\n";
-      stats += "Median fiber length: "+ QString::number(lengths.at(lengths.size()/2)/10) + "cm\n";
-      stats += "Standard deviation: "+ QString::number(dev/10) + "cm\n";
+      stats += "Min. length:         "+ QString::number(lengths.front(),'f',1) + " mm\n";
+      stats += "Max. length:         "+ QString::number(lengths.back(),'f',1) + " mm\n";
+      stats += "Mean length:         "+ QString::number(length,'f',1) + " mm\n";
+      stats += "Median length:       "+ QString::number(lengths.at(lengths.size()/2),'f',1) + " mm\n";
+      stats += "Standard deviation:  "+ QString::number(sqrt(dev),'f',1) + " mm\n";
     }
   }
   this->m_Controls->m_StatsTextEdit->setText(stats);
@@ -1716,5 +1724,15 @@ mitk::DataNode::Pointer QmitkFiberProcessingView::GenerateTractDensityImage(mitk
   mitk::DataNode::Pointer node = mitk::DataNode::New();
   node->SetData(img);
   return node;
+}
+
+void QmitkFiberProcessingView::ResampleSelectedBundles()
+{
+  int factor = this->m_Controls->m_ResampleFibersSpinBox->value();
+  for (int i=0; i<m_SelectedFB.size(); i++)
+  {
+    mitk::FiberBundleX::Pointer fib = dynamic_cast<mitk::FiberBundleX*>(m_SelectedFB.at(i)->GetData());
+    fib->DoFiberSmoothing(factor);
+  }
 }
 
