@@ -125,13 +125,9 @@ struct PropertyChangeIntAdapter: public IPropertyChangeListener
     poco_assert(callback);
   }
 
-<<<<<<< HEAD
-  virtual void PropertyChange(Object::Pointer source, int propId)
-=======
   using IPropertyChangeListener::PropertyChange;
 
   void PropertyChange(Object::Pointer source, int propId)
->>>>>>> upstream/master
   {
     (listener->*callback)(source, propId);
   }
