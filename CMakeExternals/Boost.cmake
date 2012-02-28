@@ -43,9 +43,12 @@ IF(MITK_USE_Boost)
     ENDIF()
     
     ExternalProject_Add(${proj}
-      URL http://mitk.org/download/thirdparty/boost_1_45_0.tar.bz2
-      SOURCE_DIR ${proj}-src
+      SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}-src
+      # Boost needs in-source builds
       BINARY_DIR ${proj}-src
+      PREFIX ${proj}-cmake
+      URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/boost_1_45_0.tar.bz2
+      URL_MD5 d405c606354789d0426bc07bea617e58
       INSTALL_DIR ${proj}-install
       CONFIGURE_COMMAND "${_boost_cfg_cmd}"
       BUILD_COMMAND "${_boost_build_cmd}"

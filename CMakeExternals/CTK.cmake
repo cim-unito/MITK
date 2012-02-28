@@ -15,7 +15,7 @@ IF(MITK_USE_CTK)
 
   IF(NOT DEFINED CTK_DIR)
     
-#    SET(revision_tag 34a638b)
+#    SET(revision_tag 3d73e05)
     SET(revision_tag origin/cim)
     IF(${proj}_REVISION_TAG)
       SET(revision_tag ${${proj}_REVISION_TAG})
@@ -34,10 +34,12 @@ IF(MITK_USE_CTK)
     ENDFOREACH()
   
     ExternalProject_Add(${proj}
+      SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}-src
+      BINARY_DIR ${proj}-build
+      PREFIX ${proj}-cmake
 #      GIT_REPOSITORY http://github.com/commontk/CTK.git
       GIT_REPOSITORY http://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
-      BINARY_DIR ${proj}-build
       UPDATE_COMMAND ""
       INSTALL_COMMAND ""
       CMAKE_GENERATOR ${gen}
