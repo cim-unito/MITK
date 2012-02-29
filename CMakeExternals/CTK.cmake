@@ -15,11 +15,11 @@ IF(MITK_USE_CTK)
 
   IF(NOT DEFINED CTK_DIR)
     
-#    SET(revision_tag 3d73e05)
+#    SET(revision_tag de466419)
     SET(revision_tag origin/cim)
-    IF(${proj}_REVISION_TAG)
-      SET(revision_tag ${${proj}_REVISION_TAG})
-    ENDIF()
+    #IF(${proj}_REVISION_TAG)
+    #  SET(revision_tag ${${proj}_REVISION_TAG})
+    #ENDIF()
     
     SET(ctk_optional_cache_args )
     IF(MITK_USE_Python)
@@ -32,7 +32,7 @@ IF(MITK_USE_CTK)
         LIST(APPEND mitk_optional_cache_args -DCTK_PLUGIN_${type}_OUTPUT_DIRECTORY:PATH=${CTK_PLUGIN_${type}_OUTPUT_DIRECTORY})
       ENDIF()
     ENDFOREACH()
-  
+
     ExternalProject_Add(${proj}
       SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}-src
       BINARY_DIR ${proj}-build
@@ -40,6 +40,8 @@ IF(MITK_USE_CTK)
 #      GIT_REPOSITORY http://github.com/commontk/CTK.git
       GIT_REPOSITORY http://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
+      URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
+      URL_MD5 29d075daa07dbc5618158e4f81d5f431
       UPDATE_COMMAND ""
       INSTALL_COMMAND ""
       CMAKE_GENERATOR ${gen}
@@ -55,6 +57,7 @@ IF(MITK_USE_CTK)
         -DCTK_PLUGIN_org.commontk.eventadmin:BOOL=ON
         -DCTK_PLUGIN_org.commontk.configadmin:BOOL=ON
         -DCTK_USE_GIT_PROTOCOL:BOOL=OFF
+        -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
       DEPENDS ${proj_DEPENDENCIES}
      )
   SET(CTK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
