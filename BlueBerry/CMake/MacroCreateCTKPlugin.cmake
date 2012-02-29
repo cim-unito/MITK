@@ -103,8 +103,8 @@ MACRO(MACRO_CREATE_CTK_PLUGIN)
     SET(_plugin_compile_flags "${_plugin_compile_flags} -DPOCO_NO_UNWINDOWS -DWIN32_LEAN_AND_MEAN")
   ENDIF()
           
-  SET_PROPERTY(TARGET ${PLUGIN_TARGET} APPEND_STRING 
-               PROPERTY COMPILE_FLAGS "${_plugin_compile_flags}"
+#  SET_PROPERTY(TARGET ${PLUGIN_TARGET} APPEND_STRING 
+#               PROPERTY COMPILE_FLAGS "${_plugin_compile_flags}")
 
   SET(_PLUGIN_META_FILES "${CMAKE_CURRENT_SOURCE_DIR}/manifest_headers.cmake")
   IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml")
