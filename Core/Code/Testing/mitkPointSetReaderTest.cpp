@@ -31,6 +31,7 @@ int mitkPointSetReaderTest(int argc , char* argv[])
 {
   // always start with this!
   MITK_TEST_BEGIN("PointSetReader")
+  MITK_TEST_CONDITION_REQUIRED(argc == 2,"Testing invocation") 
 
   // let's create an object of our class  
   mitk::PointSetReader::Pointer myPointSetReader = mitk::PointSetReader::New();
