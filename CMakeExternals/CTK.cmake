@@ -38,7 +38,7 @@ IF(MITK_USE_CTK)
       BINARY_DIR ${proj}-build
       PREFIX ${proj}-cmake
 #      GIT_REPOSITORY http://github.com/commontk/CTK.git
-      GIT_REPOSITORY http://github.com/cim-unito/CTK.git
+      GIT_REPOSITORY git://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
       URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
       URL_MD5 29d075daa07dbc5618158e4f81d5f431
