@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYEDITORREGISTRYREADER_H_
 #define BERRYEDITORREGISTRYREADER_H_
@@ -27,7 +26,7 @@ class EditorRegistry;
 
 /**
  * \ingroup org_blueberry_ui_internal
- * 
+ *
  * This class is used to read resource editor registry descriptors from
  * the platform registry.
  */
@@ -46,9 +45,9 @@ protected:
    */
   bool ReadElement(IConfigurationElement::Pointer element);
 
-  
+
 public:
-  
+
   /**
    * Get the editors that are defined in the registry
    * and add them to the ResourceEditorRegistry

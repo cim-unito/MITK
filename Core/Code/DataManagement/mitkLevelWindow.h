@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef LEVELWINDOW_H_HEADER_INCLUDED_C1F4F02C
@@ -72,7 +71,7 @@ public:
   ScalarType GetDefaultWindow() const;
 
   /*!
-  * \brief Resets the level and the window value to the default values 
+  * \brief Resets the level and the window value to the default values
   */
   void ResetDefaultLevelWindow();
 
@@ -89,12 +88,12 @@ public:
   /*!
   * To set the level and the window value
   */
-  void SetLevelWindow(ScalarType level, ScalarType window);
+  void SetLevelWindow(ScalarType level, ScalarType window, bool expandRangesIfNecessary = true);
 
   /*!
   * Set the lower and upper bound of the window
   */
-  void SetWindowBounds(ScalarType lowerBound, ScalarType upperBound);
+  void SetWindowBounds(ScalarType lowerBound, ScalarType upperBound, bool expandRangesIfNecessary = true);
 
   /*!
   * sets the window to its maximum Size in scaleRange
@@ -150,20 +149,20 @@ public:
   * \brief sets level/window to the min/max greyvalues of the given Image
   */
   void SetAuto(const mitk::Image* image, bool tryPicTags = true, bool guessByCentralSlice = true);
-  
+
   /**
    * If a level window is set to fixed, the set and get methods won't accept
    * modifications to the level window settings anymore. This behaviour can
    * be turned of by setting fixed to false;
    */
   void SetFixed( bool fixed );
-  
-  /** 
+
+  /**
    * Returns whether the level window settings are fixed (@see SetFixed(bool)) or not
    */
   bool GetFixed() const;
-  
-  /** 
+
+  /**
    * Returns whether the level window settings are fixed (@see SetFixed(bool)) or not
    */
   bool IsFixed() const;
@@ -230,12 +229,12 @@ protected:
   * if m_LowerWindowBound > m_UpperWindowBound, then the values for m_LowerWindowBound and m_UpperWindowBound will be exchanged
   *
   * if m_LowerWindowBound < m_RangeMin, m_LowerWindowBound will be set to m_RangeMin. m_UpperWindowBound will be decreased the same as m_LowerWindowBound will be increased, but minimum value for m_UpperWindowBound is also m_RangeMin.
-  * 
+  *
   * if m_UpperWindowBound > m_RangeMax, m_UpperWindowBound will be set to m_RangeMax. m_LowerWindowBound will be increased the same as m_UpperWindowBound will be decreased, but maximum value for m_LowerWindowBound is also m_RangeMax.
   *
   */
   inline void EnsureConsistency();
-  
+
 };
 
 } // namespace mitk

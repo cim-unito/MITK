@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12 Mai 2009) $
- Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 
@@ -25,6 +24,7 @@
 #include <vtkPropAssembly.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
+#include <vtkCellArray.h>
 
 //not essential for mapper
 #include <QTime>
@@ -44,7 +44,6 @@ mitk::FiberBundleXMapper3D::~FiberBundleXMapper3D()
 
 const mitk::FiberBundleX* mitk::FiberBundleXMapper3D::GetInput()
 {
-    MITK_INFO << "FiberBundleXxXXMapper3D() GetInput()";
     return static_cast<const mitk::FiberBundleX * > ( GetData() );
 }
 
@@ -68,6 +67,7 @@ void mitk::FiberBundleXMapper3D::GenerateData(mitk::BaseRenderer *renderer)
         return;
 
     vtkSmartPointer<vtkPolyData> FiberData = FBX->GetFiberPolyData();
+
     if (FiberData == NULL)
         return;
 
@@ -75,13 +75,13 @@ void mitk::FiberBundleXMapper3D::GenerateData(mitk::BaseRenderer *renderer)
     FBXLocalStorage3D *localStorage = m_LSH.GetLocalStorage(renderer);
     localStorage->m_FiberMapper->SetInput(FiberData);
 
+
     if ( FiberData->GetPointData()->GetNumberOfArrays() > 0 )
         localStorage->m_FiberMapper->SelectColorArray( FBX->GetCurrentColorCoding() );
 
     localStorage->m_FiberMapper->ScalarVisibilityOn();
     localStorage->m_FiberMapper->SetScalarModeToUsePointFieldData();
     localStorage->m_FiberActor->SetMapper(localStorage->m_FiberMapper);
-//    localStorage->m_FiberActor->GetProperty()->SetOpacity(0.999);
     localStorage->m_FiberMapper->SetLookupTable(m_lut);
 
 
@@ -89,6 +89,9 @@ void mitk::FiberBundleXMapper3D::GenerateData(mitk::BaseRenderer *renderer)
     float tmpopa;
     this->GetDataNode()->GetOpacity(tmpopa, NULL);
     localStorage->m_FiberActor->GetProperty()->SetOpacity((double) tmpopa);
+
+
+
 
     // set color
     if (FBX->GetCurrentColorCoding() != NULL){
@@ -108,11 +111,6 @@ void mitk::FiberBundleXMapper3D::GenerateData(mitk::BaseRenderer *renderer)
     localStorage->m_FiberAssembly->AddPart(localStorage->m_FiberActor);
     localStorage->m_LastUpdateTime.Modified();
     //since this method is called after generating all necessary data for fiber visualization, all modifications are represented so far.
-
-    //====timer measurement========
-    MITK_INFO << "Execution Time GenerateData() (nmiliseconds): " << myTimer.elapsed();
-    //=============================
-
 }
 
 
@@ -133,7 +131,7 @@ void mitk::FiberBundleXMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *re
          || (localStorage->m_LastUpdateTime < node->GetPropertyList()->GetMTime()) //was a property modified?
          || (localStorage->m_LastUpdateTime < node->GetPropertyList(renderer)->GetMTime()) )
     {
-        MITK_INFO << "UPDATE NEEDED FOR _ " << renderer->GetName();
+        MITK_DEBUG << "UPDATE NEEDED FOR _ " << renderer->GetName();
         this->GenerateData(renderer);
     }
 

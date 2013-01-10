@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __itkQBallToRgbImageFilter_h
 #define __itkQBallToRgbImageFilter_h
@@ -52,10 +51,10 @@ typename TOutputImage=itk::Image<itk::RGBAPixel<unsigned char>,3> >
   typedef typename InputPixelType::ValueType      InputValueType;
 
   /** Run-time type information (and related methods).   */
-  itkTypeMacro( QBallToRgbImageFilter, ImageToImageFilter );
+  itkTypeMacro( QBallToRgbImageFilter, ImageToImageFilter )
 
   /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  itkNewMacro(Self)
 
   /** Print internal ivars */
   void PrintSelf(std::ostream& os, Indent indent) const
@@ -69,8 +68,8 @@ typename TOutputImage=itk::Image<itk::RGBAPixel<unsigned char>,3> >
 #endif
 
 protected:
-  QBallToRgbImageFilter() {};
-  virtual ~QBallToRgbImageFilter() {};
+  QBallToRgbImageFilter(){}
+  virtual ~QBallToRgbImageFilter(){}
 
   void GenerateData()
   {

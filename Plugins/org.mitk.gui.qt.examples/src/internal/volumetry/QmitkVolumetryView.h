@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKVOLUMETRYVIEW_H_INCLUDED
 #define _QMITKVOLUMETRYVIEW_H_INCLUDED
@@ -52,7 +51,7 @@ class QmitkVolumetryView : public QmitkFunctionality
     throw std::runtime_error("Copy constructor not implemented");
   }
 
-  
+
   virtual ~QmitkVolumetryView();
 
   virtual void CreateQtPartControl(QWidget *parent);
@@ -91,9 +90,9 @@ protected slots:
   void OnTimeSeriesButtonClicked();
 
   void OnThresholdSliderChanged( int value );
-  
+
   void OnSaveCsvButtonClicked();
- 
+
   void OnImageSelected(const mitk::DataNode* item);
 
 
@@ -105,7 +104,7 @@ protected:
   QmitkStdMultiWidget* m_MultiWidget;
 
   /// store weak pointer of the DataNode
-  mitk::WeakPointer<mitk::DataNode> m_SelectedDataNode; 
+  mitk::WeakPointer<mitk::DataNode> m_SelectedDataNode;
 
 
   mitk::DataNode::Pointer m_OverlayNode;

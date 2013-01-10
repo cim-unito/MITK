@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 17495 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkRegionGrowingView_h
 #define QmitkRegionGrowingView_h
@@ -26,7 +25,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 /*!
-  \brief QmitkRegionGrowingView 
+  \brief QmitkRegionGrowingView
 
   Functionality for demonstration of MITK basics.
 
@@ -38,12 +37,12 @@ PURPOSE.  See the above copyright notices for more information.
   \ingroup Functionalities
 */
 class QmitkRegionGrowingView : public QmitkFunctionality
-{  
+{
   // this is needed for all Qt objects that should have a Qt meta-object
   // (everything that derives from QObject and wants to have signal/slots)
   Q_OBJECT
-  
-  public:  
+
+  public:
 
     static const std::string VIEW_ID;
 
@@ -55,6 +54,7 @@ class QmitkRegionGrowingView : public QmitkFunctionality
     virtual void StdMultiWidgetAvailable (QmitkStdMultiWidget &stdMultiWidget);
     virtual void StdMultiWidgetNotAvailable();
     virtual void Deactivated();
+    virtual void Activated();
 
   protected slots:
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 13900 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkStandardViews.h"
 
@@ -32,34 +31,34 @@ QmitkStandardViews::QmitkStandardViews( QWidget* parent, Qt::WindowFlags f )
   vlayout->addStretch(1);
   vlayout->addWidget(labelContainer);
   vlayout->addStretch(1);
-  
+
   QHBoxLayout *hlayout = new QHBoxLayout(labelContainer);
-  
+
   // find embedded picture
   QPixmap pixmap(":QmitkStandardViews.png");
-  
+
   // set picture for label
   m_ClickablePicture = new QClickableLabel(labelContainer);
 
   // set hotspots specific for this image
   m_ClickablePicture->setPixmap( pixmap );
 
-  m_ClickablePicture->AddHotspot( "Left", QRect(QPoint(0,64), 
+  m_ClickablePicture->AddHotspot( "Left", QRect(QPoint(0,64),
                                                 QPoint(21, 83)) );
 
-  m_ClickablePicture->AddHotspot( "Right", QRect(QPoint(128, 64), 
+  m_ClickablePicture->AddHotspot( "Right", QRect(QPoint(128, 64),
                                                  QPoint(149, 83)) );
 
-  m_ClickablePicture->AddHotspot( "Top", QRect(QPoint(66, 0), 
+  m_ClickablePicture->AddHotspot( "Top", QRect(QPoint(66, 0),
                                                QPoint(83, 75)) );
 
-  m_ClickablePicture->AddHotspot( "Bottom", QRect(QPoint(66, 128), 
+  m_ClickablePicture->AddHotspot( "Bottom", QRect(QPoint(66, 128),
                                                   QPoint(83, 149)) );
 
-  m_ClickablePicture->AddHotspot( "Front", QRect(QPoint(10, 102), 
+  m_ClickablePicture->AddHotspot( "Front", QRect(QPoint(10, 102),
                                                  QPoint(29, 119)) );
 
-  m_ClickablePicture->AddHotspot( "Back", QRect(QPoint(119, 30), 
+  m_ClickablePicture->AddHotspot( "Back", QRect(QPoint(119, 30),
                                                 QPoint(138, 48)) );
 
   connect( m_ClickablePicture, SIGNAL( mouseReleased(const QString&)), this, SLOT(hotspotClicked(const QString&)) );
@@ -91,12 +90,12 @@ void QmitkStandardViews::SetCameraControllerFromRenderWindow( vtkRenderWindow* w
     if ( mitk::BaseRenderer::GetInstance(window) != NULL )
       if ( mitk::BaseRenderer::GetInstance(window)->GetCameraController() != NULL )
         m_CameraController = mitk::BaseRenderer::GetInstance(window)->GetCameraController();
-    
+
   }
   else
   {
-    std::cerr << "Warning in "<<__FILE__<<", "<<__LINE__<<": render window is NULL!" << std::endl;  
-  } 
+    std::cerr << "Warning in "<<__FILE__<<", "<<__LINE__<<": render window is NULL!" << std::endl;
+  }
 }
 
 void QmitkStandardViews::hotspotClicked(const QString& s)
@@ -112,7 +111,7 @@ void QmitkStandardViews::hotspotClicked(const QString& s)
   else if ( s == "Back"    ) view = mitk::CameraController::POSTERIOR;
   else
   {
-    std::cerr << "Warning in "<<__FILE__<<", "<<__LINE__<<": unknown standard view '" << s.toStdString() << "'" << std::endl;  
+    std::cerr << "Warning in "<<__FILE__<<", "<<__LINE__<<": unknown standard view '" << s.toStdString() << "'" << std::endl;
     view = mitk::CameraController::ANTERIOR;
     good = false;
   }

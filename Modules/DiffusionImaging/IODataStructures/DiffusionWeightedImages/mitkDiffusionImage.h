@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-07 17:17:57 +0100 (Do, 07 Feb 2008) $
-Version:   $Revision: 11989 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef __mitkDiffusionImage__h
@@ -22,122 +21,103 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkImage.h"
 #include "itkVectorImage.h"
 #include "itkVectorImageToImageAdaptor.h"
+#include <iomanip>
+#include <itkCommand.h>
 
 namespace mitk
 {
 
-  /**
+/**
   * \brief this class encapsulates diffusion volumes (vectorimages not
   * yet supported by mitkImage)
   */
-  template<class TPixelType>
-  class DiffusionImage : public Image
+template<class TPixelType>
+class DiffusionImage : public Image
+{
+
+public:
+  typedef TPixelType PixelType;
+  typedef typename itk::VectorImage<TPixelType, 3>
+  ImageType;
+  typedef vnl_vector_fixed< double, 3 >       GradientDirectionType;
+  typedef itk::VectorContainer< unsigned int,
+  GradientDirectionType >                   GradientDirectionContainerType;
+  typedef itk::VectorImageToImageAdaptor< TPixelType, 3 >
+  AdaptorType;
+  typedef vnl_matrix_fixed< double, 3, 3 >      MeasurementFrameType;
+
+  // BValue Map
+  // key   := b-Value
+  // value := indicesVector (containing corresponding gradient directions for a b-Value-Shell
+  typedef std::vector< unsigned int > IndicesVector;
+  typedef std::map< double , IndicesVector >  BValueMap;
+
+  mitkClassMacro( DiffusionImage, Image )
+  itkNewMacro(Self)
+
+
+  void AverageRedundantGradients(double precision);
+
+  GradientDirectionContainerType::Pointer CalcAveragedDirectionSet(double precision, GradientDirectionContainerType::Pointer directions);
+
+  void CorrectDKFZBrokenGradientScheme(double precision);
+
+  typename ImageType::Pointer GetVectorImage() { return m_VectorImage; }
+  void SetVectorImage(typename ImageType::Pointer image ) { this->m_VectorImage = image; }
+
+  void InitializeFromVectorImage();
+  void SetDisplayIndexForRendering(int displayIndex);
+
+  GradientDirectionContainerType::Pointer GetDirectionsWithoutMeasurementFrame() { return m_OriginalDirections; }
+  GradientDirectionContainerType::Pointer GetDirections() { return m_Directions; }
+
+  void SetDirections( GradientDirectionContainerType::Pointer directions )
   {
+      this->m_OriginalDirections = directions;
+      ApplyMeasurementFrame();
+  }
+  void SetDirections(const std::vector<itk::Vector<double,3> > directions);
 
-  public:
-    typedef TPixelType PixelType;
-    typedef typename itk::VectorImage<TPixelType, 3>
-                                                ImageType;
-    typedef vnl_vector_fixed< double, 3 >       GradientDirectionType;
-    typedef itk::VectorContainer< unsigned int,
-      GradientDirectionType >                   GradientDirectionContainerType;
-    typedef itk::VectorImageToImageAdaptor< TPixelType, 3 >
-                                                AdaptorType;
-    typedef vnl_matrix_fixed< double, 3, 3 >      MeasurementFrameType;
+  MeasurementFrameType GetMeasurementFrame()  { return m_MeasurementFrame; }
+  void SetMeasurementFrame( MeasurementFrameType mFrame )  { this->m_MeasurementFrame = mFrame; this->ApplyMeasurementFrame(); }
 
-    mitkClassMacro( DiffusionImage, Image );
-    itkNewMacro(Self);
+  bool AreAlike(GradientDirectionType g1, GradientDirectionType g2, double precision);
+  int GetNumDirections();
+  int GetNumB0();
 
-    //void SetRequestedRegionToLargestPossibleRegion();
-    //bool RequestedRegionIsOutsideOfTheBufferedRegion();
-    //virtual bool VerifyRequestedRegion();
-    //void SetRequestedRegion(itk::DataObject *data);
+  float GetB_Value(int i);
+  bool IsMultiBval();
+  void UpdateBValueList();
 
-    void AverageRedundantGradients(double precision);
+  IndicesVector GetB0Indices();
 
-    GradientDirectionContainerType::Pointer CalcAveragedDirectionSet(double precision, GradientDirectionContainerType::Pointer directions);
+  itkGetMacro(B_Value, float)
+  itkSetMacro(B_Value, float)
 
-    void CorrectDKFZBrokenGradientScheme(double precision);
+  BValueMap GetB_ValueMap(){ return m_B_ValueMap; }
 
-    typename ImageType::Pointer GetVectorImage()
-    { return m_VectorImage; }
-    void SetVectorImage(typename ImageType::Pointer image )
-    { this->m_VectorImage = image; }
+  void AddDirectionsContainerObserver();
+  void RemoveDirectionsContainerObserver();
 
-    void InitializeFromVectorImage();
-    void SetDisplayIndexForRendering(int displayIndex);
+protected:
+  DiffusionImage();
+  virtual ~DiffusionImage();
 
-    GradientDirectionContainerType::Pointer GetDirections()
-    { return m_Directions; }
-    void SetDirections( GradientDirectionContainerType::Pointer directions )
-    { this->m_Directions = directions; }
-    void SetDirections(const std::vector<itk::Vector<double,3> > directions)
-    {
-      m_Directions = GradientDirectionContainerType::New();
-      for(unsigned int i=0; i<directions.size(); i++)
-      {
-        m_Directions->InsertElement( i, directions[i].Get_vnl_vector() );
-      }
-    }
-    GradientDirectionContainerType::Pointer GetOriginalDirections()
-    { return m_OriginalDirections; }
-    void SetOriginalDirections( GradientDirectionContainerType::Pointer directions )
-    { this->m_OriginalDirections = directions; this->ApplyMeasurementFrame(); }
-    void SetOriginalDirections(const std::vector<itk::Vector<double,3> > directions)
-    {
-      m_OriginalDirections = GradientDirectionContainerType::New();
-      for(unsigned int i=0; i<directions.size(); i++)
-      {
-        m_OriginalDirections->InsertElement( i, directions[i].Get_vnl_vector() );
-      }
-      this->ApplyMeasurementFrame();
-    }
+  void ApplyMeasurementFrame();
 
-    MeasurementFrameType GetMeasurementFrame()
-    { return m_MeasurementFrame; }
-    void SetMeasurementFrame( MeasurementFrameType mFrame )
-    { this->m_MeasurementFrame = mFrame; this->ApplyMeasurementFrame(); }
+  typename ImageType::Pointer               m_VectorImage;
+  GradientDirectionContainerType::Pointer   m_Directions;
+  GradientDirectionContainerType::Pointer   m_OriginalDirections;
+  float                                     m_B_Value;
+  typename AdaptorType::Pointer             m_VectorImageAdaptor;
+  int                                       m_DisplayIndex;
+  MeasurementFrameType                      m_MeasurementFrame;
+  BValueMap                                 m_B_ValueMap;
 
-    itkGetMacro(B_Value, float);
-    itkSetMacro(B_Value, float);
 
-    float GetB_Value(int i)
-    {
-      if(i > m_Directions->Size()-1)
-        return -1;
 
-      if(m_Directions->ElementAt(i).one_norm() <= 0.0)
-      {
-        return 0;
-      }
-      else
-      {
-        double twonorm = m_Directions->ElementAt(i).two_norm();
-        return m_B_Value*twonorm*twonorm ;
-      }
-    }
-
-    bool AreAlike(GradientDirectionType g1, GradientDirectionType g2, double precision);
-
-    int GetNumDirections();
-    int GetNumB0();
-    std::vector<int> GetB0Indices();
-    bool IsMultiBval();
-
-  protected:
-    DiffusionImage();
-    virtual ~DiffusionImage();
-
-    void ApplyMeasurementFrame();
-
-    typename ImageType::Pointer               m_VectorImage;
-    GradientDirectionContainerType::Pointer   m_Directions;
-    GradientDirectionContainerType::Pointer   m_OriginalDirections;
-    float                                     m_B_Value;
-    typename AdaptorType::Pointer             m_VectorImageAdaptor;
-    int                                       m_DisplayIndex;
-    MeasurementFrameType                      m_MeasurementFrame;
-  };
+  unsigned long    m_DirectionsObserverTag;
+};
 
 } // namespace mitk
 

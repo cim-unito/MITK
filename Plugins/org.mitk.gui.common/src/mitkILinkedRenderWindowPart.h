@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKILINKEDRENDERWINDOWPART_H
 #define MITKILINKEDRENDERWINDOWPART_H
@@ -34,7 +33,9 @@ class SlicesSwiveller;
  * This inteface should be implemented by subclasses of berry::IWorkbenchPart if they
  * provided several linked QmitkRenderWindow instances.
  */
-struct ILinkedRenderWindowPart : public virtual IRenderWindowPart {
+struct MITK_GUI_COMMON_PLUGIN ILinkedRenderWindowPart : public virtual IRenderWindowPart {
+
+  ~ILinkedRenderWindowPart();
 
   /**
    * Get the mitk::SlicesRotator.
@@ -43,7 +44,7 @@ struct ILinkedRenderWindowPart : public virtual IRenderWindowPart {
    *         <code>NULL</code> otherwise.
    */
   virtual mitk::SlicesRotator* GetSlicesRotator() const = 0;
-  
+
   /**
    * Get the mitk::SlicesSwiveller.
    *
@@ -59,7 +60,7 @@ struct ILinkedRenderWindowPart : public virtual IRenderWindowPart {
    *        <code>false</code> otherwise.
    */
   virtual void EnableSlicingPlanes(bool enable) = 0;
-  
+
   /**
    * Get the enabled status of the slicing planes.
    *
@@ -76,7 +77,7 @@ struct ILinkedRenderWindowPart : public virtual IRenderWindowPart {
    *        is disabled.
    */
   virtual void EnableLinkedNavigation(bool enable) = 0;
-  
+
   /**
    * Get the enabled status of linked navigation.
    *

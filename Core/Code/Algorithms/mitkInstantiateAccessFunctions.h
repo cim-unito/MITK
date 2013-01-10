@@ -1,24 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKINSTANTIATEACCESSFUNCTIONS_H_HEADER_INCLUDED
 #define MITKINSTANTIATEACCESSFUNCTIONS_H_HEADER_INCLUDED
- 
+
 #include <itkCastImageFilter.h>
 #include <mitkImageToItk.h>
 #include <mitkConfig.h>
@@ -110,7 +109,7 @@ PURPOSE.  See the above copyright notices for more information.
  * \sa InstantiateAccessFunctionForFixedType
  *
  * \param itkImgFunc The custom part of the name of the macro to be called.
- * \param dimSeq a sequence of dimensions, like (2)(3).
+ * \param dim a sequence of dimensions, like (2)(3).
  *
  * \ingroup Adaptor
  */

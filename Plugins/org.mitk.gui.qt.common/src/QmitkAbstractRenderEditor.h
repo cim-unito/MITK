@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef QMITKABSTRACTRENDEREDITOR_H
@@ -83,7 +82,7 @@ protected:
    * Get a reference to the DataStorage set by the editor input.
    */
   virtual mitk::IDataStorageReference::Pointer GetDataStorageReference() const;
-  
+
   /**
    * Get the DataStorage set by the editor input.
    */
@@ -101,7 +100,7 @@ protected:
    * \see mitk::IRenderWindowPart::GetRenderingManager
    */
   mitk::IRenderingManager* GetRenderingManager() const;
-  
+
   /**
    * Request an update of this editor's render windows.
    * This implementation calls mitk::IRenderingManager::RequestUpdate on the rendering
@@ -112,7 +111,7 @@ protected:
    * \see mitk::IRenderWindowPart::RequestUpdate
    */
   void RequestUpdate(mitk::RenderingManager::RequestType requestType = mitk::RenderingManager::REQUEST_UPDATE_ALL);
-  
+
   /**
    * Force an immediate update of this editor's render windows.
    * This implementation calls mitk::IRenderingManager::ForceImmediateUpdate() on the rendering
@@ -123,7 +122,7 @@ protected:
    * \see mitk::IRenderWindowPart::ForceImmediateUpdate
    */
   void ForceImmediateUpdate(mitk::RenderingManager::RequestType requestType = mitk::RenderingManager::REQUEST_UPDATE_ALL);
-  
+
   /**
    * Get the time navigation controller for this editor.
    * This implementation returns the SliceNavigationController returned by the mitk::IRenderingManager::GetTimeNavigationController()
@@ -135,13 +134,13 @@ protected:
 
   /** \see berry::IEditorPart::DoSave */
   void DoSave();
-  
+
   /** \see berry::IEditorPart::DoSaveAs */
   void DoSaveAs();
-  
+
   /** \see berry::IEditorPart::IsDirty */
   bool IsDirty() const;
-  
+
   /** \see berry::IEditorPart::IsSaveAsAllowed */
   bool IsSaveAsAllowed() const;
 

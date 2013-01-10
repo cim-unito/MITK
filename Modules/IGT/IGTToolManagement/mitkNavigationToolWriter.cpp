@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 //Poco headers
 #include "Poco/Zip/Compress.h"
@@ -24,6 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkStandaloneDataStorage.h>
 #include <mitkProperties.h>
 #include <mitkSceneIO.h>
+#include <mitkPointSet.h>
 #include <mitkStandardFileLocations.h>
 
 //std headers
@@ -65,7 +65,7 @@ bool mitk::NavigationToolWriter::DoWrite(std::string FileName,mitk::NavigationTo
     if (Tool->GetCalibrationFile()!="none") zipper.addFile(Tool->GetCalibrationFile(),GetFileWithoutPath(Tool->GetCalibrationFile()));
     zipper.close();
     }
-  
+
   //delete the data storage
   std::remove(DataStorageFileName.c_str());
 
@@ -91,8 +91,17 @@ mitk::DataNode::Pointer mitk::NavigationToolWriter::ConvertToDataNode(mitk::Navi
   //Surface
     if (Tool->GetDataNode().IsNotNull()) if (Tool->GetDataNode()->GetData()!=NULL) thisTool->SetData(Tool->GetDataNode()->GetData());
 
+  //Tool Landmarks
+    thisTool->AddProperty("ToolRegistrationLandmarks",mitk::StringProperty::New(ConvertPointSetToString(Tool->GetToolRegistrationLandmarks())));
+    thisTool->AddProperty("ToolCalibrationLandmarks",mitk::StringProperty::New(ConvertPointSetToString(Tool->GetToolCalibrationLandmarks())));
+
+  //Tool Tip
+    thisTool->AddProperty("ToolTipPosition",mitk::StringProperty::New(ConvertPointToString(Tool->GetToolTipPosition())));
+    thisTool->AddProperty("ToolTipOrientation",mitk::StringProperty::New(ConvertQuaternionToString(Tool->GetToolTipOrientation())));
+
   //Material is not needed, to avoid errors in scene serialization we have to do this:
     thisTool->ReplaceProperty("material",NULL);
+
 
   return thisTool;
   }
@@ -105,3 +114,29 @@ std::string mitk::NavigationToolWriter::GetFileWithoutPath(std::string FileWithP
   if (returnValue.size() == FileWithPath.size()) returnValue = FileWithPath.substr(FileWithPath.rfind("\\")+1, FileWithPath.length());
   return returnValue;
   }
+
+std::string mitk::NavigationToolWriter::ConvertPointSetToString(mitk::PointSet::Pointer pointSet)
+  {
+  std::stringstream returnValue;
+  mitk::PointSet::PointDataIterator it;
+  for ( it = pointSet->GetPointSet()->GetPointData()->Begin();it != pointSet->GetPointSet()->GetPointData()->End();it++ )
+    {
+    mitk::Point3D thisPoint = pointSet->GetPoint(it->Index());
+    returnValue << it->Index() << ";" << ConvertPointToString(thisPoint) << "|";
+    }
+  return returnValue.str();
+  }
+
+std::string mitk::NavigationToolWriter::ConvertPointToString(mitk::Point3D point)
+{
+std::stringstream returnValue;
+returnValue << point[0] << ";" << point[1] << ";" << point[2];
+return returnValue.str();
+}
+
+std::string mitk::NavigationToolWriter::ConvertQuaternionToString(mitk::Quaternion quat)
+{
+std::stringstream returnValue;
+returnValue << quat.x() << ";" << quat.y() << ";" << quat.z() << ";" << quat.r();
+return returnValue.str();
+}

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkMemoryUtilities.h"
 
@@ -25,17 +24,18 @@ PURPOSE.  See the above copyright notices for more information.
   #include <mach/task.h>
   #include <mach/mach_init.h>
   #include <mach/mach_host.h>
+  #include <sys/sysctl.h>
 #else
   #include <sys/sysinfo.h>
   #include <unistd.h>
-#endif 
+#endif
 
 
-/** 
+/**
  * Returns the memory usage of the current process in bytes.
- * On linux, this refers to the virtual memory allocated by 
+ * On linux, this refers to the virtual memory allocated by
  * the process (the VIRT column in top).
- * On windows, this refery to the size in bytes of the working 
+ * On windows, this refery to the size in bytes of the working
  * set pages (the "Speicherauslastung" column in the task manager).
  */
 size_t mitk::MemoryUtilities::GetProcessMemoryUsage()
@@ -65,7 +65,7 @@ size_t mitk::MemoryUtilities::GetProcessMemoryUsage()
     return (size_t) size * getpagesize();
   else
     return 0;
-#endif 
+#endif
   return 0;
 }
 
@@ -81,26 +81,25 @@ size_t mitk::MemoryUtilities::GetTotalSizeOfPhysicalRam()
   GlobalMemoryStatusEx (&statex);
   return (size_t) statex.ullTotalPhys;
 #elif defined(__APPLE__)
-  kern_return_t kr;
-  host_basic_info_data_t hostinfo;
-  int count = HOST_BASIC_INFO_COUNT;
-  kr = host_info(mach_host_self(), HOST_BASIC_INFO, (host_info_t)&hostinfo, (mach_msg_type_number_t*)&count);
-  if(kr == KERN_SUCCESS)
-    return (size_t)hostinfo.memory_size;
-  else
-    return 0;
+  int mib[2];
+  int64_t physical_memory;
+  mib[0] = CTL_HW;
+  mib[1] = HW_MEMSIZE;
+  size_t length = sizeof(int64_t);
+  sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+  return physical_memory;
 #else
   struct sysinfo info;
   if ( ! sysinfo( &info ) )
     return info.totalram * info.mem_unit;
   else
     return 0;
-#endif 
+#endif
 }
 
-#ifndef _MSC_VER 
+#ifndef _MSC_VER
 #ifndef __APPLE__
-int mitk::MemoryUtilities::ReadStatmFromProcFS( int* size, int* res, int* shared, int* text, int* sharedLibs, int* stack, int* dirtyPages ) 
+int mitk::MemoryUtilities::ReadStatmFromProcFS( int* size, int* res, int* shared, int* text, int* sharedLibs, int* stack, int* dirtyPages )
 {
   int ret = 0;
   FILE* f;
@@ -114,7 +113,7 @@ int mitk::MemoryUtilities::ReadStatmFromProcFS( int* size, int* res, int* shared
   }
   return ret;
 }
-#endif 
+#endif
 #endif
 
 

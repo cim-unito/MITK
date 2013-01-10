@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkPositionTracker.h>
 
@@ -27,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkInteractionConst.h>
 #include <mitkPointSet.h>
 #include <mitkRenderingManager.h>
-#include <mitkVector.h> // for PointDataType 
+#include <mitkVector.h> // for PointDataType
 #include <mitkProperties.h>
 
 
@@ -55,7 +54,7 @@ bool mitk::PositionTracker::ExecuteAction(Action* /*action*/, mitk::StateEvent c
     itkWarningMacro(<<"StateEvent::GetSender()==NULL - setting timeInMS to 0");
     return false;
   }
-  if (ds == NULL) 
+  if (ds == NULL)
     return false;
 
   // looking for desired point set
@@ -71,11 +70,11 @@ bool mitk::PositionTracker::ExecuteAction(Action* /*action*/, mitk::StateEvent c
   int position = 0;
   if( ps->GetPointSet()->GetPoints()->IndexExists( position )) //first element
   {
-    ps->GetPointSet()->GetPoints()->SetElement( position, displayPositionEvent->GetWorldPosition());                            
+    ps->GetPointSet()->GetPoints()->SetElement( position, displayPositionEvent->GetWorldPosition());
   }
   else
   {
-    mitk::PointSet::PointDataType pointData = {position , false /*selected*/, mitk::PTUNDEFINED};
+    mitk::PointSet::PointDataType pointData = {static_cast<unsigned int>(position) , false /*selected*/, mitk::PTUNDEFINED};
     ps->GetPointSet()->GetPointData()->InsertElement(position, pointData);
     ps->GetPointSet()->GetPoints()->InsertElement(position, displayPositionEvent->GetWorldPosition());
   }

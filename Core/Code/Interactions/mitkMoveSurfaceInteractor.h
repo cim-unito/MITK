@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-08-25 13:01:29 +0200 (Mi, 25 Aug 2010) $
-Version:   $Revision: 25766 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKMOVESURFACEINTERACTOR_H_HEADER_INCLUDED
@@ -37,22 +36,22 @@ namespace mitk
     mitkNewMacro2Param(Self, const char*, DataNode*);
 
     /**
-     * \brief check how good an event can be handled 
+     * \brief check how good an event can be handled
      */
-    //virtual float CanHandleEvent(StateEvent const* stateEvent) const; 
+    //virtual float CanHandleEvent(StateEvent const* stateEvent) const;
     //used from mitkInteractor
 
     /**
     *@brief Gets called when mitk::DataNode::SetData() is called
-    * 
-    * No need to use it here, because the pattern won't be complex 
+    *
+    * No need to use it here, because the pattern won't be complex
     * and we can take care of unexpected data change
     **/
     //virtual void DataChanged(){};
 
   protected:
     /**
-     * \brief Constructor 
+     * \brief Constructor
      */
     MoveSurfaceInteractor(const char * type, DataNode* dataNode);
 
@@ -68,7 +67,7 @@ namespace mitk
   };
 }
 
-/** 
+/**
 \example mitkMoveSurfaceInteractor.h
  * This is an example of how to implement a new Interactor.
  * See more details about this example in tutorial Step10.

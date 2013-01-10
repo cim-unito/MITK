@@ -1,25 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYPARTPANE_H_
 #define BERRYPARTPANE_H_
 
 #include "berryWorkbenchPartReference.h"
-#include "berryStackablePart.h"
+#include "berryLayoutPart.h"
 
 #include "berryRectangle.h"
 #include "berryIPropertyChangeListener.h"
@@ -30,14 +29,14 @@ namespace berry {
 
 class WorkbenchPage;
 class PartStack;
-struct IStackableContainer;
+struct ILayoutContainer;
 
 /**
  * Provides the common behavior for both views
  * and editor panes.
  *
  */
-class PartPane : public StackablePart,
+class PartPane : public LayoutPart,
                  public IPropertyChangeListener,
                  public GuiTk::IControlListener
 {
@@ -48,7 +47,6 @@ public:
   friend class PartSashContainer;
   friend class EditorSashContainer;
   friend class WorkbenchPage;
-  friend struct IStackableContainer;
   friend struct ILayoutContainer;
   friend class PartStack;
   friend class ContainerPlaceholder;
@@ -145,7 +143,6 @@ public:
      */
    // protected: virtual void CreateTitleBar() = 0;
 
-    public: bool IsPlaceHolder();
     /**
      * @private:
      */
@@ -227,7 +224,7 @@ public:
      */
     public: SmartPointer<PartStack> GetStack();
 
-    public: void SetContainer(SmartPointer<IStackableContainer> stack);
+    public: void SetContainer(SmartPointer<ILayoutContainer> stack);
 
     /**
      * Show a title label menu for this pane.

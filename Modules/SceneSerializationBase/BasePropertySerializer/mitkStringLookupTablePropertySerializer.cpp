@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-08 17:10:12 +0200 (Do, 08. Okt 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkStringLookupTablePropertySerializer_h_included
 #define mitkStringLookupTablePropertySerializer_h_included
@@ -30,7 +29,7 @@ namespace mitk
 class SceneSerializationBase_EXPORT StringLookupTablePropertySerializer : public BasePropertySerializer
 {
   public:
-    
+
     mitkClassMacro( StringLookupTablePropertySerializer, BasePropertySerializer );
     itkNewMacro(Self);
 
@@ -40,7 +39,7 @@ class SceneSerializationBase_EXPORT StringLookupTablePropertySerializer : public
       if (prop == NULL)
         return NULL;
       StringLookupTable lut = prop->GetValue();
-      //if (lut.IsNull()) 
+      //if (lut.IsNull())
       //  return NULL; // really?
       const StringLookupTable::LookupTableType& map = lut.GetLookupTable();
 
@@ -57,7 +56,7 @@ class SceneSerializationBase_EXPORT StringLookupTablePropertySerializer : public
 
     virtual BaseProperty::Pointer Deserialize(TiXmlElement* element)
     {
-      if (!element) 
+      if (!element)
         return NULL;
 
       StringLookupTable lut;
@@ -68,7 +67,7 @@ class SceneSerializationBase_EXPORT StringLookupTablePropertySerializer : public
         if (child->QueryIntAttribute("id", &temp) == TIXML_WRONG_TYPE)
           return NULL; // TODO: can we do a better error handling?
         StringLookupTable::IdentifierType id = static_cast<StringLookupTable::IdentifierType>(temp);
-        
+
         if (child->Attribute("value") == NULL)
           return NULL; // TODO: can we do a better error handling?
         StringLookupTable::ValueType val = child->Attribute("value");

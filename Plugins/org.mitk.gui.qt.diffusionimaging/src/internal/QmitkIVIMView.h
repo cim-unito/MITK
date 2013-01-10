@@ -1,18 +1,18 @@
-/*=========================================================================
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $ 
+/*===================================================================
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKIVIMVIEW_H_INCLUDED
 #define _QMITKIVIMVIEW_H_INCLUDED
@@ -39,7 +39,7 @@ PURPOSE.  See the above copyright notices for more information.
 */
 
 class QmitkIVIMView : public QmitkFunctionality
-{  
+{
   // this is needed for all Qt objects that should have a Qt meta-object
   // (everything that derives from QObject and wants to have signal/slots)
   Q_OBJECT
@@ -62,13 +62,13 @@ public:
 
   void OnSliceChanged(const itk::EventObject& e);
   void OutputToDatastorage(std::vector<mitk::DataNode*> nodes);
-  void FittIVIM(itk::VectorImage<short,3>* vecimg, DirContainerType* dirs, float bval, bool multivoxel, OutImgType::IndexType &crosspos);
+  bool FittIVIM(itk::VectorImage<short,3>* vecimg, DirContainerType* dirs, float bval, bool multivoxel, OutImgType::IndexType &crosspos);
 
   void Activated();
   void Deactivated();
 
 protected slots:
-  
+
   /// \brief Called when the user clicks the GUI button
   void FittIVIMStart();
   void AutoThreshold();
@@ -102,6 +102,9 @@ protected:
   OutImgType::Pointer m_fMap;
 
   IVIMFilterType::IVIMSnapshot m_Snap;
+
+  mitk::DataNode::Pointer m_DiffusionImageNode;
+  mitk::DataNode::Pointer m_MaskImageNode;
 
   bool m_Active;
 };

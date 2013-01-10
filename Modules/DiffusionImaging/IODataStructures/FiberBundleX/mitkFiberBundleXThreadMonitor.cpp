@@ -1,19 +1,18 @@
-/*=========================================================================
- 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
- Version:   $Revision: 21975 $
- 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
- 
- =========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkFiberBundleXThreadMonitor.h"
@@ -46,7 +45,7 @@ mitk::FiberBundleXThreadMonitor::FiberBundleXThreadMonitor()
   m_monitorFinishedPosition[1] = 0;
   m_monitorTerminatedPosition[0] = 0;
   m_monitorTerminatedPosition[1] = 0;
-  
+
 
   m_monitorHeadingOpacity = 0;
   m_monitorMaskOpacity = 0;
@@ -58,7 +57,7 @@ mitk::FiberBundleXThreadMonitor::FiberBundleXThreadMonitor()
 
 mitk::FiberBundleXThreadMonitor::~FiberBundleXThreadMonitor()
 {
- 
+
 }
 
 
@@ -234,11 +233,11 @@ void mitk::FiberBundleXThreadMonitor::setTerminatedOpacity(int opacity){
 /* ESSENTIAL IMPLEMENTATION OF SUPERCLASS METHODS */
 void mitk::FiberBundleXThreadMonitor::UpdateOutputInformation()
 {
-  
+
 }
 void mitk::FiberBundleXThreadMonitor::SetRequestedRegionToLargestPossibleRegion()
 {
-  
+
 }
 bool mitk::FiberBundleXThreadMonitor::RequestedRegionIsOutsideOfTheBufferedRegion()
 {

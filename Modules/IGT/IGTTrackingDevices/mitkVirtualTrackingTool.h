@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-08-11 15:15:02 +0200 (Di, 11 Aug 2009) $
-Version:   $Revision: 18516 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKVirtualTrackingTool_H_HEADER_INCLUDED_
@@ -50,7 +49,7 @@ namespace mitk {
     mitkClassMacro(VirtualTrackingTool, InternalTrackingTool);
     friend class VirtualTrackingDevice;
     typedef itk::NonUniformBSpline<3> SplineType; ///< spline type used for tool path interpolation
-    
+
     itkGetMacro(SplineLength, mitk::ScalarType);
     itkSetMacro(SplineLength, mitk::ScalarType);
 
@@ -64,7 +63,7 @@ namespace mitk {
     itkNewMacro(Self);
     VirtualTrackingTool();
     virtual ~VirtualTrackingTool();
-    
+
     SplineType::Pointer m_Spline;
     mitk::ScalarType m_SplineLength;
     mitk::ScalarType m_Velocity;

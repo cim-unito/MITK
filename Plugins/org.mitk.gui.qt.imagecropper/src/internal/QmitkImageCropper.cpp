@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 14134 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include <iostream>
 
 #include "QmitkImageCropper.h"
@@ -120,7 +119,7 @@ void QmitkImageCropper::CreateQtPartControl(QWidget* parent)
     m_Controls->groupInfo->hide();
     m_Controls->m_SurroundingSlider->hide();
     m_Controls->m_SurroundingSpin->hide();
-    m_Controls->m_NewBoxButton->setEnabled(true);
+    m_Controls->m_BoxButton->setEnabled(true);
 
     // create ui element connections
     this->CreateConnections();
@@ -132,8 +131,8 @@ void QmitkImageCropper::CreateConnections()
 {
   if ( m_Controls )
   {
-    connect( m_Controls->btnCrop, SIGNAL(clicked()), this, SLOT(CropImage()));   // click on the crop button
-    connect( m_Controls->m_NewBoxButton, SIGNAL(clicked()), this, SLOT(CreateNewBoundingObject()) );
+    connect( m_Controls->m_CropButton, SIGNAL(clicked()), this, SLOT(CropImage()));   // click on the crop button
+    connect( m_Controls->m_BoxButton, SIGNAL(clicked()), this, SLOT(CreateNewBoundingObject()) );
     connect( m_Controls->m_EnableSurroundingCheckBox, SIGNAL(toggled(bool)), this, SLOT(SurroundingCheck(bool)) );
     connect( m_Controls->chkInformation, SIGNAL(toggled(bool)), this, SLOT(ChkInformationToggled(bool)) );
   }
@@ -184,14 +183,13 @@ void QmitkImageCropper::CreateNewBoundingObject()
     if (m_ImageNode.IsNotNull())
     {
       m_ImageToCrop = dynamic_cast<mitk::Image*>(m_ImageNode->GetData());
+
       if(m_ImageToCrop.IsNotNull())
       {
         if (this->GetDefaultDataStorage()->GetNamedDerivedNode("CroppingObject", m_ImageNode))
         {
-          // We are in "Reset bounding box!" mode
-          m_CroppingObject->FitGeometry(m_ImageToCrop->GetTimeSlicedGeometry());
-          mitk::RenderingManager::GetInstance()->RequestUpdateAll();
-          return;
+          //Remove m_Cropping
+          this->RemoveBoundingObjectFromNode();
         }
 
         bool fitCroppingObject = false;
@@ -209,11 +207,11 @@ void QmitkImageCropper::CreateNewBoundingObject()
         m_ImageNode->SetVisibility(true);
         mitk::RenderingManager::GetInstance()->InitializeViews();
         mitk::RenderingManager::GetInstance()->RequestUpdateAll();
-        m_Controls->m_NewBoxButton->setText("Reset bounding box!");
-        m_Controls->btnCrop->setEnabled(true);
+        m_Controls->m_BoxButton->setText("Reset bounding box!");
+        m_Controls->m_CropButton->setEnabled(true);
       }
     }
-    else 
+    else
       QMessageBox::information(NULL, "Image cropping functionality", "Load an image first!");
   }
 }
@@ -318,12 +316,12 @@ void QmitkImageCropper::CropImage()
     //       recognized by MITK.
     mitk::OperationEvent* operationEvent = new mitk::OperationEvent( m_Interface, doOp, undoOp, "Crop image");
     mitk::UndoController::GetCurrentUndoModel()->SetOperationEvent( operationEvent ); // tell the undo controller about the action
-    
+
     ExecuteOperation(doOp); // execute action
   }
 
-  m_Controls->m_NewBoxButton->setEnabled(true);
-  m_Controls->btnCrop->setEnabled(false);
+  m_Controls->m_BoxButton->setEnabled(true);
+  m_Controls->m_CropButton->setEnabled(false);
 }
 
 void QmitkImageCropper::CreateBoundingObject()
@@ -398,8 +396,9 @@ void QmitkImageCropper::RemoveBoundingObjectFromNode()
     {
       this->GetDefaultDataStorage()->Remove(m_CroppingObjectNode);
       mitk::GlobalInteraction::GetInstance()->RemoveInteractor(m_AffineInteractor);
+      m_CroppingObject = NULL;
     }
-    m_Controls->m_NewBoxButton->setText("New bounding box!");
+    m_Controls->m_BoxButton->setText("New bounding box!");
   }
 }
 
@@ -427,7 +426,7 @@ void QmitkImageCropper::NodeRemoved(const mitk::DataNode *node)
 
   if (strcmp(name.c_str(), "CroppingObject")==0)
   {
-    m_Controls->btnCrop->setEnabled(false);
-    m_Controls->m_NewBoxButton->setEnabled(true);
+    m_Controls->m_CropButton->setEnabled(false);
+    m_Controls->m_BoxButton->setEnabled(true);
   }
 }

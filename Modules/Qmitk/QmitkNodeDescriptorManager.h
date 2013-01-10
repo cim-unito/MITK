@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkNodeDescriptorManager_h
 #define QmitkNodeDescriptorManager_h
@@ -22,7 +21,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include "QmitkNodeDescriptor.h"
 
-/// 
+///
 /// \class QmitkNodeDescriptorManager
 /// \brief QmitkNodeDescriptorManager manages a set of QmitkNodeDescriptors
 ///
@@ -31,7 +30,7 @@ PURPOSE.  See the above copyright notices for more information.
 class QMITK_EXPORT QmitkNodeDescriptorManager : public QObject
 {
   Q_OBJECT
-public:  
+public:
   ///
   /// \return the solely instance of QmitkNodeDescriptorManager
   ///
@@ -47,7 +46,7 @@ public:
   /// - A QmitkNodeDescriptor for the class of "PointSet" DataNodes
   ///
   virtual void Initialize();
-  
+
   ///
   /// Adds a new descriptor to the manager. The manager takes the ownership.
   ///
@@ -84,7 +83,7 @@ public:
   /// Returns a list of all actions that are associated with the given node.
   /// If there are more than one Descriptors for this node all actions
   /// will be merged together.
-  /// E.g. all actions from the "unknown" DataNodes will be added to 
+  /// E.g. all actions from the "unknown" DataNodes will be added to
   /// this list. Generic Actions like Save, Load, etc. are stored there.
   ///
   QList<QAction*> GetActions(const mitk::DataNode* _Node) const;

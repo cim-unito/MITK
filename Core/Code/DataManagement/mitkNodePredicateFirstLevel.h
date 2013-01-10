@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 13:23:19 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 13561 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNODEPREDICATEFIRSTLEVEL_H_HEADER_INCLUDED_
@@ -28,11 +27,11 @@ namespace mitk {
 
     //##Documentation
     //## @brief Predicate that evaluates if the given node is a direct or indirect source node of a specific node
-    //## 
-    //## @warning This class seems to be obsolete since mitk::DataStorage::GetDerivations(). 
+    //##
+    //## @warning This class seems to be obsolete since mitk::DataStorage::GetDerivations().
     //##          Since there is no real use case up until now, NodePredicateSource is NOT WORKING YET.
     //##          If you need it working, inform us.
-    //## 
+    //##
     //## @ingroup DataStorage
     class MITK_CORE_EXPORT NodePredicateFirstLevel : public NodePredicateBase
     {

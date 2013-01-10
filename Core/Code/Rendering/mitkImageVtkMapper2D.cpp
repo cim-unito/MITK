@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 //MITK
 #include <mitkAbstractTransformGeometry.h>
@@ -66,14 +71,15 @@ mitk::ImageVtkMapper2D::~ImageVtkMapper2D()
 void mitk::ImageVtkMapper2D::GeneratePlane(mitk::BaseRenderer* renderer, vtkFloatingPointType planeBounds[6])
 {
   LocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
+
   float depth = this->CalculateLayerDepth(renderer);
   //Set the origin to (xMin; yMin; depth) of the plane. This is necessary for obtaining the correct
   //plane size in crosshair rotation and swivel mode.
   localStorage->m_Plane->SetOrigin(planeBounds[0], planeBounds[2], depth);
   //These two points define the axes of the plane in combination with the origin.
   //Point 1 is the x-axis and point 2 the y-axis.
-  //Each plane is transformed according to the view (transversal, coronal and saggital) afterwards.
-  localStorage->m_Plane->SetPoint1(planeBounds[1], planeBounds[2], depth); //P1: (xMax, yMin, depth)
+  //Each plane is transformed according to the view (axial, coronal and saggital) afterwards.
+  localStorage->m_Plane->SetPoint1(planeBounds[1] , planeBounds[2], depth); //P1: (xMax, yMin, depth)
   localStorage->m_Plane->SetPoint2(planeBounds[0], planeBounds[3], depth); //P2: (xMin, yMax, depth)
 }
 
@@ -101,9 +107,9 @@ const mitk::Image* mitk::ImageVtkMapper2D::GetInput( void )
 }
 
 vtkProp* mitk::ImageVtkMapper2D::GetVtkProp(mitk::BaseRenderer* renderer)
-{  
+{
   //return the actor corresponding to the renderer
-  return m_LSH.GetLocalStorage(renderer)->m_Actor;
+  return m_LSH.GetLocalStorage(renderer)->m_Actors;
 }
 
 void mitk::ImageVtkMapper2D::MitkRenderOverlay(BaseRenderer* renderer)
@@ -151,8 +157,9 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
   LocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
 
   mitk::Image *input = const_cast< mitk::Image * >( this->GetInput() );
+  mitk::DataNode* datanode = this->GetDataNode();
 
-  if ( input == NULL )
+  if ( input == NULL || input->IsInitialized() == false )
   {
     return;
   }
@@ -164,167 +171,44 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
     return;
   }
 
-  // check if there is something to display
-  if ( !input->IsVolumeSet( this->GetTimestep() ) ) return;
-
   input->Update();
 
-  vtkImageData* inputData = input->GetVtkImageData( this->GetTimestep() );
-  if ( inputData == NULL )
+  // early out if there is no intersection of the current rendering geometry
+  // and the geometry of the image that is to be rendered.
+  if ( !RenderingGeometryIntersectsImage( worldGeometry, input->GetSlicedGeometry() ) )
   {
+    // set image to NULL, to clear the texture in 3D, because
+    // the latest image is used there if the plane is out of the geometry
+    // see bug-13275
+    localStorage->m_ReslicedImage = NULL;
+    localStorage->m_Mapper->SetInput( localStorage->m_EmptyPolyData );
     return;
   }
 
-  // how big the area is in physical coordinates: widthInMM x heightInMM pixels
-  mitk::ScalarType widthInMM, heightInMM;
 
-  // take transform of input image into account
-  const TimeSlicedGeometry *inputTimeGeometry = input->GetTimeSlicedGeometry();
-  const Geometry3D* inputGeometry = inputTimeGeometry->GetGeometry3D( this->GetTimestep() );
+  //set main input for ExtractSliceFilter
+  localStorage->m_Reslicer->SetInput(input);
+  localStorage->m_Reslicer->SetWorldGeometry(worldGeometry);
+  localStorage->m_Reslicer->SetTimeStep( this->GetTimestep() );
 
-  // Bounds information for reslicing (only reuqired if reference geometry 
-  // is present)
-  vtkFloatingPointType sliceBounds[6];
-  bool boundsInitialized = false;
-  for ( int i = 0; i < 6; ++i )
-  {
-    sliceBounds[i] = 0.0;
-  }
 
-  //Extent (in pixels) of the image
-  Vector2D extent;
+  //set the transformation of the image to adapt reslice axis
+  localStorage->m_Reslicer->SetResliceTransformByGeometry( input->GetTimeSlicedGeometry()->GetGeometry3D( this->GetTimestep() ) );
 
-  // Do we have a simple PlaneGeometry?
-  // This is the "regular" case (e.g. slicing through an image axis-parallel or even oblique)
-  const PlaneGeometry *planeGeometry = dynamic_cast< const PlaneGeometry * >( worldGeometry );
-  if ( planeGeometry != NULL )
-  {
-    localStorage->m_Origin = planeGeometry->GetOrigin();
-    localStorage->m_Right  = planeGeometry->GetAxisVector( 0 ); // right = Extent of Image in mm (worldspace)
-    localStorage->m_Bottom = planeGeometry->GetAxisVector( 1 );
-    localStorage->m_Normal = planeGeometry->GetNormal();
 
-    bool inPlaneResampleExtentByGeometry = false;
-    GetDataNode()->GetBoolProperty("in plane resample extent by geometry", inPlaneResampleExtentByGeometry, renderer);
+  //is the geometry of the slice based on the input image or the worldgeometry?
+  bool inPlaneResampleExtentByGeometry = false;
+  datanode->GetBoolProperty("in plane resample extent by geometry", inPlaneResampleExtentByGeometry, renderer);
+  localStorage->m_Reslicer->SetInPlaneResampleExtentByGeometry(inPlaneResampleExtentByGeometry);
 
-    if ( inPlaneResampleExtentByGeometry )
-    {
-      // Resampling grid corresponds to the current world geometry. This
-      // means that the spacing of the output 2D image depends on the
-      // currently selected world geometry, and *not* on the image itself.
-      extent[0] = worldGeometry->GetExtent( 0 );
-      extent[1] = worldGeometry->GetExtent( 1 );
-    }
-    else
-    {
-      // Resampling grid corresponds to the input geometry. This means that
-      // the spacing of the output 2D image is directly derived from the
-      // associated input image, regardless of the currently selected world
-      // geometry.
-      Vector3D rightInIndex, bottomInIndex;
-      inputGeometry->WorldToIndex( localStorage->m_Right, rightInIndex );
-      inputGeometry->WorldToIndex( localStorage->m_Bottom, bottomInIndex );
-      extent[0] = rightInIndex.GetNorm();
-      extent[1] = bottomInIndex.GetNorm();
-    }
-    
-    // Get the extent of the current world geometry and calculate resampling
-    // spacing therefrom.
-    widthInMM = worldGeometry->GetExtentInMM( 0 );
-    heightInMM = worldGeometry->GetExtentInMM( 1 );
 
-    localStorage->m_mmPerPixel[0] = widthInMM / extent[0];
-    localStorage->m_mmPerPixel[1] = heightInMM / extent[1];
-
-    localStorage->m_Right.Normalize();
-    localStorage->m_Bottom.Normalize();
-    localStorage->m_Normal.Normalize();
-
-    //transform the origin to corner based coordinates, because VTK is corner based.
-    localStorage->m_Origin += localStorage->m_Right * ( localStorage->m_mmPerPixel[0] * 0.5 );
-    localStorage->m_Origin += localStorage->m_Bottom * ( localStorage->m_mmPerPixel[1] * 0.5 );
-
-    // Use inverse transform of the input geometry for reslicing the 3D image
-    localStorage->m_Reslicer->SetResliceTransform(
-        inputGeometry->GetVtkTransform()->GetLinearInverse() );
-
-    // Set background level to TRANSLUCENT (see Geometry2DDataVtkMapper3D)
-    localStorage->m_Reslicer->SetBackgroundLevel( -32768 );
-
-    // Calculate the actual bounds of the transformed plane clipped by the
-    // dataset bounding box; this is required for drawing the texture at the
-    // correct position during 3D mapping.
-    boundsInitialized = this->CalculateClippedPlaneBounds(
-        worldGeometry->GetReferenceGeometry(), planeGeometry, sliceBounds );
-  }
-  else
-  {
-    // Do we have an AbstractTransformGeometry?
-    // This is the case for AbstractTransformGeometry's (e.g. a thin-plate-spline transform)
-    const mitk::AbstractTransformGeometry* abstractGeometry =
-        dynamic_cast< const AbstractTransformGeometry * >(worldGeometry);
-
-    if(abstractGeometry != NULL)
-    {
-
-      extent[0] = abstractGeometry->GetParametricExtent(0);
-      extent[1] = abstractGeometry->GetParametricExtent(1);
-
-      widthInMM = abstractGeometry->GetParametricExtentInMM(0);
-      heightInMM = abstractGeometry->GetParametricExtentInMM(1);
-
-      localStorage->m_mmPerPixel[0] = widthInMM / extent[0];
-      localStorage->m_mmPerPixel[1] = heightInMM / extent[1];
-
-      localStorage->m_Origin = abstractGeometry->GetPlane()->GetOrigin();
-
-      localStorage->m_Right = abstractGeometry->GetPlane()->GetAxisVector(0);
-      localStorage->m_Right.Normalize();
-
-      localStorage->m_Bottom = abstractGeometry->GetPlane()->GetAxisVector(1);
-      localStorage->m_Bottom.Normalize();
-
-      localStorage->m_Normal = abstractGeometry->GetPlane()->GetNormal();
-      localStorage->m_Normal.Normalize();
-
-      // Use a combination of the InputGeometry *and* the possible non-rigid
-      // AbstractTransformGeometry for reslicing the 3D Image
-      vtkGeneralTransform *composedResliceTransform = vtkGeneralTransform::New();
-      composedResliceTransform->Identity();
-      composedResliceTransform->Concatenate(
-          inputGeometry->GetVtkTransform()->GetLinearInverse() );
-      composedResliceTransform->Concatenate(
-          abstractGeometry->GetVtkAbstractTransform()
-          );
-
-      localStorage->m_Reslicer->SetResliceTransform( composedResliceTransform );
-      composedResliceTransform->UnRegister( NULL ); // decrease RC
-
-      // Set background level to BLACK instead of translucent, to avoid
-      // boundary artifacts (see Geometry2DDataVtkMapper3D)
-      localStorage->m_Reslicer->SetBackgroundLevel( -1023 );
-    }
-    else
-    {
-      //no geometry => we can't reslice
-      return;
-    }
-  }
-
-  // Make sure that the image to display has a certain minimum size.
-  if ( (extent[0] <= 2) && (extent[1] <= 2) )
-  {
-    return;
-  }
-
-  //### begin set reslice interpolation
   // Initialize the interpolation mode for resampling; switch to nearest
   // neighbor if the input image is too small.
   if ( (input->GetDimension() >= 3) && (input->GetDimension(2) > 1) )
   {
     VtkResliceInterpolationProperty *resliceInterpolationProperty;
-    this->GetDataNode()->GetProperty(
-        resliceInterpolationProperty, "reslice interpolation" );
+    datanode->GetProperty(
+      resliceInterpolationProperty, "reslice interpolation" );
 
     int interpolationMode = VTK_RESLICE_NEAREST;
     if ( resliceInterpolationProperty != NULL )
@@ -335,28 +219,31 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
     switch ( interpolationMode )
     {
     case VTK_RESLICE_NEAREST:
-      localStorage->m_Reslicer->SetInterpolationModeToNearestNeighbor();
+      localStorage->m_Reslicer->SetInterpolationMode(ExtractSliceFilter::RESLICE_NEAREST);
       break;
     case VTK_RESLICE_LINEAR:
-      localStorage->m_Reslicer->SetInterpolationModeToLinear();
+      localStorage->m_Reslicer->SetInterpolationMode(ExtractSliceFilter::RESLICE_LINEAR);
       break;
     case VTK_RESLICE_CUBIC:
-      localStorage->m_Reslicer->SetInterpolationModeToCubic();
+      localStorage->m_Reslicer->SetInterpolationMode(ExtractSliceFilter::RESLICE_CUBIC);
       break;
     }
   }
   else
   {
-    localStorage->m_Reslicer->SetInterpolationModeToNearestNeighbor();
+    localStorage->m_Reslicer->SetInterpolationMode(ExtractSliceFilter::RESLICE_NEAREST);
   }
-  //### end set reslice interpolation
+
+  //set the vtk output property to true, makes sure that no unneeded mitk image convertion
+  //is done.
+  localStorage->m_Reslicer->SetVtkOutputRequest(true);
+
 
   //Thickslicing
   int thickSlicesMode = 0;
   int thickSlicesNum = 1;
-
   // Thick slices parameters
-  if( inputData->GetNumberOfScalarComponents() == 1 ) // for now only single component are allowed
+  if( input->GetPixelType().GetNumberOfComponents() == 1 ) // for now only single component are allowed
   {
     DataNode *dn=renderer->GetCurrentWorldGeometry2DNode();
     if(dn)
@@ -380,130 +267,104 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
     }
   }
 
-  localStorage->m_UnitSpacingImageFilter->SetInput( inputData );
-  localStorage->m_Reslicer->SetInput( localStorage->m_UnitSpacingImageFilter->GetOutput() );
-
-  //number of pixels per mm in x- and y-direction of the resampled
-  Vector2D pixelsPerMM;
-  pixelsPerMM[0] = 1.0 / localStorage->m_mmPerPixel[0];
-  pixelsPerMM[1] = 1.0 / localStorage->m_mmPerPixel[1];
-
-  //calulate the originArray and the orientations for the reslice-filter
-  double originArray[3];
-  itk2vtk( localStorage->m_Origin, originArray );
-
-  localStorage->m_Reslicer->SetResliceAxesOrigin( originArray );
-
-  double cosines[9];
-  // direction of the X-axis of the sampled result
-  vnl2vtk( localStorage->m_Right.Get_vnl_vector(), cosines );
-  // direction of the Y-axis of the sampled result
-  vnl2vtk( localStorage->m_Bottom.Get_vnl_vector(), cosines + 3 );//fill next 3 elements
-  // normal of the plane
-  vnl2vtk( localStorage->m_Normal.Get_vnl_vector(), cosines + 6 );//fill the last 3 elements
-
-  localStorage->m_Reslicer->SetResliceAxesDirectionCosines( cosines );
-
-  int xMin, xMax, yMin, yMax;
-  if ( boundsInitialized )
-  {
-    // Calculate output extent (integer values)
-    xMin = static_cast< int >( sliceBounds[0] / localStorage->m_mmPerPixel[0] + 0.5 );
-    xMax = static_cast< int >( sliceBounds[1] / localStorage->m_mmPerPixel[0] + 0.5 );
-    yMin = static_cast< int >( sliceBounds[2] / localStorage->m_mmPerPixel[1] + 0.5 );
-    yMax = static_cast< int >( sliceBounds[3] / localStorage->m_mmPerPixel[1] + 0.5 );
-  }
-  else
-  {
-    // If no reference geometry is available, we also don't know about the
-    // maximum plane size;
-    xMin = yMin = 0;
-    xMax = static_cast< int >( extent[0]
-                               - pixelsPerMM[0] + 0.5);
-    yMax = static_cast< int >( extent[1]
-                               - pixelsPerMM[1] + 0.5);
-  }
-
-  // Disallow huge dimensions
-  if ( (xMax-xMin) * (yMax-yMin) > 4096*4096 )
-  {
-    return;
-  }
-
-  // Calculate dataset spacing in plane z direction (NOT spacing of current
-  // world geometry)
-  double dataZSpacing = 1.0;
-
-  Vector3D normInIndex;
-  inputGeometry->WorldToIndex( localStorage->m_Normal, normInIndex );
 
   if(thickSlicesMode > 0)
   {
+    double dataZSpacing = 1.0;
+
+    Vector3D normInIndex, normal;
+    const PlaneGeometry *planeGeometry = dynamic_cast< const PlaneGeometry * >( worldGeometry );
+    if ( planeGeometry != NULL ){
+      normal = planeGeometry->GetNormal();
+    }else{
+      const mitk::AbstractTransformGeometry* abstractGeometry = dynamic_cast< const AbstractTransformGeometry * >(worldGeometry);
+      if(abstractGeometry != NULL)
+        normal = abstractGeometry->GetPlane()->GetNormal();
+      else
+        return; //no fitting geometry set
+    }
+    normal.Normalize();
+
+    input->GetTimeSlicedGeometry()->GetGeometry3D( this->GetTimestep() )->WorldToIndex( normal, normInIndex );
+
     dataZSpacing = 1.0 / normInIndex.GetNorm();
+
     localStorage->m_Reslicer->SetOutputDimensionality( 3 );
-    localStorage->m_Reslicer->SetOutputExtent( xMin, xMax-1, yMin, yMax-1, -thickSlicesNum, 0+thickSlicesNum );
-  }
-  else
-  {
-    localStorage->m_Reslicer->SetOutputDimensionality( 2 );
-    localStorage->m_Reslicer->SetOutputExtent( xMin, xMax-1, yMin, yMax-1, 0, 0 );
-  }
+    localStorage->m_Reslicer->SetOutputSpacingZDirection(dataZSpacing);
+    localStorage->m_Reslicer->SetOutputExtentZDirection( -thickSlicesNum, 0+thickSlicesNum );
 
-  localStorage->m_Reslicer->SetOutputOrigin( 0.0, 0.0, 0.0 );
-  localStorage->m_Reslicer->SetOutputSpacing( localStorage->m_mmPerPixel[0], localStorage->m_mmPerPixel[1], dataZSpacing );
-  // xMax and yMax are meant exclusive until now, whereas
-  // SetOutputExtent wants an inclusive bound. Thus, we need
-  // to subtract 1.
-
-  //Make sure the updateExtent is equal to the wholeExtent of vtkImageReslice,
-  //else the updateExtent is one step ahead of the wholeExtent and vtk errors
-  //are thrown.
-  localStorage->m_Reslicer->UpdateWholeExtent();
-
-  // Do the reslicing. Modified() is called to make sure that the reslicer is
-  // executed even though the input geometry information did not change; this
-  // is necessary when the input /em data, but not the /em geometry changes.
-  if(thickSlicesMode>0)
-  {
+    // Do the reslicing. Modified() is called to make sure that the reslicer is
+    // executed even though the input geometry information did not change; this
+    // is necessary when the input /em data, but not the /em geometry changes.
     localStorage->m_TSFilter->SetThickSliceMode( thickSlicesMode-1 );
-    localStorage->m_TSFilter->SetInput( localStorage->m_Reslicer->GetOutput() );
+    localStorage->m_TSFilter->SetInput( localStorage->m_Reslicer->GetVtkOutput() );
+
+    //vtkFilter=>mitkFilter=>vtkFilter update mechanism will fail without calling manually
+    localStorage->m_Reslicer->Modified();
+    localStorage->m_Reslicer->Update();
+
     localStorage->m_TSFilter->Modified();
     localStorage->m_TSFilter->Update();
     localStorage->m_ReslicedImage = localStorage->m_TSFilter->GetOutput();
   }
   else
   {
+    //this is needed when thick mode was enable bevore. These variable have to be reset to default values
+    localStorage->m_Reslicer->SetOutputDimensionality( 2 );
+    localStorage->m_Reslicer->SetOutputSpacingZDirection(1.0);
+    localStorage->m_Reslicer->SetOutputExtentZDirection( 0, 0 );
+
+
     localStorage->m_Reslicer->Modified();
-    localStorage->m_Reslicer->Update();
-    localStorage->m_ReslicedImage = localStorage->m_Reslicer->GetOutput();
+    //start the pipeline with updating the largest possible, needed if the geometry of the input has changed
+    localStorage->m_Reslicer->UpdateLargestPossibleRegion();
+    localStorage->m_ReslicedImage = localStorage->m_Reslicer->GetVtkOutput();
   }
 
-  if((localStorage->m_ReslicedImage == NULL) || (localStorage->m_ReslicedImage->GetDataDimension() < 1))
+
+  // Bounds information for reslicing (only reuqired if reference geometry
+  // is present)
+  //this used for generating a vtkPLaneSource with the right size
+  vtkFloatingPointType sliceBounds[6];
+  for ( int i = 0; i < 6; ++i )
   {
-    MITK_WARN << "reslicer returned empty image";
-    return;
+    sliceBounds[i] = 0.0;
   }
+  localStorage->m_Reslicer->GetClippedPlaneBounds(sliceBounds);
+
+  //get the spacing of the slice
+  localStorage->m_mmPerPixel = localStorage->m_Reslicer->GetOutputSpacing();
+
 
   //get the number of scalar components to distinguish between different image types
   int numberOfComponents = localStorage->m_ReslicedImage->GetNumberOfScalarComponents();
   //get the binary property
   bool binary = false;
   bool binaryOutline = false;
-  this->GetDataNode()->GetBoolProperty( "binary", binary, renderer );
+  datanode->GetBoolProperty( "binary", binary, renderer );
   if(binary) //binary image
   {
-    this->GetDataNode()->GetBoolProperty( "outline binary", binaryOutline, renderer );
+    datanode->GetBoolProperty( "outline binary", binaryOutline, renderer );
     if(binaryOutline) //contour rendering
     {
-      if ( this->GetInput()->GetPixelType().GetBpe() <= 8 )
+      if ( input->GetPixelType().GetBpe() <= 8 )
       {
-        //generate ontours/outlines
+        //generate contours/outlines
         localStorage->m_OutlinePolyData = CreateOutlinePolyData(renderer);
 
         float binaryOutlineWidth(1.0);
-        if (this->GetDataNode()->GetFloatProperty( "outline width", binaryOutlineWidth, renderer ))
+        if ( datanode->GetFloatProperty( "outline width", binaryOutlineWidth, renderer ) )
         {
-          localStorage->m_Actor->GetProperty()->SetLineWidth(binaryOutlineWidth);
+          if ( localStorage->m_Actors->GetNumberOfPaths() > 1 )
+          {
+            float binaryOutlineShadowWidth(1.5);
+            datanode->GetFloatProperty( "outline shadow width", binaryOutlineShadowWidth, renderer );
+
+            dynamic_cast<vtkActor*>(localStorage->m_Actors->GetParts()->GetItemAsObject(0))
+            ->GetProperty()->SetLineWidth( binaryOutlineWidth * binaryOutlineShadowWidth );
+          }
+
+          localStorage->m_Actor->GetProperty()->SetLineWidth( binaryOutlineWidth );
         }
       }
       else
@@ -548,12 +409,22 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
   this->ApplyOpacity( renderer );
   this->TransformActor( renderer );
 
-  //connect mapper with the data
+  vtkActor* contourShadowActor = dynamic_cast<vtkActor*> (localStorage->m_Actors->GetParts()->GetItemAsObject(0));
+
   if(binary && binaryOutline) //connect the mapper with the polyData which contains the lines
   {
-    //We need the contour for the binary oultine property as actor
+    //We need the contour for the binary outline property as actor
     localStorage->m_Mapper->SetInput(localStorage->m_OutlinePolyData);
     localStorage->m_Actor->SetTexture(NULL); //no texture for contours
+
+    bool binaryOutlineShadow( false );
+    datanode->GetBoolProperty( "outline binary shadow", binaryOutlineShadow, renderer );
+
+    if ( binaryOutlineShadow )
+      contourShadowActor->SetVisibility( true );
+    else
+      contourShadowActor->SetVisibility( false );
+
   }
   else
   { //Connect the mapper with the input texture. This is the standard case.
@@ -562,7 +433,9 @@ void mitk::ImageVtkMapper2D::GenerateDataForRenderer( mitk::BaseRenderer *render
     //set the plane as input for the mapper
     localStorage->m_Mapper->SetInputConnection(localStorage->m_Plane->GetOutputPort());
     //set the texture for the actor
+
     localStorage->m_Actor->SetTexture(localStorage->m_Texture);
+    contourShadowActor->SetVisibility( false );
   }
 
   // We have been modified => save this for next Update()
@@ -595,7 +468,7 @@ void mitk::ImageVtkMapper2D::ApplyColor( mitk::BaseRenderer* renderer )
     if(hover && !selected)
     {
       mitk::ColorProperty::Pointer colorprop = dynamic_cast<mitk::ColorProperty*>(GetDataNode()->GetProperty
-                                                                                  ("binaryimage.hoveringcolor", renderer));
+        ("binaryimage.hoveringcolor", renderer));
       if(colorprop.IsNotNull())
       {
         memcpy(rgb, colorprop->GetColor().GetDataPointer(), 3*sizeof(float));
@@ -608,7 +481,7 @@ void mitk::ImageVtkMapper2D::ApplyColor( mitk::BaseRenderer* renderer )
     if(selected)
     {
       mitk::ColorProperty::Pointer colorprop = dynamic_cast<mitk::ColorProperty*>(GetDataNode()->GetProperty
-                                                                                  ("binaryimage.selectedcolor", renderer));
+        ("binaryimage.selectedcolor", renderer));
       if(colorprop.IsNotNull()) {
         memcpy(rgb, colorprop->GetColor().GetDataPointer(), 3*sizeof(float));
       }
@@ -623,12 +496,27 @@ void mitk::ImageVtkMapper2D::ApplyColor( mitk::BaseRenderer* renderer )
     }
 
     double rgbConv[3] = {(double)rgb[0], (double)rgb[1], (double)rgb[2]}; //conversion to double for VTK
+    dynamic_cast<vtkActor*> (localStorage->m_Actors->GetParts()->GetItemAsObject(0))->GetProperty()->SetColor(rgbConv);
     localStorage->m_Actor->GetProperty()->SetColor(rgbConv);
   }
   else
   {
     //If the user defines a lut, we dont want to use the color and take white instead.
+    dynamic_cast<vtkActor*> (localStorage->m_Actors->GetParts()->GetItemAsObject(0))->GetProperty()->SetColor(1.0, 1.0, 1.0);
     localStorage->m_Actor->GetProperty()->SetColor(1.0, 1.0, 1.0);
+  }
+
+  if ( localStorage->m_Actors->GetParts()->GetNumberOfItems() > 1 )
+  {
+    float rgb[3]= { 1.0f, 1.0f, 1.0f };
+    mitk::ColorProperty::Pointer colorprop = dynamic_cast<mitk::ColorProperty*>(GetDataNode()->GetProperty
+      ("outline binary shadow color", renderer));
+    if(colorprop.IsNotNull())
+    {
+      memcpy(rgb, colorprop->GetColor().GetDataPointer(), 3*sizeof(float));
+    }
+    double rgbConv[3] = {(double)rgb[0], (double)rgb[1], (double)rgb[2]}; //conversion to double for VTK
+    dynamic_cast<vtkActor*>( localStorage->m_Actors->GetParts()->GetItemAsObject(0) )->GetProperty()->SetColor(rgbConv);
   }
 }
 
@@ -640,6 +528,11 @@ void mitk::ImageVtkMapper2D::ApplyOpacity( mitk::BaseRenderer* renderer )
   GetOpacity( opacity, renderer );
   //set the opacity according to the properties
   localStorage->m_Actor->GetProperty()->SetOpacity(opacity);
+  if ( localStorage->m_Actors->GetParts()->GetNumberOfItems() > 1 )
+  {
+    dynamic_cast<vtkActor*>( localStorage->m_Actors->GetParts()->GetItemAsObject(0) )->GetProperty()->SetOpacity(opacity);
+  }
+
 }
 
 void mitk::ImageVtkMapper2D::ApplyLookuptable( mitk::BaseRenderer* renderer )
@@ -668,7 +561,7 @@ void mitk::ImageVtkMapper2D::ApplyLookuptable( mitk::BaseRenderer* renderer )
       // If lookup table use is requested...
       mitk::LookupTableProperty::Pointer LookupTableProp;
       LookupTableProp = dynamic_cast<mitk::LookupTableProperty*>
-                        (this->GetDataNode()->GetProperty("LookupTable"));
+        (this->GetDataNode()->GetProperty("LookupTable"));
       //...check if there is a lookuptable provided by the user
       if ( LookupTableProp.IsNotNull() )
       {
@@ -676,7 +569,7 @@ void mitk::ImageVtkMapper2D::ApplyLookuptable( mitk::BaseRenderer* renderer )
         // only update the lut, when the properties have changed...
         if( LookupTableProp->GetLookupTable()->GetMTime()
           <= this->GetDataNode()->GetPropertyList()->GetMTime() )
-          {
+        {
           LookupTableProp->GetLookupTable()->ChangeOpacityForAll( LookupTableProp->GetLookupTable()->GetVtkLookupTable()->GetAlpha()*localStorage->m_Actor->GetProperty()->GetOpacity() );
           LookupTableProp->GetLookupTable()->ChangeOpacity(0, 0.0);
         }
@@ -705,7 +598,7 @@ void mitk::ImageVtkMapper2D::ApplyLookuptable( mitk::BaseRenderer* renderer )
 void mitk::ImageVtkMapper2D::ApplyColorTransferFunction(mitk::BaseRenderer* renderer)
 {
   mitk::TransferFunctionProperty::Pointer transferFunctionProperty =
-      dynamic_cast<mitk::TransferFunctionProperty*>(this->GetDataNode()->GetProperty("Image Rendering.Transfer Function",renderer ));
+    dynamic_cast<mitk::TransferFunctionProperty*>(this->GetDataNode()->GetProperty("Image Rendering.Transfer Function",renderer ));
   LocalStorage* localStorage = m_LSH.GetLocalStorage(renderer);
   if(transferFunctionProperty.IsNotNull())
   {
@@ -717,113 +610,7 @@ void mitk::ImageVtkMapper2D::ApplyColorTransferFunction(mitk::BaseRenderer* rend
   }
 }
 
-bool mitk::ImageVtkMapper2D::LineIntersectZero( vtkPoints *points, int p1, int p2,
-                                                vtkFloatingPointType *bounds )
-{
-  vtkFloatingPointType point1[3];
-  vtkFloatingPointType point2[3];
-  points->GetPoint( p1, point1 );
-  points->GetPoint( p2, point2 );
 
-  if ( (point1[2] * point2[2] <= 0.0) && (point1[2] != point2[2]) )
-  {
-    double x, y;
-    x = ( point1[0] * point2[2] - point1[2] * point2[0] ) / ( point2[2] - point1[2] );
-    y = ( point1[1] * point2[2] - point1[2] * point2[1] ) / ( point2[2] - point1[2] );
-
-    if ( x < bounds[0] ) { bounds[0] = x; }
-    if ( x > bounds[1] ) { bounds[1] = x; }
-    if ( y < bounds[2] ) { bounds[2] = y; }
-    if ( y > bounds[3] ) { bounds[3] = y; }
-    bounds[4] = bounds[5] = 0.0;
-    return true;
-  }
-  return false;
-}
-
-bool mitk::ImageVtkMapper2D::CalculateClippedPlaneBounds( const Geometry3D *boundingGeometry,
-                                                          const PlaneGeometry *planeGeometry, vtkFloatingPointType *bounds )
-{
-  // Clip the plane with the bounding geometry. To do so, the corner points
-  // of the bounding box are transformed by the inverse transformation
-  // matrix, and the transformed bounding box edges derived therefrom are
-  // clipped with the plane z=0. The resulting min/max values are taken as
-  // bounds for the image reslicer.
-  const mitk::BoundingBox *boundingBox = boundingGeometry->GetBoundingBox();
-
-  mitk::BoundingBox::PointType bbMin = boundingBox->GetMinimum();
-  mitk::BoundingBox::PointType bbMax = boundingBox->GetMaximum();
-
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  if(boundingGeometry->GetImageGeometry())
-  {
-    points->InsertPoint( 0, bbMin[0]-0.5, bbMin[1]-0.5, bbMin[2]-0.5 );
-    points->InsertPoint( 1, bbMin[0]-0.5, bbMin[1]-0.5, bbMax[2]-0.5 );
-    points->InsertPoint( 2, bbMin[0]-0.5, bbMax[1]-0.5, bbMax[2]-0.5 );
-    points->InsertPoint( 3, bbMin[0]-0.5, bbMax[1]-0.5, bbMin[2]-0.5 );
-    points->InsertPoint( 4, bbMax[0]-0.5, bbMin[1]-0.5, bbMin[2]-0.5 );
-    points->InsertPoint( 5, bbMax[0]-0.5, bbMin[1]-0.5, bbMax[2]-0.5 );
-    points->InsertPoint( 6, bbMax[0]-0.5, bbMax[1]-0.5, bbMax[2]-0.5 );
-    points->InsertPoint( 7, bbMax[0]-0.5, bbMax[1]-0.5, bbMin[2]-0.5 );
-  }
-  else
-  {
-    points->InsertPoint( 0, bbMin[0], bbMin[1], bbMin[2] );
-    points->InsertPoint( 1, bbMin[0], bbMin[1], bbMax[2] );
-    points->InsertPoint( 2, bbMin[0], bbMax[1], bbMax[2] );
-    points->InsertPoint( 3, bbMin[0], bbMax[1], bbMin[2] );
-    points->InsertPoint( 4, bbMax[0], bbMin[1], bbMin[2] );
-    points->InsertPoint( 5, bbMax[0], bbMin[1], bbMax[2] );
-    points->InsertPoint( 6, bbMax[0], bbMax[1], bbMax[2] );
-    points->InsertPoint( 7, bbMax[0], bbMax[1], bbMin[2] );
-  }
-
-  vtkSmartPointer<vtkPoints> newPoints = vtkSmartPointer<vtkPoints>::New();
-
-  vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
-  transform->Identity();
-  transform->Concatenate( planeGeometry->GetVtkTransform()->GetLinearInverse() );
-
-  transform->Concatenate( boundingGeometry->GetVtkTransform() );
-
-  transform->TransformPoints( points, newPoints );
-
-  bounds[0] = bounds[2] = 10000000.0;
-  bounds[1] = bounds[3] = -10000000.0;
-  bounds[4] = bounds[5] = 0.0;
-
-  this->LineIntersectZero( newPoints, 0, 1, bounds );
-  this->LineIntersectZero( newPoints, 1, 2, bounds );
-  this->LineIntersectZero( newPoints, 2, 3, bounds );
-  this->LineIntersectZero( newPoints, 3, 0, bounds );
-  this->LineIntersectZero( newPoints, 0, 4, bounds );
-  this->LineIntersectZero( newPoints, 1, 5, bounds );
-  this->LineIntersectZero( newPoints, 2, 6, bounds );
-  this->LineIntersectZero( newPoints, 3, 7, bounds );
-  this->LineIntersectZero( newPoints, 4, 5, bounds );
-  this->LineIntersectZero( newPoints, 5, 6, bounds );
-  this->LineIntersectZero( newPoints, 6, 7, bounds );
-  this->LineIntersectZero( newPoints, 7, 4, bounds );
-
-  if ( (bounds[0] > 9999999.0) || (bounds[2] > 9999999.0)
-    || (bounds[1] < -9999999.0) || (bounds[3] < -9999999.0) )
-    {
-    return false;
-  }
-  else
-  {
-    // The resulting bounds must be adjusted by the plane spacing, since we
-    // we have so far dealt with index coordinates
-    const float *planeSpacing = planeGeometry->GetFloatSpacing();
-    bounds[0] *= planeSpacing[0];
-    bounds[1] *= planeSpacing[0];
-    bounds[2] *= planeSpacing[1];
-    bounds[3] *= planeSpacing[1];
-    bounds[4] *= planeSpacing[2];
-    bounds[5] *= planeSpacing[2];
-    return true;
-  }
-}
 
 void mitk::ImageVtkMapper2D::ApplyRBGALevelWindow( mitk::BaseRenderer* renderer )
 {
@@ -867,7 +654,7 @@ void mitk::ImageVtkMapper2D::Update(mitk::BaseRenderer* renderer)
   if ( ( dataTimeGeometry == NULL )
     || ( dataTimeGeometry->GetTimeSteps() == 0 )
     || ( !dataTimeGeometry->IsValidTime( this->GetTimestep() ) ) )
-    {
+  {
     return;
   }
 
@@ -882,7 +669,7 @@ void mitk::ImageVtkMapper2D::Update(mitk::BaseRenderer* renderer)
     || (localStorage->m_LastUpdateTime < renderer->GetCurrentWorldGeometry2D()->GetMTime())
     || (localStorage->m_LastUpdateTime < node->GetPropertyList()->GetMTime()) //was a property modified?
     || (localStorage->m_LastUpdateTime < node->GetPropertyList(renderer)->GetMTime()) )
-    {
+  {
     this->GenerateDataForRenderer( renderer );
   }
 
@@ -900,21 +687,45 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::Ba
   node->AddProperty( "depthOffset", mitk::FloatProperty::New( 0.0 ), renderer, overwrite );
   node->AddProperty( "outline binary", mitk::BoolProperty::New( false ), renderer, overwrite );
   node->AddProperty( "outline width", mitk::FloatProperty::New( 1.0 ), renderer, overwrite );
+  node->AddProperty( "outline binary shadow", mitk::BoolProperty::New( false ), renderer, overwrite );
+  node->AddProperty( "outline binary shadow color", ColorProperty::New(0.0,0.0,0.0), renderer, overwrite );
+  node->AddProperty( "outline shadow width", mitk::FloatProperty::New( 1.5 ), renderer, overwrite );
   if(image->IsRotated()) node->AddProperty( "reslice interpolation", mitk::VtkResliceInterpolationProperty::New(VTK_RESLICE_CUBIC) );
   else node->AddProperty( "reslice interpolation", mitk::VtkResliceInterpolationProperty::New() );
   node->AddProperty( "texture interpolation", mitk::BoolProperty::New( mitk::DataNodeFactory::m_TextureInterpolationActive ) );  // set to user configurable default value (see global options)
   node->AddProperty( "in plane resample extent by geometry", mitk::BoolProperty::New( false ) );
   node->AddProperty( "bounding box", mitk::BoolProperty::New( false ) );
 
-  std::string modality;
-  if ( node->GetStringProperty( "dicom.series.Modality", modality ) )
+  std::string photometricInterpretation; // DICOM tag telling us how pixel values should be displayed
+  if ( node->GetStringProperty( "dicom.pixel.PhotometricInterpretation", photometricInterpretation ) )
   {
     // modality provided by DICOM or other reader
-    if ( modality == "PT") // NOT a typo, PT is the abbreviation for PET used in DICOM
+    if ( photometricInterpretation.find("MONOCHROME1") != std::string::npos ) // meaning: display MINIMUM pixels as WHITE
     {
+      // generate LUT (white to black)
+      mitk::LookupTable::Pointer mitkLut = mitk::LookupTable::New();
+      vtkLookupTable* bwLut = mitkLut->GetVtkLookupTable();
+      bwLut->SetTableRange (0, 1);
+      bwLut->SetSaturationRange (0, 0);
+      bwLut->SetHueRange (0, 0);
+      bwLut->SetValueRange (1, 0);
+      bwLut->SetAlphaRange (1, 1);
+      bwLut->SetRampToLinear();
+      bwLut->Build();
+      mitk::LookupTableProperty::Pointer mitkLutProp = mitk::LookupTableProperty::New();
+      mitkLutProp->SetLookupTable(mitkLut);
+      node->SetProperty( "LookupTable", mitkLutProp );
+
       node->SetProperty( "use color", mitk::BoolProperty::New( false ), renderer );
-      node->SetProperty( "opacity", mitk::FloatProperty::New( 0.5 ), renderer );
     }
+    else
+    if ( photometricInterpretation.find("MONOCHROME2") != std::string::npos ) // meaning: display MINIMUM pixels as BLACK
+    {
+      // apply default LUT (black to white)
+      node->SetProperty( "use color", mitk::BoolProperty::New( true ), renderer );
+      node->SetProperty( "color", mitk::ColorProperty::New( 1,1,1 ), renderer );
+    }
+    // PALETTE interpretation should be handled ok by RGB loading
   }
 
   bool isBinaryImage(false);
@@ -943,7 +754,7 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::Ba
       min2ndValue = centralSliceImage->GetStatistics()->GetScalarValue2ndMin();
       max2ndValue = centralSliceImage->GetStatistics()->GetScalarValue2ndMax();
     }
-    if ( minValue == maxValue )
+    if ((maxValue == min2ndValue && minValue == max2ndValue) || minValue == maxValue)
     {
       // centralSlice is strange, lets look at all data
       minValue    = image->GetStatistics()->GetScalarValueMin();
@@ -981,9 +792,9 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::Ba
       /* initialize level/window from DICOM tags */
       std::string sLevel;
       std::string sWindow;
-      if (   node->GetStringProperty( "dicom.voilut.WindowCenter", sLevel )
-        && node->GetStringProperty( "dicom.voilut.WindowWidth", sWindow ) )
-        {
+      if ( image->GetPropertyList()->GetStringProperty( "dicom.voilut.WindowCenter", sLevel )
+        && image->GetPropertyList()->GetStringProperty( "dicom.voilut.WindowWidth", sWindow ) )
+      {
         float level = atof( sLevel.c_str() );
         float window = atof( sWindow.c_str() );
 
@@ -991,12 +802,12 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::Ba
         std::string sSmallestPixelValueInSeries;
         std::string sLargestPixelValueInSeries;
 
-        if (    node->GetStringProperty( "dicom.series.SmallestPixelValueInSeries", sSmallestPixelValueInSeries )
-          && node->GetStringProperty( "dicom.series.LargestPixelValueInSeries", sLargestPixelValueInSeries ) )
-          {
+        if ( image->GetPropertyList()->GetStringProperty( "dicom.series.SmallestPixelValueInSeries", sSmallestPixelValueInSeries )
+          && image->GetPropertyList()->GetStringProperty( "dicom.series.LargestPixelValueInSeries", sLargestPixelValueInSeries ) )
+        {
           float smallestPixelValueInSeries = atof( sSmallestPixelValueInSeries.c_str() );
           float largestPixelValueInSeries = atof( sLargestPixelValueInSeries.c_str() );
-          contrast.SetRangeMinMax( smallestPixelValueInSeries-1, largestPixelValueInSeries+1 ); // why not a little buffer? 
+          contrast.SetRangeMinMax( smallestPixelValueInSeries-1, largestPixelValueInSeries+1 ); // why not a little buffer?
           // might remedy some l/w widget challenges
         }
         else
@@ -1004,13 +815,14 @@ void mitk::ImageVtkMapper2D::SetDefaultProperties(mitk::DataNode* node, mitk::Ba
           contrast.SetAuto( static_cast<mitk::Image*>(node->GetData()), false, true ); // we need this as a fallback
         }
 
-        contrast.SetLevelWindow( level, window);
+        contrast.SetLevelWindow( level, window, true );
         node->SetProperty( "levelwindow", LevelWindowProperty::New( contrast ), renderer );
       }
     }
     if(((overwrite) || (node->GetProperty("opaclevelwindow", renderer)==NULL))
-      && image->GetPixelType().GetPixelTypeId() == typeid(itk::RGBAPixel<unsigned char>))
-      {
+       && (image->GetPixelType().GetPixelTypeId() == itk::ImageIOBase::RGBA)
+       && (image->GetPixelType().GetTypeId() == typeid( unsigned char)) )
+    {
       mitk::LevelWindow opaclevwin;
       opaclevwin.SetRangeMinMax(0,255);
       opaclevwin.SetWindowBounds(0,255);
@@ -1053,7 +865,7 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
   int x = xMin; //pixel index x
   int y = yMin; //pixel index y
   char* currentPixel;
-  
+
 
   //get the depth for each contour
   float depth = CalculateLayerDepth(renderer);
@@ -1061,20 +873,21 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New(); //the points to draw
   vtkSmartPointer<vtkCellArray> lines = vtkSmartPointer<vtkCellArray>::New(); //the lines to connect the points
 
-  while (y <= yMax) 
-  { 
-    currentPixel = static_cast<char*>(localStorage->m_ReslicedImage->GetScalarPointer(x, y, 0));
+  // We take the pointer to the first pixel of the image
+  currentPixel = static_cast<char*>(localStorage->m_ReslicedImage->GetScalarPointer() );
 
+  while (y <= yMax)
+  {
     //if the current pixel value is set to something
-    if ((currentPixel) && (*currentPixel != 0)) 
-	{
+    if ((currentPixel) && (*currentPixel != 0))
+    {
       //check in which direction a line is necessary
-	  //a line is added if the neighbor of the current pixel has the value 0
-	  //and if the pixel is located at the edge of the image
+      //a line is added if the neighbor of the current pixel has the value 0
+      //and if the pixel is located at the edge of the image
 
-	  //if   vvvvv  not the first line vvvvv
-      if (y > yMin && *(currentPixel-line) == 0) 
-	  { //x direction - bottom edge of the pixel
+      //if   vvvvv  not the first line vvvvv
+      if (y > yMin && *(currentPixel-line) == 0)
+      { //x direction - bottom edge of the pixel
         //add the 2 points
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
@@ -1084,9 +897,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  not the last line vvvvv
-      if (y < yMax && *(currentPixel+line) == 0) 
-	  { //x direction - top edge of the pixel
+      //if   vvvvv  not the last line vvvvv
+      if (y < yMax && *(currentPixel+line) == 0)
+      { //x direction - top edge of the pixel
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1094,9 +907,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  not the first pixel vvvvv
-      if ( (x > xMin || y > yMin) && *(currentPixel-1) == 0) 
-	  { //y direction - left edge of the pixel
+      //if   vvvvv  not the first pixel vvvvv
+      if ( (x > xMin || y > yMin) && *(currentPixel-1) == 0)
+      { //y direction - left edge of the pixel
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1104,9 +917,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  not the last pixel vvvvv
-      if ( (y < yMax || (x < xMax) ) && *(currentPixel+1) == 0) 
-	  { //y direction - right edge of the pixel
+      //if   vvvvv  not the last pixel vvvvv
+      if ( (y < yMax || (x < xMax) ) && *(currentPixel+1) == 0)
+      { //y direction - right edge of the pixel
         vtkIdType p1 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1114,11 +927,11 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  /*  now consider pixels at the edge of the image  */
+      /*  now consider pixels at the edge of the image  */
 
-	  //if   vvvvv  left edge of image vvvvv
-      if (x == xMin) 
-	  { //draw left edge of the pixel
+      //if   vvvvv  left edge of image vvvvv
+      if (x == xMin)
+      { //draw left edge of the pixel
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1126,9 +939,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  right edge of image vvvvv
-      if (x == xMax) 
-	  { //draw right edge of the pixel
+      //if   vvvvv  right edge of image vvvvv
+      if (x == xMax)
+      { //draw right edge of the pixel
         vtkIdType p1 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1136,9 +949,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  bottom edge of image vvvvv
-      if (y == yMin) 
-	  { //draw bottom edge of the pixel
+      //if   vvvvv  bottom edge of image vvvvv
+      if (y == yMin)
+      { //draw bottom edge of the pixel
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], y*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1146,9 +959,9 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
         lines->InsertCellPoint(p2);
       }
 
-	  //if   vvvvv  top edge of image vvvvv
-      if (y == yMax) 
-	  { //draw top edge of the pixel
+      //if   vvvvv  top edge of image vvvvv
+      if (y == yMax)
+      { //draw top edge of the pixel
         vtkIdType p1 = points->InsertNextPoint(x*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         vtkIdType p2 = points->InsertNextPoint((x+1)*localStorage->m_mmPerPixel[0], (y+1)*localStorage->m_mmPerPixel[1], depth);
         lines->InsertNextCell(2);
@@ -1159,12 +972,19 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
 
     x++;
 
-    if (x > xMax) 
-	{ //reached end of line
+    if (x > xMax)
+    { //reached end of line
       x = xMin;
       y++;
     }
-  }//end of while
+
+    // Increase the pointer-position to the next pixel.
+    // This is safe, as the while-loop and the x-reset logic above makes
+    // sure we do not exceed the bounds of the image
+    currentPixel++;
+
+
+}//end of while
 
 
   // Create a polydata to store everything in
@@ -1179,14 +999,49 @@ vtkSmartPointer<vtkPolyData> mitk::ImageVtkMapper2D::CreateOutlinePolyData(mitk:
 void mitk::ImageVtkMapper2D::TransformActor(mitk::BaseRenderer* renderer)
 {
   LocalStorage *localStorage = m_LSH.GetLocalStorage(renderer);
-  //get the transformation matrix of the reslicer in order to render the slice as transversal, coronal or saggital
+  //get the transformation matrix of the reslicer in order to render the slice as axial, coronal or saggital
   vtkSmartPointer<vtkTransform> trans = vtkSmartPointer<vtkTransform>::New();
   vtkSmartPointer<vtkMatrix4x4> matrix = localStorage->m_Reslicer->GetResliceAxes();
   trans->SetMatrix(matrix);
-  //transform the plane/contour (the actual actor) to the corresponding view (transversal, coronal or saggital)
+  //transform the plane/contour (the actual actor) to the corresponding view (axial, coronal or saggital)
   localStorage->m_Actor->SetUserTransform(trans);
   //transform the origin to center based coordinates, because MITK is center based.
   localStorage->m_Actor->SetPosition( -0.5*localStorage->m_mmPerPixel[0], -0.5*localStorage->m_mmPerPixel[1], 0.0);
+
+  if ( localStorage->m_Actors->GetNumberOfPaths() > 1 )
+  {
+     vtkActor* secondaryActor = dynamic_cast<vtkActor*>( localStorage->m_Actors->GetParts()->GetItemAsObject(0) );
+     secondaryActor->SetUserTransform(trans);
+     secondaryActor->SetPosition( -0.5*localStorage->m_mmPerPixel[0], -0.5*localStorage->m_mmPerPixel[1], 0.0);
+  }
+}
+
+bool mitk::ImageVtkMapper2D::RenderingGeometryIntersectsImage( const Geometry2D* renderingGeometry, SlicedGeometry3D* imageGeometry )
+{
+  // if either one of the two geometries is NULL we return true
+  // for safety reasons
+  if ( renderingGeometry == NULL || imageGeometry == NULL )
+    return true;
+
+  // get the distance for the first cornerpoint
+  ScalarType initialDistance = renderingGeometry->SignedDistance( imageGeometry->GetCornerPoint( 0 ) );
+  for( int i=1; i<8; i++ )
+  {
+    mitk::Point3D cornerPoint = imageGeometry->GetCornerPoint( i );
+
+    // get the distance to the other cornerpoints
+    ScalarType distance = renderingGeometry->SignedDistance( cornerPoint );
+
+    // if it has not the same signing as the distance of the first point
+    if ( initialDistance * distance < 0 )
+    {
+      // we have an intersection and return true
+      return true;
+    }
+  }
+
+  // all distances have the same sign, no intersection and we return false
+  return false;
 }
 
 mitk::ImageVtkMapper2D::LocalStorage::LocalStorage()
@@ -1197,18 +1052,16 @@ mitk::ImageVtkMapper2D::LocalStorage::LocalStorage()
   m_LookupTable = vtkSmartPointer<vtkLookupTable>::New();
   m_Mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
   m_Actor = vtkSmartPointer<vtkActor>::New();
-  m_Reslicer = vtkSmartPointer<vtkImageReslice>::New();
+  m_Actors = vtkSmartPointer<vtkPropAssembly>::New();
+  m_Reslicer = mitk::ExtractSliceFilter::New();
   m_TSFilter = vtkSmartPointer<vtkMitkThickSlicesFilter>::New();
-  m_UnitSpacingImageFilter = vtkSmartPointer<vtkImageChangeInformation>::New();
   m_OutlinePolyData = vtkSmartPointer<vtkPolyData>::New();
   m_ReslicedImage = vtkSmartPointer<vtkImageData>::New();
+  m_EmptyPolyData = vtkSmartPointer<vtkPolyData>::New();
 
   //the following actions are always the same and thus can be performed
   //in the constructor for each image (i.e. the image-corresponding local storage)
   m_TSFilter->ReleaseDataFlagOn();
-  m_Reslicer->ReleaseDataFlagOn();
-
-  m_UnitSpacingImageFilter->SetOutputSpacing( 1.0, 1.0, 1.0 );
 
   //built a default lookuptable
   m_LookupTable->SetRampToLinear();
@@ -1223,7 +1076,13 @@ mitk::ImageVtkMapper2D::LocalStorage::LocalStorage()
   m_Texture->RepeatOff();
 
   //set the mapper for the actor
-  m_Actor->SetMapper(m_Mapper);
+  m_Actor->SetMapper( m_Mapper );
+
+  vtkSmartPointer<vtkActor> outlineShadowActor = vtkSmartPointer<vtkActor>::New();
+  outlineShadowActor->SetMapper( m_Mapper );
+
+  m_Actors->AddPart( outlineShadowActor );
+  m_Actors->AddPart( m_Actor );
 
   //filter for RGB(A) images
   m_LevelWindowToRGBFilterObject = new vtkMitkApplyLevelWindowToRGBFilter();

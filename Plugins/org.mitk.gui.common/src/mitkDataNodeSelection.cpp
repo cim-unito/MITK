@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkDataNodeSelection.h"
 
@@ -71,6 +70,28 @@ int DataNodeSelection::Size() const
 berry::IStructuredSelection::ContainerType::Pointer DataNodeSelection::ToVector() const
 {
   return m_Selection;
+}
+
+std::list<DataNode::Pointer> DataNodeSelection::GetSelectedDataNodes() const
+{
+  std::list<DataNode::Pointer> selectedNodes;
+  if(IsEmpty())
+    return selectedNodes;
+
+  DataNodeObject::Pointer dataNodeObject;
+  DataNode::Pointer dataNode;
+
+  for(iterator it = Begin(); it != End(); ++it)
+  {
+    dataNodeObject = it->Cast<DataNodeObject>();
+    if(dataNodeObject.IsNotNull())
+    {
+      dataNode = dataNodeObject->GetDataNode();
+      if(dataNode.IsNotNull())
+        selectedNodes.push_back(dataNode);
+    }
+  }
+  return selectedNodes;
 }
 
 bool DataNodeSelection::IsEmpty() const

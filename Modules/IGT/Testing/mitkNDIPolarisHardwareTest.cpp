@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNDITrackingDevice.h"
 #include "mitkNDIPassiveTool.h"
@@ -36,6 +35,7 @@ int mitkNDIPolarisHardwareTest(int argc , char* argv[])
   mitk::NDITrackingDevice::Pointer myNDITrackingDevice = mitk::NDITrackingDevice::New();
   myNDITrackingDevice->SetType(mitk::NDIPolaris);
 
+#ifdef WIN32
   //set port
   switch (comPort)
     {
@@ -67,7 +67,12 @@ int mitkNDIPolarisHardwareTest(int argc , char* argv[])
       myNDITrackingDevice->SetPortNumber(mitk::SerialCommunication::COM9);
       break;
     }
-  
+
+#else
+  MITK_INFO << std::string(argv[1]);
+  myNDITrackingDevice->SetDeviceName(std::string(argv[1]));
+#endif
+
   //TODO: add tools
 
   //OpenConnection

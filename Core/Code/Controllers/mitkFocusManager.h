@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKFOCUSMANAGER_H_HEADER_INCLUDED_C135A197
@@ -30,7 +29,7 @@ namespace mitk {
 
 //##Documentation
 //## @brief manages a list of BaseRenderer.
-//## 
+//##
 //## A focuspointer can be set and read.
 //## GoToNext can be used to switch through the list.
 //## if the switch m_Loop is set to true, GetNext loops through the list; after
@@ -52,9 +51,9 @@ namespace mitk {
   typedef itk::WeakPointer<FocusElement> FocusElementWeakPointer;
 
   typedef std::vector<FocusElementWeakPointer> FocusElementList;
-  
+
   typedef std::vector<FocusElementWeakPointer>::iterator FocusListIterator;
-  
+
   //##Documentation
   //## Destructor
   ~FocusManager();
@@ -102,9 +101,9 @@ namespace mitk {
   //## loops the list, if switch loop is true
   //## returns true if successful, else false
   bool GoToNext();
-    
+
   //##Documentation
-  //## returns an iterator, that points to the 
+  //## returns an iterator, that points to the
   //## beginning of the list
   //## no changes are made to the current focused element
   FocusListIterator GetIter();
@@ -114,7 +113,7 @@ namespace mitk {
   //## if set to true-> the one after the last is the first
   void SetLoop(bool loop);
 
-  friend class GlobalInteraction;  
+  friend class GlobalInteraction;
 protected:
   //##Documentation
   //## Constructor
@@ -139,7 +138,7 @@ private:
 
 //##Documentation
 //## @brief connect to this Event to get noticed when the focus changes
-itkEventMacro( FocusEvent , itk::AnyEvent ); 
+itkEventMacro( FocusEvent , itk::AnyEvent );
 
 #pragma GCC visibility pop
 

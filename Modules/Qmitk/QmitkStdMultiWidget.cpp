@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #define SMW_INFO MITK_INFO("widget.stdmulti")
 
@@ -49,28 +48,47 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include "mitkVtkLayerController.h"
 
-QmitkStdMultiWidget::QmitkStdMultiWidget(QWidget* parent, Qt::WindowFlags f)
-: QWidget(parent, f), 
+QmitkStdMultiWidget::QmitkStdMultiWidget(QWidget* parent, Qt::WindowFlags f, mitk::RenderingManager* renderingManager)
+: QWidget(parent, f),
 mitkWidget1(NULL),
 mitkWidget2(NULL),
 mitkWidget3(NULL),
 mitkWidget4(NULL),
+levelWindowWidget(NULL),
+QmitkStdMultiWidgetLayout(NULL),
+m_Layout(LAYOUT_DEFAULT),
+m_PlaneMode(PLANE_MODE_SLICING),
+m_RenderingManager(renderingManager),
 m_GradientBackgroundFlag(true),
-m_PlaneNode1(NULL), 
-m_PlaneNode2(NULL), 
-m_PlaneNode3(NULL), 
-m_Node(NULL),
+m_TimeNavigationController(NULL),
+m_MainSplit(NULL),
+m_LayoutSplit(NULL),
+m_SubSplit1(NULL),
+m_SubSplit2(NULL),
+mitkWidget1Container(NULL),
+mitkWidget2Container(NULL),
+mitkWidget3Container(NULL),
+mitkWidget4Container(NULL),
 m_PendingCrosshairPositionEvent(false),
 m_ExponentialFormat(false),
 m_Precision(2),
 m_CrosshairNavigationEnabled(false)
 {
+  /******************************************************
+   * Use the global RenderingManager if none was specified
+   * ****************************************************/
+  if (m_RenderingManager == NULL)
+  {
+    m_RenderingManager = mitk::RenderingManager::GetInstance();
+  }
+  m_TimeNavigationController = m_RenderingManager->GetTimeNavigationController();
+
   /*******************************/
   //Create Widget manually
   /*******************************/
 
   //create Layouts
-  QmitkStdMultiWidgetLayout = new QHBoxLayout( this ); 
+  QmitkStdMultiWidgetLayout = new QHBoxLayout( this );
   QmitkStdMultiWidgetLayout->setContentsMargins(0,0,0,0);
 
   //Set Layout to widget
@@ -87,7 +105,7 @@ m_CrosshairNavigationEnabled(false)
   m_LayoutSplit = new QSplitter( Qt::Vertical, m_MainSplit );
   m_MainSplit->addWidget( m_LayoutSplit );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -113,11 +131,11 @@ m_CrosshairNavigationEnabled(false)
   mitkWidgetLayout3->setContentsMargins(0,0,0,0);
   mitkWidgetLayout4->setContentsMargins(0,0,0,0);
 
-  //set Layout to Widget Container  
-  mitkWidget1Container->setLayout(mitkWidgetLayout1); 
-  mitkWidget2Container->setLayout(mitkWidgetLayout2); 
-  mitkWidget3Container->setLayout(mitkWidgetLayout3); 
-  mitkWidget4Container->setLayout(mitkWidgetLayout4); 
+  //set Layout to Widget Container
+  mitkWidget1Container->setLayout(mitkWidgetLayout1);
+  mitkWidget2Container->setLayout(mitkWidgetLayout2);
+  mitkWidget3Container->setLayout(mitkWidgetLayout3);
+  mitkWidget4Container->setLayout(mitkWidgetLayout4);
 
   //set SizePolicy
   mitkWidget1Container->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
@@ -133,32 +151,32 @@ m_CrosshairNavigationEnabled(false)
   m_SubSplit2->addWidget( mitkWidget3Container );
   m_SubSplit2->addWidget( mitkWidget4Container );
 
-//  mitk::RenderingManager::GetInstance()->SetGlobalInteraction( mitk::GlobalInteraction::GetInstance() );
+  //  m_RenderingManager->SetGlobalInteraction( mitk::GlobalInteraction::GetInstance() );
 
   //Create RenderWindows 1
-  mitkWidget1 = new QmitkRenderWindow(mitkWidget1Container, "stdmulti.widget1");
+  mitkWidget1 = new QmitkRenderWindow(mitkWidget1Container, "stdmulti.widget1", NULL, m_RenderingManager);
   mitkWidget1->setMaximumSize(2000,2000);
-  mitkWidget1->SetLayoutIndex( TRANSVERSAL );
-  mitkWidgetLayout1->addWidget(mitkWidget1); 
+  mitkWidget1->SetLayoutIndex( AXIAL );
+  mitkWidgetLayout1->addWidget(mitkWidget1);
 
   //Create RenderWindows 2
-  mitkWidget2 = new QmitkRenderWindow(mitkWidget2Container, "stdmulti.widget2");
+  mitkWidget2 = new QmitkRenderWindow(mitkWidget2Container, "stdmulti.widget2", NULL, m_RenderingManager);
   mitkWidget2->setMaximumSize(2000,2000);
   mitkWidget2->setEnabled( TRUE );
   mitkWidget2->SetLayoutIndex( SAGITTAL );
-  mitkWidgetLayout2->addWidget(mitkWidget2); 
+  mitkWidgetLayout2->addWidget(mitkWidget2);
 
   //Create RenderWindows 3
-  mitkWidget3 = new QmitkRenderWindow(mitkWidget3Container, "stdmulti.widget3");
+  mitkWidget3 = new QmitkRenderWindow(mitkWidget3Container, "stdmulti.widget3", NULL, m_RenderingManager);
   mitkWidget3->setMaximumSize(2000,2000);
   mitkWidget3->SetLayoutIndex( CORONAL );
-  mitkWidgetLayout3->addWidget(mitkWidget3); 
+  mitkWidgetLayout3->addWidget(mitkWidget3);
 
   //Create RenderWindows 4
-  mitkWidget4 = new QmitkRenderWindow(mitkWidget4Container, "stdmulti.widget4");
+  mitkWidget4 = new QmitkRenderWindow(mitkWidget4Container, "stdmulti.widget4", NULL, m_RenderingManager);
   mitkWidget4->setMaximumSize(2000,2000);
   mitkWidget4->SetLayoutIndex( THREE_D );
-  mitkWidgetLayout4->addWidget(mitkWidget4); 
+  mitkWidgetLayout4->addWidget(mitkWidget4);
 
   //create SignalSlot Connection
   connect( mitkWidget1, SIGNAL( SignalLayoutDesignChanged(int) ), this, SLOT( OnLayoutDesignChanged(int) ) );
@@ -190,7 +208,7 @@ m_CrosshairNavigationEnabled(false)
   sizePolicy.setHeightForWidth(levelWindowWidget->sizePolicy().hasHeightForWidth());
   levelWindowWidget->setSizePolicy(sizePolicy);
   levelWindowWidget->setMaximumSize(QSize(50, 2000));
-  
+
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
@@ -247,7 +265,7 @@ void QmitkStdMultiWidget::InitializeWidget()
 
   // Set default view directions for SNCs
   mitkWidget1->GetSliceNavigationController()->SetDefaultViewDirection(
-    mitk::SliceNavigationController::Transversal );
+    mitk::SliceNavigationController::Axial );
   mitkWidget2->GetSliceNavigationController()->SetDefaultViewDirection(
     mitk::SliceNavigationController::Sagittal );
   mitkWidget3->GetSliceNavigationController()->SetDefaultViewDirection(
@@ -258,11 +276,11 @@ void QmitkStdMultiWidget::InitializeWidget()
   /*************************************************/
   //Write Layout Names into the viewers -- hardCoded
 
-  //Info for later: 
+  //Info for later:
   //int view = this->GetRenderWindow1()->GetSliceNavigationController()->GetDefaultViewDirection();
   //QString layoutName;
-  //if( view == mitk::SliceNavigationController::Transversal )
-  //  layoutName = "Transversal";
+  //if( view == mitk::SliceNavigationController::Axial )
+  //  layoutName = "Axial";
   //else if( view == mitk::SliceNavigationController::Sagittal )
   //  layoutName = "Sagittal";
   //else if( view == mitk::SliceNavigationController::Frontal )
@@ -272,9 +290,9 @@ void QmitkStdMultiWidget::InitializeWidget()
   //if( view >= 0 && view < 4 )
   //  //write LayoutName --> Viewer 3D shoudn't write the layoutName.
 
-  //Render Window 1 == transversal
+  //Render Window 1 == axial
   m_CornerAnnotaions[0].cornerText = vtkCornerAnnotation::New();
-  m_CornerAnnotaions[0].cornerText->SetText(0, "Transversal");
+  m_CornerAnnotaions[0].cornerText->SetText(0, "Axial");
   m_CornerAnnotaions[0].cornerText->SetMaximumFontSize(12);
   m_CornerAnnotaions[0].textProp = vtkTextProperty::New();
   m_CornerAnnotaions[0].textProp->SetColor( 1.0, 0.0, 0.0 );
@@ -283,7 +301,7 @@ void QmitkStdMultiWidget::InitializeWidget()
   m_CornerAnnotaions[0].ren->AddActor(m_CornerAnnotaions[0].cornerText);
   m_CornerAnnotaions[0].ren->InteractiveOff();
   mitk::VtkLayerController::GetInstance(this->GetRenderWindow1()->GetRenderWindow())->InsertForegroundRenderer(m_CornerAnnotaions[0].ren,true);
-  
+
   //Render Window 2 == sagittal
   m_CornerAnnotaions[1].cornerText = vtkCornerAnnotation::New();
   m_CornerAnnotaions[1].cornerText->SetText(0, "Sagittal");
@@ -295,7 +313,7 @@ void QmitkStdMultiWidget::InitializeWidget()
   m_CornerAnnotaions[1].ren->AddActor(m_CornerAnnotaions[1].cornerText);
   m_CornerAnnotaions[1].ren->InteractiveOff();
   mitk::VtkLayerController::GetInstance(this->GetRenderWindow2()->GetRenderWindow())->InsertForegroundRenderer(m_CornerAnnotaions[1].ren,true);
-  
+
   //Render Window 3 == coronal
   m_CornerAnnotaions[2].cornerText = vtkCornerAnnotation::New();
   m_CornerAnnotaions[2].cornerText->SetText(0, "Coronal");
@@ -307,7 +325,7 @@ void QmitkStdMultiWidget::InitializeWidget()
   m_CornerAnnotaions[2].ren->AddActor(m_CornerAnnotaions[2].cornerText);
   m_CornerAnnotaions[2].ren->InteractiveOff();
   mitk::VtkLayerController::GetInstance(this->GetRenderWindow3()->GetRenderWindow())->InsertForegroundRenderer(m_CornerAnnotaions[2].ren,true);
-   
+
   /*************************************************/
 
 
@@ -332,8 +350,7 @@ void QmitkStdMultiWidget::InitializeWidget()
   m_SlicesSwiveller->AddSliceController(
     mitkWidget3->GetSliceNavigationController() );
 
-  //initialize m_TimeNavigationController: send time via sliceNavigationControllers
-  m_TimeNavigationController = mitk::SliceNavigationController::New("dummy");
+  //connect to the "time navigation controller": send time via sliceNavigationControllers
   m_TimeNavigationController->ConnectGeometryTimeEvent(
     mitkWidget1->GetSliceNavigationController() , false);
   m_TimeNavigationController->ConnectGeometryTimeEvent(
@@ -345,20 +362,15 @@ void QmitkStdMultiWidget::InitializeWidget()
   mitkWidget1->GetSliceNavigationController()
     ->ConnectGeometrySendEvent(mitk::BaseRenderer::GetInstance(mitkWidget4->GetRenderWindow()));
 
-  // Set TimeNavigationController to RenderingManager
-  // (which uses it internally for views initialization!)
-  mitk::RenderingManager::GetInstance()->SetTimeNavigationController(
-    m_TimeNavigationController );
-
   //reverse connection between sliceNavigationControllers and m_TimeNavigationController
   mitkWidget1->GetSliceNavigationController()
-    ->ConnectGeometryTimeEvent(m_TimeNavigationController.GetPointer(), false);
+    ->ConnectGeometryTimeEvent(m_TimeNavigationController, false);
   mitkWidget2->GetSliceNavigationController()
-    ->ConnectGeometryTimeEvent(m_TimeNavigationController.GetPointer(), false);
+    ->ConnectGeometryTimeEvent(m_TimeNavigationController, false);
   mitkWidget3->GetSliceNavigationController()
-    ->ConnectGeometryTimeEvent(m_TimeNavigationController.GetPointer(), false);
+    ->ConnectGeometryTimeEvent(m_TimeNavigationController, false);
   mitkWidget4->GetSliceNavigationController()
-    ->ConnectGeometryTimeEvent(m_TimeNavigationController.GetPointer(), false);
+    ->ConnectGeometryTimeEvent(m_TimeNavigationController, false);
 
   m_MouseModeSwitcher = mitk::MouseModeSwitcher::New( mitk::GlobalInteraction::GetInstance() );
 
@@ -430,11 +442,16 @@ void QmitkStdMultiWidget::InitializeWidget()
     mitkWidget4->GetRenderWindow() );
   m_RectangleRendering4->Enable(1.0,1.0,0.0);
 }
-  
+
 QmitkStdMultiWidget::~QmitkStdMultiWidget()
 {
   DisablePositionTracking();
   DisableNavigationControllerEventListening();
+
+  m_TimeNavigationController->Disconnect(mitkWidget1->GetSliceNavigationController());
+  m_TimeNavigationController->Disconnect(mitkWidget2->GetSliceNavigationController());
+  m_TimeNavigationController->Disconnect(mitkWidget3->GetSliceNavigationController());
+  m_TimeNavigationController->Disconnect(mitkWidget4->GetSliceNavigationController());
 
   mitk::VtkLayerController::GetInstance(this->GetRenderWindow1()->GetRenderWindow())->RemoveRenderer( m_CornerAnnotaions[0].ren );
   mitk::VtkLayerController::GetInstance(this->GetRenderWindow2()->GetRenderWindow())->RemoveRenderer( m_CornerAnnotaions[1].ren );
@@ -512,7 +529,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DImagesUp()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -583,7 +600,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DImagesLeft()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( Qt::Vertical, m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -653,7 +670,7 @@ void QmitkStdMultiWidget::changeLayoutToDefault()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -1013,7 +1030,7 @@ void QmitkStdMultiWidget::changeLayoutToSmallUpperWidget2Big3and4()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( Qt::Vertical, m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -1079,7 +1096,7 @@ void QmitkStdMultiWidget::changeLayoutTo2x2Dand3DWidget()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( Qt::Vertical, m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -1141,7 +1158,7 @@ void QmitkStdMultiWidget::changeLayoutToLeft2Dand3DRight2D()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( Qt::Vertical, m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -1206,7 +1223,7 @@ void QmitkStdMultiWidget::changeLayoutTo2DUpAnd3DDown()
   //add LevelWindow Widget to mainSplitter
   m_MainSplit->addWidget( levelWindowWidget );
 
-  //create m_SubSplit1 and m_SubSplit2  
+  //create m_SubSplit1 and m_SubSplit2
   m_SubSplit1 = new QSplitter( m_LayoutSplit );
   m_SubSplit2 = new QSplitter( m_LayoutSplit );
 
@@ -1274,19 +1291,19 @@ void QmitkStdMultiWidget::Fit()
   vtkObject::GlobalWarningDisplayOff();
 
   vtkrenderer = mitk::BaseRenderer::GetInstance(mitkWidget1->GetRenderWindow())->GetVtkRenderer();
-  if ( vtkrenderer!= NULL ) 
+  if ( vtkrenderer!= NULL )
     vtkrenderer->ResetCamera();
 
   vtkrenderer = mitk::BaseRenderer::GetInstance(mitkWidget2->GetRenderWindow())->GetVtkRenderer();
-  if ( vtkrenderer!= NULL ) 
+  if ( vtkrenderer!= NULL )
     vtkrenderer->ResetCamera();
 
   vtkrenderer = mitk::BaseRenderer::GetInstance(mitkWidget3->GetRenderWindow())->GetVtkRenderer();
-  if ( vtkrenderer!= NULL ) 
+  if ( vtkrenderer!= NULL )
     vtkrenderer->ResetCamera();
 
   vtkrenderer = mitk::BaseRenderer::GetInstance(mitkWidget4->GetRenderWindow())->GetVtkRenderer();
-  if ( vtkrenderer!= NULL ) 
+  if ( vtkrenderer!= NULL )
     vtkrenderer->ResetCamera();
 
   vtkObject::SetGlobalWarningDisplay(w);
@@ -1310,7 +1327,7 @@ void QmitkStdMultiWidget::InitPositionTracking()
 
 void QmitkStdMultiWidget::AddDisplayPlaneSubTree()
 {
-  // add the displayed planes of the multiwidget to a node to which the subtree 
+  // add the displayed planes of the multiwidget to a node to which the subtree
   // @a planesSubTree points ...
 
   float white[3] = {1.0f,1.0f,1.0f};
@@ -1354,7 +1371,7 @@ void QmitkStdMultiWidget::AddDisplayPlaneSubTree()
 
 mitk::SliceNavigationController* QmitkStdMultiWidget::GetTimeNavigationController()
 {
-  return m_TimeNavigationController.GetPointer();
+  return m_TimeNavigationController;
 }
 
 
@@ -1377,25 +1394,25 @@ void QmitkStdMultiWidget::DisableStandardLevelWindow()
 // Use RenderingManager::InitializeViews() instead.
 bool QmitkStdMultiWidget::InitializeStandardViews( const mitk::Geometry3D * geometry )
 {
-  return mitk::RenderingManager::GetInstance()->InitializeViews( geometry );
+  return m_RenderingManager->InitializeViews( geometry );
 }
 
 
 void QmitkStdMultiWidget::RequestUpdate()
 {
-  mitk::RenderingManager::GetInstance()->RequestUpdate(mitkWidget1->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->RequestUpdate(mitkWidget2->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->RequestUpdate(mitkWidget3->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->RequestUpdate(mitkWidget4->GetRenderWindow());
+  m_RenderingManager->RequestUpdate(mitkWidget1->GetRenderWindow());
+  m_RenderingManager->RequestUpdate(mitkWidget2->GetRenderWindow());
+  m_RenderingManager->RequestUpdate(mitkWidget3->GetRenderWindow());
+  m_RenderingManager->RequestUpdate(mitkWidget4->GetRenderWindow());
 }
 
 
 void QmitkStdMultiWidget::ForceImmediateUpdate()
 {
-  mitk::RenderingManager::GetInstance()->ForceImmediateUpdate(mitkWidget1->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->ForceImmediateUpdate(mitkWidget2->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->ForceImmediateUpdate(mitkWidget3->GetRenderWindow());
-  mitk::RenderingManager::GetInstance()->ForceImmediateUpdate(mitkWidget4->GetRenderWindow());
+  m_RenderingManager->ForceImmediateUpdate(mitkWidget1->GetRenderWindow());
+  m_RenderingManager->ForceImmediateUpdate(mitkWidget2->GetRenderWindow());
+  m_RenderingManager->ForceImmediateUpdate(mitkWidget3->GetRenderWindow());
+  m_RenderingManager->ForceImmediateUpdate(mitkWidget4->GetRenderWindow());
 }
 
 
@@ -1408,14 +1425,14 @@ void QmitkStdMultiWidget::mousePressEvent(QMouseEvent * e)
 {
    if (e->button() == Qt::LeftButton) {
        mitk::Point3D pointValue = this->GetLastLeftClickPosition();
-       emit LeftMouseClicked(pointValue); 
+       emit LeftMouseClicked(pointValue);
    }
 }
 
 void QmitkStdMultiWidget::moveEvent( QMoveEvent* e )
 {
   QWidget::moveEvent( e );
-  
+
   // it is necessary to readjust the position of the overlays as the StdMultiWidget has moved
   // unfortunately it's not done by QmitkRenderWindow::moveEvent -> must be done here
   emit Moved();
@@ -1591,7 +1608,7 @@ void QmitkStdMultiWidget::MoveCrossToPosition(const mitk::Point3D& newPosition)
     ->GetDisplayGeometry(), newPosition );
 
   // update displays
-  mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+  m_RenderingManager->RequestUpdateAll();
 }
 
 void QmitkStdMultiWidget::HandleCrosshairPositionEvent()
@@ -1614,14 +1631,15 @@ void QmitkStdMultiWidget::HandleCrosshairPositionEventDelayed()
 
   mitk::DataStorage::SetOfObjects::ConstPointer nodes = this->m_DataStorage->GetSubset(isImageData).GetPointer();
   std::string statusText;
-  mitk::Image::Pointer image3D;
+  mitk::Image::Pointer image;
   int  maxlayer = -32768;
 
   mitk::BaseRenderer* baseRenderer = this->mitkWidget1->GetSliceNavigationController()->GetRenderer();
   // find image with largest layer, that is the image shown on top in the render window
   for (unsigned int x = 0; x < nodes->size(); x++)
   {
-    if(nodes->at(x)->GetData()->GetGeometry()->IsInside(crosshairPos))
+    if ( (nodes->at(x)->GetData()->GetGeometry() != NULL) &&
+         nodes->at(x)->GetData()->GetGeometry()->IsInside(crosshairPos) )
     {
       int layer = 0;
       if(!(nodes->at(x)->GetIntProperty("layer", layer))) continue;
@@ -1629,7 +1647,7 @@ void QmitkStdMultiWidget::HandleCrosshairPositionEventDelayed()
       {
         if( static_cast<mitk::DataNode::Pointer>(nodes->at(x))->IsVisible( baseRenderer ) )
         {
-          image3D = dynamic_cast<mitk::Image*>(nodes->at(x)->GetData());
+          image = dynamic_cast<mitk::Image*>(nodes->at(x)->GetData());
           maxlayer = layer;
         }
       }
@@ -1639,14 +1657,16 @@ void QmitkStdMultiWidget::HandleCrosshairPositionEventDelayed()
   std::stringstream stream;
 
   mitk::Index3D p;
-  if(image3D.IsNotNull())
+  int timestep = baseRenderer->GetTimeStep();
+
+  if(image.IsNotNull() && (image->GetTimeSteps() > timestep ))
   {
-    image3D->GetGeometry()->WorldToIndex(crosshairPos, p);
+    image->GetGeometry()->WorldToIndex(crosshairPos, p);
     stream.precision(2);
     stream<<"Position: <" << std::fixed <<crosshairPos[0] << ", " << std::fixed << crosshairPos[1] << ", " << std::fixed << crosshairPos[2] << "> mm";
     stream<<"; Index: <"<<p[0] << ", " << p[1] << ", " << p[2] << "> "
          << "; Time: " << baseRenderer->GetTime() << " ms; Pixel value: ";
-    mitk::ScalarType pixelValue = image3D->GetPixelValueByIndex(p, baseRenderer->GetTimeStep());
+    mitk::ScalarType pixelValue = image->GetPixelValueByIndex(p, baseRenderer->GetTimeStep());
     if (m_ExponentialFormat) {
       stream << std::scientific;
     }
@@ -1809,7 +1829,7 @@ void QmitkStdMultiWidget::SetWidgetPlanesVisibility(bool visible, mitk::BaseRend
   SetWidgetPlaneVisibility("widget1Plane", visible, renderer);
   SetWidgetPlaneVisibility("widget2Plane", visible, renderer);
   SetWidgetPlaneVisibility("widget3Plane", visible, renderer);
-  mitk::RenderingManager::GetInstance()->RequestUpdateAll();
+  m_RenderingManager->RequestUpdateAll();
 }
 
 
@@ -1847,10 +1867,10 @@ void QmitkStdMultiWidget::SetWidgetPlaneMode( int userMode )
   m_MouseModeSwitcher->SelectMouseMode( mitk::MouseModeSwitcher::MousePointer );
 
   emit WidgetNotifyNewCrossHairMode( userMode );
-  
+
   int mode = m_PlaneMode;
   bool link = false;
-  
+
   // Convert user interface mode to actual mode
   {
     switch(userMode)
@@ -1859,17 +1879,17 @@ void QmitkStdMultiWidget::SetWidgetPlaneMode( int userMode )
         mode = PLANE_MODE_SLICING;
         link = false;
         break;
-      
+
       case 1:
         mode = PLANE_MODE_ROTATION;
         link = false;
         break;
-     
+
       case 2:
         mode = PLANE_MODE_ROTATION;
         link = true;
         break;
-     
+
       case 3:
         mode = PLANE_MODE_SWIVEL;
         link = false;
@@ -1935,7 +1955,7 @@ void QmitkStdMultiWidget::SetWidgetPlaneMode( int userMode )
     gi->AddListener( mitkWidget3->GetSliceNavigationController() );
     gi->AddListener( mitkWidget4->GetSliceNavigationController() );
 
-    mitk::RenderingManager::GetInstance()->InitializeViews();
+    m_RenderingManager->InitializeViews();
     break;
 
   case PLANE_MODE_ROTATION:
@@ -2106,17 +2126,17 @@ void QmitkStdMultiWidget::HideAllWidgetToolbars()
 
 void QmitkStdMultiWidget::ActivateMenuWidget( bool state )
 {
-  mitkWidget1->ActivateMenuWidget( state );
-  mitkWidget2->ActivateMenuWidget( state );
-  mitkWidget3->ActivateMenuWidget( state );
-  mitkWidget4->ActivateMenuWidget( state );
+  mitkWidget1->ActivateMenuWidget( state, this );
+  mitkWidget2->ActivateMenuWidget( state, this );
+  mitkWidget3->ActivateMenuWidget( state, this );
+  mitkWidget4->ActivateMenuWidget( state, this );
 }
 
 bool QmitkStdMultiWidget::IsMenuWidgetEnabled() const
 {
   return mitkWidget1->GetActivateMenuWidgetFlag();
 }
- 
+
 void QmitkStdMultiWidget::ResetCrosshair()
 {
   if (m_DataStorage.IsNotNull())
@@ -2133,9 +2153,9 @@ void QmitkStdMultiWidget::ResetCrosshair()
     mitk::DataStorage::SetOfObjects::ConstPointer rs2 = m_DataStorage->GetSubset(pred2);
     // calculate bounding geometry of these nodes
     mitk::TimeSlicedGeometry::Pointer bounds = m_DataStorage->ComputeBoundingGeometry3D(rs, "visible");
-    
-    mitk::RenderingManager::GetInstance()->InitializeViews(bounds);
-    //mitk::RenderingManager::GetInstance()->InitializeViews( m_DataStorage->ComputeVisibleBoundingGeometry3D() );
+
+    m_RenderingManager->InitializeViews(bounds);
+    //m_RenderingManager->InitializeViews( m_DataStorage->ComputeVisibleBoundingGeometry3D() );
     // reset interactor to normal slicing
     this->SetWidgetPlaneMode(PLANE_MODE_SLICING);
   }
@@ -2201,6 +2221,35 @@ void QmitkStdMultiWidget::MouseModeSelected( mitk::MouseModeSwitcher::MouseMode 
   else
   {
     this->DisableNavigationControllerEventListening();
+  }
+}
+
+mitk::DataNode::Pointer QmitkStdMultiWidget::GetWidgetPlane1()
+{
+  return this->m_PlaneNode1;
+}
+
+mitk::DataNode::Pointer QmitkStdMultiWidget::GetWidgetPlane2()
+{
+  return this->m_PlaneNode2;
+}
+
+mitk::DataNode::Pointer QmitkStdMultiWidget::GetWidgetPlane3()
+{
+  return this->m_PlaneNode3;
+}
+
+mitk::DataNode::Pointer QmitkStdMultiWidget::GetWidgetPlane(int id)
+{
+  switch(id)
+  {
+    case 1: return this->m_PlaneNode1;
+    break;
+    case 2: return this->m_PlaneNode2;
+    break;
+    case 3: return this->m_PlaneNode3;
+    break;
+    default: return NULL;
   }
 }
 

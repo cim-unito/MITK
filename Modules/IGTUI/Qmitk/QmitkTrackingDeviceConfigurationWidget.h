@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKTRACKINGDEVICECONFIGURATIONWIDGET_H
 #define QMITKTRACKINGDEVICECONFIGURATIONWIDGET_H
@@ -32,7 +31,7 @@ PURPOSE.  See the above copyright notices for more information.
   *          a fully configurated tracking device is availiabe the object emits a
   *          signal "TrackingDeviceConfigurationFinished()". You can then get the
   *          tracking device by calling the method GetTrackingDevice().
-  *          
+  *
   *          Once the tracking device is configurated there are two ways to reset
   *          the UI to allow the user for configuring a new device. The method Reset()
   *          can be called and there is also a button "reset" which can be pressed by
@@ -53,12 +52,12 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
 
     QmitkTrackingDeviceConfigurationWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~QmitkTrackingDeviceConfigurationWidget();
-    
+
     /* @return Returns the current configurated tracking device. If the user didn't finished the
      *         configuration process NULL is returned.
-     */ 
+     */
     mitk::TrackingDevice::Pointer GetTrackingDevice();
-    
+
     enum Style
       {
       SIMPLE,
@@ -81,10 +80,10 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
      */
     void EnableUserReset(bool enable);
 
-	  /** @return Returns true if the tracking device is completely configured (you can get it by calling GetTrackingDevice() in this case).
-	    *          Returns false if configuration is not finished.
-	    */
-	  bool GetTrackingDeviceConfigured();
+    /** @return Returns true if the tracking device is completely configured (you can get it by calling GetTrackingDevice() in this case).
+     *          Returns false if configuration is not finished.
+     */
+    bool GetTrackingDeviceConfigured();
 
     /** @brief Sets the style of this widget. Default is ADVANCED. Caution: The style can only be set once at startup! */
     void SetGUIStyle(Style style);
@@ -95,7 +94,7 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
       */
     void EnableAdvancedUserControl(bool enable);
 
-    
+
   signals:
 
     /* @brief This signal is sent if the user has finished the configuration of the tracking device.
@@ -104,7 +103,7 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
      */
     void TrackingDeviceConfigurationFinished();
 
-    /* @brief This signal is sent if the UI was reseted and the user is required to configurate 
+    /* @brief This signal is sent if the UI was reseted and the user is required to configurate
      *        a new tracking device.
      */
     void TrackingDeviceConfigurationReseted();
@@ -113,7 +112,7 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
     void TrackingDeviceSelectionChanged();
 
   protected:
-    
+
     /// \brief Creation of the connections
     virtual void CreateConnections();
 
@@ -126,13 +125,13 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
     mitk::TrackingDevice::Pointer m_TrackingDevice;
 
     std::string m_MTCalibrationFile;
-    
+
     bool m_TrackingDeviceConfigurated;
 
     bool m_AdvancedUserControl;
 
     // key is port name (e.g. "COM1", "/dev/ttyS0"), value will be filled with the type of tracking device at this port
-    typedef QMap<QString, mitk::TrackingDeviceType> PortDeviceMap;  
+    typedef QMap<QString, mitk::TrackingDeviceType> PortDeviceMap;
 
     //######################### internal help methods #######################################
     void ResetOutput();
@@ -143,7 +142,7 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
       * @return  Returns the type of the device if one was found. Returns TrackingSystemNotSpecified if none was found.
       */
     mitk::TrackingDeviceType ScanPort(QString port);
-    
+
 
   protected slots:
     /* @brief This method is called when the user changes the selection of the trackingdevice (m_trackingDeviceChooser).
@@ -172,13 +171,13 @@ class MitkIGTUI_EXPORT QmitkTrackingDeviceConfigurationWidget : public QWidget
      */
     virtual mitk::TrackingDevice::Pointer ConfigureNDI5DTrackingDevice();
 
-    /* @return Returns a configured NDI 6D tracking device. 
+    /* @return Returns a configured NDI 6D tracking device.
      *         The type (which means Aurora/Polaris) will not be set in the returnvalue. You have to this later.
      */
     mitk::TrackingDevice::Pointer ConfigureNDI6DTrackingDevice();
 
 
-    /* @brief Scans the serial ports automatically for a connected tracking device. If the method finds a device 
+    /* @brief Scans the serial ports automatically for a connected tracking device. If the method finds a device
      *        it selects the right type and sets the corresponding port in the widget.
      */
     void AutoScanPorts();

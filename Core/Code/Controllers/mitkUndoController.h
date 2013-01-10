@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef UNDOCONTROLLER_H_HEADER_INCLUDED_C16EFF79
@@ -95,20 +94,20 @@ class MITK_CORE_EXPORT UndoController
   bool RemoveUndoModel(UndoType undoType);
 
   //##Documentation
-  //## @brief returns the ObjectEventId of the 
-  //## top Element in the OperationHistory of the selected 
+  //## @brief returns the ObjectEventId of the
+  //## top Element in the OperationHistory of the selected
   //## UndoModel
   int GetLastObjectEventIdInList();
 
   //##Documentation
-  //## @brief returns the GroupEventId of the 
-  //## top Element in the OperationHistory of the selected 
+  //## @brief returns the GroupEventId of the
+  //## top Element in the OperationHistory of the selected
   //## UndoModel
   int GetLastGroupEventIdInList();
 
 
   //##Documentation
-  //## @brief returns the last specified OperationEvent in Undo-list  
+  //## @brief returns the last specified OperationEvent in Undo-list
   //## corresponding to the given value; if nothing found, then returns NULL
   OperationEvent* GetLastOfType(OperationActor* destination, OperationType opType);
 
@@ -117,7 +116,7 @@ class MITK_CORE_EXPORT UndoController
   //## Introduced to access special functions of more specific UndoModels,
   //## especially to retrieve text descriptions of the undo/redo stack
   static UndoModel* GetCurrentUndoModel();
-  
+
   private:
   //##Documentation
   //## current selected UndoModel

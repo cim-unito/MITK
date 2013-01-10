@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef IMAGEDATAITEM_H
@@ -24,29 +23,49 @@ PURPOSE.  See the above copyright notices for more information.
 //#include <mitkIpPic.h>
 //#include "mitkPixelType.h"
 #include "mitkImageDescriptor.h"
+//#include "mitkImageVtkAccessor.h"
 
 class vtkImageData;
 
 namespace mitk {
 
   class PixelType;
+  class ImageVtkAccessor;
+
+  class Image;
+
+  typedef itk::SmartPointer<mitk::Image> ImagePointer;
+
 
   //##Documentation
   //## @brief Internal class for managing references on sub-images
   //##
-  //## ImageDataItem is a container for image data which is used internal in  
+  //## ImageDataItem is a container for image data which is used internal in
   //## mitk::Image to handle the communication between the different data types for images
-  //## used in MITK (ipPicDescriptor, mitk::Image, vtkImageData). Common for these image data 
+  //## used in MITK (ipPicDescriptor, mitk::Image, vtkImageData). Common for these image data
   //## types is the actual image data, but they differ in representation of pixel type etc.
-  //## The class is also used to convert ipPic images to vtkImageData. 
+  //## The class is also used to convert ipPic images to vtkImageData.
   //##
   //## The class is mainly used to extract sub-images inside of mitk::Image, like single slices etc.
   //## It should not be used outside of this.
-  //## 
+  //##
   //## @param manageMemory Determines if image data is removed while destruction of ImageDataItem or not.
   //## @ingroup Data
   class MITK_CORE_EXPORT ImageDataItem : public itk::LightObject
   {
+
+  friend class ImageAccessorBase;
+  friend class ImageWriteAccessor;
+  friend class ImageReadAccessor;
+
+  template <class TPixel, unsigned int VDimension>
+  friend class ImagePixelAccessor;
+
+  friend class Image;
+
+//  template<class TOutputImage>
+//  friend class ImageToItk;
+
   public:
     mitkClassMacro(ImageDataItem, itk::LightObject);
 
@@ -60,7 +79,9 @@ namespace mitk {
 
     ImageDataItem(const ImageDataItem &other);
 
-    void* GetData() const
+   /**
+   \deprecatedSince{2012_09} Please use image accessors instead: See Doxygen/Related-Pages/Concepts/Image. This method can be replaced by ImageWriteAccessor::GetData() or ImageReadAccessor::GetData() */
+    DEPRECATED(void* GetData() const)
     {
       return m_Data;
     }
@@ -106,12 +127,12 @@ namespace mitk {
     }
 
     //## Returns a vtkImageData; if non is present, a new one is constructed.
-    vtkImageData* GetVtkImageData() const
-    {
+    ImageVtkAccessor* GetVtkImageData(ImagePointer) const;
+    /*{
       if(m_VtkImageData==NULL)
-        ConstructVtkImageData();
+        ConstructVtkImageData(iP);
       return m_VtkImageData;
-    }
+    }*/
 
     // Returns if image data should be deleted on destruction of ImageDataItem.
     bool GetManageMemory() const
@@ -119,7 +140,7 @@ namespace mitk {
       return m_ManageMemory;
     }
 
-    virtual void ConstructVtkImageData() const;
+    virtual void ConstructVtkImageData(ImagePointer) const;
 
     unsigned long GetSize() const
     {
@@ -135,7 +156,7 @@ namespace mitk {
 
     bool m_ManageMemory;
 
-    mutable vtkImageData* m_VtkImageData;
+    mutable ImageVtkAccessor* m_VtkImageData;
     int m_Offset;
 
     bool m_IsComplete;
@@ -146,9 +167,6 @@ namespace mitk {
     void ComputeItemSize( const unsigned int* dimensions, unsigned int dimension);
 
     ImageDataItem::ConstPointer m_Parent;
-
-    template <class TPixeltype>
-    unsigned char *ConvertTensorsToRGB() const;
 
     unsigned int m_Dimension;
 

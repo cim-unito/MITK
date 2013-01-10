@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-07 16:57:15 +0200 (Di, 07 Jul 2009) $
-Version:   $Revision: 18019 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkInputDevicesPrefPage.h"
 
@@ -36,7 +35,7 @@ QmitkInputDevicesPrefPage::QmitkInputDevicesPrefPage()
 : m_MainControl(0)
 {
   // gets the old setting of the preferences and loads them into the preference node
-  berry::IPreferencesService::Pointer prefService 
+  berry::IPreferencesService::Pointer prefService
     = berry::Platform::GetServiceRegistry()
     .GetServiceById<berry::IPreferencesService>(berry::IPreferencesService::ID);
   this->m_InputDevicesPrefNode = prefService->GetSystemPreferences()->Node(mitk::CoreExtConstants::INPUTDEVICE_PREFERENCES);
@@ -122,7 +121,7 @@ bool QmitkInputDevicesPrefPage::PerformOk()
       // because otherwise the mitk::WiiMoteActivator class
       // cannot distinguish the two different modes without
       // changing the interface for all input devices
-      berry::IPreferencesService::Pointer prefService = 
+      berry::IPreferencesService::Pointer prefService =
         berry::Platform::GetServiceRegistry().
         GetServiceById<berry::IPreferencesService>(berry::IPreferencesService::ID);
 
@@ -141,14 +140,14 @@ bool QmitkInputDevicesPrefPage::PerformOk()
       result &= inputdevice->CreateInputDevice()->UnRegisterInputDevice();
 
       // temporary fix, unclean solution:
-      // e.g. user activates SpaceNavigator and leaves the 
+      // e.g. user activates SpaceNavigator and leaves the
       // the wiimote deactivated, the user will get the warning
-      // despite the fact that it has never been activated 
+      // despite the fact that it has never been activated
       if(it.value() == mitk::CoreExtConstants::WIIMOTE_XMLATTRIBUTE_NAME)
       {
         // until now 2010-09-06 there were some unfixed problems
         // with reconnecting the wiimote after disconnecting it.
-        // It was suggested that it might have something to do 
+        // It was suggested that it might have something to do
         // with the type of stack, that is used for the pairing.
         // MS-Stack for example does not work properly.
         QMessageBox::information(NULL,"WiiMote supportproblem",

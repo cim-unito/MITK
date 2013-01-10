@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKPOINTSETINTERACTOR_H_HEADER_INCLUDED_C11202FF
@@ -31,13 +30,13 @@ namespace mitk
    * \brief Interaction with a set of points.
    *
    * Points can be added, removed and moved.
-   * In case the interaction shall be done on a 
-   * loaded set of points, the associated data 
-   * object (mitkPointSet) needs to be loaded 
-   * prior to the instanciation of this object. 
-   * The number of points are checked and the internal 
+   * In case the interaction shall be done on a
+   * loaded set of points, the associated data
+   * object (mitkPointSet) needs to be loaded
+   * prior to the instanciation of this object.
+   * The number of points are checked and the internal
    * statemachine set to the apropriate state.
-   * The management of 0 points is not supported. 
+   * The management of 0 points is not supported.
    * In this case, the amount of managed points is set to 1.
    * \ingroup Interaction
    */
@@ -49,7 +48,7 @@ namespace mitk
     mitkNewMacro2Param(Self, const char*, DataNode*);
 
     /**
-     * @brief Clears all the elements from the given timeStep in the list with undo-functionality and 
+     * @brief Clears all the elements from the given timeStep in the list with undo-functionality and
      * resets the statemachine
      */
     void Clear( unsigned int timeStep = 0, ScalarType timeInMS = 0.0 );
@@ -102,7 +101,7 @@ namespace mitk
     void SelectPoint( int position, unsigned int timeStep = 0, ScalarType timeInMS = 0.0 );
 
     /** \brief to calculate a direction vector from last point and actual
-     * point 
+     * point
      */
     Point3D m_LastPoint;
 
@@ -121,7 +120,7 @@ namespace mitk
     int m_N;
 
     /**
-    * @brief Init the StatateMachine according to the current number of points in case of a loaded pointset. 
+    * @brief Init the StatateMachine according to the current number of points in case of a loaded pointset.
     **/
     void InitAccordingToNumberOfPoints();
   };

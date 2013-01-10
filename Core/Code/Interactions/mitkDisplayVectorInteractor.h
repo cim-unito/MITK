@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKDISPLAYVECTORINTERACTOR_H_HEADER_INCLUDED_C10DC4EB
@@ -44,17 +43,23 @@ namespace mitk {
     **/
     virtual void ExecuteOperation(Operation* operation);
 
+    /**
+     * @brief Method that returns how well this event can be handled by the DisplayVectorInteractor
+     *        a right click into a 2D renderwindow can be handled very well!
+     **/
+    float CanHandleEvent(const StateEvent *stateEvent) const;
+
   protected:
     /**
     * @brief Default Constructor
     **/
     DisplayVectorInteractor(const char * type, mitk::OperationActor* destination=NULL);
-    
+
     /**
     * @brief Default Destructor
     **/
     virtual ~DisplayVectorInteractor();
-    
+
     /**
     * @brief Method derived from StateMachine to implement the own actions
     **/

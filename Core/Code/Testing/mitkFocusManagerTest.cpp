@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-13 14:52:01 +0200 (Mi, 13 Mai 2009) $
-Version:   $Revision: 17230 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkFocusManager.h"
@@ -41,7 +40,7 @@ int mitkFocusManagerTest(int /*argc*/, char* /*argv*/[])
 
   //testing
   MITK_TEST_CONDITION_REQUIRED(focusManager.IsNotNull(), "Testing Instatiation");
-  
+
   MITK_TEST_CONDITION_REQUIRED(element1.IsNotNull(), "Testing Instatiation of an element");
 
   MITK_TEST_CONDITION_REQUIRED(focusManager->AddElement(element1), "Testing addition of an element");
@@ -49,9 +48,9 @@ int mitkFocusManagerTest(int /*argc*/, char* /*argv*/[])
   MITK_TEST_CONDITION_REQUIRED(focusManager->GetFocused() == element1, "Testing if the added element is focused on");
 
   MITK_TEST_CONDITION_REQUIRED(focusManager->RemoveElement(element1), "Testing removing of an element");
-  
+
   MITK_TEST_CONDITION_REQUIRED(focusManager->GetFocused() == NULL, "Testing focused on an empty list");
-  
+
   MITK_TEST_CONDITION_REQUIRED(focusManager->AddElement(element1), "Testing addition of an element; Elements in list: 1");
   MITK_TEST_CONDITION_REQUIRED(focusManager->AddElement(element2), "Testing addition of a second element; Elements in list: 1 2");
   MITK_TEST_CONDITION_REQUIRED(focusManager->GetFocused() == element1, "Testing if the added element still is element 1");
@@ -82,7 +81,7 @@ int mitkFocusManagerTest(int /*argc*/, char* /*argv*/[])
   MITK_TEST_CONDITION_REQUIRED(!focusManager->RemoveElement(element1), "Testing removing from empty list with different object again");
 
   focusManager = NULL;
-    
+
   //TODO: test IsLast() IsFirst() GetFirst() GetLast() GoToNext() GetIter() SetLoop(bool loop)
 
   //Delete renderWindo correctly

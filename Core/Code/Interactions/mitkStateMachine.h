@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef STATEMACHINE_H_HEADER_INCLUDED_C18896BD
@@ -168,6 +167,16 @@ bool LightSwitch::DoSwitchOff(Action*, const StateEvent*)
     * Object- and group-EventId can also be accessed through static methods from OperationEvent
     **/
     virtual bool HandleEvent(StateEvent const* stateEvent);
+
+    /**
+     * @brief calculates how good this statemachine can handle the event.
+     *
+     *  Returns a value between 0 and 1
+     *  where 0 represents not responsible and 1 represents definitive responsible!
+     *  Standard function to override if needed.
+     *  (Used by GlobalInteraction to decide which DESELECTED statemachine to send the event to.)
+    **/
+    virtual float CanHandleEvent(const StateEvent *) const;
 
     /**
     * @brief Enables or disabled Undo.

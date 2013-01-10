@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-03-21 19:27:37 +0100 (Sa, 21 Mrz 2009) $
-Version:   $Revision: 16719 $ 
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QmitkTrackingSourcesCheckBoxPanelWidget_H_INCLUDED
 #define _QmitkTrackingSourcesCheckBoxPanelWidget_H_INCLUDED
@@ -34,21 +33,21 @@ Widget for setting up and controlling an update timer in an IGT-Pipeline.
 
 */
 class MitkIGTUI_EXPORT QmitkTrackingSourcesCheckBoxPanelWidget : public QWidget
-{  
+{
   Q_OBJECT // this is needed for all Qt objects that should have a MOC object (everything that derives from QObject)
-public: 
+public:
 
 
   typedef std::vector< QCheckBox* > TrackingSourcesCheckboxes; /// vector with checkboxes for all set NDs
 
-  /*!  
-  \brief default constructor  
-  */ 
+  /*!
+  \brief default constructor
+  */
   QmitkTrackingSourcesCheckBoxPanelWidget( QWidget* parent );
 
-  /*!  
-  \brief default destructor  
-  */ 
+  /*!
+  \brief default destructor
+  */
   virtual ~QmitkTrackingSourcesCheckBoxPanelWidget();
 
   /*!
@@ -105,12 +104,12 @@ public:
   \brief Selets the checkbox at the given position.
   */
   void SelectCheckbox(unsigned int idx);
-  
-  /** 
+
+  /**
   \brief Deselects the checkbox at the given position
   */
   void DeselectCheckbox(unsigned int idx);
-  
+
   /**
   \brief Enables or disabless the checkboxes in this widget.
   */
@@ -150,9 +149,9 @@ protected:
 
 
 
-private:  
+private:
   TrackingSourcesCheckboxes* m_SourceCheckboxes;
-  std::vector<mitk::NavigationData::Pointer>*  m_NavigationDatas; 
+  std::vector<mitk::NavigationData::Pointer>*  m_NavigationDatas;
   std::vector<int>* m_SelectedIds;
 
 

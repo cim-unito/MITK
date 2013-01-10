@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKTOFCONNECTIONWIDGET_H_INCLUDED
 #define _QMITKTOFCONNECTIONWIDGET_H_INCLUDED
@@ -37,11 +35,11 @@ PURPOSE.  See the above copyright notices for more information.
 */
 class mitkTOFUI_EXPORT QmitkToFConnectionWidget :public QWidget
 {
-
   //this is needed for all Qt objects that should have a MOC object (everything that derives from QObject)
   Q_OBJECT
 
   public:
+
 
     static const std::string VIEW_ID;
 
@@ -54,11 +52,11 @@ class mitkTOFUI_EXPORT QmitkToFConnectionWidget :public QWidget
     virtual void CreateConnections();
 
     /*!
-    \brief returns the ToFImageGrabber which was provided by the ToFImageGrabberCreator after selecting a camera / player
+    \brief returns the ToFImageGrabber which was configured after selecting a camera / player
     \return ToFImageGrabber currently used by the widget
     */
-    mitk::ToFImageGrabber* GetToFImageGrabber();
-  
+    mitk::ToFImageGrabber::Pointer GetToFImageGrabber();
+
   signals:
 
     /*!
@@ -71,41 +69,39 @@ class mitkTOFUI_EXPORT QmitkToFConnectionWidget :public QWidget
      */
     void ToFCameraDisconnected();
     /*!
-    \brief signal that is emitted when a ToF camera is selected in the combo box
+    \brief signal that is emitted when a ToF camera is selected
     */
     void ToFCameraSelected(const QString selectedText);
 
+    void KinectAcquisitionModeChanged();
+
+    void ChangeCoronalWindowSelection(int);
+
   protected slots:
-  
+
     /*!
     \brief slot called when the "Connect Camera" button was pressed
-    * According to the selection in the camera combo box, the ToFImageGrabberCreator provides
+    * According to the selection in the camera combo box, the widget provides
     * the desired instance of the ToFImageGrabber
     */
     void OnConnectCamera();
     /*!
     \brief slot updating the GUI elements after the selection of the camera combo box has changed
     */
-    void OnSelectCamera(const QString selectedText);
+    void OnSelectCamera();
 
   protected:
 
-    Ui::QmitkToFConnectionWidgetControls* m_Controls; ///< member holding the UI elements of this widget
+    Ui::QmitkToFConnectionWidgetControls2* m_Controls; ///< member holding the UI elements of this widget
 
-    mitk::ToFImageGrabber* m_ToFImageGrabber; ///< member holding the current ToFImageGrabber
+    mitk::ToFImageGrabber::Pointer m_ToFImageGrabber; ///< member holding the current ToFImageGrabber
 
     int m_IntegrationTime; ///< member for the current integration time of the ToF device
     int m_ModulationFrequency; ///< member for the current modulation frequency of the ToF device
 
   private:
 
-    void ShowParameterWidget();
-
-    void ShowPMDParameterWidget();
-
-    void ShowMESAParameterWidget();
-
-    void ShowPlayerParameterWidget();
+    void HideAllParameterWidgets();
 };
 
 #endif // _QMITKTOFCONNECTIONWIDGET_H_INCLUDED

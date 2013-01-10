@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkPropertiesTableEditor.h"
 
@@ -43,7 +42,7 @@ QmitkPropertiesTableEditor::QmitkPropertiesTableEditor(QWidget* parent
   this->init();
 
   // set up model
-  m_Model = new QmitkPropertiesTableModel(m_NodePropertiesTableView, 0);    
+  m_Model = new QmitkPropertiesTableModel(m_NodePropertiesTableView, 0);
   m_NodePropertiesTableView->setModel(m_Model);
 }
 
@@ -65,7 +64,7 @@ void QmitkPropertiesTableEditor::SetPropertyList( mitk::PropertyList::Pointer _L
     // refill the combo boxes
     m_ComboRenderer->clear();
 
-    for(mitk::BaseRenderer::BaseRendererMapType::iterator mapit = mitk::BaseRenderer::baseRendererMap.begin(); 
+    for(mitk::BaseRenderer::BaseRendererMapType::iterator mapit = mitk::BaseRenderer::baseRendererMap.begin();
       mapit != mitk::BaseRenderer::baseRendererMap.end(); mapit++)
     {
       if((*mapit).second->GetName())
@@ -120,11 +119,11 @@ void QmitkPropertiesTableEditor::init()
   m_TxtPropertyFilterKeyWord = new QLineEdit(_PropertyFilterKeyWordPane);
   m_NodePropertiesTableView = new QTableView(QWidget::parentWidget());
 
-  // write  
+  // write
   setLayout(_NodePropertiesLayout);
 
   _PropertyFilterKeyWordPane->setLayout(_PropertyFilterKeyWordLayout);
-  
+
   _PropertyFilterKeyWordLayout->setMargin(0);
   _PropertyFilterKeyWordLayout->addWidget(_LabelPropertyFilterKeyWord);
   _PropertyFilterKeyWordLayout->addWidget(m_TxtPropertyFilterKeyWord);
@@ -164,7 +163,7 @@ void QmitkPropertiesTableEditor::ChkShowRenderPropertiesToggled( bool checked )
   if(checked) {
     ComboRendererCurrentIndexChanged( m_ComboRenderer->currentIndex() );
   } else {
-    if (m_SelectedNode != NULL) { 
+    if (m_SelectedNode != NULL) {
       m_Model->setPropertyList( m_SelectedNode->GetPropertyList() );
     } else {
       m_Model->setPropertyList( NULL );

@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkToFImageRecorder.h"
 #include "mitkRealTimeClock.h"
 #include "itkMultiThreader.h"
@@ -36,21 +34,27 @@ namespace mitk
     this->m_DistanceImageSelected = true;
     this->m_AmplitudeImageSelected = true;
     this->m_IntensityImageSelected = true;
-    this->m_Abort = true;
-    this->m_CaptureWidth = 0;
-    this->m_CaptureHeight = 0;
+    this->m_RGBImageSelected = true;
+    this->m_Abort = false;
+    this->m_ToFCaptureWidth = 0;
+    this->m_ToFCaptureHeight = 0;
+    this->m_RGBCaptureWidth = 0;
+    this->m_RGBCaptureHeight = 0;
     this->m_FileFormat = "";
-    this->m_PixelNumber = 0;
+    this->m_ToFPixelNumber = 0;
+    this->m_RGBPixelNumber = 0;
     this->m_SourceDataSize = 0;
     this->m_ToFImageType = ToFImageWriter::ToFImageType3D;
     this->m_RecordMode = ToFImageRecorder::PerFrames;
-    this->m_DistanceImageFileName = ""; 
+    this->m_DistanceImageFileName = "";
     this->m_AmplitudeImageFileName = "";
     this->m_IntensityImageFileName = "";
+    this->m_RGBImageFileName = "";
     this->m_ImageSequence = 0;
     this->m_DistanceArray = NULL;
     this->m_AmplitudeArray = NULL;
     this->m_IntensityArray = NULL;
+    this->m_RGBArray = NULL;
     this->m_SourceDataArray = NULL;
   }
 
@@ -59,6 +63,7 @@ namespace mitk
     delete[] m_DistanceArray;
     delete[] m_AmplitudeArray;
     delete[] m_IntensityArray;
+    delete[] m_RGBArray;
     delete[] m_SourceDataArray;
   }
 
@@ -87,33 +92,37 @@ namespace mitk
       this->m_ToFImageWriter = ToFNrrdImageWriter::New();
       this->m_ToFImageWriter->SetExtension(m_FileFormat);
     }
-    else if(this->m_FileFormat.compare(".pic") == 0)
-    {
-      this->m_ToFImageWriter = ToFPicImageWriter::New();
-      this->m_ToFImageWriter->SetExtension(m_FileFormat);
-    }
     else
     {
       throw std::logic_error("No file format specified!");
     }
 
-    this->m_CaptureWidth = this->m_ToFCameraDevice->GetCaptureWidth();
-    this->m_CaptureHeight = this->m_ToFCameraDevice->GetCaptureHeight();
-    this->m_PixelNumber = this->m_CaptureWidth * this->m_CaptureHeight;
+    this->m_RGBCaptureWidth = this->m_ToFCameraDevice->GetRGBCaptureWidth();
+    this->m_RGBCaptureHeight = this->m_ToFCameraDevice->GetRGBCaptureHeight();
+    this->m_RGBPixelNumber = this->m_RGBCaptureWidth * this->m_RGBCaptureHeight;
+
+    this->m_ToFCaptureWidth = this->m_ToFCameraDevice->GetCaptureWidth();
+    this->m_ToFCaptureHeight = this->m_ToFCameraDevice->GetCaptureHeight();
+    this->m_ToFPixelNumber = this->m_ToFCaptureWidth * this->m_ToFCaptureHeight;
+
     this->m_SourceDataSize = this->m_ToFCameraDevice->GetSourceDataSize();
 
     // allocate buffer
     if(m_IntensityArray == NULL)
     {
-      this->m_IntensityArray = new float[m_PixelNumber];
+      this->m_IntensityArray = new float[m_ToFPixelNumber];
     }
     if(this->m_DistanceArray == NULL)
     {
-      this->m_DistanceArray = new float[m_PixelNumber];
+      this->m_DistanceArray = new float[m_ToFPixelNumber];
     }
     if(this->m_AmplitudeArray == NULL)
     {
-      this->m_AmplitudeArray = new float[m_PixelNumber];
+      this->m_AmplitudeArray = new float[m_ToFPixelNumber];
+    }
+    if(this->m_RGBArray == NULL)
+    {
+      this->m_RGBArray = new unsigned char[m_RGBPixelNumber*3];
     }
     if(this->m_SourceDataArray == NULL)
     {
@@ -123,18 +132,28 @@ namespace mitk
     this->m_ToFImageWriter->SetDistanceImageFileName(this->m_DistanceImageFileName);
     this->m_ToFImageWriter->SetAmplitudeImageFileName(this->m_AmplitudeImageFileName);
     this->m_ToFImageWriter->SetIntensityImageFileName(this->m_IntensityImageFileName);
-    this->m_ToFImageWriter->SetCaptureWidth(this->m_CaptureWidth);
-    this->m_ToFImageWriter->SetCaptureHeight(this->m_CaptureHeight);
+    this->m_ToFImageWriter->SetRGBImageFileName(this->m_RGBImageFileName);
+    this->m_ToFImageWriter->SetRGBCaptureWidth(this->m_RGBCaptureWidth);
+    this->m_ToFImageWriter->SetRGBCaptureHeight(this->m_RGBCaptureHeight);
+    this->m_ToFImageWriter->SetToFCaptureHeight(this->m_ToFCaptureHeight);
+    this->m_ToFImageWriter->SetToFCaptureWidth(this->m_ToFCaptureWidth);
+    this->m_ToFImageWriter->SetToFCaptureHeight(this->m_ToFCaptureHeight);
     this->m_ToFImageWriter->SetToFImageType(this->m_ToFImageType);
     this->m_ToFImageWriter->SetDistanceImageSelected(this->m_DistanceImageSelected);
     this->m_ToFImageWriter->SetAmplitudeImageSelected(this->m_AmplitudeImageSelected);
     this->m_ToFImageWriter->SetIntensityImageSelected(this->m_IntensityImageSelected);
+    this->m_ToFImageWriter->SetRGBImageSelected(this->m_RGBImageSelected);
     this->m_ToFImageWriter->Open();
 
     this->m_AbortMutex->Lock();
     this->m_Abort = false;
     this->m_AbortMutex->Unlock();
     this->m_ThreadID = this->m_MultiThreader->SpawnThread(this->RecordData, this);
+  }
+
+  void ToFImageRecorder::WaitForThreadBeingTerminated()
+  {
+    this->m_MultiThreader->TerminateThread(this->m_ThreadID);
   }
 
   ITK_THREAD_RETURN_TYPE ToFImageRecorder::RecordData(void* pInfoStruct)
@@ -156,7 +175,7 @@ namespace mitk
 
       mitk::RealTimeClock::Pointer realTimeClock;
       realTimeClock = mitk::RealTimeClock::New();
-      int n = 100; 
+      int n = 100;
       double t1 = 0;
       double t2 = 0;
       t1 = realTimeClock->GetCurrentStamp();
@@ -174,9 +193,9 @@ namespace mitk
         if ( ((toFImageRecorder->m_RecordMode == ToFImageRecorder::PerFrames) && (numOfFramesRecorded < toFImageRecorder->m_NumOfFrames)) ||
               (toFImageRecorder->m_RecordMode == ToFImageRecorder::Infinite) )
         {
-        
-          toFCameraDevice->GetAllImages(toFImageRecorder->m_DistanceArray, toFImageRecorder->m_AmplitudeArray, 
-            toFImageRecorder->m_IntensityArray, toFImageRecorder->m_SourceDataArray, requiredImageSequence, toFImageRecorder->m_ImageSequence );
+
+          toFCameraDevice->GetAllImages(toFImageRecorder->m_DistanceArray, toFImageRecorder->m_AmplitudeArray,
+            toFImageRecorder->m_IntensityArray, toFImageRecorder->m_SourceDataArray, requiredImageSequence, toFImageRecorder->m_ImageSequence, toFImageRecorder->m_RGBArray );
 
           if (toFImageRecorder->m_ImageSequence >= requiredImageSequence)
           {
@@ -185,8 +204,8 @@ namespace mitk
               MITK_INFO << "Problem! required: " << requiredImageSequence << " captured: " << toFImageRecorder->m_ImageSequence;
             }
             requiredImageSequence = toFImageRecorder->m_ImageSequence + 1;
-            toFImageRecorder->m_ToFImageWriter->Add( toFImageRecorder->m_DistanceArray, 
-              toFImageRecorder->m_AmplitudeArray, toFImageRecorder->m_IntensityArray );
+            toFImageRecorder->m_ToFImageWriter->Add( toFImageRecorder->m_DistanceArray,
+              toFImageRecorder->m_AmplitudeArray, toFImageRecorder->m_IntensityArray, toFImageRecorder->m_RGBArray );
             numOfFramesRecorded++;
             if (numOfFramesRecorded % n == 0)
             {

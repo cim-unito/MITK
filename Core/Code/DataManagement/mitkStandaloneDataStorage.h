@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKSTANDALONEDATASTORAGE_H_HEADER_INCLUDED_
@@ -34,9 +33,9 @@ namespace mitk {
   //##
   //## The StandaloneDataStorage provides data storage and management functionality.
   //## It handles a 'was created by' relation by associating each data object with a
-  //## set of source objects that were used to create the new object was created from. 
+  //## set of source objects that were used to create the new object was created from.
   //## Thus, nodes are stored in a noncyclical directed graph data structure.
-  //## It is derived from mitk::DataStorage and implements its interface, 
+  //## It is derived from mitk::DataStorage and implements its interface,
   //## including AddNodeEvent and RemoveNodeEvent.
   //## @ingroup StandaloneDataStorage
   class MITK_CORE_EXPORT StandaloneDataStorage : public mitk::DataStorage
@@ -90,7 +89,7 @@ namespace mitk {
     SetOfObjects::ConstPointer GetAll() const;
 
     /*ITK Mutex */
-    mutable itk::SimpleFastMutexLock m_Mutex; 
+    mutable itk::SimpleFastMutexLock m_Mutex;
 
   protected:
 

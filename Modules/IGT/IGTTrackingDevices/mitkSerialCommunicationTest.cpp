@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <iostream>
 #include "mitkSerialCommunication.h"
@@ -25,7 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 * It opens a com port, sends two strings and receives two messages with
 * different timeout modes - first it waits indefinitely until all characters
 * are received, next it waits not more than 6 seconds.
-* you can use the windows program HpyerTerminal to receive text from this 
+* you can use the windows program HpyerTerminal to receive text from this
 * program and send text back to it.
 */
 
@@ -33,7 +32,7 @@ int main()
 {
   std::cout << "Test Program for mitkSerialCommunication.cpp\n";
   std::cout << "Using com port COM7\n"; // current test uses hard coded COM7
-//  std::cout << "Using com port /dev/ttyUSB1\n"; 
+//  std::cout << "Using com port /dev/ttyUSB1\n";
 
   mitk::SerialCommunication::Pointer serial = mitk::SerialCommunication::New();
   serial->SetBaudRate(mitk::SerialCommunication::BaudRate115200);
@@ -73,8 +72,8 @@ int main()
   if (serial->Receive(message, 10) == false)// receive 10 bytes
     std::cout << "Error receiving message. Received " << message.size() << " characters: '" << message << "'.\n";
   else
-    std::cout << "Received message: '" << message << "' without errors.\n";  
-  
+    std::cout << "Received message: '" << message << "' without errors.\n";
+
   std::cout << "sending a new message.\n";
   serial->Send(std::string("all your base are belong to us\r\n"));
   std::cout << "Waiting to receive 20 characters.\n";

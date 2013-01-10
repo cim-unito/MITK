@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-15 11:12:36 +0100 (Mo, 15 Mrz 2010) $
-Version:   $Revision: 21745 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTestingMacros.h"
 #include "mitkPlanarPolygon.h"
@@ -59,11 +58,11 @@ static void TestPlanarPolygonPlacement( mitk::PlanarPolygon::Pointer planarPolyg
 
   // Test if PlanarFigure is closed
   MITK_TEST_CONDITION( planarPolygon->IsClosed(), "planar polygon should not be closed, yet, right?" );
-  
+
   planarPolygon->SetClosed(true);
 
   MITK_TEST_CONDITION( planarPolygon->IsClosed(), "planar polygon should be closed after function call, right?" );
-  
+
   // Test for number of polylines
   const mitk::PlanarFigure::PolyLineType polyLine0 = planarPolygon->GetPolyLine( 0 );
   mitk::PlanarFigure::PolyLineType::const_iterator iter = polyLine0.begin();
@@ -76,7 +75,7 @@ static void TestPlanarPolygonPlacement( mitk::PlanarPolygon::Pointer planarPolyg
   MITK_TEST_CONDITION( ((pp0 == p0) && (pp1 == p1))
     || ((pp0 == p1) && (pp1 == p0)), "Correct polyline 1" );
 
-    
+
   // Test for number of measurement features
   planarPolygon->EvaluateFeatures();
   MITK_TEST_CONDITION( planarPolygon->GetNumberOfFeatures() == 2, "Number of measurement features" );
@@ -99,7 +98,7 @@ static void TestPlanarPolygonEditing( mitk::PlanarPolygon::Pointer planarPolygon
 
   MITK_TEST_CONDITION( planarPolygon->GetNumberOfControlPoints() == initialNumberOfControlPoints+1, "A new control-point shall be added" );
   MITK_TEST_CONDITION( planarPolygon->GetControlPoint( planarPolygon->GetNumberOfControlPoints()-1 ) == pnt, "Control-point shall be added at the end." );
-  
+
 
   planarPolygon->RemoveControlPoint( 3 );
   MITK_TEST_CONDITION( planarPolygon->GetNumberOfControlPoints() == initialNumberOfControlPoints, "A control-point has been removed" );
@@ -115,7 +114,7 @@ static void TestPlanarPolygonEditing( mitk::PlanarPolygon::Pointer planarPolygon
   planarPolygon->AddControlPoint( pnt1, 0 );
   MITK_TEST_CONDITION( planarPolygon->GetNumberOfControlPoints() == 4, "A control-point has been added" );
   MITK_TEST_CONDITION( planarPolygon->GetControlPoint( 0 ) == pnt1, "It shall be possible to insert a control-point at any position." );
-  
+
 }
 
 };
@@ -123,7 +122,7 @@ static void TestPlanarPolygonEditing( mitk::PlanarPolygon::Pointer planarPolygon
  * mitkplanarPolygonTest tests the methods and behavior of mitk::PlanarPolygon with sub-tests:
  *
  * 1. Instantiation and basic tests, including feature evaluation
- * 
+ *
  */
 int mitkPlanarPolygonTest(int /* argc */, char* /*argv*/[])
 {
@@ -149,4 +148,4 @@ int mitkPlanarPolygonTest(int /* argc */, char* /*argv*/[])
 
   // always end with this!
   MITK_TEST_END();
-} 
+}

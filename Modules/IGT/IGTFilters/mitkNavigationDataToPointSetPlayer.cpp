@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-02-10 18:08:54 +0100 (Di, 10 Feb 2009) $
-Version:   $Revision: 16228 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNavigationDataToPointSetPlayer.h"
 
@@ -79,19 +78,19 @@ void mitk::NavigationDataToPointSetPlayer::ReinitXML()
 
     m_NumberOfSnapshots = 0;
     TiXmlElement* nextND = m_DataElem->FirstChildElement("NavigationData");
-    
+
     while(nextND)
     {
       ++m_NumberOfSnapshots;
       nextND = nextND->NextSiblingElement("NavigationData");
-    }   
+    }
 
     // e.g. 12 nd found and 2 tools used => number of snapshots is 12:2=6
     m_NumberOfSnapshots = m_NumberOfSnapshots/toolcount;
 
     /*NavigationData::TimeStampType recordedTime = (lastTimestamp-firstTimestamp) / 1000;
     int frameRate = static_cast<int>(floor(1000 / (float) (m_NumberOfSnapshots/recordedTime) + 0.5));*/
-    
+
   }
 }
 

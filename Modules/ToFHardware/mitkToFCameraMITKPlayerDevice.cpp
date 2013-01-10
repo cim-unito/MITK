@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkToFCameraMITKPlayerDevice.h"
 #include "mitkToFCameraMITKPlayerController.h"
 #include "mitkRealTimeClock.h"
@@ -22,10 +20,13 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkMultiThreader.h"
 #include <itksys/SystemTools.hxx>
 
+
+
+
 namespace mitk
 {
-  ToFCameraMITKPlayerDevice::ToFCameraMITKPlayerDevice() : 
-  m_DistanceDataBuffer(NULL), m_AmplitudeDataBuffer(NULL), m_IntensityDataBuffer(NULL)
+  ToFCameraMITKPlayerDevice::ToFCameraMITKPlayerDevice() :
+    m_DistanceDataBuffer(NULL), m_AmplitudeDataBuffer(NULL), m_IntensityDataBuffer(NULL), m_RGBDataBuffer(NULL)
   {
     m_Controller = ToFCameraMITKPlayerController::New();
   }
@@ -36,13 +37,15 @@ namespace mitk
     CleanUpDataBuffers();
   }
 
-  bool ToFCameraMITKPlayerDevice::ConnectCamera()
+  bool ToFCameraMITKPlayerDevice::OnConnectCamera()
   {
     bool ok = m_Controller->OpenCameraConnection();
     if (ok)
     {
       this->m_CaptureWidth = m_Controller->GetCaptureWidth();
       this->m_CaptureHeight = m_Controller->GetCaptureHeight();
+      this->m_RGBImageWidth = m_Controller->GetCaptureWidth();
+      this->m_RGBImageHeight = m_Controller->GetCaptureHeight();
       this->m_PixelNumber = this->m_CaptureWidth * this->m_CaptureHeight;
 
       AllocatePixelArrays();
@@ -73,6 +76,7 @@ namespace mitk
       this->m_Controller->GetDistances(this->m_DistanceDataBuffer[this->m_FreePos]);
       this->m_Controller->GetAmplitudes(this->m_AmplitudeDataBuffer[this->m_FreePos]);
       this->m_Controller->GetIntensities(this->m_IntensityDataBuffer[this->m_FreePos]);
+      this->m_Controller->GetRgb(this->m_RGBDataBuffer[this->m_FreePos]);
       this->m_FreePos = (this->m_FreePos+1) % this->m_BufferSize;
       this->m_CurrentPos = (this->m_CurrentPos+1) % this->m_BufferSize;
       this->m_ImageSequence++;
@@ -89,28 +93,6 @@ namespace mitk
     {
       MITK_INFO<<"Camera not connected";
     }
-  }
-
-  void ToFCameraMITKPlayerDevice::StopCamera()
-  {
-    m_CameraActiveMutex->Lock();
-    m_CameraActive = false;
-    m_CameraActiveMutex->Unlock();
-    itksys::SystemTools::Delay(100);
-    if (m_MultiThreader.IsNotNull())
-    {
-      m_MultiThreader->TerminateThread(m_ThreadID);
-    }
-    // wait a little to make sure that the thread is terminated
-    itksys::SystemTools::Delay(100);
-  }
-
-  bool ToFCameraMITKPlayerDevice::IsCameraActive()
-  {
-    m_CameraActiveMutex->Lock();
-    bool ok = m_CameraActive;
-    m_CameraActiveMutex->Unlock();
-    return ok;
   }
 
   void ToFCameraMITKPlayerDevice::UpdateCamera()
@@ -148,6 +130,7 @@ namespace mitk
         toFCameraDevice->m_Controller->GetDistances(toFCameraDevice->m_DistanceDataBuffer[toFCameraDevice->m_FreePos]);
         toFCameraDevice->m_Controller->GetAmplitudes(toFCameraDevice->m_AmplitudeDataBuffer[toFCameraDevice->m_FreePos]);
         toFCameraDevice->m_Controller->GetIntensities(toFCameraDevice->m_IntensityDataBuffer[toFCameraDevice->m_FreePos]);
+        toFCameraDevice->m_Controller->GetRgb(toFCameraDevice->m_RGBDataBuffer[toFCameraDevice->m_FreePos]);
         toFCameraDevice->Modified();
         /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          TODO Buffer Handling currently only works for buffer size 1
@@ -244,8 +227,23 @@ namespace mitk
     m_ImageMutex->Unlock();
   }
 
+  void ToFCameraMITKPlayerDevice::GetRgb(unsigned char* rgbArray, int& imageSequence)
+  {
+    m_ImageMutex->Lock();
+    /*!!!!!!!!!!!!!!!!!!!!!!
+      TODO Buffer handling???
+    !!!!!!!!!!!!!!!!!!!!!!!!*/
+    // write intensity image data to unsigned char array
+    for (int i=0; i<this->m_PixelNumber*3; i++)
+    {
+      rgbArray[i] = this->m_RGBDataBuffer[this->m_CurrentPos][i];
+    }
+    imageSequence = this->m_ImageSequence;
+    m_ImageMutex->Unlock();
+  }
+
   void ToFCameraMITKPlayerDevice::GetAllImages(float* distanceArray, float* amplitudeArray, float* intensityArray, char* /*sourceDataArray*/,
-    int requiredImageSequence, int& capturedImageSequence)
+    int requiredImageSequence, int& capturedImageSequence, unsigned char* rgbDataArray)
   {
     /*!!!!!!!!!!!!!!!!!!!!!!
       TODO Document this method!
@@ -280,7 +278,7 @@ namespace mitk
       pos = (this->m_CurrentPos + (10-(this->m_ImageSequence - requiredImageSequence))) % this->m_BufferSize;
     }
 
-    if(this->m_DistanceDataBuffer&&this->m_AmplitudeDataBuffer&&this->m_IntensityDataBuffer)
+    if(this->m_DistanceDataBuffer&&this->m_AmplitudeDataBuffer&&this->m_IntensityDataBuffer&&this->m_RGBDataBuffer)
     {
       // write image data to float arrays
       for (int i=0; i<this->m_PixelNumber; i++)
@@ -288,6 +286,17 @@ namespace mitk
         distanceArray[i] = this->m_DistanceDataBuffer[pos][i];
         amplitudeArray[i] = this->m_AmplitudeDataBuffer[pos][i];
         intensityArray[i] = this->m_IntensityDataBuffer[pos][i];
+        if (rgbDataArray)
+        {
+          rgbDataArray[i] = this->m_RGBDataBuffer[pos][i];
+        }
+      }
+      if (rgbDataArray)
+      {
+        for (int j=this->m_PixelNumber; j<this->m_PixelNumber*3; j++)
+        {
+          rgbDataArray[j] = this->m_RGBDataBuffer[pos][j];
+        }
       }
     }
     m_ImageMutex->Unlock();
@@ -306,7 +315,7 @@ namespace mitk
     ToFCameraMITKPlayerController::Pointer myController = dynamic_cast<mitk::ToFCameraMITKPlayerController*>(this->m_Controller.GetPointer());
 
     std::string strValue;
-    GetStringProperty(propertyValue, strValue);
+    GetStringProperty(propertyKey, strValue);
     if (strcmp(propertyKey, "DistanceImageFileName") == 0)
     {
       myController->SetDistanceImageFileName(strValue);
@@ -318,6 +327,10 @@ namespace mitk
     else if (strcmp(propertyKey, "IntensityImageFileName") == 0)
     {
       myController->SetIntensityImageFileName(strValue);
+    }
+    else if (strcmp(propertyKey, "RGBImageFileName") == 0)
+    {
+      myController->SetRGBImageFileName(strValue);
     }
   }
 
@@ -347,6 +360,14 @@ namespace mitk
       }
       delete[] this->m_IntensityDataBuffer;
     }
+    if (m_RGBDataBuffer)
+    {
+      for(int i=0; i<this->m_MaxBufferSize; i++)
+      {
+        delete[] this->m_RGBDataBuffer[i];
+      }
+      delete[] this->m_RGBDataBuffer;
+    }
   }
 
   void ToFCameraMITKPlayerDevice::AllocateDataBuffers()
@@ -368,6 +389,11 @@ namespace mitk
     for(int i=0; i<this->m_MaxBufferSize; i++)
     {
       this->m_IntensityDataBuffer[i] = new float[this->m_PixelNumber];
+    }
+    this->m_RGBDataBuffer = new unsigned char*[this->m_MaxBufferSize];
+    for(int i=0; i<this->m_MaxBufferSize; i++)
+    {
+      this->m_RGBDataBuffer[i] = new unsigned char[this->m_PixelNumber*3];
     }
   }
 }

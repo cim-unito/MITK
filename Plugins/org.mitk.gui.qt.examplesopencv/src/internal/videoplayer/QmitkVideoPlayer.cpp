@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-06-18 16:47:58 +0200 (Thu, 18 Jun 2009) $
-Version:   $Revision: 15412 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkVideoPlayer.h"
 #include <QVBoxLayout>
@@ -46,7 +45,7 @@ void QmitkVideoPlayer::CreateQtPartControl( QWidget* parent )
   m_VideoBackground->setParent(parent);
 
   QVBoxLayout* layout = new QVBoxLayout;
-  m_OpenCVVideoControls = new QmitkOpenCVVideoControls(m_VideoBackground, 
+  m_OpenCVVideoControls = new QmitkOpenCVVideoControls(m_VideoBackground,
     this->GetActiveStdMultiWidget());
   layout->addWidget( m_OpenCVVideoControls );
 

@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __itkTractsToFiberEndingsImageFilter_h__
 #define __itkTractsToFiberEndingsImageFilter_h__
 
@@ -8,6 +23,9 @@
 #include <mitkFiberBundleX.h>
 
 namespace itk{
+
+/**
+* \brief Generates image where the pixel values are set according to the number of fibers ending in the voxel.   */
 
 template< class OutputImageType >
 class TractsToFiberEndingsImageFilter : public ImageSource< OutputImageType >
@@ -21,23 +39,25 @@ public:
 
   typedef typename OutputImageType::PixelType OutPixelType;
 
-  itkNewMacro(Self);
-  itkTypeMacro( TractsToFiberEndingsImageFilter, ImageSource );
+  itkNewMacro(Self)
+  itkTypeMacro( TractsToFiberEndingsImageFilter, ImageSource )
 
   /** Upsampling factor **/
-  itkSetMacro( UpsamplingFactor, unsigned int);
-  itkGetMacro( UpsamplingFactor, unsigned int);
+  itkSetMacro( UpsamplingFactor, float)
+  itkGetMacro( UpsamplingFactor, float)
 
   /** Invert Image **/
-  itkSetMacro( InvertImage, bool);
-  itkGetMacro( InvertImage, bool);
+  itkSetMacro( InvertImage, bool)
+  itkGetMacro( InvertImage, bool)
 
-  itkSetMacro( FiberBundle, mitk::FiberBundleX::Pointer);
-  itkSetMacro( InputImage, typename OutputImageType::Pointer);
+  itkSetMacro( FiberBundle, mitk::FiberBundleX::Pointer)
+  itkSetMacro( InputImage, typename OutputImageType::Pointer)
 
   /** Use input image geometry to initialize output image **/
-  itkSetMacro( UseImageGeometry, bool);
-  itkGetMacro( UseImageGeometry, bool);
+  itkSetMacro( UseImageGeometry, bool)
+  itkGetMacro( UseImageGeometry, bool)
+
+  itkSetMacro( BinaryOutput, bool)
 
   void GenerateData();
 
@@ -48,10 +68,11 @@ protected:
   TractsToFiberEndingsImageFilter();
   virtual ~TractsToFiberEndingsImageFilter();
 
-  mitk::FiberBundleX::Pointer m_FiberBundle;
-  unsigned int m_UpsamplingFactor;
-  bool m_InvertImage;
-  bool m_UseImageGeometry;
+  mitk::FiberBundleX::Pointer       m_FiberBundle;          ///< input fiber bundle
+  float                             m_UpsamplingFactor;     ///< use higher resolution for ouput image
+  bool                              m_InvertImage;          ///< voxelvalue = 1-voxelvalue
+  bool                              m_UseImageGeometry;     ///< output image is given other geometry than fiberbundle (input image geometry)
+  bool                              m_BinaryOutput;
   typename OutputImageType::Pointer m_InputImage;
 };
 

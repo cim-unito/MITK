@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkDiffusionDicomImportView.h"
 
@@ -73,9 +78,9 @@ void QmitkDiffusionDicomImport::CreateQtPartControl(QWidget *parent)
     m_Controls->m_DicomLoadAverageDuplicatesCheckbox->setChecked(false);
 
     m_Controls->m_DicomLoadRecursiveCheckbox->setVisible(false);
+    m_Controls->m_OverrideOptionCheckbox->setVisible(false);
 
     AverageClicked();
-    AdvancedCheckboxClicked();
   }
 }
 
@@ -91,7 +96,6 @@ void QmitkDiffusionDicomImport::CreateConnections()
     connect( m_Controls->m_DicomLoadAverageDuplicatesCheckbox, SIGNAL(clicked()), this, SLOT(AverageClicked()) );
     connect( m_Controls->m_OutputSetButton, SIGNAL(clicked()), this, SLOT(OutputSet()) );
     connect( m_Controls->m_OutputClearButton, SIGNAL(clicked()), this, SLOT(OutputClear()) );
-    connect( m_Controls->m_Advanced, SIGNAL(clicked()), this, SLOT(AdvancedCheckboxClicked()) );
     connect( m_Controls->m_Remove, SIGNAL(clicked()), this, SLOT(Remove()) );
   }
 }
@@ -101,14 +105,6 @@ void QmitkDiffusionDicomImport::Remove()
 {
   int i = m_Controls->listWidget->currentRow();
   m_Controls->listWidget->takeItem(i);
-}
-
-void QmitkDiffusionDicomImport::AdvancedCheckboxClicked()
-{
-  bool check = m_Controls->
-    m_Advanced->isChecked();
-
-  m_Controls->m_AdvancedFrame->setVisible(check);
 }
 
 void QmitkDiffusionDicomImport::OutputSet()
@@ -124,6 +120,9 @@ void QmitkDiffusionDicomImport::OutputSet()
   m_OutputFolderName = w->selectedFiles()[0];
   m_OutputFolderNameSet = true;
   m_Controls->m_OutputLabel->setText(m_OutputFolderName);
+
+  // show file override option checkbox
+  m_Controls->m_OverrideOptionCheckbox->setVisible(true);
 }
 
 void QmitkDiffusionDicomImport::OutputClear()
@@ -131,6 +130,9 @@ void QmitkDiffusionDicomImport::OutputClear()
   m_OutputFolderName = "";
   m_OutputFolderNameSet = false;
   m_Controls->m_OutputLabel->setText("... optional out-folder ...");
+
+  // hide file override option checkbox - no output specified
+  m_Controls->m_OverrideOptionCheckbox->setVisible(false);
 }
 
 void QmitkDiffusionDicomImport::AverageClicked()
@@ -616,14 +618,10 @@ void QmitkDiffusionDicomImport::DicomLoadStartLoad()
         typedef mitk::DiffusionImage<PixelValueType> DiffVolumesType;
         DiffVolumesType::Pointer diffImage = DiffVolumesType::New();
         diffImage->SetDirections(directions);
-        diffImage->SetOriginalDirections(directions);
-        if(m_Controls->m_DicomLoadDKFZ->isChecked())
-        {
-          diffImage->CorrectDKFZBrokenGradientScheme(m_Controls->m_Blur->value());
-        }
         diffImage->SetVectorImage(vecImage);
         diffImage->SetB_Value(maxb);
         diffImage->InitializeFromVectorImage();
+        diffImage->UpdateBValueList();
         Status(QString("Diffusion Image initialized"));
         if(m_OutputFolderNameSet) logfile << "Diffusion Image initialized\n";
 
@@ -634,9 +632,6 @@ void QmitkDiffusionDicomImport::DicomLoadStartLoad()
           logfile << "Averaging gradient directions\n";
           diffImage->AverageRedundantGradients(m_Controls->m_Blur->value());
         }
-
-        //if(m_Controls->m_DicomLoadDuplicateIfSingleSliceCheckbox->isChecked())
-        //  diffVolumes->DuplicateIfSingleSlice();
 
         QString descr = QString("%1_%2_%3")
                         .arg(((inHeaders)[0])->seriesDescription.c_str())
@@ -660,8 +655,32 @@ void QmitkDiffusionDicomImport::DicomLoadStartLoad()
           QString fullpath = QString("%1/%2.dwi")
                              .arg(m_OutputFolderName)
                              .arg(descr);
-          //std::string pathstring = itksys::SystemTools::ConvertToOutputPath(fullpath.toStdString().c_str());
 
+          // if the override option is not checked, we need to make sure that the current filepath
+          // does not point to an existing file
+          if( !(m_Controls->m_OverrideOptionCheckbox->isChecked()) )
+          {
+            QFile outputFile( fullpath );
+
+            // generate new filename if file exists
+            int file_counter = 0;
+            while( outputFile.exists() )
+            {
+              // copy base name
+              QString newdescr = descr;
+
+              file_counter++;
+              MITK_WARN << "The file "<< fullpath.toStdString() << " exists already.";
+              QString appendix = QString("_%1").arg( QString::number(file_counter) );
+              newdescr.append(appendix);
+              fullpath = QString("%1/%2.dwi")
+                  .arg(m_OutputFolderName)
+                  .arg(newdescr);
+
+              // set the new generated filename for next check
+              outputFile.setFileName( fullpath );
+            }
+          }
           writer->SetFileName(fullpath.toStdString());
           writer->SetInput(diffImage);
           try

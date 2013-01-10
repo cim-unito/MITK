@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-07-22 16:45:18 +0200 (Do, 04 Mai 2006) $
-Version:   $Revision: 6790 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef VTKMITKEVENTPROVIDER_H_HEADER_INCLUDED_C1C53723
@@ -29,7 +28,7 @@ namespace mitk
 
 
 /**
-* \brief Integrates into the VTK event mechanism to generate MITK specific events. 
+* \brief Integrates into the VTK event mechanism to generate MITK specific events.
 * This class is NON-QT dependent pandon to the current MITK event handling code in QmitkRenderWindow.
 * \ingroup Renderer
 */
@@ -42,7 +41,7 @@ class MITK_CORE_EXPORT vtkEventProvider : public vtkInteractorObserver
     // Satisfy the superclass API. Enable/disable listening for events.
     virtual void SetEnabled(int);
     virtual void SetInteractor(vtkRenderWindowInteractor* iren);
-    
+
     // Interface to MITK
     virtual void SetMitkRenderWindow(mitk::RenderWindow* renWin);
     mitk::RenderWindow* GetRenderWindow();
@@ -68,8 +67,8 @@ class MITK_CORE_EXPORT vtkEventProvider : public vtkInteractorObserver
   private:
     vtkEventProvider(const vtkEventProvider&);  // Not implemented.
     void operator=(const vtkEventProvider&);        // Not implemented.
-   
-   
+
+
 };
 
 }

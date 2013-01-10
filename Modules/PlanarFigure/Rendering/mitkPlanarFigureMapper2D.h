@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-13 18:06:46 +0200 (Mi, 13 Mai 2009) $
-Version:   $Revision: 17258 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITK_PLANAR_FIGURE_MAPPER_2D_H_
@@ -33,10 +32,10 @@ class Contour;
 
 /**
 * \brief OpenGL-based mapper to render display sub-class instances of mitk::PlanarFigure
-* 
+*
 * The appearance of planar figures can be configured through  properties. If no properties are specified,
 * default values will be used. There are four elements a planar figure consists of:
-* 
+*
 * <ol>
 * <li>"line": the main line segments of the planar figure (note: text is drawn in the same style)
 * <li>"helperline": additional line segments of planar figures, such as arrow tips, arches of angles, etc.
@@ -44,14 +43,15 @@ class Contour;
 * <li>"marker": the markers (control points) of a planar figure
 * <li>"markerline": the lines by which markers (control points) are surrounded
 * </ol>
-* 
+*
 * In the following, all appearance-related planar figure properties are listed:
-* 
+*
 * <ol>
 * <li>General properties for the planar figure
 *   <ul>
 *     <li>"planarfigure.drawoutline": if true, the "outline" lines is drawn
 *     <li>"planarfigure.drawquantities": if true, the quantities (text) associated with the planar figure is drawn
+*     <li>"planarfigure.drawname": if true, the name specified by the dataNode is drawn
 *     <li>"planarfigure.drawshadow": if true, a black shadow is drawn around the planar figure
 *     <li>"planarfigure.controlpointshape": style of the control points (enum)
 *   </ul>
@@ -109,7 +109,7 @@ class Contour;
 class PlanarFigure_EXPORT PlanarFigureMapper2D : public GLMapper2D
 {
 public:
-    
+
   mitkClassMacro(PlanarFigureMapper2D, Mapper2D);
 
   itkNewMacro(Self);
@@ -123,12 +123,14 @@ public:
 
 
 protected:
-  
+
   enum PlanarFigureDisplayMode
   {
     PF_DEFAULT = 0,
-    PF_HOVER,
-    PF_SELECTED
+    PF_HOVER = 1,
+    PF_SELECTED = 2,
+
+    PF_COUNT = 3 //helper variable
   };
 
   PlanarFigureMapper2D();
@@ -156,34 +158,34 @@ protected:
 
   void PaintPolyLine( mitk::PlanarFigure::PolyLineType vertices,
     bool closed,
-    float* color, 
-    float opacity, 
-    float lineWidth, 
+    float* color,
+    float opacity,
+    float lineWidth,
     Point2D& firstPoint,
-    const Geometry2D* planarFigureGeometry2D, 
-    const Geometry2D* rendererGeometry2D, 
+    const Geometry2D* planarFigureGeometry2D,
+    const Geometry2D* rendererGeometry2D,
     const DisplayGeometry* displayGeometry);
 
-  void DrawMainLines( mitk::PlanarFigure* figure, 
-    float* color, 
-    float opacity, 
+  void DrawMainLines( mitk::PlanarFigure* figure,
+    float* color,
+    float opacity,
     bool drawShadow,
-    float lineWidth, 
+    float lineWidth,
     float shadowWidthFactor,
     Point2D& firstPoint,
-    const Geometry2D* planarFigureGeometry2D, 
-    const Geometry2D* rendererGeometry2D, 
+    const Geometry2D* planarFigureGeometry2D,
+    const Geometry2D* rendererGeometry2D,
     const DisplayGeometry* displayGeometry) ;
 
   void DrawHelperLines( mitk::PlanarFigure* figure,
-    float* color, 
-    float opacity, 
+    float* color,
+    float opacity,
     bool drawShadow,
-    float lineWidth, 
+    float lineWidth,
     float shadowWidthFactor,
     Point2D& firstPoint,
-    const Geometry2D* planarFigureGeometry2D, 
-    const Geometry2D* rendererGeometry2D, 
+    const Geometry2D* planarFigureGeometry2D,
+    const Geometry2D* rendererGeometry2D,
     const DisplayGeometry* displayGeometry) ;
 
   void InitializeDefaultPlanarFigureProperties();
@@ -211,6 +213,7 @@ private:
   bool m_DrawQuantities;
   bool m_DrawShadow;
   bool m_DrawControlPoints;
+  bool m_DrawName;
 
   // the width of the shadow is defined as 'm_LineWidth * m_ShadowWidthFactor'
   float m_LineWidth;

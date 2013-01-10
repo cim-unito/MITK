@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "QmitkAutocropAction.h"
 
 #include "mitkAutoCropImageFilter.h"
@@ -7,7 +22,7 @@
 
 #include <itkConstantPadImageFilter.h>
 
-//needed for qApp 
+//needed for qApp
 #include <qcoreapplication.h>
 
 QmitkAutocropAction::QmitkAutocropAction()
@@ -43,7 +58,50 @@ void QmitkAutocropAction::Run( const QList<mitk::DataNode::Pointer> &selectedNod
 
         if (image.IsNotNull())
         {
-          node->SetData( this->IncreaseCroppedImageSize(image) ); // bug fix 3145
+
+          if (image->GetDimension() == 4)
+          {
+            MITK_INFO << "4D AUTOCROP DOES NOT WORK AT THE MOMENT";
+            throw "4D AUTOCROP DOES NOT WORK AT THE MOMENT";
+
+            unsigned int timesteps = image->GetDimension(3);
+            for (unsigned int i = 0; i < timesteps; i++)
+            {
+              mitk::ImageTimeSelector::Pointer imageTimeSelector = mitk::ImageTimeSelector::New();
+              imageTimeSelector->SetInput(image);
+              imageTimeSelector->SetTimeNr(i);
+              imageTimeSelector->UpdateLargestPossibleRegion();
+
+              // We split a long nested code line into separate calls for debugging:
+              mitk::ImageSource::OutputImageType *_3dSlice = imageTimeSelector->GetOutput();
+              mitk::Image::Pointer _cropped3dSlice = this->IncreaseCroppedImageSize(_3dSlice);
+
+              // +++ BUG +++ BUG +++ BUG +++ BUG +++ BUG +++ BUG +++ BUG +++
+              void *_data = _cropped3dSlice->GetData();
+
+              // <ToBeRemoved>
+              // We write some stripes into the image
+              if ((i & 1) == 0)
+              {
+              int depth = _cropped3dSlice->GetDimension(2);
+              int height = _cropped3dSlice->GetDimension(1);
+              int width = _cropped3dSlice->GetDimension(0);
+
+              for (int z = 0; z < depth; ++z)
+                for (int y = 0; y < height; ++y)
+                  for (int x = 0; x < width; ++x)
+                    reinterpret_cast<unsigned char *>(_data)[(width * height * z) + (width * y) + x] = x & 1;
+              // </ToBeRemoved>
+              }
+
+              image->SetVolume(_data, i);
+            }
+            node->SetData( image ); // bug fix 3145
+          }
+          else
+          {
+            node->SetData( this->IncreaseCroppedImageSize(image) ); // bug fix 3145
+          }
           // Reinit node
           mitk::RenderingManager::GetInstance()->InitializeViews(
             node->GetData()->GetTimeSlicedGeometry(), mitk::RenderingManager::REQUEST_UPDATE_ALL, true );
@@ -68,6 +126,7 @@ mitk::Image::Pointer QmitkAutocropAction::IncreaseCroppedImageSize( mitk::Image:
 {
   typedef itk::Image< short, 3 > ImageType;
   typedef itk::Image< unsigned char, 3 > PADOutputImageType;
+
   ImageType::Pointer itkTransformImage = ImageType::New();
   mitk::CastToItkImage( image, itkTransformImage );
 

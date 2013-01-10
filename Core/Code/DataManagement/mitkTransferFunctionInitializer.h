@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-05-10 18:06:04 +0200 (Mo, 10 Mai 2010) $
-Version:   $Revision: 22790 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITK_TRANSFER_FUNCTION_MODE_CREATOR_H_HEADER_INCLUDED
 #define MITK_TRANSFER_FUNCTION_MODE_CREATOR_H_HEADER_INCLUDED
@@ -39,7 +38,7 @@ namespace mitk {
  * opacity, gradient opacity, color) and provides an interface for manipulating
  * their control points. Each original function can be retrieved by a Get()
  * method.
- * 
+ *
  * NOTE: Currently, transfer function initialization based on histograms or
  * computed-tomography-presets is also provided by this class, but will likely
  * be separated into a specific initializer class.
@@ -53,7 +52,7 @@ public:
   mitkNewMacro1Param(TransferFunctionInitializer, TransferFunction::Pointer);
 
   static void GetPresetNames(std::vector<std::string>& presetNames);
-  
+
   void SetTransferFunction(TransferFunction::Pointer transferFunction);
   mitk::TransferFunction::Pointer GetTransferFunction();
   void SetTransferFunctionMode(int mode);
@@ -70,16 +69,16 @@ private:
 
   //Define Transfer Function
   enum TransferFunctionMode{
-   TF_CT_DEFAULT, 
+   TF_CT_DEFAULT,
    TF_CT_BLACK_WHITE,
    TF_CT_THORAX_LARGE,
-   TF_CT_THORAX_SMALL, 
-   TF_CT_BONE, 
+   TF_CT_THORAX_SMALL,
+   TF_CT_BONE,
    TF_CT_BONE_GRADIENT,
-   TF_CT_CARDIAC, 
-   TF_MR_GENERIC 
+   TF_CT_CARDIAC,
+   TF_MR_GENERIC
   };
-  
+
   //remove all old points
   void RemoveAllPoints();
   void SetModified();
@@ -91,7 +90,7 @@ private:
   void SetCtBoneGradientMode();
   void SetCtCardiacMode();
   void SetMrGenericMode();
-  
+
 };
 
 }

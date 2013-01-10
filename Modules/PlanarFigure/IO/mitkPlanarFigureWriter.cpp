@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12. Mai 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkPlanarFigureWriter.h"
 #include "mitkBasePropertySerializer.h"
@@ -46,7 +45,7 @@ void mitk::PlanarFigureWriter::GenerateData()
     MITK_ERROR << "Could not write planar figures. File name is invalid";
     throw std::invalid_argument("file name is empty");
   }
- 
+
   TiXmlDocument document;
   TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" ); // TODO what to write here? encoding? etc....
   document.LinkEndChild( decl );
@@ -57,7 +56,7 @@ void mitk::PlanarFigureWriter::GenerateData()
   version->SetAttribute("FileVersion",  1 );
   document.LinkEndChild(version);
 
-  
+
   /* create xml element for each input */
   for ( unsigned int i = 0 ; i < this->GetNumberOfInputs(); ++i )
   {
@@ -149,7 +148,7 @@ void mitk::PlanarFigureWriter::GenerateData()
       TiXmlElement* vElement = new TiXmlElement( "transformParam" );
       for ( unsigned int i = 0; i < affineGeometry->GetNumberOfParameters(); ++i )
       {
-        std::stringstream paramName; 
+        std::stringstream paramName;
         paramName << "param" << i;
         vElement->SetDoubleAttribute( paramName.str().c_str(), parameters.GetElement( i ) );
       }
@@ -161,7 +160,7 @@ void mitk::PlanarFigureWriter::GenerateData()
       vElement = new TiXmlElement( "boundsParam" );
       for ( unsigned int i = 0; i < 6; ++i )
       {
-        std::stringstream boundName; 
+        std::stringstream boundName;
         boundName << "bound" << i;
         vElement->SetDoubleAttribute( boundName.str().c_str(), bounds.GetElement( i ) );
       }
@@ -177,7 +176,7 @@ void mitk::PlanarFigureWriter::GenerateData()
     }
   }
 
-  
+
   if(m_WriteToMemory)
   {
     // Declare a printer
@@ -191,7 +190,7 @@ void mitk::PlanarFigureWriter::GenerateData()
     strcpy(m_MemoryBuffer,printer.CStr());
   }
   else
-  {  
+  {
     if (document.SaveFile( m_FileName) == false)
     {
       MITK_ERROR << "Could not write planar figures to " << m_FileName << "\nTinyXML reports '" << document.ErrorDesc() << "'";

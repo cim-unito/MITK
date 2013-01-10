@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkNavigationToolCreationWidget.h"
 
@@ -84,7 +83,7 @@ void QmitkNavigationToolCreationWidget::Initialize(mitk::DataStorage* dataStorag
   m_Controls->m_SerialNumberEdit->setText("<not given>");
   m_Controls->m_Surface_Use_Sphere->setChecked(true);
   m_Controls->m_ToolTypeChooser->setCurrentIndex(0);
-  
+
   }
 
 void QmitkNavigationToolCreationWidget::SetTrackingDeviceType(mitk::TrackingDeviceType type, bool changeable)
@@ -135,7 +134,7 @@ void QmitkNavigationToolCreationWidget::OnFinished()
     else {newNode->SetData(m_Controls->m_SurfaceChooser->GetSelectedNode()->GetData());}
 
     m_CreatedTool->SetDataNode(newNode);
-    
+
     //fill NavigationTool object
     m_CreatedTool->SetCalibrationFile(m_Controls->m_CalibrationFileName->text().toAscii().data());
     m_CreatedTool->SetIdentifier(m_Controls->m_IdentifierEdit->text().toAscii().data());
@@ -146,7 +145,7 @@ void QmitkNavigationToolCreationWidget::OnFinished()
     else if (m_Controls->m_TrackingDeviceTypeChooser->currentText()=="NDI Polaris") m_CreatedTool->SetTrackingDeviceType(mitk::NDIPolaris);
     else if (m_Controls->m_TrackingDeviceTypeChooser->currentText()=="Claron Technology Micron Tracker") m_CreatedTool->SetTrackingDeviceType(mitk::ClaronMicron);
     else m_CreatedTool->SetTrackingDeviceType(mitk::TrackingSystemNotSpecified);
-    
+
     //ToolType
     if (m_Controls->m_ToolTypeChooser->currentText()=="Instrument") m_CreatedTool->SetType(mitk::NavigationTool::Instrument);
     else if (m_Controls->m_ToolTypeChooser->currentText()=="Fiducial") m_CreatedTool->SetType(mitk::NavigationTool::Fiducial);

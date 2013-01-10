@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
- 
- =========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkDTIAtlasAppIntroPart.h"
 
@@ -33,7 +32,7 @@
 #include <QtCore/qconfig.h>
 #ifdef QT_WEBKIT
 #include <QWebView>
-#include <QWebPage> 
+#include <QWebPage>
 #endif
 #include <QString>
 #include <QStringList>
@@ -101,10 +100,10 @@ void QmitkDTIAtlasAppIntroPart::CreateQtPartControl(QWidget* parent)
     m_Controls->setupUi(parent);
 #ifdef QT_WEBKIT
 
-    // create a QWebView as well as a QWebPage and QWebFrame within the QWebview 
+    // create a QWebView as well as a QWebPage and QWebFrame within the QWebview
     m_view = new QWebView(parent);
     m_view->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    
+
     QUrl urlQtResource(QString("qrc:/org.mitk.gui.qt.welcomescreen/mitkdtiatlasappwelcomeview.html"),  QUrl::TolerantMode );
     m_view->load( urlQtResource );
 
@@ -135,9 +134,9 @@ void QmitkDTIAtlasAppIntroPart::DelegateMeTo(const QUrl& showMeNext)
   QByteArray dataset      = showMeNext.encodedQueryItemValue("dataset");
   QByteArray clear        = showMeNext.encodedQueryItemValue("clear");
 
-  if (scheme.isEmpty()) MITK_INFO << " empty scheme of the to be delegated link" ;  
+  if (scheme.isEmpty()) MITK_INFO << " empty scheme of the to be delegated link" ;
 
-  // if the scheme is set to mitk, it is to be tested which action should be applied 
+  // if the scheme is set to mitk, it is to be tested which action should be applied
   if (scheme.contains(QString("mitk")) )
   {
     if(urlPath.isEmpty() ) MITK_INFO << " mitk path is empty " ;

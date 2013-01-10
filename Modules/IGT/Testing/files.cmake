@@ -1,4 +1,4 @@
-SET(MODULE_TESTS
+set(MODULE_TESTS
    mitkCameraVisualizationTest.cpp
    mitkClaronInterfaceTest.cpp
    mitkClaronToolTest.cpp
@@ -11,6 +11,7 @@ SET(MODULE_TESTS
    mitkNavigationDataRecorderTest.cpp
    mitkNavigationDataReferenceTransformFilterTest.cpp
    mitkNavigationDataSequentialPlayerTest.cpp
+   mitkNavigationDataSourceTest.cpp
    mitkNavigationDataToMessageFilterTest.cpp
    mitkNavigationDataToNavigationDataFilterTest.cpp
    mitkNavigationDataToPointSetFilterTest.cpp
@@ -22,9 +23,8 @@ SET(MODULE_TESTS
    mitkTrackingVolumeGeneratorTest.cpp
    mitkTrackingDeviceTest.cpp
    mitkTrackingToolTest.cpp
-# This test fails randomly, see bug #8033
    mitkVirtualTrackingDeviceTest.cpp
-   mitkNavigationDataPlayerTest.cpp
+   mitkNavigationDataPlayerTest.cpp # deactivated see bug 11636
    mitkTrackingDeviceSourceTest.cpp
    mitkTrackingDeviceSourceConfiguratorTest.cpp
    mitkNavigationDataEvaluationFilterTest.cpp
@@ -32,9 +32,9 @@ SET(MODULE_TESTS
 
    # ------------------ Navigation Tool Management Tests -------------------
    mitkNavigationToolStorageTest.cpp
-   #mitkNavigationToolStorageSerializerAndDeserializerTest.cpp #deactivated, see bug #10701
+   #mitkNavigationToolStorageSerializerAndDeserializerTest.cpp
    mitkNavigationToolTest.cpp
-   mitkNavigationToolReaderAndWriterTest.cpp 
+   mitkNavigationToolReaderAndWriterTest.cpp
    # -----------------------------------------------------------------------
 
    # ------------------ Deavtivated Tests ----------------------------------
@@ -42,7 +42,7 @@ SET(MODULE_TESTS
    # -----------------------------------------------------------------------
 )
 
-SET(MODULE_CUSTOM_TESTS
+set(MODULE_CUSTOM_TESTS
   mitkNDIAuroraHardwareTest.cpp
   mitkNDIPolarisHardwareTest.cpp
   mitkClaronTrackingDeviceHardwareTest.cpp

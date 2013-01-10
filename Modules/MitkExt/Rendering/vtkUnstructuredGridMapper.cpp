@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "vtkUnstructuredGridMapper.h"
 
 #include "vtkGeometryFilter.h"
@@ -47,7 +46,7 @@ vtkUnstructuredGridMapper::~vtkUnstructuredGridMapper()
     {
     this->PolyDataMapper->Delete();
     }
-  
+
 }
 
 void vtkUnstructuredGridMapper::SetBoundingObject(mitk::BoundingObject* bo)
@@ -97,7 +96,7 @@ void vtkUnstructuredGridMapper::Render(vtkRenderer *ren, vtkActor *act)
     {
     vtkErrorMacro(<< "No input!\n");
     return;
-    } 
+    }
 
   // Need a lookup table
   //
@@ -109,7 +108,7 @@ void vtkUnstructuredGridMapper::Render(vtkRenderer *ren, vtkActor *act)
 
   // Now can create appropriate mapper
   //
-  if ( this->PolyDataMapper == 0 ) 
+  if ( this->PolyDataMapper == 0 )
     {
     vtkGeometryFilter *gf = vtkGeometryFilter::New();
     vtkPolyDataMapper *pm = vtkPolyDataMapper::New();
@@ -121,15 +120,15 @@ void vtkUnstructuredGridMapper::Render(vtkRenderer *ren, vtkActor *act)
 
   // share clipping planes with the PolyDataMapper
   //
-  if (this->ClippingPlanes != this->PolyDataMapper->GetClippingPlanes()) 
+  if (this->ClippingPlanes != this->PolyDataMapper->GetClippingPlanes())
     {
     this->PolyDataMapper->SetClippingPlanes(this->ClippingPlanes);
     }
-  
+
   if (this->m_BoundingObject)
   {
     mitk::BoundingBox::BoundsArrayType bounds = this->m_BoundingObject->GetGeometry()->CalculateBoundingBoxRelativeToTransform(0)->GetBounds();
-    this->GeometryExtractor->SetExtent(bounds[0], bounds[1], bounds[2], 
+    this->GeometryExtractor->SetExtent(bounds[0], bounds[1], bounds[2],
         bounds[3], bounds[4], bounds[5]);
     this->GeometryExtractor->ExtentClippingOn();
   }
@@ -140,7 +139,7 @@ void vtkUnstructuredGridMapper::Render(vtkRenderer *ren, vtkActor *act)
 
   this->GeometryExtractor->SetInput(this->GetInput());
   this->PolyDataMapper->SetInput(this->GeometryExtractor->GetOutput());
-  
+
   // update ourselves in case something has changed
   this->PolyDataMapper->SetLookupTable(this->GetLookupTable());
   this->PolyDataMapper->SetScalarVisibility(this->GetScalarVisibility());
@@ -166,7 +165,7 @@ void vtkUnstructuredGridMapper::Render(vtkRenderer *ren, vtkActor *act)
       this->PolyDataMapper->ColorByArrayComponent(this->ArrayName,ArrayComponent);
       }
     }
-  
+
   this->PolyDataMapper->Render(ren,act);
   this->TimeToDraw = this->PolyDataMapper->GetTimeToDraw();
 }

@@ -1,9 +1,9 @@
-SET(CPP_FILES
+set(CPP_FILES
   itkShortestPathNode.cpp
 )
-SET(H_FILES
-  itkShortestPathCostFunction.h  
+set(H_FILES
+  itkShortestPathCostFunction.h
   itkShortestPathCostFunctionTbss.h
   itkShortestPathNode.h
-  itkShortestPathImageFilter.h  
+  itkShortestPathImageFilter.h
 )

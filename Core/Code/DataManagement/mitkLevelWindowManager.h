@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef mitkLevelWindowManager_h
@@ -46,16 +45,16 @@ namespace mitk
   there is a check to proof, if the active image is still available. If not, then m_AutoTopMost becomes true.
 */
 
-  class MITK_CORE_EXPORT LevelWindowManager : public itk::Object 
+  class MITK_CORE_EXPORT LevelWindowManager : public itk::Object
   {
   public:
 
     mitkClassMacro(LevelWindowManager, itk::Object)
-    itkNewMacro(Self); 
+    itkNewMacro(Self);
 
     void SetDataStorage(DataStorage* ds);
     DataStorage* GetDataStorage();  ///< returns the datastorage
-    
+
     /// if autoTopMost == true: sets the topmost layer image to be affected by changes
     /// if removedNode != NULL a node was removed from DataStorage
     void SetAutoTopMostImage(bool autoTopMost, const DataNode* removedNode = NULL);
@@ -75,10 +74,10 @@ namespace mitk
 
     /// returns the current mitkLevelWindowProperty object from the image that is affected by changes
     LevelWindowProperty::Pointer GetLevelWindowProperty();
-  
+
     /// true if changes on slider or line-edits will affect always the topmost layer image
     bool isAutoTopMost();
-  
+
     /// Change notifications from DataStorage
     void DataStorageChanged(const DataNode* n = NULL);
 
@@ -91,7 +90,7 @@ namespace mitk
     Image* GetCurrentImage(); ///< return the currently active image
 
     /**
-    *  returns all nodes in the DataStorage that have the following properties: 
+    *  returns all nodes in the DataStorage that have the following properties:
     *  "visible" == true, "binary" == false, "levelwindow", and DataType == Image
     */
     DataStorage::SetOfObjects::ConstPointer GetRelevantNodes();

@@ -28,17 +28,16 @@
 
 #include <cctype>
 
-#include <usExportMacros.h>
 #include "usAny.h"
 
-
+/// \cond
 US_BEGIN_NAMESPACE
 
 struct ci_char_traits : public std::char_traits<char>
     // just inherit all the other functions
     //  that we don't need to override
 {
-    
+
   static bool eq(char c1, char c2)
   {
     return std::toupper(c1) == std::toupper(c2);
@@ -121,6 +120,8 @@ US_HASH_FUNCTION_BEGIN(US_PREPEND_NAMESPACE(ci_string))
 
 US_HASH_FUNCTION_END
 US_HASH_FUNCTION_NAMESPACE_END
+
+/// \endcond
 
 US_BEGIN_NAMESPACE
 

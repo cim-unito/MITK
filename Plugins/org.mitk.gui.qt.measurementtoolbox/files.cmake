@@ -1,27 +1,29 @@
-SET(SRC_CPP_FILES
-  
+set(SRC_CPP_FILES
+
 )
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
   QmitkMeasurementView.cpp
   QmitkPlanarFiguresTableModel.cpp
   QmitkImageStatisticsView.cpp
+  QmitkImageStatisticsCalculationThread.cpp
   mitkPluginActivator.cpp
 )
 
-SET(UI_FILES
+set(UI_FILES
   src/internal/QmitkImageStatisticsViewControls.ui
 )
 
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/internal/QmitkMeasurementView.h
   src/internal/QmitkPlanarFiguresTableModel.h
   src/internal/QmitkImageStatisticsView.h
+  src/internal/QmitkImageStatisticsCalculationThread.h
   src/internal/mitkPluginActivator.h
-  
+
 )
 
-SET(CACHED_RESOURCE_FILES
+set(CACHED_RESOURCE_FILES
   resources/angle.png
   resources/arrow.png
   resources/circle.png
@@ -40,18 +42,18 @@ SET(CACHED_RESOURCE_FILES
   plugin.xml
 )
 
-SET(QRC_FILES
+set(QRC_FILES
   resources/measurement.qrc
   resources/QmitkImageStatisticsView.qrc
 )
 
 
-SET(CPP_FILES )
+set(CPP_FILES )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})

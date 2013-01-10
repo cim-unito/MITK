@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKSTDMULTIWIDGET_H_
 #define QMITKSTDMULTIWIDGET_H_
@@ -48,13 +47,17 @@ class QSpacerItem;
 class QmitkLevelWindowWidget;
 class QmitkRenderWindow;
 
+namespace mitk {
+class RenderingManager;
+}
+
 class QMITK_EXPORT QmitkStdMultiWidget : public QWidget
 {
   Q_OBJECT
 
 public:
 
-  QmitkStdMultiWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+  QmitkStdMultiWidget(QWidget* parent = 0, Qt::WindowFlags f = 0, mitk::RenderingManager* renderingManager = 0);
   virtual ~QmitkStdMultiWidget();
 
   mitk::SliceNavigationController*
@@ -93,6 +96,28 @@ public:
 
   bool GetGradientBackgroundFlag() const;
 
+  /*!
+  \brief Access node of widget plane 1
+  \return DataNode holding widget plane 1
+  */
+  mitk::DataNode::Pointer GetWidgetPlane1();
+  /*!
+  \brief Access node of widget plane 2
+  \return DataNode holding widget plane 2
+  */
+  mitk::DataNode::Pointer GetWidgetPlane2();
+  /*!
+  \brief Access node of widget plane 3
+  \return DataNode holding widget plane 3
+  */
+  mitk::DataNode::Pointer GetWidgetPlane3();
+  /*!
+  \brief Convenience method to access node of widget planes
+  \param id number of widget plane to be returned
+  \return DataNode holding widget plane 3
+  */
+  mitk::DataNode::Pointer GetWidgetPlane(int id);
+
   bool IsColoredRectanglesEnabled() const;
 
   bool IsDepartmentLogoEnabled() const;
@@ -118,7 +143,7 @@ public:
   void ActivateMenuWidget( bool state );
 
   bool IsMenuWidgetEnabled() const;
-  
+
 protected:
 
   void UpdateAllWidgets();
@@ -194,7 +219,7 @@ public slots:
   void EnableDepartmentLogo();
 
   void DisableDepartmentLogo();
-  
+
   void EnableColoredRectangles();
 
   void DisableColoredRectangles();
@@ -249,7 +274,7 @@ signals:
 
 public:
 
-  /** Define RenderWindow (public)*/ 
+  /** Define RenderWindow (public)*/
   QmitkRenderWindow* mitkWidget1;
   QmitkRenderWindow* mitkWidget2;
   QmitkRenderWindow* mitkWidget3;
@@ -267,6 +292,7 @@ public:
 
   enum {
     TRANSVERSAL,
+    AXIAL = TRANSVERSAL,
     SAGITTAL,
     CORONAL,
     THREE_D
@@ -279,6 +305,8 @@ protected:
 
   int m_Layout;
   int m_PlaneMode;
+
+  mitk::RenderingManager* m_RenderingManager;
 
   mitk::RenderWindowFrame::Pointer m_RectangleRendering3;
   mitk::RenderWindowFrame::Pointer m_RectangleRendering2;
@@ -295,12 +323,12 @@ protected:
   mitk::GradientBackground::Pointer m_GradientBackground4;
   mitk::GradientBackground::Pointer m_GradientBackground3;
   bool m_GradientBackgroundFlag;
-  
+
 
   mitk::MouseModeSwitcher::Pointer m_MouseModeSwitcher;
   mitk::CoordinateSupplier::Pointer m_LastLeftClickPositionSupplier;
   mitk::PositionTracker::Pointer m_PositionTracker;
-  mitk::SliceNavigationController::Pointer m_TimeNavigationController;
+  mitk::SliceNavigationController* m_TimeNavigationController;
   mitk::SlicesRotator::Pointer m_SlicesRotator;
   mitk::SlicesSwiveller::Pointer m_SlicesSwiveller;
 
@@ -316,13 +344,13 @@ protected:
   QSplitter *m_LayoutSplit;
   QSplitter *m_SubSplit1;
   QSplitter *m_SubSplit2;
-  
+
   QWidget *mitkWidget1Container;
   QWidget *mitkWidget2Container;
   QWidget *mitkWidget3Container;
   QWidget *mitkWidget4Container;
 
-  struct  
+  struct
   {
     vtkCornerAnnotation *cornerText;
     vtkTextProperty *textProp;
@@ -335,6 +363,6 @@ protected:
   int m_Precision;
 
   bool m_CrosshairNavigationEnabled;
-    
+
 };
 #endif /*QMITKSTDMULTIWIDGET_H_*/

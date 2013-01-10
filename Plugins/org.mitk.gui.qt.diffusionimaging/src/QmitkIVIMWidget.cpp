@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkIVIMWidget.h"
 
@@ -84,6 +89,8 @@ std::vector<double> QmitkIVIMWidget::vec(vnl_vector<double> vector)
 void QmitkIVIMWidget::SetParameters( IVIMFilterType::IVIMSnapshot snap )
 {
   this->Clear();
+  if (snap.bvalues.empty())
+      return;
 
   QString s("f=%1, D=%2, D*=%3");
   s = s.arg(snap.currentF,4);

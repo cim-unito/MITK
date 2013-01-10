@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNDIPROTOCOL_H_HEADER_INCLUDED_
@@ -26,12 +25,12 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkSerialCommunication.h"
 #include "mitkNDIPassiveTool.h"
 
-namespace mitk 
+namespace mitk
 {
   class NDITrackingDevice;
 
   /**Documentation
-  * \brief The NDI Protocol class provides building and parsing of 
+  * \brief The NDI Protocol class provides building and parsing of
   *  command strings and answers to and from a NDI tracking device.
   *
   * \ingroup IGT
@@ -51,7 +50,7 @@ namespace mitk
     typedef mitk::SerialCommunication::StopBits StopBits;     ///< Number of stop bits used in the serial connection
     typedef mitk::SerialCommunication::HardwareHandshake HardwareHandshake; ///< Hardware handshake mode of the serial connection
     typedef mitk::NDIPassiveTool::TrackingPriority TrackingPriority; ///< Tracking priority used for tracking a tool
-    /** 
+    /**
     * \brief Gives information about the tool which is assosiated with the port handle. Writes portInfo to the string.
     */
     NDIErrorCode APIREV(std::string* revision);
@@ -66,7 +65,7 @@ namespace mitk
     NDIErrorCode PHSR(PHSRQueryType queryType, std::string* portHandles);    ///< Port Handle Search. Will write returned port handles to the string portHandles
     NDIErrorCode PHF(std::string* portHandle);    ///< Port Handle Free. Frees the port handle.
     NDIErrorCode PHRQ(std::string* portHandle);   ///< Port Handle Request. Will request a Port Handle for a wireless tool and return it in the string portHandle
-    NDIErrorCode PVWR(std::string* portHandle, const unsigned char* sromData, unsigned int sromDataLength);    ///< Port Virtual Write. Writes an SROM Image data to a tool 
+    NDIErrorCode PVWR(std::string* portHandle, const unsigned char* sromData, unsigned int sromDataLength);    ///< Port Virtual Write. Writes an SROM Image data to a tool
     NDIErrorCode PINIT(std::string* portHandle);  ///< Port Initialize. Will initialize a Port that has been acquired with PHRQ and has been assigned a SROM File with PVWR
     NDIErrorCode PENA(std::string* portHandle, TrackingPriority prio); ///< Port Enable. Will enable a port that has been initialized with PINIT.
     NDIErrorCode PDIS(std::string* portHandle);   ///< Port Disable. Will disable a port that has been enabled with PENA
@@ -98,7 +97,7 @@ namespace mitk
 
     /**Documentation
     * Sends the command command to the tracking system and checks for OKAY and ERROR as replies
-    * This is used by commands like INIT, DSTART, DSTOP,... that do not need parameters 
+    * This is used by commands like INIT, DSTART, DSTOP,... that do not need parameters
     * or special parsing of replies
     */
     NDIErrorCode GenericCommand(const std::string command, const std::string* parameter = NULL);

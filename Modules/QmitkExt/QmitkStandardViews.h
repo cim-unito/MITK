@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 13900 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkStandardViews_h_included
 #define QmitkStandardViews_h_included
@@ -27,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 class QClickableLabel;
 class vtkRenderWindow;
 
-class QmitkExt_EXPORT QmitkStandardViews : public QWidget 
+class QmitkExt_EXPORT QmitkStandardViews : public QWidget
 {
 
   Q_OBJECT
@@ -40,9 +39,9 @@ public:
 
   void SetCameraController( mitk::CameraController* controller );
   void SetCameraControllerFromRenderWindow( vtkRenderWindow* window );
-  
+
 signals:
-    
+
   void StandardViewDefined(mitk::CameraController::StandardView view);
 
 protected slots:
@@ -52,9 +51,9 @@ protected slots:
 protected:
 
   QClickableLabel* m_ClickablePicture;
-    
+
   mitk::CameraController::Pointer m_CameraController;
 
 };
 
-#endif 
+#endif

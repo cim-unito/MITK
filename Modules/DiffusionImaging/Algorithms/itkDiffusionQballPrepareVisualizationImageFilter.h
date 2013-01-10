@@ -1,19 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkDiffusionTensor3DReconstructionImageFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2006-03-27 17:01:06 $
-  Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 #ifndef __itkDiffusionQballPrepareVisualizationImageFilter_h_
 #define __itkDiffusionQballPrepareVisualizationImageFilter_h_
 
@@ -31,10 +36,10 @@ namespace itk{
 /** \class DiffusionQballPrepareVisualizationImageFilter
  */
 
-template< class TOdfPixelType, 
+template< class TOdfPixelType,
           int NrOdfDirections>
 class MitkDiffusionImaging_EXPORT DiffusionQballPrepareVisualizationImageFilter :
-  public ImageToImageFilter< Image< Vector< TOdfPixelType, NrOdfDirections >, 3 >, 
+  public ImageToImageFilter< Image< Vector< TOdfPixelType, NrOdfDirections >, 3 >,
                               Image< Vector< TOdfPixelType, NrOdfDirections >, 3 > >
 {
 
@@ -52,22 +57,22 @@ public:
   typedef DiffusionQballPrepareVisualizationImageFilter Self;
   typedef SmartPointer<Self>                      Pointer;
   typedef SmartPointer<const Self>                ConstPointer;
-  typedef ImageToImageFilter< Image< Vector< TOdfPixelType, NrOdfDirections >, 3 >, 
+  typedef ImageToImageFilter< Image< Vector< TOdfPixelType, NrOdfDirections >, 3 >,
     Image< Vector< TOdfPixelType, NrOdfDirections >, 3 > >
                           Superclass;
-  
+
   typedef DiffusionQballGeneralizedFaImageFilter<TOdfPixelType,TOdfPixelType,NrOdfDirections>
                                                   GfaFilterType;
   typedef typename GfaFilterType::OutputImageType          GfaImageType;
   typedef typename GfaFilterType::GfaComputationMethod     GfaComputationMethod;
 
    /** Method for creation through the object factory. */
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(DiffusionQballPrepareVisualizationImageFilter, 
+  itkTypeMacro(DiffusionQballPrepareVisualizationImageFilter,
                                                    ImageToImageFilter);
- 
+
   typedef TOdfPixelType                 OdfComponentType;
 
   typedef typename Superclass::InputImageType      InputImageType;
@@ -101,9 +106,9 @@ protected:
   DiffusionQballPrepareVisualizationImageFilter();
   ~DiffusionQballPrepareVisualizationImageFilter() {};
   void PrintSelf(std::ostream& os, Indent indent) const;
-  
+
   void BeforeThreadedGenerateData();
-  void ThreadedGenerateData( const 
+  void ThreadedGenerateData( const
       OutputImageRegionType &outputRegionForThread, int);
 
 private:

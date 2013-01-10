@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-25 17:27:17 +0100 (Mo, 25 Feb 2008) $
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTestingMacros.h"
 
@@ -72,16 +71,16 @@ int mitkDicomSeriesReaderTest(int argc, char* argv[])
   dir = argv[1];
 
   //check if DICOMTags have been set as property for mitk::Image
-  mitk::DicomSeriesReader::UidFileNamesMap seriesInFiles = mitk::DicomSeriesReader::GetSeries( dir );
+  mitk::DicomSeriesReader::FileNamesGrouping seriesInFiles = mitk::DicomSeriesReader::GetSeries( dir, true );
   std::list<mitk::Image::Pointer> images;
   std::map<mitk::Image::Pointer, mitk::DicomSeriesReader::StringContainer> fileMap;
 
   // TODO sort series UIDs, implementation of map iterator might differ on different platforms (or verify this is a standard topic??)
-  for (mitk::DicomSeriesReader::UidFileNamesMap::const_iterator seriesIter = seriesInFiles.begin();
+  for (mitk::DicomSeriesReader::FileNamesGrouping::const_iterator seriesIter = seriesInFiles.begin();
        seriesIter != seriesInFiles.end();
        ++seriesIter)
   {
-    mitk::DicomSeriesReader::StringContainer files = seriesIter->second;
+    mitk::DicomSeriesReader::StringContainer files = seriesIter->second.GetFilenames();
 
     mitk::DataNode::Pointer node = mitk::DicomSeriesReader::LoadDicomSeries( files );
     MITK_TEST_CONDITION_REQUIRED(node.IsNotNull(),"Testing node")

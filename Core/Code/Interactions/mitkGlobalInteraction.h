@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef GLOBALINTERACTION_H_HEADER_INCLUDED_C152938A
@@ -46,20 +45,24 @@ namespace mitk {
   //## Listeners only receive the event to process it, but don't change any data. They want to listen to all events.
   //## Interactors do change data according to the received event. They do not need to receive all events, only
   //## those they are interested in.
+  //## Additional to that a EVENT_NOTIFICATION_POLICY can be set. This can be either INFORM_MULTIPLE (the event is passed
+  //## to all listeners) or INFORM_ONE (event is passed to the listener which can handle the event best and only to this one).
   //##
-  //## To divide these two types of statemachine this class holds three lists and one map:
-  //## m_ListenerList, m_InteractorList, m_SelectedList and m_JurisdictionMap
+  //## To divide these two types of statemachine this class holds three lists and two maps:
+  //## m_ListenerList, m_InteractorList, m_SelectedList and m_InteractorRelevanceMap and m_ListenerRelevanceMap
   //## The list m_ListenerList holds all listeners.
   //## m_InteractorList holds all interactors, and the List m_SelectedList holds all machines, that were set to SELECTED or SUBSELECTED.
-  //## m_JurisdictionMap maps values returned from CanHandleEvent to the asked Interactors.
-  //## Through this map stepping through interactors, that were not selected and could handle that event, can be done.
-  //## 
+  //## m_InteractorRelevanceMap and m_ListenerRelevanceMap map values returned from CanHandleEvent to the asked Interactors and Listeners.
+  //## Through m_InteractorRelevanceMap stepping through interactors, that were not selected and could handle that event, can be done.
+  //## Through m_ListenerRelevanceMap the listener which can handle the event best can be determined. In case of the INFORM_ONE notification policy
+  //## the event is passed to just this listener
+  //##
   //## First the listeners are informed with the event.
   //## Then the selected or subselected interactors are asked if they can handle that event.
   //## They can handle it, if the mode of the interactor after HandleEvent(..) is still in SMSELECTED or SMSUBSELECTED.
   //## They can't handle it, if the mode changed to SMDESELECTED. Then the interactor is removed from the selected-list.
-  //## In that case, all interactors are asked to calculate and return their area of jurisdiction.
-  //## An iterator is held on one interactor in the map. With the iterator, the map can be looped through so 
+  //## In that case, all interactors are asked to calculate and return their area of Relevance.
+  //## An iterator is held on one interactor in the map. With the iterator, the map can be looped through so
   //## so that several geometric objects, that lie on top of each other, can be selected.
   //## @ingroup Interaction
  class MITK_CORE_EXPORT GlobalInteraction : public StateMachine
@@ -75,8 +78,19 @@ namespace mitk {
     typedef std::vector<Interactor::Pointer>    InteractorList;
     typedef InteractorList::iterator            InteractorListIter;
     typedef std::multimap<float, Interactor::Pointer, std::greater<double> > InteractorMap;
+    typedef std::multimap<float, StateMachine::Pointer, std::greater<double> > StateMachineMap;
     typedef InteractorMap::iterator             InteractorMapIter;
-    
+    typedef StateMachineMap::iterator             StateMachineMapIter;
+
+    /**
+      * Enum for setting the event notification policy of the GlobalInteraction.
+      */
+    enum EVENT_NOTIFICATION_POLICY
+    {
+      INFORM_MULTIPLE, /** For setting that all registered listeners are informed */
+      INFORM_ONE /** For setting that just the listener that can handle the event best is informed */
+    };
+
     //##Documentation
     //## @brief add an Interactor to the list of all interactors that are asked for handling an event
     //##
@@ -147,13 +161,13 @@ namespace mitk {
     * @brief Return StateMachineFactory
     **/
     StateMachineFactory* GetStateMachineFactory();
-    
+
     /**
     * @brief Returns the StartState of the StateMachine with the name type;
     *
     * Asks member StateMachineFactory for the StartState.
     * Returns NULL if no entry with name type is found.
-    **/    
+    **/
     State* GetStartState(const char* type);
 
     //##Documentation
@@ -169,7 +183,21 @@ namespace mitk {
 
     //##Documentation
     //## @brief Check if GlobalInteraction has already been initialized. Init must! be done before usage.
-    bool IsInitialized() {return m_IsInitialized;};
+    bool IsInitialized() {return m_IsInitialized;}
+
+    /**
+      * @brief Set the policy of how the global interaction informs listeners and interactors
+      *
+      * INFORM_MULTIPLE broadcasts the event to all listeners and interactors that can handle the event
+      * INFORM_ONE only informs the listener or interactor which can handle the event best
+      **/
+    void SetEventNotificationPolicy(EVENT_NOTIFICATION_POLICY);
+
+    /**
+      * Return the current set eventspreading policy
+      * @returns the current event spreading policy
+      **/
+    EVENT_NOTIFICATION_POLICY GetEventNotificationPolicy() const;
 
 
     //so that the interactors can call AddToSelectedInteractors() and RemoveFromSelectedInteractors()
@@ -178,11 +206,11 @@ namespace mitk {
   protected:
     /**
     * @brief Default Constructor with type to load the StateMachinePattern of the StateMachine
-    * @param XMLbehaviorFile the file which contains the statemachine and event patterns 
+    * @param XMLbehaviorFile the file which contains the statemachine and event patterns
     * @param type the name of the statemachine pattern this class shall use
     **/
     GlobalInteraction();
-    
+
     /**
     * @brief Default destructor.
     **/
@@ -191,7 +219,7 @@ namespace mitk {
     virtual bool ExecuteAction(Action* action, mitk::StateEvent const* stateEvent);
 
     /*
-    *@brief adds the given interactor to the list of selected interactors. 
+    *@brief adds the given interactor to the list of selected interactors.
     * This list is asked first to handle an event.
     */
     virtual bool AddToSelectedInteractors(Interactor* interactor);
@@ -215,14 +243,20 @@ namespace mitk {
     bool AskSelected(mitk::StateEvent const* stateEvent);
 
     //##Documentation
-    //##@brief asking next interactor of m_JurisdictionMap
+    //##@brief asking next interactor of m_RelevanceMap
     bool AskCurrentInteractor(mitk::StateEvent const* stateEvent);
 
     //##Documentation
-    //##@brief filling m_JurisdictionMap 
+    //##@brief filling m_InteractorRelevanceMap
     //##
-    //## @ params swell: if the calculated jurisdiction value is above swell, then add it to the map
-    void FillJurisdictionMap(mitk::StateEvent const* stateEvent, float threshold);
+    //## @ params threshold: if the calculated Relevance value is above threshold, then add it to the map
+    void FillInteractorRelevanceMap(mitk::StateEvent const* stateEvent, float threshold);
+
+    //##Documentation
+    //##@brief filling m_ListenerRelevanceMap
+    //##
+    //## @ params threshold: if the calculated Relevance value is above threshold, then add it to the map
+    void FillListenerRelevanceMap(mitk::StateEvent const* stateEvent, float threshold);
 
     void RemoveFlaggedListeners();
 
@@ -238,18 +272,24 @@ namespace mitk {
 
     //##Documentation
     //## @brief list of all interactors, that are in Mode SELECTED or SUBSELECTED
-    InteractorList m_SelectedList; 
+    InteractorList m_SelectedList;
 
     //##Documentation
     //## @brief map for sorting all interactors by the value returned from CanHandleEvent(..).
     //##
     //## With that list certain interactors can be looped through like diving through layers
-    InteractorMap m_JurisdictionMap;
+    InteractorMap m_InteractorRelevanceMap;
 
     //##Documentation
-    //## @brief iterator on an entry in m_JurisdictionMap for stepping through interactors
+    //## @brief map for sorting all listeners by the value returned from CanHandleEvent(..).
+    //##
+    //## With that list certain listeners can be looped through like diving through layers
+    StateMachineMap m_ListenerRelevanceMap;
+
+    //##Documentation
+    //## @brief iterator on an entry in m_RelevanceMap for stepping through interactors
     InteractorMapIter m_CurrentInteractorIter;
-    
+
     //##Documentation
     //## @brief holds a list of BaseRenderer and one focused
     FocusManager::Pointer m_FocusManager;
@@ -267,6 +307,8 @@ namespace mitk {
     bool m_CurrentlyInInformListenersLoop;
     bool m_CurrentlyInInformInteractorsLoop;
     bool m_IsInitialized;
+
+    EVENT_NOTIFICATION_POLICY m_EventNotificationPolicy;
   };
 } // namespace mitk
 

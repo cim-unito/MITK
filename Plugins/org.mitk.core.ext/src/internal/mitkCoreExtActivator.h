@@ -1,23 +1,22 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   MITK Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 17020 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
-#ifndef MITKCOREEXTACTIVATOR_H_ 
-#define MITKCOREEXTACTIVATOR_H_ 
+#ifndef MITKCOREEXTACTIVATOR_H_
+#define MITKCOREEXTACTIVATOR_H_
 
 #include <ctkPluginActivator.h>
 
@@ -44,11 +43,11 @@ namespace mitk
     /**
     * Starts this plug-in and registers object factories.
     *
-    * @param context 
+    * @param context
     *        The context for the plug-in.
     */
     void start(ctkPluginContext* context);
-    
+
     void stop(ctkPluginContext* context);
 
   private:

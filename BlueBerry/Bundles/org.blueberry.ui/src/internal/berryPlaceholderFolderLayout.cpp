@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryPlaceholderFolderLayout.h"
 
@@ -35,7 +34,7 @@ void PlaceholderFolderLayout::AddPlaceholder(const std::string& viewId)
   }
 
   // Create the placeholder.
-  StackablePart::Pointer newPart(new PartPlaceholder(viewId));
+  LayoutPart::Pointer newPart(new PartPlaceholder(viewId));
 
   this->LinkPartToPageLayout(viewId, newPart);
 
@@ -45,7 +44,7 @@ void PlaceholderFolderLayout::AddPlaceholder(const std::string& viewId)
 
 std::string PlaceholderFolderLayout::GetProperty(const std::string& id)
 {
-  IStackableContainer::Pointer folder = placeholder->GetRealContainer();
+  LayoutPart::Pointer folder = placeholder->GetRealContainer();
   if (folder.Cast<PartStack>() != 0)
   {
     return folder.Cast<PartStack>()->GetProperty(id);
@@ -57,7 +56,7 @@ std::string PlaceholderFolderLayout::GetProperty(const std::string& id)
 void PlaceholderFolderLayout::SetProperty(const std::string& id,
     const std::string& value)
 {
-  IStackableContainer::Pointer folder = placeholder->GetRealContainer();
+  LayoutPart::Pointer folder = placeholder->GetRealContainer();
   if (folder.Cast<PartStack>() != 0)
   {
     folder.Cast<PartStack>()->SetProperty(id, value);
@@ -66,7 +65,7 @@ void PlaceholderFolderLayout::SetProperty(const std::string& id,
 }
 
 void PlaceholderFolderLayout::LinkPartToPageLayout(const std::string& viewId,
-    StackablePart::Pointer newPart)
+    LayoutPart::Pointer newPart)
 {
   pageLayout->SetRefPart(viewId, newPart);
   // force creation of the view layout rec

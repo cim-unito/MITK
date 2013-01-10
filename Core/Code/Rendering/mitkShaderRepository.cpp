@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-04-18 12:03:52 +0200 (Sat, 18 Apr 2009) $
-Version:   $Revision: 16883 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #define SR_INFO MITK_INFO("shader.repository")
 #define SR_WARN MITK_WARN("shader.repository")
@@ -112,8 +111,8 @@ void mitk::ShaderRepository::LoadShader(std::string filename)
     shaders.push_back(element);
     SR_INFO << "found shader '" << element->name << "'";
   }
- 
-  else  
+
+  else
   {
     SR_INFO << "Error: no xml shader file!";
   }

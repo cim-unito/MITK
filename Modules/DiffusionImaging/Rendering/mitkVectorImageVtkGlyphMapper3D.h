@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _MITK_VECTOR_IMAGE_VTK_MAPPER_3D__H
 #define _MITK_VECTOR_IMAGE_VTK_MAPPER_3D__H
@@ -40,14 +39,14 @@ public:
     itkNewMacro( Self );
 
     enum GlyphType {LineGlyph, ArrowGlyph};
-    
+
     itkSetMacro(MaximumNumberOfPoints, unsigned int);
     itkGetMacro(MaximumNumberOfPoints, unsigned int);
-    
+
     itkSetMacro(UseMaskPoints, bool);
     itkGetMacro(UseMaskPoints, bool);
     itkBooleanMacro(UseMaskPoints);
-    
+
     itkSetMacro(RandomMode, bool);
     itkGetMacro(RandomMode, bool);
     itkBooleanMacro(RandomMode);
@@ -80,16 +79,16 @@ protected:
      * case, a mitk::Image is returned.
      */
     Image* GetInput();
-    
+
     vtkMaskedGlyph3D* m_Glyph3DGenerator;
     vtkActor* m_Glyph3DActor;
     vtkPolyDataMapper* m_Glyph3DMapper;
-    
+
     GlyphType m_GlyphType;
     unsigned int m_MaximumNumberOfPoints;
     bool m_UseMaskPoints;
     bool m_RandomMode;
-    
+
 };
 
 

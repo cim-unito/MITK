@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKPOINTOPERATION_H
@@ -42,7 +41,7 @@ class MITK_CORE_EXPORT PointOperation : public Operation
   //## @param point is the information of the point to add or is the information to change a point into
   //## @param index is e.g. the position in a list which describes the element to change
   PointOperation(OperationType operationType,  Point3D point, int index = -1, bool selected = true, PointSpecificationType type = PTUNDEFINED);
- 
+
   //##Documentation
   //##@brief Operation that handles all actions on one Point.
   //##
@@ -72,7 +71,7 @@ class MITK_CORE_EXPORT PointOperation : public Operation
 
   //to declare weather the point is selected or deselected
   bool m_Selected;
-  
+
   //##Documentation
   //##@brief to describe the type of the point. See enum PointSpecification for different types
   PointSpecificationType m_Type;

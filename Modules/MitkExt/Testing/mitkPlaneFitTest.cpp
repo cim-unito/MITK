@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkPlaneFit.h>
 #include <mitkPointSet.h>
@@ -40,7 +39,7 @@ int mitkPlaneFitTest(int, char*[] )
     mitk::FillVector3D(Point, (float) position , (float) position * 1.5 , 2.5);
     PointSet->GetPointSet()->GetPoints()->InsertElement(position, Point);
   }
-  
+
   //Set Input
   PlaneFit->SetInput(PointSet);
 
@@ -53,7 +52,7 @@ int mitkPlaneFitTest(int, char*[] )
   else
   {
     std::cout<<"[FAILED]"<<std::endl;
-    return EXIT_FAILURE;        
+    return EXIT_FAILURE;
   }
 
 
@@ -73,13 +72,13 @@ int mitkPlaneFitTest(int, char*[] )
   else
   {
     std::cout<<"[FAILED]"<<std::endl;
-    return EXIT_FAILURE;        
+    return EXIT_FAILURE;
   }
 
 
 
 
-  //Test PlaneGeometry  
+  //Test PlaneGeometry
   std::cout << "  Test PlaneGeometry: ";
   mitk::Geometry2D* Geometry2D = dynamic_cast<mitk::Geometry2D*>( PlaneFit->GetOutput()->GetGeometry());
   if( Geometry2D )
@@ -89,7 +88,7 @@ int mitkPlaneFitTest(int, char*[] )
   else
   {
     std::cout<<"[FAILED]"<<std::endl;
-    return EXIT_FAILURE;        
+    return EXIT_FAILURE;
   }
 
   std::cout<<"[TEST DONE]"<<std::endl;

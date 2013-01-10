@@ -23,9 +23,14 @@
 #ifndef USMODULEINFO_H
 #define USMODULEINFO_H
 
-#include <usExportMacros.h>
+#include <usConfig.h>
 
 #include <string>
+
+#ifdef _MSC_VER
+# pragma warning(push)
+# pragma warning(disable: 4251)
+#endif
 
 US_BEGIN_NAMESPACE
 
@@ -33,12 +38,12 @@ struct ModuleActivator;
 
 /**
  * This class is not intended to be used directly. It is exported to support
- * the US module system.
+ * the CppMicroServices module system.
  */
 struct US_EXPORT ModuleInfo
 {
-  ModuleInfo(const std::string& name, const std::string& libName, const std::string& moduleDeps,
-             const std::string& version);
+  ModuleInfo(const std::string& name, const std::string& libName, const std::string& autoLoadDir,
+             const std::string& moduleDeps, const std::string& version);
 
   typedef ModuleActivator*(*ModuleActivatorHook)(void);
 
@@ -49,11 +54,17 @@ struct US_EXPORT ModuleInfo
 
   std::string location;
 
+  std::string autoLoadDir;
+
   long id;
 
   ModuleActivatorHook activatorHook;
 };
 
 US_END_NAMESPACE
+
+#ifdef _MSC_VER
+# pragma warning(pop)
+#endif
 
 #endif // USMODULEINFO_H

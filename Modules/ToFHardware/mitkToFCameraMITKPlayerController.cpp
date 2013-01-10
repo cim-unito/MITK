@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include <mitkToFCameraMITKPlayerController.h>
 #include <itksys/SystemTools.hxx>
 
@@ -38,20 +36,24 @@ namespace mitk
     m_DistanceImage(0),
     m_AmplitudeImage(0),
     m_IntensityImage(0),
+    m_RGBImage(0),
     m_DistanceInfile(NULL),
     m_AmplitudeInfile(NULL),
     m_IntensityInfile(NULL),
+    m_RGBInfile(NULL),
     m_IntensityArray(NULL),
     m_DistanceArray(NULL),
     m_AmplitudeArray(NULL),
+    m_RGBArray(NULL),
     m_DistanceImageFileName(""),
     m_AmplitudeImageFileName(""),
     m_IntensityImageFileName(""),
+    m_RGBImageFileName(""),
     m_PixelStartInFile(0),
     m_CurrentFrame(-1),
-    m_NumOfFrames(0)   
+    m_NumOfFrames(0)
   {
-    m_ImageStatus = std::vector<bool>(3,true);
+    m_ImageStatus = std::vector<bool>(4,true);
   }
 
   ToFCameraMITKPlayerController::~ToFCameraMITKPlayerController()
@@ -76,6 +78,11 @@ namespace mitk
       m_IntensityImage->ReleaseData();
       m_IntensityImage = NULL;
     }
+    if(m_RGBImage.IsNotNull())
+    {
+      m_RGBImage->ReleaseData();
+      m_RGBImage = NULL;
+    }
 
     delete[] this->m_DistanceArray;
     this->m_DistanceArray = NULL;
@@ -83,6 +90,8 @@ namespace mitk
     this->m_AmplitudeArray = NULL;
     delete[] this->m_IntensityArray;
     this->m_IntensityArray = NULL;
+    delete[] this->m_RGBArray;
+    this->m_RGBArray = NULL;
   }
 
  bool ToFCameraMITKPlayerController::CheckCurrentFileType()
@@ -128,29 +137,44 @@ namespace mitk
         return true;
       }
     }
+    if(!this->m_RGBImageFileName.empty())
+    {
+      if(ItkImageFileReader::CanReadFile(m_RGBImageFileName,"",".nrrd"))
+      {
+        m_Extension = ".nrrd";
+        return true;
+      }
+      else if (PicFileReader::CanReadFile(m_RGBImageFileName,"",".pic"))
+      {
+        m_Extension = ".pic";
+        return true;
+      }
+    }
     return false;
   }
 
   bool ToFCameraMITKPlayerController::OpenCameraConnection()
   {
     if(!this->m_ConnectionCheck)
-    {  
+    {
       try
       {
         // Check for file type, only .nrrd and .pic files are supported!
         if( this->CheckCurrentFileType())
-        { 
+        {
           if(m_Extension == ".nrrd")
           {
             this->OpenNrrdImageFile(this->m_DistanceImageFileName, m_DistanceImage);
             this->OpenNrrdImageFile(this->m_AmplitudeImageFileName, m_AmplitudeImage);
             this->OpenNrrdImageFile(this->m_IntensityImageFileName, m_IntensityImage);
+            this->OpenNrrdImageFile(this->m_RGBImageFileName, m_RGBImage);
           }
           else if(m_Extension == ".pic")
           {
             this->OpenPicImageFile(this->m_DistanceImageFileName, m_DistanceImage);
             this->OpenPicImageFile(this->m_AmplitudeImageFileName, m_AmplitudeImage);
             this->OpenPicImageFile(this->m_IntensityImageFileName, m_IntensityImage);
+            this->OpenPicImageFile(this->m_RGBImageFileName, m_RGBImage);
           }
         }
         else
@@ -171,11 +195,15 @@ namespace mitk
         {
           m_ImageStatus.at(2) = false;
         }
-    
+        if(m_RGBImage.IsNull())
+        {
+          m_ImageStatus.at(3) = false;
+        }
+
         // Check for dimension type
         mitk::Image::Pointer infoImage = NULL;
         if(m_ImageStatus.at(0))
-        {  
+        {
           infoImage = m_DistanceImage;
         }
         else if (m_ImageStatus.at(1))
@@ -185,6 +213,10 @@ namespace mitk
         else if(m_ImageStatus.at(2))
         {
           infoImage = m_IntensityImage;
+        }
+        else if(m_ImageStatus.at(3))
+        {
+          infoImage = m_RGBImage;
         }
 
         if (infoImage->GetDimension() == 2)
@@ -203,6 +235,7 @@ namespace mitk
         this->m_CaptureHeight = infoImage->GetDimension(1);
         this->m_PixelNumber = this->m_CaptureWidth*this->m_CaptureHeight;
         this->m_NumberOfBytes = this->m_PixelNumber * sizeof(float);
+
         if (this->m_ToFImageType == ToFImageType2DPlusT)
         {
           this->m_NumOfFrames = infoImage->GetDimension(3);
@@ -215,10 +248,12 @@ namespace mitk
         // allocate buffer
         this->m_DistanceArray = new float[this->m_PixelNumber];
         for(int i=0; i<this->m_PixelNumber; i++) {this->m_DistanceArray[i]=0.0;}
-        this->m_AmplitudeArray = new float[this->m_PixelNumber]; 
+        this->m_AmplitudeArray = new float[this->m_PixelNumber];
         for(int i=0; i<this->m_PixelNumber; i++) {this->m_AmplitudeArray[i]=0.0;}
         this->m_IntensityArray = new float[this->m_PixelNumber];
         for(int i=0; i<this->m_PixelNumber; i++) {this->m_IntensityArray[i]=0.0;}
+        this->m_RGBArray = new unsigned char[this->m_PixelNumber*3];
+        for(int i=0; i<this->m_PixelNumber*3; i++) {this->m_RGBArray[i]=0.0;}
 
         MITK_INFO << "NumOfFrames: " << this->m_NumOfFrames;
 
@@ -232,7 +267,7 @@ namespace mitk
         return false;
       }
     }
-    else 
+    else
       return this->m_ConnectionCheck;
   }
 
@@ -273,7 +308,7 @@ namespace mitk
     }
     else
     {
-      MITK_ERROR << "Error opening ToF data file " << outfileName;
+      MITK_ERROR << "Error opening ToF data file 2" << outfileName;
     }
   }
 
@@ -286,7 +321,7 @@ namespace mitk
       return true;
     }
     return false;
-  } 
+  }
 
   void ToFCameraMITKPlayerController::UpdateCamera()
   {
@@ -307,6 +342,17 @@ namespace mitk
     if(this->m_ImageStatus.at(2))
     {
       this->AccessData(this->m_CurrentFrame, this->m_IntensityImage, this->m_IntensityArray);
+    }
+    if(this->m_ImageStatus.at(3))
+    {
+      if(!this->m_ToFImageType)
+      {
+        memcpy(m_RGBArray, m_RGBImage->GetSliceData(m_CurrentFrame)->GetData(),m_PixelNumber * sizeof(unsigned char)*3 );
+      }
+      else if(this->m_ToFImageType)
+      {
+        memcpy(m_RGBArray, m_RGBImage->GetVolumeData(m_CurrentFrame)->GetData(), m_PixelNumber * sizeof(unsigned char)*3);
+      }
     }
     itksys::SystemTools::Delay(50);
   }
@@ -336,6 +382,11 @@ namespace mitk
   void ToFCameraMITKPlayerController::GetDistances(float* distanceArray)
   {
     memcpy(distanceArray, this->m_DistanceArray, this->m_NumberOfBytes);
+  }
+
+  void ToFCameraMITKPlayerController::GetRgb(unsigned char* rgbArray)
+  {
+    memcpy(rgbArray, this->m_RGBArray, m_PixelNumber * sizeof(unsigned char)*3);
   }
 
   void ToFCameraMITKPlayerController::SetInputFileName(std::string inputFileName)

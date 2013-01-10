@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-07 15:56:37 +0200 (Di, 07. Jul 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkAnnotationPropertySerializer_h_included
 #define mitkAnnotationPropertySerializer_h_included
@@ -30,7 +29,7 @@ namespace mitk
 class SceneSerializationBase_EXPORT AnnotationPropertySerializer : public BasePropertySerializer
 {
   public:
-    
+
     mitkClassMacro( AnnotationPropertySerializer, BasePropertySerializer );
     itkNewMacro(Self);
 
@@ -54,11 +53,11 @@ class SceneSerializationBase_EXPORT AnnotationPropertySerializer : public BasePr
       if (!element) return NULL;
       const char* label( element->Attribute("label") );
       Point3D p;
-      if ( element->QueryFloatAttribute( "x", &p[0] ) != TIXML_SUCCESS ) 
+      if ( element->QueryFloatAttribute( "x", &p[0] ) != TIXML_SUCCESS )
         return NULL;
-      if ( element->QueryFloatAttribute( "y", &p[1] ) != TIXML_SUCCESS ) 
+      if ( element->QueryFloatAttribute( "y", &p[1] ) != TIXML_SUCCESS )
         return NULL;
-      if ( element->QueryFloatAttribute( "z", &p[2] ) != TIXML_SUCCESS ) 
+      if ( element->QueryFloatAttribute( "z", &p[2] ) != TIXML_SUCCESS )
         return NULL;
       return AnnotationProperty::New(label, p).GetPointer();
     }

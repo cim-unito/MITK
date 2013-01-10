@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKLookupTable_H_HEADER_INCLUDED_C1EBD53D
@@ -39,8 +38,8 @@ namespace mitk
 class MITK_CORE_EXPORT LookupTable : public itk::DataObject
 {
 public:
-    /** 
-     *@brief Some convenient typedefs. 
+    /**
+     *@brief Some convenient typedefs.
      */
     typedef unsigned char RawLookupTableType;
 
@@ -61,7 +60,7 @@ public:
 
     virtual void ChangeOpacity(int index, float opacity );
 
-    
+
     /*!
     * \brief equality operator implementation
     */
@@ -69,7 +68,7 @@ public:
 
     /*!
     * \brief non equality operator implementation
-    */ 
+    */
     virtual bool operator!=( const LookupTable& LookupTable ) const;
 
     /*!
@@ -79,7 +78,7 @@ public:
     virtual LookupTable& operator=( const LookupTable& LookupTable );
 
     /**
-     * Updates the output information of the current object by calling 
+     * Updates the output information of the current object by calling
      * updateOutputInformation of the data objects source object.
      */
     virtual void UpdateOutputInformation( );
@@ -94,7 +93,7 @@ public:
 
     /**
      * Checks, if the requested region lies outside of the buffered region by
-     * calling verifyRequestedRegion(). 
+     * calling verifyRequestedRegion().
      */
     virtual bool RequestedRegionIsOutsideOfTheBufferedRegion( );
 

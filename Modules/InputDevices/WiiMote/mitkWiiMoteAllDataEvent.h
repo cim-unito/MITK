@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef MITK_WIIMOTE_ALLDATAEVENT_H
 #define MITK_WIIMOTE_ALLDATAEVENT_H
 
@@ -19,8 +34,8 @@ namespace mitk
 
     // unnecessary number of parameter because
     // the method MakeObject() from itk::EventObject
-    // defines the data, that is able to travel from 
-    // thread to thread; i.e. everything, which is not 
+    // defines the data, that is able to travel from
+    // thread to thread; i.e. everything, which is not
     // in the constructor will not be usable in the
     // other thread
     WiiMoteAllDataEvent
@@ -88,9 +103,9 @@ namespace mitk
     typedef WiiMoteAllDataEvent Self;
     typedef itk::EventObject Superclass;
 
-    const char * GetEventName() const; 
-    bool CheckEvent(const ::itk::EventObject* e) const; 
-    ::itk::EventObject* MakeObject() const; 
+    const char * GetEventName() const;
+    bool CheckEvent(const ::itk::EventObject* e) const;
+    ::itk::EventObject* MakeObject() const;
 
   protected:
 

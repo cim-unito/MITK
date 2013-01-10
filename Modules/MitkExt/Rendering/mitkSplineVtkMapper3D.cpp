@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkSplineVtkMapper3D.h"
@@ -33,7 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 mitk::SplineVtkMapper3D::SplineVtkMapper3D()
-: m_SplinesAvailable (false), m_SplinesAddedToAssembly(false) 
+: m_SplinesAvailable (false), m_SplinesAddedToAssembly(false)
 {
   m_SplinesActor = vtkActor::New();
   m_SplineAssembly = vtkPropAssembly::New();
@@ -55,7 +54,7 @@ mitk::SplineVtkMapper3D::GetVtkProp(mitk::BaseRenderer * /*renderer*/)
 
 void mitk::SplineVtkMapper3D::UpdateVtkTransform(mitk::BaseRenderer * /*renderer*/)
 {
-  vtkLinearTransform * vtktransform = 
+  vtkLinearTransform * vtktransform =
     this->GetDataNode()->GetVtkTransform(this->GetTimestep());
 
   m_SplinesActor->SetUserTransform(vtktransform);
@@ -68,7 +67,7 @@ mitk::SplineVtkMapper3D::GenerateData()
 
   // only update spline if UpdateSpline has not been called from
   // external, e.g. by the SplineMapper2D. But call it the first time when m_SplineUpdateTime = 0 and m_LastUpdateTime = 0.
-  if ( m_SplineUpdateTime < m_LastUpdateTime || m_SplineUpdateTime == 0) 
+  if ( m_SplineUpdateTime < m_LastUpdateTime || m_SplineUpdateTime == 0)
   {
     this->UpdateSpline();
     this->ApplyProperties(m_SplinesActor, NULL);
@@ -87,7 +86,7 @@ mitk::SplineVtkMapper3D::GenerateData()
     if ( m_SplinesAddedToAssembly )
     {
       m_SplineAssembly->RemovePart( m_SplinesActor );
-      m_SplinesAddedToAssembly = false; 
+      m_SplinesAddedToAssembly = false;
     }
   }
 }
@@ -110,7 +109,7 @@ void mitk::SplineVtkMapper3D::GenerateDataForRenderer( mitk::BaseRenderer* rende
       m_SplineAssembly->RemovePart(m_PointsAssembly);
   }
   //if the properties have been changed, then refresh the properties
-  if ( (m_SplineUpdateTime < this->m_DataNode->GetPropertyList()->GetMTime() ) || 
+  if ( (m_SplineUpdateTime < this->m_DataNode->GetPropertyList()->GetMTime() ) ||
        (m_SplineUpdateTime < this->m_DataNode->GetPropertyList(renderer)->GetMTime() ) )
     this->ApplyProperties(m_SplinesActor, NULL);
 }
@@ -137,7 +136,7 @@ void mitk::SplineVtkMapper3D::ApplyProperties(vtkActor *actor, BaseRenderer *ren
   else
     lineWidth = dynamic_cast<mitk::FloatProperty *>(this->GetDataNode()->GetProperty("line width"))->GetValue();
   m_SplinesActor->GetProperty()->SetLineWidth(lineWidth);
-  
+
   m_SplineUpdateTime.Modified();
 }
 

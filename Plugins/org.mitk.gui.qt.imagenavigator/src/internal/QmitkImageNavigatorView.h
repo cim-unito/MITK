@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKIMAGENAVIGATORVIEW_H_INCLUDED
 #define _QMITKIMAGENAVIGATORVIEW_H_INCLUDED
@@ -33,7 +32,7 @@ class QmitkStepperAdapter;
  *
  * \class QmitkImageNavigatorView
  *
- * \brief Provides a means to scan quickly through a dataset via Transversal,
+ * \brief Provides a means to scan quickly through a dataset via Axial,
  * Coronal and Sagittal sliders, displaying millimetre location and stepper position.
  *
  * For images, the stepper position corresponds to a voxel index. For other datasets
@@ -84,7 +83,7 @@ protected:
 
   Ui::QmitkImageNavigatorViewControls m_Controls;
 
-  QmitkStepperAdapter* m_TransversalStepper;
+  QmitkStepperAdapter* m_AxialStepper;
   QmitkStepperAdapter* m_SagittalStepper;
   QmitkStepperAdapter* m_FrontalStepper;
   QmitkStepperAdapter* m_TimeStepper;

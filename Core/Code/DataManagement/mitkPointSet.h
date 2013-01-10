@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKPointSet_H_HEADER_INCLUDED
@@ -160,8 +159,8 @@ public:
 
   /**
    * \brief Get the point with ID id in world coordinates
-   * 
-   * If a point exists for the ID id, the point is returned in the parameter point 
+   *
+   * If a point exists for the ID id, the point is returned in the parameter point
    * and the method returns true. If the ID does not exist, the method returns false
    */
   bool GetPointIfExists( PointIdentifier id, PointType* point, int t = 0 ) const;
@@ -180,16 +179,16 @@ public:
    * \brief Set the given point in world coordinate system into the itkPointSet.
    */
   void InsertPoint( PointIdentifier id, PointType point, int t = 0 );
-  
+
   /**
   * \brief Set the given point in world coordinate system with given PointSpecificationType
-  */  
+  */
   void InsertPoint( PointIdentifier id, PointType point, PointSpecificationType spec, int t );
 
   /**
-  * \brief Swap a point at the given position (id) with the upper point (moveUpwards=true) or with the lower point (moveUpwards=false). 
+  * \brief Swap a point at the given position (id) with the upper point (moveUpwards=true) or with the lower point (moveUpwards=false).
   * If upper or lower index does not exist false is returned, if swap was successful true.
-  */  
+  */
   bool SwapPointPosition( PointIdentifier id, bool moveUpwards, int t = 0 );
 
 
@@ -241,7 +240,7 @@ protected:
   PointSet();
   PointSet(const PointSet &other);
   virtual ~PointSet();
-  
+
   virtual void PrintSelf(std::ostream& os, itk::Indent indent) const; ///< print content of the object to os
 
   virtual void ClearData();

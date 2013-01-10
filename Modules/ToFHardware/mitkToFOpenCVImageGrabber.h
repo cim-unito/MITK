@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision:  $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFOpenCVImageGrabber_h
 #define __mitkToFOpenCVImageGrabber_h
 
@@ -36,7 +34,7 @@ namespace mitk
   */
   class MITK_TOFHARDWARE_EXPORT ToFOpenCVImageGrabber : public mitk::OpenCVImageSource
   {
-  public: 
+  public:
 
     ToFOpenCVImageGrabber();
 
@@ -59,7 +57,7 @@ namespace mitk
     */
     void SetImageType(unsigned int imageType);
     /*!
-    \brief set the depth of the image. Some functions of OpenCV do not support IPL_DEPTH_32F. 
+    \brief set the depth of the image. Some functions of OpenCV do not support IPL_DEPTH_32F.
     Warning: changing from default results in a mapping of the pixel value through a lookup table
     IPL_DEPTH_1U     1
     IPL_DEPTH_8U     8
@@ -93,7 +91,7 @@ namespace mitk
     \brief image depth currently used by this image source.
     Warning: Changing from default (IPL_DEPTH_32F) results in a mapping of the pixel value through a lookup table
     */
-    unsigned int m_ImageDepth; 
+    unsigned int m_ImageDepth;
     IplImage* m_CurrentOpenCVIntensityImage; ///< OpenCV image holding the current intensity data
     IplImage* m_CurrentOpenCVAmplitudeImage; ///< OpenCV image holding the current amplitude data
     IplImage* m_CurrentOpenCVDistanceImage; ///< OpenCV image holding the current distance data

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $ 
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // Blueberry
 #include <berryISelectionService.h>
@@ -33,7 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QMessageBox>
 
 // vtk
-#include <vtkConeSource.h> 
+#include <vtkConeSource.h>
 
 
 const std::string QmitkNavigationDataPlayerView::VIEW_ID = "org.mitk.views.navigationdataplayer";
@@ -78,7 +77,7 @@ void QmitkNavigationDataPlayerView::CreateQtPartControl( QWidget *parent )
 
 
 void QmitkNavigationDataPlayerView::CreateBundleWidgets(QWidget* parent)
-{  
+{
   m_PlayerWidget = new QmitkIGTPlayerWidget( parent );   // this bundle's ND player widget
 }
 
@@ -115,7 +114,7 @@ void QmitkNavigationDataPlayerView::OnCreatePlaybackVisualization()
 {
   if(m_ReloadData) // only if input file changed
   {
-    m_Visualizer = mitk::NavigationDataObjectVisualizationFilter::New(); 
+    m_Visualizer = mitk::NavigationDataObjectVisualizationFilter::New();
 
     mitk::DataStorage* ds = this->GetDefaultDataStorage();
 
@@ -138,7 +137,7 @@ void QmitkNavigationDataPlayerView::OnCreatePlaybackVisualization()
       m_Visualizer->SetRepresentationObject(i, playbackRepresentation->GetData()); // add replay object to visualizer
 
       // add new representation object to DataStorage
-      this->AddRepresentationObject(this->GetDefaultDataStorage(), playbackRepresentation); 
+      this->AddRepresentationObject(this->GetDefaultDataStorage(), playbackRepresentation);
 
     }
 
@@ -246,11 +245,11 @@ void QmitkNavigationDataPlayerView::OnPerformPlaybackVisualization()
 
       mitk::PointSet::PointType currentPoint = m_PlayerWidget->GetNavigationDataPoint(i); // current ND point for tool trajectory
 
-      // if realtime mode is selected, trajectory points that are equal in position to their antecessor 
+      // if realtime mode is selected, trajectory points that are equal in position to their antecessor
       // will not be inserted in the trajectory pointset to avoid "vtk can't create normals" warning
       if(m_PlayerWidget->GetCurrentPlaybackMode() == QmitkIGTPlayerWidget::RealTimeMode)
       {
-        mitk::PointSet::PointType lastPoint; 
+        mitk::PointSet::PointType lastPoint;
         if(counter == -1)
         {
           lastPoint[0] = -1;
@@ -282,7 +281,7 @@ void QmitkNavigationDataPlayerView::OnPerformPlaybackVisualization()
 }
 
 void QmitkNavigationDataPlayerView::RenderScene()
-{ 
+{
   try
   {
     if (m_Visualizer.IsNull() || this->GetActiveStdMultiWidget() == NULL)
@@ -292,7 +291,7 @@ void QmitkNavigationDataPlayerView::RenderScene()
     {
       m_Visualizer->Update();
     }
-    catch(std::exception& e) 
+    catch(std::exception& e)
     {
       std::cout << "Exception during QmitkNavigationDataPlayerView::RenderScene():" << e.what() << "\n";
     }
@@ -310,7 +309,7 @@ void QmitkNavigationDataPlayerView::RenderScene()
   catch (...)
   {
     std::cout << "RenderAll unknown exception\n";
-  }  
+  }
 }
 
 void QmitkNavigationDataPlayerView::OnReinit()
@@ -337,7 +336,7 @@ void QmitkNavigationDataPlayerView::OnReinit()
   m_TrajectoryPointSet->Clear(); // clear trajectory PointSet
   this->m_PlayerWidget->ClearTrajectorySelectCombobox(); // clear trajectory selection combobox in player widget
 
-  m_ReloadData = true; // set flag to true so representation data will be reload if play is triggered again 
+  m_ReloadData = true; // set flag to true so representation data will be reload if play is triggered again
 
 }
 
@@ -399,7 +398,7 @@ void QmitkNavigationDataPlayerView::OnShowTrajectory(int index)
     m_ShowTrajectory = true;
 
     // index-1 because combobox is filled with infovalue at index = 0
-    mitk::DataNode::Pointer replayObject = m_RepresentationObjects.at(index-1); 
+    mitk::DataNode::Pointer replayObject = m_RepresentationObjects.at(index-1);
 
     std::string prefix("Trajectory of ");
     std::string name = replayObject->GetName();
@@ -454,7 +453,7 @@ mitk::Color QmitkNavigationDataPlayerView::GetColorCircleColor(int index)
 mitk::PointSetVtkMapper3D::Pointer QmitkNavigationDataPlayerView::GetTrajectoryMapper(TrajectoryStyle style)
 {
   if(style == Points)
-  { 
+  {
     if(m_PointSetMapper.IsNull())
       m_PointSetMapper = mitk::PointSetVtkMapper3D::New();
 

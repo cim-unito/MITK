@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Do, 14 Jan 2010) $
-Version:   $Revision: 21047 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkOpenCVToMitkImageFilter.h"
 
@@ -28,6 +27,12 @@ mitk::OpenCVToMitkImageFilter::OpenCVToMitkImageFilter()
 
 mitk::OpenCVToMitkImageFilter::~OpenCVToMitkImageFilter()
 {
+}
+
+void mitk::OpenCVToMitkImageFilter::SetOpenCVImage(const IplImage* image)
+{
+  this->m_OpenCVImage = image;
+  this->Modified();
 }
 
 void mitk::OpenCVToMitkImageFilter::GenerateData()
@@ -72,6 +77,12 @@ void mitk::OpenCVToMitkImageFilter::GenerateData()
 
   else if( m_OpenCVImage->depth == IPL_DEPTH_64F && m_OpenCVImage->nChannels == 3 )
     m_Image = ConvertIplToMitkImage< DoubleRGBPixelType , 2>( rgbOpenCVImage, m_CopyBuffer );
+
+  else
+  {
+    MITK_WARN << "Unknown image depth and/or pixel type. Cannot convert OpenCV to MITK image.";
+    return;
+  }
 
   cvReleaseImage(&rgbOpenCVImage);
 }
@@ -131,7 +142,7 @@ mitk::Image::Pointer mitk::OpenCVToMitkImageFilter::ConvertIplToMitkImage( const
   const unsigned int numberOfPixels = size[0] * size[1];
   const unsigned int numberOfBytes = numberOfPixels * sizeof( TPixel );
 
-   
+
 
   if( copyBuffer )
   {
@@ -164,4 +175,4 @@ mitk::Image::Pointer mitk::OpenCVToMitkImageFilter::ConvertIplToMitkImage( const
   mitkImage = mitk::ImportItkImage( output );
 
   return mitkImage;
-} 
+}

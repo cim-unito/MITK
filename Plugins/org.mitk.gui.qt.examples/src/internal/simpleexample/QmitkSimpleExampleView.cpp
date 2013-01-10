@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkSimpleExampleView.h"
 
@@ -75,7 +74,7 @@ void QmitkSimpleExampleView::StdMultiWidgetAvailable (QmitkStdMultiWidget &stdMu
 {
   m_MultiWidget = &stdMultiWidget;
 
-  new QmitkStepperAdapter(m_Controls->sliceNavigatorTransversal, m_MultiWidget->mitkWidget1->GetSliceNavigationController()->GetSlice(), "sliceNavigatorTransversalFromSimpleExample");
+  new QmitkStepperAdapter(m_Controls->sliceNavigatorAxial, m_MultiWidget->mitkWidget1->GetSliceNavigationController()->GetSlice(), "sliceNavigatorAxialFromSimpleExample");
   new QmitkStepperAdapter(m_Controls->sliceNavigatorSagittal, m_MultiWidget->mitkWidget2->GetSliceNavigationController()->GetSlice(), "sliceNavigatorSagittalFromSimpleExample");
   new QmitkStepperAdapter(m_Controls->sliceNavigatorFrontal, m_MultiWidget->mitkWidget3->GetSliceNavigationController()->GetSlice(), "sliceNavigatorFrontalFromSimpleExample");
   new QmitkStepperAdapter(m_Controls->sliceNavigatorTime, m_MultiWidget->GetTimeNavigationController()->GetTime(), "sliceNavigatorTimeFromSimpleExample");
@@ -241,7 +240,7 @@ void QmitkSimpleExampleView::OnTakeHighResolutionScreenshot()
 void QmitkSimpleExampleView::OnTakeScreenshot()
 {
   QString fileName = QFileDialog::getSaveFileName(NULL, "Save screenshot to...", QDir::currentPath(), "JPEG file (*.jpg);;PNG file (*.png)");
-  
+
   QmitkRenderWindow* renWin = this->GetMovieRenderWindow();
   if (renWin == NULL)
     return;
@@ -283,7 +282,7 @@ void QmitkSimpleExampleView::TakeScreenshot(vtkRenderer* renderer, unsigned int 
   fileWriter->SetInput(magnifier->GetOutput());
   fileWriter->SetFileName(fileName.toLatin1());
 
-  // vtkRenderLargeImage has problems with different layers, therefore we have to 
+  // vtkRenderLargeImage has problems with different layers, therefore we have to
   // temporarily deactivate all other layers.
   // we set the background to white, because it is nicer than black...
   double oldBackground[3];
@@ -294,13 +293,13 @@ void QmitkSimpleExampleView::TakeScreenshot(vtkRenderer* renderer, unsigned int 
   m_MultiWidget->DisableDepartmentLogo();
   m_MultiWidget->DisableGradientBackground();
 
-  fileWriter->Write();  
-  fileWriter->Delete();  
+  fileWriter->Write();
+  fileWriter->Delete();
 
   m_MultiWidget->EnableColoredRectangles();
   m_MultiWidget->EnableDepartmentLogo();
   m_MultiWidget->EnableGradientBackground();
   renderer->SetBackground(oldBackground);
-  
+
   renderer->GetRenderWindow()->SetDoubleBuffer(doubleBuffering);
 }

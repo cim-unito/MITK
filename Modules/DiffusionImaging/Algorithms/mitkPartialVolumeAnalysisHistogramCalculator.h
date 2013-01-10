@@ -1,13 +1,18 @@
-/*========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_PartialVolumeAnalysisHistogramCalculator_H
@@ -38,7 +43,7 @@ namespace mitk
  * polygon. When masking with a planar figure, the slice corresponding to the
  * plane containing the figure is extracted and then clipped with contour
  * defined by the figure. Planar figures need to be aligned along the main axes
- * of the image (transversal, sagittal, coronal). Planar figures on arbitrary
+ * of the image (axial, sagittal, coronal). Planar figures on arbitrary
  * rotated planes are not supported.
  *
  * For each operating mode (no masking, masking by image, masking by planar

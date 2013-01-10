@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-06-18 15:59:04 +0200 (Do, 18 Jun 2009) $
-Version:   $Revision: 17786 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkHeightFieldSurfaceClipImageFilter.h"
@@ -186,6 +185,7 @@ namespace mitk
     outputimagetoitk->Update();
 
     typename ItkOutputImageType::Pointer outputItkImage = outputimagetoitk->GetOutput();
+                    std::vector< double > test;
 
 
     // create the iterators
@@ -259,7 +259,7 @@ namespace mitk
     inputIt.SetSecondDirection( 1 );
     //through all slices
     for ( inputIt.GoToBegin(), outputIt.GoToBegin();
-      !inputIt.IsAtEnd(); 
+      !inputIt.IsAtEnd();
       inputIt.NextSlice() )
     {
       //through all lines of a slice
@@ -326,15 +326,15 @@ namespace mitk
               The problem is the scaling of the planeP0 and the x/y values
 
               ScalarType q =
-                  q00 * ((double) x1 - planeP0[0]) * ((double) y1 - planeP0[1])
-                + q01 * (planeP0[0] - (double) x0) * ((double) y1 - planeP0[1])
-                + q10 * ((double) x1 - planeP0[0]) * (planeP0[1] - (double) y0)
-                + q11 * (planeP0[0] - (double) x0) * (planeP0[1] - (double) y0);
+              q00 * ((double) x1 - planeP0[0]) * ((double) y1 - planeP0[1])
+              + q01 * (planeP0[0] - (double) x0) * ((double) y1 - planeP0[1])
+              + q10 * ((double) x1 - planeP0[0]) * (planeP0[1] - (double) y0)
+              + q11 * (planeP0[0] - (double) x0) * (planeP0[1] - (double) y0);
               */
-      
+
               //ATM: set the value direct, without interpolation: stepped view (only by the deformed plane)
               ScalarType q = heightField[y0 * m_HeightFieldResolutionX + x0];
-              
+
               //decide, whether the point is on the one side of the plane or on the other
               if ( q - planeP0[2] < 0 )
               {
@@ -361,6 +361,8 @@ namespace mitk
               {
                 if(inputIt.Get() != 0)
                   outputIt.Set( inputIt.Get() + m_MultiPlaneValue);
+                else
+                  outputIt.Set( inputIt.Get() );
               }
             }
             // the non-clipped pixel keeps his value
@@ -448,8 +450,9 @@ namespace mitk
         }
         else
         {
+          mitk::Image::Pointer extensionImage = m_OutputTimeSelector->GetOutput()->Clone();
           AccessByItk_3(
-            m_OutputTimeSelector->GetOutput(),
+            extensionImage,
             _InternalComputeClippedImage,
             this,
             inputSurface->GetVtkPolyData( t ),

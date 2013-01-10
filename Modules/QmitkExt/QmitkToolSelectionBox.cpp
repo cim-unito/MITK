@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 16581 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 //#define MBILOG_ENABLE_DEBUG 1
 
@@ -280,7 +279,7 @@ void QmitkToolSelectionBox::OnToolManagerReferenceDataModified()
 void QmitkToolSelectionBox::OnToolManagerWorkingDataModified()
 {
   if (m_SelfCall) return;
-  
+
   MITK_DEBUG << "OnToolManagerWorkingDataModified()";
 
   SetGUIEnabledAccordingToToolManagerState();
@@ -297,7 +296,7 @@ void QmitkToolSelectionBox::SetGUIEnabledAccordingToToolManagerState()
   //MITK_DEBUG << this->name() << ": SetGUIEnabledAccordingToToolManagerState: referenceNode " << (void*)referenceNode << " workingNode " << (void*)workingNode << " isVisible() " << isVisible();
 
   bool enabled = true;
-  
+
   switch ( m_EnabledMode )
   {
     default:
@@ -418,7 +417,7 @@ void QmitkToolSelectionBox::RecreateButtons()
   {
     SortPairType thisPair = toolPositions.top();
     MITK_DEBUG << "Position " << thisPair.first << " : " << thisPair.second->GetName();
-    
+
     allTools.push_back( thisPair.second );
     toolPositions.pop();
   }

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkImageDataItem.h"
@@ -33,13 +32,16 @@ PURPOSE.  See the above copyright notices for more information.
 #include <vtkUnsignedLongArray.h>
 #include <vtkUnsignedShortArray.h>
 
+#include <mitkImageVtkAccessor.h>
+#include <mitkImage.h>
+
 
 mitk::ImageDataItem::ImageDataItem(const ImageDataItem& aParent, const mitk::ImageDescriptor::Pointer desc, unsigned int dimension, void *data, bool manageMemory, size_t offset) :
   m_Data(NULL), m_ManageMemory(false), m_VtkImageData(NULL), m_Offset(offset), m_IsComplete(false), m_Size(0),
   m_Parent(&aParent)
 {
   m_PixelType = new mitk::PixelType(aParent.GetPixelType());
-  m_Data = static_cast<unsigned char*>(aParent.GetData())+offset;
+  m_Data = static_cast<unsigned char*>(aParent.m_Data)+offset;
 
   // compute size
   //const unsigned int *dims = desc->GetDimensions();
@@ -138,9 +140,9 @@ void mitk::ImageDataItem::ComputeItemSize(const unsigned int *dimensions, unsign
   }
 }
 
-void mitk::ImageDataItem::ConstructVtkImageData() const
+void mitk::ImageDataItem::ConstructVtkImageData(ImagePointer iP) const
 {
-  vtkImageData *inData = vtkImageData::New();
+  mitk::ImageVtkAccessor *inData = ImageVtkAccessor::New(iP); //vtkImageData::New();
   vtkDataArray *scalars = NULL;
 
   const unsigned int *dims = m_Dimensions;
@@ -256,4 +258,11 @@ void mitk::ImageDataItem::Modified() const
     m_VtkImageData->Modified();
 }
 
+
+mitk::ImageVtkAccessor* mitk::ImageDataItem::GetVtkImageData(mitk::ImagePointer iP) const
+{
+  if(m_VtkImageData==NULL)
+    ConstructVtkImageData(iP);
+  return m_VtkImageData;
+}
 

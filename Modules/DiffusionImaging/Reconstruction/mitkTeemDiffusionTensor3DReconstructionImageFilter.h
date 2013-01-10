@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 13:23:19 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 13561 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef __mitkTeemDiffusionTensor3DReconstructionImageFilter_h__
@@ -27,14 +26,14 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk
 {
 
-  enum TeemTensorEstimationMethods{ 
+  enum TeemTensorEstimationMethods{
     TeemTensorEstimationMethodsLLS,
     TeemTensorEstimationMethodsNLS,
     TeemTensorEstimationMethodsWLS,
     TeemTensorEstimationMethodsMLE,
-  }; 
+  };
 
-  template< class DiffusionImagePixelType = short, 
+  template< class DiffusionImagePixelType = short,
     class TTensorPixelType=float >
   class TeemDiffusionTensor3DReconstructionImageFilter : public itk::Object
   {
@@ -54,13 +53,13 @@ namespace mitk
     typedef DiffusionImagePixelType DiffusionPixelType;
     typedef itk::VectorImage< DiffusionPixelType, 3 >   DiffusionImageType;
 
-    mitkClassMacro( TeemDiffusionTensor3DReconstructionImageFilter, 
+    mitkClassMacro( TeemDiffusionTensor3DReconstructionImageFilter,
       itk::Object );
     itkNewMacro(Self);
 
-    itkGetMacro(Input, 
+    itkGetMacro(Input,
       typename DiffusionImage<DiffusionImagePixelType>::Pointer);
-    itkSetMacro(Input, 
+    itkSetMacro(Input,
       typename DiffusionImage<DiffusionImagePixelType>::Pointer);
 
     itkGetMacro(EstimateErrorImage, bool);

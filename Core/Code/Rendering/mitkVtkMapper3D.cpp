@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkVtkMapper3D.h"
@@ -57,7 +56,7 @@ void VtkMapper3D::SetVtkMapperImmediateModeRendering(vtkMapper *mapper)
 void VtkMapper3D::UpdateVtkTransform(mitk::BaseRenderer *renderer)
 {
   vtkLinearTransform * vtktransform = GetDataNode()->GetVtkTransform(this->GetTimestep());
-  
+
   vtkProp3D *prop = dynamic_cast<vtkProp3D*>( GetVtkProp(renderer) );
   if(prop)
     prop->SetUserTransform(vtktransform);
@@ -66,9 +65,9 @@ void VtkMapper3D::UpdateVtkTransform(mitk::BaseRenderer *renderer)
 
 void VtkMapper3D::MitkRenderOpaqueGeometry(BaseRenderer* renderer)
 {
-  if ( this->IsVisible( renderer )==false ) 
+  if ( this->IsVisible( renderer )==false )
     return;
-  
+
   if ( this->GetVtkProp(renderer)->GetVisibility() )
   {
     this->GetVtkProp(renderer)->RenderOpaqueGeometry( renderer->GetVtkRenderer() );
@@ -77,18 +76,18 @@ void VtkMapper3D::MitkRenderOpaqueGeometry(BaseRenderer* renderer)
 
 void VtkMapper3D::MitkRenderTranslucentGeometry(BaseRenderer* renderer)
 {
-  if ( this->IsVisible(renderer)==false ) 
+  if ( this->IsVisible(renderer)==false )
     return;
-  
+
  /* if(dynamic_cast<vtkLODProp3D*>(m_Prop3D) != NULL)
   {
     if(  dynamic_cast<BoolProperty*>(GetDataNode()->
-                                           GetProperty("volumerendering",renderer).GetPointer())==NULL ||  
+                                           GetProperty("volumerendering",renderer).GetPointer())==NULL ||
          dynamic_cast<BoolProperty*>(GetDataNode()->
-                                           GetProperty("volumerendering",renderer).GetPointer())->GetValue() == false)    
+                                           GetProperty("volumerendering",renderer).GetPointer())->GetValue() == false)
        return;
   }*/
-  
+
   if ( this->GetVtkProp(renderer)->GetVisibility() )
     this->GetVtkProp(renderer)->RenderTranslucentPolygonalGeometry(renderer->GetVtkRenderer());
 
@@ -97,15 +96,15 @@ void VtkMapper3D::MitkRenderTranslucentGeometry(BaseRenderer* renderer)
 
 void VtkMapper3D::MitkRenderVolumetricGeometry(BaseRenderer* renderer)
 {
-  if(IsVisible(renderer)==false) 
+  if(IsVisible(renderer)==false)
     return;
 
   /* if(dynamic_cast<vtkLODProp3D*>(m_Prop3D) != NULL)
   {
   if(  dynamic_cast<BoolProperty*>(GetDataNode()->
-  GetProperty("volumerendering",renderer).GetPointer())==NULL ||  
+  GetProperty("volumerendering",renderer).GetPointer())==NULL ||
   dynamic_cast<BoolProperty*>(GetDataNode()->
-  GetProperty("volumerendering",renderer).GetPointer())->GetValue() == false)    
+  GetProperty("volumerendering",renderer).GetPointer())->GetValue() == false)
   return;
   }*/
 
@@ -117,9 +116,9 @@ void VtkMapper3D::MitkRenderVolumetricGeometry(BaseRenderer* renderer)
 
 void VtkMapper3D::MitkRenderOverlay(BaseRenderer* renderer)
 {
-  if ( this->IsVisible(renderer)==false ) 
+  if ( this->IsVisible(renderer)==false )
     return;
-  
+
   if ( this->GetVtkProp(renderer)->GetVisibility() )
   {
     this->GetVtkProp(renderer)->RenderOverlay(renderer->GetVtkRenderer());
@@ -129,7 +128,7 @@ void VtkMapper3D::MitkRenderOverlay(BaseRenderer* renderer)
 /*
   m_LabelActorCollection->InitTraversal();
   vtkProp3D *labelActor;
-  for ( m_LabelActorCollection->InitTraversal(); 
+  for ( m_LabelActorCollection->InitTraversal();
         (labelActor = m_LabelActorCollection->GetNextProp3D()); )
   {
     if ( labelActor->GetVisibility() )
@@ -175,7 +174,7 @@ void VtkMapper3D::ApplyProperties(vtkActor* actor, BaseRenderer* renderer)
       this->CheckForAnnotationProperty( (*it).second.first.GetPointer(), renderer );
     }
     */
-  } 
+  }
 }
 
 /*
@@ -228,7 +227,7 @@ void VtkMapper3D::ReleaseGraphicsResources(vtkWindow * /*renWin*/)
 bool VtkMapper3D::HasVtkProp( const vtkProp *prop, BaseRenderer *renderer )
 {
   vtkProp *myProp = this->GetVtkProp( renderer );
-  
+
   // TODO: check if myProp is a vtkAssembly and if so, check if prop is contained in its leafs
   return ( prop == myProp );
 }

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkExtractImageFilter.h"
 #include "mitkCoreObjectFactory.h"
@@ -27,7 +26,7 @@ unsigned int CompareImageSliceTestHelper::m_SliceDimension = 0;
 unsigned int CompareImageSliceTestHelper::m_SliceIndex = 0;
 bool CompareImageSliceTestHelper::m_ComparisonResult = false;
 mitk::Image* CompareImageSliceTestHelper::m_SliceImage = NULL;
- 
+
 
 
 class mitkExtractImageFilterTestClass
@@ -60,10 +59,10 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
         if ( sliceDimension < 3 )
         {
           ++numberFailed;
-          std::cerr << "  (EE) Extracting produced an exception for " 
-                    << image->GetDimension() 
-                    << "-dimensional image, sliceDimension " 
-                    << sliceDimension 
+          std::cerr << "  (EE) Extracting produced an exception for "
+                    << image->GetDimension()
+                    << "-dimensional image, sliceDimension "
+                    << sliceDimension
                     << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
           continue;
         }
@@ -78,10 +77,10 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
       {
         // we would expect to get an exception earlier
         ++numberFailed;
-        std::cerr << "  (EE) Extracting produced no exception (although it should) for " 
-                  << image->GetDimension() 
-                  << "-dimensional image, sliceDimension " 
-                  << sliceDimension 
+        std::cerr << "  (EE) Extracting produced no exception (although it should) for "
+                  << image->GetDimension()
+                  << "-dimensional image, sliceDimension "
+                  << sliceDimension
                     << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
         continue;
       }
@@ -91,10 +90,10 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
       if (output.GetPointer() == filter->GetInput())
       {
         ++numberFailed;
-        std::cerr << "  (EE) Extracting failed with wrong result (output == input) for " 
-                  << image->GetDimension() 
-                  << "-dimensional image, sliceDimension " 
-                  << sliceDimension 
+        std::cerr << "  (EE) Extracting failed with wrong result (output == input) for "
+                  << image->GetDimension()
+                  << "-dimensional image, sliceDimension "
+                  << sliceDimension
                     << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
        }
 
@@ -105,28 +104,28 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
           if (!CompareImageSliceTestHelper::CompareSlice( image, sliceDimension , sliceIndex , output ))
           {
             ++numberFailed;
-            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow messed up with a " 
-                      << image->GetDimension() 
-                      << "-dimensional image, sliceDimension " 
-                      << sliceDimension 
+            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow messed up with a "
+                      << image->GetDimension()
+                      << "-dimensional image, sliceDimension "
+                      << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
           }
           else
           {
-            std::cerr << "  :-) Extracting extracted somehow correct pixels with a " 
-                      << image->GetDimension() 
-                      << "-dimensional image, sliceDimension " 
-                      << sliceDimension 
+            std::cerr << "  :-) Extracting extracted somehow correct pixels with a "
+                      << image->GetDimension()
+                      << "-dimensional image, sliceDimension "
+                      << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
           }
         }
         catch(std::exception& e)
         {
             ++numberFailed;
-            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow SEVERELY messed up with a " 
-                      << image->GetDimension() 
-                      << "-dimensional image, sliceDimension " 
-                      << sliceDimension 
+            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow SEVERELY messed up with a "
+                      << image->GetDimension()
+                      << "-dimensional image, sliceDimension "
+                      << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
             std::cerr << "Following exception was thrown: " << e.what() << std::endl;
         }
@@ -134,10 +133,10 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
       else
       {
         ++numberFailed;
-        std::cerr << "  (EE) Extracting failed with wrong result (not 2D) for " 
-                  << image->GetDimension() 
-                  << "-dimensional image, sliceDimension " 
-                  << sliceDimension 
+        std::cerr << "  (EE) Extracting failed with wrong result (not 2D) for "
+                  << image->GetDimension()
+                  << "-dimensional image, sliceDimension "
+                  << sliceDimension
                   << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
        }
 
@@ -146,8 +145,8 @@ static void Test3D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
 
   if ( numberFailed == initialNumberFailed )
   {
-    std::cout << "  (II) Extracting works like expected (2D result and all pixels the same) for " 
-              << image->GetDimension() 
+    std::cout << "  (II) Extracting works like expected (2D result and all pixels the same) for "
+              << image->GetDimension()
               << "-dimensional image." << "(l. " << __LINE__ << ")" << std::endl;
   }
 }
@@ -174,10 +173,10 @@ static void Test2D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
     catch(...)
     {
       ++numberFailed;
-      std::cerr << "  (EE) Extracting produced an exception for " 
-                << image->GetDimension() 
-                << "-dimensional image, sliceDimension " 
-                << sliceDimension 
+      std::cerr << "  (EE) Extracting produced an exception for "
+                << image->GetDimension()
+                << "-dimensional image, sliceDimension "
+                << sliceDimension
                 << " sliceIndex 1." << "(l. " << __LINE__ << ")" << std::endl;
       continue;
     }
@@ -187,10 +186,10 @@ static void Test2D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
     if (output.GetPointer() != filter->GetInput())
     {
       ++numberFailed;
-      std::cerr << "  (EE) Extracting failed with wrong result for " 
-                << image->GetDimension() 
-                << "-dimensional image, sliceDimension " 
-                << sliceDimension 
+      std::cerr << "  (EE) Extracting failed with wrong result for "
+                << image->GetDimension()
+                << "-dimensional image, sliceDimension "
+                << sliceDimension
                 << " sliceIndex 1." << "(l. " << __LINE__ << ")" << std::endl;
      }
 
@@ -198,8 +197,8 @@ static void Test2D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
 
   if ( numberFailed == initialNumberFailed )
   {
-    std::cout << "  (II) Extracting works like expected for " 
-              << image->GetDimension() 
+    std::cout << "  (II) Extracting works like expected for "
+              << image->GetDimension()
               << "-dimensional image." << "(l. " << __LINE__ << ")" << std::endl;
   }
 }
@@ -241,10 +240,10 @@ static void Test4D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
           if ( sliceDimension < 3 )
           {
             ++numberFailed;
-            std::cerr << "  (EE) Extracting produced an exception for " 
-                      << image->GetDimension() 
-                      << "-dimensional image, sliceDimension " 
-                      << sliceDimension 
+            std::cerr << "  (EE) Extracting produced an exception for "
+                      << image->GetDimension()
+                      << "-dimensional image, sliceDimension "
+                      << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
             continue;
           }
@@ -259,10 +258,10 @@ static void Test4D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
         {
           // we would expect to get an exception earlier
           ++numberFailed;
-          std::cerr << "  (EE) Extracting produced no exception (although it should) for " 
-                    << image->GetDimension() 
-                    << "-dimensional image, sliceDimension " 
-                    << sliceDimension 
+          std::cerr << "  (EE) Extracting produced no exception (although it should) for "
+                    << image->GetDimension()
+                    << "-dimensional image, sliceDimension "
+                    << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
           continue;
         }
@@ -272,10 +271,10 @@ static void Test4D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
         if (output.GetPointer() == filter->GetInput())
         {
           ++numberFailed;
-          std::cerr << "  (EE) Extracting failed with wrong result (output == input) for " 
-                    << image->GetDimension() 
-                    << "-dimensional image, sliceDimension " 
-                    << sliceDimension 
+          std::cerr << "  (EE) Extracting failed with wrong result (output == input) for "
+                    << image->GetDimension()
+                    << "-dimensional image, sliceDimension "
+                    << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
          }
 
@@ -284,22 +283,22 @@ static void Test4D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
           if (!CompareImageSliceTestHelper::CompareSlice( image3D, sliceDimension , sliceIndex , output ))
           {
             ++numberFailed;
-            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow messed up with a " 
-                      << image->GetDimension() 
-                      << "-dimensional image, time step " 
-                      << timeStep 
-                      << "sliceDimension " 
-                      << sliceDimension 
+            std::cerr << "  (EE) Extracting extracted the wrong pixels or somehow messed up with a "
+                      << image->GetDimension()
+                      << "-dimensional image, time step "
+                      << timeStep
+                      << "sliceDimension "
+                      << sliceDimension
                       << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
           }
         }
         else
         {
           ++numberFailed;
-          std::cerr << "  (EE) Extracting failed with wrong result (not 2D) for " 
-                    << image->GetDimension() 
-                    << "-dimensional image, sliceDimension " 
-                    << sliceDimension 
+          std::cerr << "  (EE) Extracting failed with wrong result (not 2D) for "
+                    << image->GetDimension()
+                    << "-dimensional image, sliceDimension "
+                    << sliceDimension
                     << " sliceIndex " << sliceIndex << "." << "(l. " << __LINE__ << ")" << std::endl;
          }
 
@@ -308,8 +307,8 @@ static void Test4D( mitk::ExtractImageFilter* filter, mitk::Image* image, unsign
 
     if ( numberFailed == initialNumberFailed )
     {
-      std::cout << "  (II) Extracting works like expected (2D result and all pixels the same) for " 
-                << image->GetDimension() 
+      std::cout << "  (II) Extracting works like expected (2D result and all pixels the same) for "
+                << image->GetDimension()
                 << "-dimensional image." << "(l. " << __LINE__ << ")" << std::endl;
     }
   }
@@ -341,17 +340,17 @@ static void TestOtherD( mitk::ExtractImageFilter* filter, mitk::Image* image, un
 
     // no exception
     ++numberFailed;
-    std::cerr << "  (EE) Extracting produced no exception for " 
-              << image->GetDimension() 
-              << "-dimensional image, sliceDimension " 
-              << sliceDimension 
+    std::cerr << "  (EE) Extracting produced no exception for "
+              << image->GetDimension()
+              << "-dimensional image, sliceDimension "
+              << sliceDimension
               << " sliceIndex 1." << "(l. " << __LINE__ << ")" << std::endl;
  }
 
   if ( numberFailed == initialNumberFailed )
   {
-    std::cout << "  (II) Extracting works like expected for " 
-              << image->GetDimension() 
+    std::cout << "  (II) Extracting works like expected for "
+              << image->GetDimension()
               << "-dimensional image." << "(l. " << __LINE__ << ")" << std::endl;
   }
 }
@@ -363,14 +362,14 @@ int mitkExtractImageFilterTest(int argc, char* argv[])
 {
   // one big variable to tell if anything went wrong
     unsigned int numberFailed(0);
- 
+
   // need one parameter (image filename)
     if(argc==0)
     {
       std::cerr<<"No file specified [FAILED]"<<std::endl;
       return EXIT_FAILURE;
     }
- 
+
   // load the image
 
     mitk::Image::Pointer image = NULL;
@@ -431,12 +430,12 @@ int mitkExtractImageFilterTest(int argc, char* argv[])
     {
       mitkExtractImageFilterTestClass::Test4D( filter, image, numberFailed );
     }
-  
+
     std::cout << "Testing filter destruction" << std::endl;
 
   // freeing
     filter = NULL;
-      
+
     std::cout << "  (II) Freeing works." << std::endl;
 
     if (numberFailed > 0)

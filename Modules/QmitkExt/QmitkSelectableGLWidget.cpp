@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkSelectableGLWidget.h"
 #include "QmitkRenderWindow.h"
@@ -33,7 +32,7 @@ QmitkSelectableGLWidget::QmitkSelectableGLWidget(QWidget* parent)
   rendererName += objectName();
 
   // create Renderer
-  m_Renderer= mitk::VtkPropRenderer::New( qPrintable(rendererName), NULL, mitk::RenderingManager::GetInstance() ); 
+  m_Renderer= mitk::VtkPropRenderer::New( qPrintable(rendererName), NULL, mitk::RenderingManager::GetInstance() );
 
   // create widget
   QString composedName("QSGLWt::");
@@ -51,7 +50,7 @@ QmitkSelectableGLWidget::QmitkSelectableGLWidget(QWidget* parent)
   m_RenderWindow = new QmitkRenderWindow(this, composedName,m_Renderer);
 
   hlayout->addWidget(m_RenderWindow);
-  
+
 }
 
 
@@ -71,16 +70,16 @@ void QmitkSelectableGLWidget::wheelEvent( QWheelEvent * e )
 {
   if ( m_RenderWindow->GetSliceNavigationController()->GetSliceLocked() )
     return;
-  
+
   mitk::Stepper* stepper = m_RenderWindow
     ->GetSliceNavigationController()->GetSlice();
-  
+
   if (stepper->GetSteps() <= 1)
   {
     stepper = m_RenderWindow->GetSliceNavigationController()->GetTime();
   }
 
-  if (e->orientation() * e->delta()  > 0) 
+  if (e->orientation() * e->delta()  > 0)
   {
     stepper->Next();
   }

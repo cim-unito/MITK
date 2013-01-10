@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 17:34:48 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21985 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKSPACENAVIGATORADDON_H_HEADER_INCLUDED
 #define MITKSPACENAVIGATORADDON_H_HEADER_INCLUDED
@@ -60,11 +59,11 @@ namespace mitk {
     /**
     * Reacts on any movement of the mouse and fires events accordingly.
     *
-    * @param translation 
+    * @param translation
     *           the translation of the mouse as an 3D vector
-    * @param rotation 
+    * @param rotation
     *           the rotation of the mouse as an 3D vector
-    * @param angle 
+    * @param angle
     *           the angle from the mouse as an scalar unit
     */
     void SensorInput(mitk::Vector3D translation, mitk::Vector3D rotation, mitk::ScalarType angle);

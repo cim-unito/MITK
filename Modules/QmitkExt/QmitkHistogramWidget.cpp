@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkHistogramWidget.h"
 #include "mitkImageStatisticsHolder.h"
@@ -31,7 +30,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 //#include <iostream>
 
-QmitkHistogramWidget::QmitkHistogramWidget(QWidget * /*parent*/, bool showreport)
+QmitkHistogramWidget::QmitkHistogramWidget(QWidget * parent, bool showreport)
+  : QDialog(parent)
 {
   QBoxLayout *layout = new QVBoxLayout(this);
 
@@ -77,8 +77,8 @@ QmitkHistogramWidget::QmitkHistogramWidget(QWidget * /*parent*/, bool showreport
   }
 
   m_Picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
-    QwtPicker::PointSelection, 
-    QwtPlotPicker::NoRubberBand, QwtPicker::AlwaysOn, 
+    QwtPicker::PointSelection,
+    QwtPlotPicker::NoRubberBand, QwtPicker::AlwaysOn,
     m_Plot->canvas());
 
   connect(m_Picker, SIGNAL(selected(const QwtDoublePoint &)),
@@ -145,7 +145,7 @@ void QmitkHistogramWidget::InitializeMarker()
   m_Marker->setLineStyle(QwtPlotMarker::VLine);
   m_Marker->setLabelAlignment(Qt::AlignHCenter | Qt::AlignRight);
   m_Marker->setLinePen(QPen(QColor(200,150,0), 3, Qt::SolidLine));
-  m_Marker->setSymbol( QwtSymbol(QwtSymbol::Diamond, 
+  m_Marker->setSymbol( QwtSymbol(QwtSymbol::Diamond,
     QColor(Qt::red), QColor(Qt::red), QSize(10,10)));
   m_Marker->attach(m_Plot);
 }

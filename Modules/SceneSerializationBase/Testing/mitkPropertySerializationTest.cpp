@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTestingMacros.h"
 
@@ -72,7 +71,7 @@ PURPOSE.  See the above copyright notices for more information.
 void TestAllProperties(const mitk::PropertyList* propList);
 
 /**Documentation
-* \brief Test for all PropertySerializer classes. 
+* \brief Test for all PropertySerializer classes.
 *
 */
 int mitkPropertySerializationTest(int /* argc */, char* /*argv*/[])
@@ -138,7 +137,7 @@ int mitkPropertySerializationTest(int /* argc */, char* /*argv*/[])
   propList->SetProperty("GroupTagProperty", mitk::GroupTagProperty::New());
   propList->SetProperty("LevelWindowProperty", mitk::LevelWindowProperty::New(mitk::LevelWindow(100.0, 50.0)));
   mitk::LookupTable::Pointer lt = mitk::LookupTable::New();
-  lt->ChangeOpacityForAll(0.25); 
+  lt->ChangeOpacityForAll(0.25);
   lt->ChangeOpacity(17, 0.88);
   propList->SetProperty("LookupTableProperty", mitk::LookupTableProperty::New(lt));
   propList->SetProperty("StringProperty", mitk::StringProperty::New("Oh why, gruel world"));
@@ -150,7 +149,7 @@ int mitkPropertySerializationTest(int /* argc */, char* /*argv*/[])
   MITK_TEST_CONDITION_REQUIRED(propList->GetMap()->size() > 0, "Initialize PropertyList");
 
   TestAllProperties(propList);
-  
+
   /* test default property lists of basedata objects */
   // activate the following tests after MaterialProperty is deleted
 
@@ -201,9 +200,9 @@ int mitkPropertySerializationTest(int /* argc */, char* /*argv*/[])
   SlicedData
   QBallImage
   SeedsImage
-  TensorImage 
+  TensorImage
   BoundingObject
-  BoundingObjectGroup 
+  BoundingObjectGroup
   */
 
   MITK_TEST_END();
@@ -250,14 +249,14 @@ void TestAllProperties(const mitk::PropertyList* propList)
         MITK_TEST_OUTPUT( << "serialization failed, skipping deserialization");
         continue;
       }
-      
+
       mitk::BaseProperty::Pointer deserializedProp = serializer->Deserialize( valueelement );
       MITK_TEST_CONDITION(deserializedProp.IsNotNull(), "serializer created valid property");
       if (deserializedProp.IsNotNull())
       {
         MITK_TEST_CONDITION(*(deserializedProp.GetPointer()) == *prop, "deserialized property equals initial property for type " << prop->GetNameOfClass());
       }
-      
+
     }
     else
     {

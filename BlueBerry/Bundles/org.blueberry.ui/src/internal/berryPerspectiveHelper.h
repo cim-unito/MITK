@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYPERSPECTIVEHELPER_H_
 #define BERRYPERSPECTIVEHELPER_H_
@@ -168,12 +167,12 @@ private:
 
     std::string pid;
     std::string sid;
-    StackablePart::Pointer part;
+    LayoutPart::Pointer part;
     bool hasWildcard;
     std::string::size_type len;
 
     MatchingPart(const std::string& pid, const std::string& sid,
-        StackablePart::Pointer part);
+        LayoutPart::Pointer part);
 
   };
 
@@ -201,7 +200,7 @@ public:
    * corner of the presentation.
    */
 public:
-  void AddPart(StackablePart::Pointer part);
+  void AddPart(LayoutPart::Pointer part);
 
   /**
    * Attaches a part that was previously detached to the mainLayout.
@@ -223,7 +222,7 @@ public:
    * @return true if the part was brought to top, false if not.
    */
 public:
-  bool BringPartToTop(StackablePart::Pointer part);
+  bool BringPartToTop(LayoutPart::Pointer part);
 
   /**
    * Returns true if the given part is visible.
@@ -250,18 +249,11 @@ public:
 private:
   std::vector<PartPlaceholder::Pointer> CollectPlaceholders();
 
-private:
-  std::vector<ContainerPlaceholder::Pointer> CollectContainerPlaceholders();
-
   /**
    * Answer a list of the PartPlaceholder objects.
    */
 private:
   std::vector<PartPlaceholder::Pointer> CollectPlaceholders(
-      const std::list<LayoutPart::Pointer>& parts);
-
-private:
-  std::vector<ContainerPlaceholder::Pointer> CollectContainerPlaceholders(
       const std::list<LayoutPart::Pointer>& parts);
 
   /**
@@ -307,13 +299,13 @@ public:
    * drag listeners.
    */
 protected:
-  /* package */void DerefPart(StackablePart::Pointer part);
+  /* package */void DerefPart(LayoutPart::Pointer part);
 
   /**
    * Create a detached window containing a part.
    */
 private:
-  void DetachPart(StackablePart::Pointer source, int x, int y);
+  void DetachPart(LayoutPart::Pointer source, int x, int y);
 
 private:
   void Detach(LayoutPart::Pointer source, int x, int y);
@@ -337,10 +329,10 @@ public:
    * Create a detached window containing a part.
    */
 public:
-  void AddDetachedPart(StackablePart::Pointer part);
+  void AddDetachedPart(LayoutPart::Pointer part);
 
 public:
-  void AddDetachedPart(StackablePart::Pointer part, const Rectangle& bounds);
+  void AddDetachedPart(LayoutPart::Pointer part, const Rectangle& bounds);
 
   /**
    * disableDragging.
@@ -359,7 +351,7 @@ private:
    * Wild cards now supported.
    */
 private:
-  StackablePart::Pointer FindPart(const std::string& id);
+  LayoutPart::Pointer FindPart(const std::string& id);
 
   /**
    * Find the first part that matches the specified
@@ -367,23 +359,15 @@ private:
    * are supported.
    */
 public:
-  StackablePart::Pointer FindPart(const std::string& primaryId,
+  LayoutPart::Pointer FindPart(const std::string& primaryId,
       const std::string& secondaryId);
 
   /**
    * Find the first part with a given ID in the presentation.
    */
 private:
-  StackablePart::Pointer FindPart(const std::string& id,
+  LayoutPart::Pointer FindPart(const std::string& id,
       const std::list<LayoutPart::Pointer>& parts,
-      std::vector<MatchingPart>& matchingParts);
-
-  LayoutPart::Pointer FindLayoutPart(const std::string& id,
-      const std::list<LayoutPart::Pointer>& parts,
-      std::vector<MatchingPart>& matchingParts);
-
-  StackablePart::Pointer FindPart(const std::string& id,
-      const std::list<StackablePart::Pointer>& parts,
       std::vector<MatchingPart>& matchingParts);
 
   /**
@@ -392,14 +376,9 @@ private:
    * are supported.
    */
 private:
-  StackablePart::Pointer FindPart(const std::string& primaryId,
+  LayoutPart::Pointer FindPart(const std::string& primaryId,
       const std::string& secondaryId,
       const std::list<LayoutPart::Pointer>& parts,
-      std::vector<MatchingPart>& matchingParts);
-
-  StackablePart::Pointer FindPart(const std::string& primaryId,
-      const std::string& secondaryId,
-      const std::list<StackablePart::Pointer>& parts,
       std::vector<MatchingPart>& matchingParts);
 
   /**
@@ -469,7 +448,7 @@ public:
    * after it is docked
    */
 public:
-  static float GetDockingRatio(StackablePart::Pointer source,
+  static float GetDockingRatio(LayoutPart::Pointer source,
       LayoutPart::Pointer target);
 
   /**
@@ -487,7 +466,7 @@ public:
    * Remove all references to a part.
    */
 public:
-  void RemovePart(StackablePart::Pointer part);
+  void RemovePart(LayoutPart::Pointer part);
 
   /**
    * Add a part to the presentation.
@@ -497,8 +476,7 @@ public:
    * fact to locate the parent.
    */
 public:
-  void ReplacePlaceholderWithPart(StackablePart::Pointer part);
-  void ReplacePlaceholderWithPart(LayoutPart::Pointer container);
+  void ReplacePlaceholderWithPart(LayoutPart::Pointer part);
 
   /**
    * @see org.blueberry.ui.IPersistable

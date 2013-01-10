@@ -1,22 +1,21 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-12-11 14:46:19 +0100 (Di, 11 Dez 2007) $
-Version:   $Revision: 13129 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
 
-#include <cstdlib> 
-#include <ctime> 
+===================================================================*/
+
+#include <cstdlib>
+#include <ctime>
 
 #include <iostream>
 #include <fstream>
@@ -82,17 +81,17 @@ void file_replace(std::string filename, std::string what, std::string with)
 
 // do the work
 template< class D, class T >
-void 
+void
 mitk::TeemDiffusionTensor3DReconstructionImageFilter<D,T>
 ::Update()
 {
 
   // save input image to nrrd file in temp-folder
   char filename[512];
-  srand((unsigned)time(0)); 
+  srand((unsigned)time(0));
   int random_integer = rand();
   sprintf( filename, "dwi_%d.nhdr",random_integer);
-  
+
   typedef mitk::NrrdDiffusionImageWriter<D> WriterType;
   typename WriterType::Pointer nrrdWriter = WriterType::New();
   nrrdWriter->SetInput( m_Input );
@@ -141,17 +140,17 @@ mitk::TeemDiffusionTensor3DReconstructionImageFilter<D,T>
     sprintf( command, "%s -est wls", command);
     break;
   }
-  
+
   sprintf( command, "%s -wlsi %d", command, m_NumIterations);
 
   if(m_ConfidenceThreshold != -19191919.0)
   {
     sprintf( command, "%s -t %f", command, m_ConfidenceThreshold);
   }
-  
+
   sprintf( command, "%s -soft %f", command, m_ConfidenceFuzzyness);
   sprintf( command, "%s -mv %f", command, m_MinPlausibleValue);
-  
+
   // call tend estim command
   std::cout << "Calling <" << command << ">" << std::endl;
   int success = system(command);
@@ -174,7 +173,7 @@ mitk::TeemDiffusionTensor3DReconstructionImageFilter<D,T>
   reader->SetFileName(filename);
   reader->Update();
   typename VectorImageType::Pointer vecImage = reader->GetOutput();
-  
+
   remove(filename);
   sprintf( filename, "tensors_%d.raw", random_integer);
   remove(filename);
@@ -187,7 +186,7 @@ mitk::TeemDiffusionTensor3DReconstructionImageFilter<D,T>
   itkTensorImage->SetBufferedRegion( vecImage->GetLargestPossibleRegion() );
   itkTensorImage->SetRequestedRegion( vecImage->GetLargestPossibleRegion() );
   itkTensorImage->Allocate();
-  
+
   itk::ImageRegionIterator<VectorImageType> it(vecImage,
     vecImage->GetLargestPossibleRegion());
 

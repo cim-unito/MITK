@@ -1,19 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkDiffusionTensor3DReconstructionImageFilter.h,v $
-  Language:  C++
-  Date:      $Date: 2006-03-27 17:01:06 $
-  Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 #ifndef __itkTensorDerivedMeasurementsFilter_h_
 #define __itkTensorDerivedMeasurementsFilter_h_
 
@@ -28,7 +33,7 @@ namespace itk{
 
 template <class TPixel>
 class TensorDerivedMeasurementsFilter :
-  public ImageToImageFilter<  itk::Image< itk::DiffusionTensor3D<TPixel>, 3 >, 
+  public ImageToImageFilter<  itk::Image< itk::DiffusionTensor3D<TPixel>, 3 >,
                               itk::Image< TPixel, 3 > >
 {
 
@@ -53,16 +58,16 @@ public:
   typedef TensorDerivedMeasurementsFilter         Self;
   typedef SmartPointer<Self>                      Pointer;
   typedef SmartPointer<const Self>                ConstPointer;
-  typedef ImageToImageFilter< TensorType, 
+  typedef ImageToImageFilter< TensorType,
                               OutputImageType >
                                                   SuperClass;
-   
+
    /** Method for creation through the object factory. */
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
   /** Runtime information support. */
   itkTypeMacro(TensorDerivedMeasurementsFilter, ImageToImageFilter);
- 
+
   itkSetMacro(Measure, Measure);
 
 
@@ -70,8 +75,8 @@ protected:
   TensorDerivedMeasurementsFilter();
   ~TensorDerivedMeasurementsFilter() {};
   //void PrintSelf(std::ostream& os, Indent indent) const;
-  
-  Measure m_Measure; 
+
+  Measure m_Measure;
 
   void GenerateData();
 

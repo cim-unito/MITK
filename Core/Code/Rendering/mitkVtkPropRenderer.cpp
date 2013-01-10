@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkVtkPropRenderer.h"
@@ -57,8 +62,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 mitk::VtkPropRenderer::VtkPropRenderer( const char* name, vtkRenderWindow * renWin, mitk::RenderingManager* rm )
-  : BaseRenderer(name,renWin, rm), 
-  m_VtkMapperPresent(false), 
+  : BaseRenderer(name,renWin, rm),
+  m_VtkMapperPresent(false),
   m_NewRenderer(true),
   m_CameraInitializedForMapperID(0)
 {
@@ -157,7 +162,7 @@ bool mitk::VtkPropRenderer::SetWorldGeometryToDataStorageBounds()
 
 
 /*!
-\brief 
+\brief
 
 Called by the vtkMitkRenderProp in order to start MITK rendering process.
 */
@@ -165,7 +170,7 @@ int mitk::VtkPropRenderer::Render(mitk::VtkPropRenderer::RenderType type)
 {
 
   // Do we have objects to render?
-  if ( this->GetEmptyWorldGeometry()) 
+  if ( this->GetEmptyWorldGeometry())
     return 0;
 
   if ( m_DataStorage.IsNull())
@@ -174,11 +179,11 @@ int mitk::VtkPropRenderer::Render(mitk::VtkPropRenderer::RenderType type)
   // Update mappers and prepare mapper queue
   if (type == VtkPropRenderer::Opaque)
     this->PrepareMapperQueue();
-  
+
   //go through the generated list and let the sorted mappers paint
   bool lastVtkBased = true;
   //bool sthVtkBased = false;
-  
+
   for(MappersMapType::iterator it = m_MappersMap.begin(); it != m_MappersMap.end(); it++)
   {
     Mapper * mapper = (*it).second;
@@ -204,13 +209,6 @@ int mitk::VtkPropRenderer::Render(mitk::VtkPropRenderer::RenderType type)
       lastVtkBased = false;
     }
 
-    //Workarround for bug GL_TEXTURE_2D (bug #8188)
-    GLboolean mode;
-    GLenum bit = GL_TEXTURE_2D;
-    GLfloat lineWidth;
-    glGetFloatv(GL_LINE_WIDTH, &lineWidth);
-    glGetBooleanv(bit, &mode);
-
     switch(type)
     {
     case mitk::VtkPropRenderer::Opaque: mapper->MitkRenderOpaqueGeometry(this); break;
@@ -218,16 +216,8 @@ int mitk::VtkPropRenderer::Render(mitk::VtkPropRenderer::RenderType type)
     case mitk::VtkPropRenderer::Overlay:       mapper->MitkRenderOverlay(this); break;
     case mitk::VtkPropRenderer::Volumetric:    mapper->MitkRenderVolumetricGeometry(this); break;
     }
-    if(mode)
-      glEnable(bit);
-    else
-      glDisable(bit);
-
-    glLineWidth(lineWidth);
-    //end Workarround for bug GL_TEXTURE_2D (bug #8188)
-
   }
-  
+
   if (lastVtkBased == false)
     Disable2DOpenGL();
 
@@ -302,42 +292,46 @@ void mitk::VtkPropRenderer::PrepareMapperQueue()
     int nr = (layer<<16) + mapperNo;
     m_MappersMap.insert( std::pair< int, Mapper * >( nr, mapper ) );
     mapperNo++;
-  }  
+  }
 }
 
 /*!
-\brief 
+\brief
 
 Enable2DOpenGL() and Disable2DOpenGL() are used to switch between 2D rendering (orthographic projection) and 3D rendering (perspective projection)
 */
 void mitk::VtkPropRenderer::Enable2DOpenGL()
 {
-  GLint iViewport[4];  
+  GLint iViewport[4];
 
-  // Get a copy of the viewport  
-  glGetIntegerv( GL_VIEWPORT, iViewport );  
+  // Get a copy of the viewport
+  glGetIntegerv( GL_VIEWPORT, iViewport );
 
-  // Save a copy of the projection matrix so that we can restore it  
-  // when it's time to do 3D rendering again.  
-  glMatrixMode( GL_PROJECTION );  
+  // Save a copy of the projection matrix so that we can restore it
+  // when it's time to do 3D rendering again.
+  glMatrixMode( GL_PROJECTION );
   glPushMatrix();
-  glLoadIdentity();  
+  glLoadIdentity();
 
-  // Set up the orthographic projection  
-  glOrtho( 
+  // Set up the orthographic projection
+  glOrtho(
       iViewport[0], iViewport[0]+iViewport[2],
       iViewport[1], iViewport[1]+iViewport[3],
       -1.0, 1.0
       );
-  glMatrixMode( GL_MODELVIEW );  
-  glPushMatrix();  
+  glMatrixMode( GL_MODELVIEW );
+  glPushMatrix();
   glLoadIdentity();
 
-  // Make sure depth testing and lighting are disabled for 2D rendering until  
-  // we are finished rendering in 2D  
+  // Make sure depth testing and lighting are disabled for 2D rendering until
+  // we are finished rendering in 2D
   glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );
-  glDisable( GL_DEPTH_TEST );  
+  glDisable( GL_DEPTH_TEST );
   glDisable( GL_LIGHTING );
+  // disable the texturing here so crosshair is painted in the correct colors
+  // vtk will reenable texturing every time it is needed
+  glDisable( GL_TEXTURE_1D );
+  glDisable( GL_TEXTURE_2D );
 }
 
 /*!
@@ -348,10 +342,10 @@ Enable2DOpenGL() and Disable2DOpenGL() are used to switch between 2D rendering (
 void mitk::VtkPropRenderer::Disable2DOpenGL()
 {
   glPopAttrib();
-  glMatrixMode( GL_PROJECTION );  
-  glPopMatrix();  
-  glMatrixMode( GL_MODELVIEW );  
-  glPopMatrix(); 
+  glMatrixMode( GL_PROJECTION );
+  glPopMatrix();
+  glMatrixMode( GL_MODELVIEW );
+  glPopMatrix();
 }
 
 void mitk::VtkPropRenderer::Update(mitk::DataNode* datatreenode)
@@ -570,7 +564,7 @@ mitk::DataNode *
         continue;
 
       m_CellPicker->AddPickList( prop );
-    }  
+    }
 
 
     // Do the picking and retrieve the picked vtkProp (if any)
@@ -604,13 +598,13 @@ mitk::DataNode *
       {
         return node;
       }
-    }  
+    }
 
     return NULL;
   }
   else
   {
-    return Superclass::PickObject( displayPosition, worldPosition ); 
+    return Superclass::PickObject( displayPosition, worldPosition );
   }
 };
 
@@ -620,7 +614,7 @@ mitk::DataNode *
 \brief Writes some 2D text as overlay. Function returns an unique int Text_ID for each call, which can be used via the GetTextLabelProperty(int text_id) function
 in order to get a vtkTextProperty. This property enables the setup of font, font size, etc.
 */
-int mitk::VtkPropRenderer::WriteSimpleText(std::string text, double posX, double posY, double color1, double color2, double color3)
+int mitk::VtkPropRenderer::WriteSimpleText(std::string text, double posX, double posY, double color1, double color2, double color3, float opacity)
 {
   if(text.size() > 0)
   {
@@ -629,6 +623,7 @@ int mitk::VtkPropRenderer::WriteSimpleText(std::string text, double posX, double
     textActor->SetPosition(posX,posY);
     textActor->SetInput(text.c_str());
     textActor->GetTextProperty()->SetColor(color1, color2, color3); //TODO: Read color from node property
+    textActor->GetTextProperty()->SetOpacity( opacity );
     int text_id = m_TextCollection.size();
     m_TextCollection.insert(TextMapType::value_type(text_id,textActor));
     return text_id;
@@ -727,7 +722,7 @@ void mitk::VtkPropRenderer::ReleaseGraphicsResources(vtkWindow *renWin)
     Mapper::Pointer mapper = node->GetMapper(m_MapperID);
     if(mapper.IsNotNull())
       mapper->ReleaseGraphicsResources(renWin);
-  } 
+  }
 }
 
 
@@ -772,14 +767,14 @@ void mitk::VtkPropRenderer::checkState()
     {
       didCount = true;
       glWorkAroundGlobalCount++;
-      
+
       if (glWorkAroundGlobalCount == 2)
       {
         MITK_INFO << "Multiple 3D Renderwindows active...: turning Immediate Rendering ON for legacy mappers";
         //          vtkMapper::GlobalImmediateModeRenderingOn();
       }
       //MITK_INFO << "GLOBAL 3D INCREASE " << glWorkAroundGlobalCount << "\n";
-      
+
     }
   }
   else

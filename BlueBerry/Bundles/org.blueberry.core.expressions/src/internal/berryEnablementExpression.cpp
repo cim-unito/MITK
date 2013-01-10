@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryLog.h"
 
@@ -25,7 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace berry {
 
-bool 
+bool
 EnablementExpression::operator==(Expression& object)
 {
   try
@@ -37,7 +36,7 @@ EnablementExpression::operator==(Expression& object)
   {
     return false;
   }
-  
+
   return false;
 }
 
@@ -47,15 +46,15 @@ EnablementExpression::Evaluate(IEvaluationContext* context)
   std::clock_t start = 0;
   if (Expressions::TRACING)
     start = std::clock();
-  
+
   EvaluationResult result = this->EvaluateAnd(context);
-  
+
   if (Expressions::TRACING)
   {
-    BERRY_INFO << "[Enablement Expression] - evaluation time: " << 
+    BERRY_INFO << "[Enablement Expression] - evaluation time: " <<
         (double(std::clock() - start)/(CLOCKS_PER_SEC/1000)) << " ms.";
   }
-  
+
   return result;
 }
 

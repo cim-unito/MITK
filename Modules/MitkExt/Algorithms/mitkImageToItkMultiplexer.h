@@ -1,31 +1,30 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKIMAGETOITKMULTIPLEXER_H_HEADER_INCLUDED
 #define MITKIMAGETOITKMULTIPLEXER_H_HEADER_INCLUDED
- 
+
 #include <itkCastImageFilter.h>
 #include <mitkImageToItk.h>
 
 /*!
 * \brief method creates a cast image filter and casts the image of ItkInputImageType
-* to type ItkOutputImageType. The method needs to be called via the 
-* mitkImageToItkMultiplexer 
+* to type ItkOutputImageType. The method needs to be called via the
+* mitkImageToItkMultiplexer
 *
 * \code
 *  mitk::Image::Pointer inputMitkImage;
@@ -35,11 +34,11 @@ PURPOSE.  See the above copyright notices for more information.
 *
 * \endcode
 */
-template <  typename  ItkInputImageType,  typename ItkOutputImageType > 
-typename itk::ImageSource < ItkOutputImageType > ::Pointer 
+template <  typename  ItkInputImageType,  typename ItkOutputImageType >
+typename itk::ImageSource < ItkOutputImageType > ::Pointer
 MakeCastImageFilter(  ItkInputImageType* inputImage )
 {
-  typedef itk::CastImageFilter < ItkInputImageType , 
+  typedef itk::CastImageFilter < ItkInputImageType ,
     ItkOutputImageType > myFilterType;
   typename myFilterType::Pointer myFilter = myFilterType::New();
   myFilter->SetInput( inputImage );
@@ -64,8 +63,8 @@ MakeCastImageFilter(  ItkInputImageType* inputImage )
     \
     result->InitializeByItk(itkpipeline->GetOutput());                                              \
     result->SetVolume(itkpipeline->GetOutput()->GetBufferPointer());                           \
-}                                                              
-//    _calculateItkPipelineFunction(result, mitkimage, itkpipeline<type, dimension>::New());     
+}
+//    _calculateItkPipelineFunction(result, mitkimage, itkpipeline<type, dimension>::New());
 
 #define ItkFunctionMultiplexer(result, mitkSourceImage, itkfunction)                                     \
 {                                                                                                  \
@@ -130,7 +129,7 @@ MakeCastImageFilter(  ItkInputImageType* inputImage )
     itkpipeline->Update();                                                                 \
     \
     resultItkImage = itkpipeline->GetOutput();                                              \
-}                                                              
+}
 
 //##Documentation
 //## @brief multiplexes a mitk image to an itkFilter with inputs of dimensions 2-4 and all data types (the itkFilter must allow to do this!).

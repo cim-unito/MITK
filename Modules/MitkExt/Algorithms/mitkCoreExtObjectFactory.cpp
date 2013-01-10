@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 16916 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkCoreExtObjectFactory.h"
 
@@ -36,11 +35,6 @@ PURPOSE.  See the above copyright notices for more information.
 #include <vtkXMLPUnstructuredGridWriter.h>
 
 #include "mitkCone.h"
-#include "mitkContour.h"
-#include "mitkContourMapper2D.h"
-#include "mitkContourSetMapper2D.h"
-#include "mitkContourSetVtkMapper3D.h"
-#include "mitkContourVtkMapper3D.h"
 #include "mitkCuboid.h"
 #include "mitkCylinder.h"
 #include "mitkEllipsoid.h"
@@ -57,7 +51,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkVolumeDataVtkMapper3D.h"
 
 
-mitk::CoreExtObjectFactory::CoreExtObjectFactory() 
+mitk::CoreExtObjectFactory::CoreExtObjectFactory()
 :CoreObjectFactoryBase()
 {
   static bool alreadyDone = false;
@@ -84,7 +78,7 @@ mitk::CoreExtObjectFactory::CoreExtObjectFactory()
   }
 }
 
-mitk::Mapper::Pointer mitk::CoreExtObjectFactory::CreateMapper(mitk::DataNode* node, MapperSlotId id) 
+mitk::Mapper::Pointer mitk::CoreExtObjectFactory::CreateMapper(mitk::DataNode* node, MapperSlotId id)
 {
   mitk::Mapper::Pointer newMapper=NULL;
   mitk::BaseData *data = node->GetData();
@@ -94,16 +88,6 @@ mitk::Mapper::Pointer mitk::CoreExtObjectFactory::CreateMapper(mitk::DataNode* n
     if((dynamic_cast<Mesh*>(data)!=NULL))
     {
       newMapper = mitk::MeshMapper2D::New();
-      newMapper->SetDataNode(node);
-    }
-    else if((dynamic_cast<Contour*>(data)!=NULL))
-    {
-      newMapper = mitk::ContourMapper2D::New();
-      newMapper->SetDataNode(node);
-    }
-    else if((dynamic_cast<ContourSet*>(data)!=NULL))
-    {
-      newMapper = mitk::ContourSetMapper2D::New();
       newMapper->SetDataNode(node);
     }
     else if((dynamic_cast<UnstructuredGrid*>(data)!=NULL))
@@ -124,16 +108,6 @@ mitk::Mapper::Pointer mitk::CoreExtObjectFactory::CreateMapper(mitk::DataNode* n
       newMapper = mitk::MeshVtkMapper3D::New();
       newMapper->SetDataNode(node);
     }
-    else if((dynamic_cast<Contour*>(data)!=NULL))
-    {
-      newMapper = mitk::ContourVtkMapper3D::New();
-      newMapper->SetDataNode(node);
-    }
-    else if((dynamic_cast<ContourSet*>(data)!=NULL))
-    {
-      newMapper = mitk::ContourSetVtkMapper3D::New();
-      newMapper->SetDataNode(node);
-    }
     else if((dynamic_cast<UnstructuredGrid*>(data)!=NULL))
     {
       newMapper = mitk::UnstructuredGridVtkMapper3D::New();
@@ -145,7 +119,7 @@ mitk::Mapper::Pointer mitk::CoreExtObjectFactory::CreateMapper(mitk::DataNode* n
 
 void mitk::CoreExtObjectFactory::SetDefaultProperties(mitk::DataNode* node)
 {
-  
+
   if(node==NULL)
     return;
 
@@ -161,10 +135,10 @@ void mitk::CoreExtObjectFactory::SetDefaultProperties(mitk::DataNode* node)
   {
     mitk::UnstructuredGridVtkMapper3D::SetDefaultProperties(node);
   }
-  
+
 }
 
-const char* mitk::CoreExtObjectFactory::GetFileExtensions() 
+const char* mitk::CoreExtObjectFactory::GetFileExtensions()
 {
   std::string fileExtension;
   this->CreateFileExtensions(m_FileExtensionsMap, fileExtension);
@@ -183,6 +157,9 @@ mitk::CoreObjectFactoryBase::MultimapType mitk::CoreExtObjectFactory::GetSaveFil
 
 void mitk::CoreExtObjectFactory::CreateFileExtensionsMap()
 {
+  m_FileExtensionsMap.insert(std::pair<std::string, std::string>("*.mitk", "MITK scene files")); //a better place to add this file ending might be the scene serialization class
+                                                                                                 //at the moment this is not done because there is a plan to restructure the
+                                                                                                 //ObjectFactories. When this is done we have to check where we want to add this file ending.
   m_FileExtensionsMap.insert(std::pair<std::string, std::string>("*.vtu", "VTK Unstructured Grid"));
   m_FileExtensionsMap.insert(std::pair<std::string, std::string>("*.vtk", "VTK Unstructured Grid"));
   m_FileExtensionsMap.insert(std::pair<std::string, std::string>("*.pvtu", "VTK Unstructured Grid"));
@@ -199,14 +176,14 @@ const char* mitk::CoreExtObjectFactory::GetSaveFileExtensions()
   return fileExtension.c_str();
 }
 
-void mitk::CoreExtObjectFactory::RegisterIOFactories() 
+void mitk::CoreExtObjectFactory::RegisterIOFactories()
 {
 }
 
-void RegisterCoreExtObjectFactory() 
+void RegisterCoreExtObjectFactory()
 {
   static bool oneCoreExtObjectFactoryRegistered = false;
-  if ( ! oneCoreExtObjectFactoryRegistered ) 
+  if ( ! oneCoreExtObjectFactoryRegistered )
   {
     MITK_DEBUG << "Registering CoreExtObjectFactory..." << std::endl;
     mitk::CoreObjectFactory::GetInstance()->RegisterExtraFactory(mitk::CoreExtObjectFactory::New());

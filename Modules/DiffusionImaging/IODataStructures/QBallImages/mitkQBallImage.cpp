@@ -1,23 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 11:19:03 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 11989 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkQBallImage.h"
 #include "mitkImageCast.h"
 #include "itkImage.h"
+#include "mitkImageVtkAccessor.h"
 #include "itkQBallToRgbImageFilter.h"
 
 mitk::QBallImage::QBallImage() : Image()
@@ -30,7 +30,7 @@ mitk::QBallImage::~QBallImage()
 
 }
 
-vtkImageData* mitk::QBallImage::GetVtkImageData(int t, int n)
+mitk::ImageVtkAccessor* mitk::QBallImage::GetVtkImageData(int t, int n)
 {
   if(m_RgbImage.IsNull())
     ConstructRgbImage();
@@ -42,7 +42,7 @@ void mitk::QBallImage::ConstructRgbImage()
   typedef itk::Image<itk::Vector<float,QBALL_ODFSIZE>,3> ImageType;
   typedef itk::QBallToRgbImageFilter<ImageType> FilterType;
   FilterType::Pointer filter = FilterType::New();
-  
+
   ImageType::Pointer itkvol = ImageType::New();
   mitk::CastToItkImage<ImageType>(this, itkvol);
   filter->SetInput(itkvol);
@@ -53,7 +53,7 @@ void mitk::QBallImage::ConstructRgbImage()
   m_RgbImage->SetVolume( filter->GetOutput()->GetBufferPointer() );
 }
 
-vtkImageData* mitk::QBallImage::GetNonRgbVtkImageData(int t, int n)
+mitk::ImageVtkAccessor* mitk::QBallImage::GetNonRgbVtkImageData(int t, int n)
 {
   return Superclass::GetVtkImageData(t,n);
 }
@@ -68,6 +68,6 @@ vtkImageData* mitk::QBallImage::GetNonRgbVtkImageData(int t, int n)
 //  m_Slices.push_back(img->GetSliceData(0).GetPointer());
 //  m_Dimension = img->GetDimension();
 //  m_Dimensions = img->GetDimensions();
-//  m_PixelType	 = img->GetPixelType();
+//  m_PixelType = img->GetPixelType();
 //}
 

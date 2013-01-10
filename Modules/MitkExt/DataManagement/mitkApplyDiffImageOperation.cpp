@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 3056 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkApplyDiffImageOperation.h"
@@ -58,11 +57,11 @@ void mitk::ApplyDiffImageOperation::OnImageDeleted()
   m_ImageStillValid = false;
 }
 
-mitk::Image::ConstPointer mitk::ApplyDiffImageOperation::GetDiffImage()
+mitk::Image::Pointer mitk::ApplyDiffImageOperation::GetDiffImage()
 {
   // uncompress image to create a valid mitk::Image
-  Image::ConstPointer image = zlibContainer->GetImage().GetPointer();
+  Image::Pointer image = zlibContainer->GetImage().GetPointer();
 
-  return image; 
+  return image;
 }
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-29 12:11:25 +0100 (Do, 29 Okt 2009) $
-Version:   $Revision: 18029 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPlanarFourPointAngle.h"
@@ -38,8 +37,8 @@ void mitk::PlanarFourPointAngle::GeneratePolyLine()
 {
   this->ClearPolyLines();
   // TODO: start line at specified start point...
-  // Generate poly-line 
-  
+  // Generate poly-line
+
   for ( unsigned int i = 0; i < this->GetNumberOfControlPoints(); ++i )
   {
     int index = i/2;
@@ -52,7 +51,7 @@ void mitk::PlanarFourPointAngle::GenerateHelperPolyLine(double /*mmPerDisplayUni
   // Generate helper-poly-line for an four point angle
   // Need to discuss a sensible implementation
 }
-  
+
 void mitk::PlanarFourPointAngle::EvaluateFeaturesInternal()
 {
   if ( this->GetNumberOfControlPoints() < 4 )

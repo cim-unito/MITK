@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision:  $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFImageCsvWriter_h
 #define __mitkToFImageCsvWriter_h
 
@@ -28,13 +26,13 @@ namespace mitk
   *
   * This writer class allows streaming of ToF data into a CSV file.
   * Writer can simultaneously save "distance", "intensity" and "amplitude" image data.
-  * Output files are written as 1D CSV data stream. 
+  * Output files are written as 1D CSV data stream.
   *
   * @ingroup ToFHardware
   */
   class MITK_TOFHARDWARE_EXPORT ToFImageCsvWriter : public ToFImageWriter
   {
-  public: 
+  public:
     /*!
     \brief standard ctor
     */
@@ -57,9 +55,11 @@ namespace mitk
     void Close();
     /*!
     \brief Pushes the image data to the output files
-    \param data from distance, amplitude and intensity images as float values
+    \param distanceFloatData from distance image as float value
+    \param amplitudeFloatData from amplitude image as float value
+    \param intensityFloatData from intensity image as float value
     */
-    void Add(float* distanceFloatData, float* amplitudeFloatData, float* intensityFloatData);
+    void Add(float* distanceFloatData, float* amplitudeFloatData, float* intensityFloatData, unsigned char* rgbData=0);
 
   protected:
 
@@ -67,7 +67,6 @@ namespace mitk
     FILE* m_DistanceOutfile; ///< file for distance image
     FILE* m_AmplitudeOutfile; ///< file for amplitude image
     FILE* m_IntensityOutfile; ///< file for intensity image
-
 
   private:
     /*!

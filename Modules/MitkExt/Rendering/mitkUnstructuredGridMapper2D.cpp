@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 11618 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include <mitkGL.h>
@@ -65,17 +64,17 @@ void mitk::UnstructuredGridMapper2D::GenerateData()
   {
     m_ScalarVisibility = mitk::BoolProperty::New(true);
   }
-  
+
   if (!node->GetProperty(m_Outline, "outline polygons"))
   {
     m_Outline = mitk::BoolProperty::New(false);
   }
-  
+
   if (!node->GetProperty(m_Color, "color"))
   {
     m_Color = mitk::ColorProperty::New(1.0f, 1.0f, 1.0f);
   }
-  
+
   if (!node->GetProperty(m_LineWidth, "line width"))
   {
     m_LineWidth = mitk::IntProperty::New(1);
@@ -89,12 +88,12 @@ void mitk::UnstructuredGridMapper2D::GenerateDataForRenderer( mitk::BaseRenderer
   assert( input );
 
   input->Update();
-  
+
   if (m_VtkPointSet) m_VtkPointSet->UnRegister(0);
   m_VtkPointSet = this->GetVtkPointSet(renderer);
   assert(m_VtkPointSet);
   m_VtkPointSet->Register(0);
-    
+
   if (m_ScalarVisibility->GetValue())
   {
     mitk::DataNode::ConstPointer node = this->GetDataNode();
@@ -106,7 +105,7 @@ void mitk::UnstructuredGridMapper2D::GenerateDataForRenderer( mitk::BaseRenderer
       if (m_ScalarsToColors) m_ScalarsToColors->UnRegister(0);
       m_ScalarsToColors = static_cast<vtkScalarsToColors*>(tf->GetColorTransferFunction());
       m_ScalarsToColors->Register(0);
-      
+
       if (m_ScalarsToOpacity) m_ScalarsToOpacity->UnRegister(0);
       m_ScalarsToOpacity = tf->GetScalarOpacityFunction();
       m_ScalarsToOpacity->Register(0);
@@ -117,7 +116,7 @@ void mitk::UnstructuredGridMapper2D::GenerateDataForRenderer( mitk::BaseRenderer
       m_ScalarsToColors = this->GetVtkLUT(renderer);
       assert(m_ScalarsToColors);
       m_ScalarsToColors->Register(0);
-      
+
       float opacity;
       node->GetOpacity(opacity, renderer);
       if (m_ScalarsToOpacity) m_ScalarsToOpacity->UnRegister(0);
@@ -221,7 +220,7 @@ void mitk::UnstructuredGridMapper2D::Paint( mitk::BaseRenderer* renderer )
 
   vlines->InitTraversal();
   vpolys->InitTraversal();
-  
+
   mitk::Color outlineColor = m_Color->GetColor();
 
   glLineWidth((float)m_LineWidth->GetValue());
@@ -257,9 +256,9 @@ void mitk::UnstructuredGridMapper2D::Paint( mitk::BaseRenderer* renderer )
         rgba[3] = (float)m_ScalarsToOpacity->GetValue(scalar);
       }
     }
-    
+
     glColor4fv( rgba );
-    
+
     glBegin ( GL_LINE_LOOP );
     for ( int j = 0;j < cellSize;++j )
     {
@@ -284,23 +283,25 @@ void mitk::UnstructuredGridMapper2D::Paint( mitk::BaseRenderer* renderer )
     glEnd ();
 
   }
-  
+
   bool polyOutline = m_Outline->GetValue();
   bool scalarVisibility = m_ScalarVisibility->GetValue();
 
+  // cache the transformed points
+  // a fixed size array is way faster than 'new'
+  // slices through 3d cells usually do not generated
+  // polygons with more than 6 vertices
+  const int maxPolySize = 10;
+  Point2D* cachedPoints = new Point2D[maxPolySize*numberOfPolys];
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   // only draw polygons if there are cell scalars
   // or the outline property is set to true
-  if ((scalarVisibility && vcellscalars) || polyOutline)
+  if (scalarVisibility && vcellscalars)
   {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    // cache the transformed points
-    // a fixed size array is way faster than 'new'
-    // slices through 3d cells usually do not generated
-    // polygons with more than 6 vertices
-    Point2D cachedPoints[10];
 
     for (int i = 0;i < numberOfPolys;++i )
     {
@@ -314,7 +315,7 @@ void mitk::UnstructuredGridMapper2D::Paint( mitk::BaseRenderer* renderer )
       {
         if ( useCellData )
         {  // color each cell according to cell data
-          double scalar = vcellscalars->GetComponent( i, 0 );
+          double scalar = vcellscalars->GetComponent( i+numberOfLines, 0 );
           double rgb[3] = { 1.0f, 1.0f, 1.0f };
           m_ScalarsToColors->GetColor(scalar, rgb);
           rgba[0] = (float)rgb[0];
@@ -353,35 +354,45 @@ void mitk::UnstructuredGridMapper2D::Paint( mitk::BaseRenderer* renderer )
         //convert display coordinates ( (0,0) is top-left ) in GL coordinates ( (0,0) is bottom-left )
         //p2d[1]=toGL-p2d[1];
 
-        cachedPoints[j][0] = p2d[0];
-        cachedPoints[j][1] = p2d[1];
+        cachedPoints[i*10+j][0] = p2d[0];
+        cachedPoints[i*10+j][1] = p2d[1];
 
         //add the current vertex to the line
         glVertex2f( p2d[0], p2d[1] );
       }
       glEnd();
+    }
 
-      if (polyOutline)
+    if (polyOutline)
+    {
+      vpolys->InitTraversal();
+
+      glColor4f(outlineColor[0], outlineColor[1], outlineColor[2], 1.0f);
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      for (int i = 0;i < numberOfPolys;++i)
       {
-        glColor4f(outlineColor[0], outlineColor[1], outlineColor[2], 1.0f);
+        vtkIdType *cell(0);
+        vtkIdType cellSize(0);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vpolys->GetNextCell( cellSize, cell );
+
         glBegin( GL_POLYGON );
         //glPolygonOffset(1.0, 1.0);
         for (int j = 0; j < cellSize; ++j)
         {
           //add the current vertex to the line
-          glVertex2f( cachedPoints[j][0], cachedPoints[j][1] );
+          glVertex2f( cachedPoints[i*10+j][0], cachedPoints[i*10+j][1] );
         }
         glEnd();
       }
     }
-    glDisable(GL_BLEND);
   }
+  glDisable(GL_BLEND);
+  delete cachedPoints;
 }
 
 
-vtkAbstractMapper3D* 
+vtkAbstractMapper3D*
 mitk::UnstructuredGridMapper2D
 ::GetVtkAbstractMapper3D(mitk::BaseRenderer *  renderer)
 {
@@ -401,18 +412,18 @@ mitk::UnstructuredGridMapper2D
   vtkAssembly* assembly = dynamic_cast<vtkAssembly*>(mitkMapper->GetVtkProp(renderer));
   if (assembly)
   {
-	  vtkProp3DCollection* collection = assembly->GetParts();
-	  collection->InitTraversal();
-    vtkProp3D* prop3d = 0;
-	  do
-	  {
-	    prop3d = collection->GetNextProp3D();
+  vtkProp3DCollection* collection = assembly->GetParts();
+  collection->InitTraversal();
+  vtkProp3D* prop3d = 0;
+  do
+  {
+    prop3d = collection->GetNextProp3D();
       vtkActor* actor = dynamic_cast<vtkActor*>( prop3d );
       if (actor)
       {
         return dynamic_cast<vtkAbstractMapper3D*>( actor->GetMapper() );
       }
-    
+
       vtkVolume* volume = dynamic_cast<vtkVolume*>( prop3d );
       if (volume)
       {
@@ -427,7 +438,7 @@ mitk::UnstructuredGridMapper2D
     {
       return dynamic_cast<vtkAbstractMapper3D*>( actor->GetMapper() );
     }
-    
+
     vtkVolume* volume = dynamic_cast<vtkVolume*>( mitkMapper->GetVtkProp(renderer) );
     if (volume)
     {
@@ -504,7 +515,7 @@ vtkScalarsToColors* mitk::UnstructuredGridMapper2D::GetVtkLUT(mitk::BaseRenderer
       //MITK_INFO << "found volume prop\n";
       return static_cast<vtkScalarsToColors*>(volume->GetProperty()->GetRGBTransferFunction());
     }
-    
+
     vtkAssembly* assembly = dynamic_cast<vtkAssembly*>(mitkMapper->GetVtkProp(renderer));
     if (assembly)
     {
@@ -533,7 +544,7 @@ mitk::UnstructuredGridMapper2D::UnstructuredGridMapper2D()
     m_Slicer = vtkPointSetSlicer::New();
 
     m_Slicer->SetSlicePlane( m_Plane );
-    
+
     m_ScalarsToColors = 0;
     m_ScalarsToOpacity = 0;
     m_VtkPointSet = 0;
@@ -551,7 +562,7 @@ mitk::UnstructuredGridMapper2D::~UnstructuredGridMapper2D()
 {
   m_Slicer->Delete();
   m_Plane->Delete();
-  
+
   if (m_ScalarsToOpacity != 0) m_ScalarsToOpacity->UnRegister(0);
   if (m_ScalarsToColors != 0) m_ScalarsToColors->UnRegister(0);
   if (m_VtkPointSet != 0) m_VtkPointSet->UnRegister(0);

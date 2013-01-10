@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKSIMPLEEXAMPLEVIEW_H_INCLUDED
 #define _QMITKSIMPLEEXAMPLEVIEW_H_INCLUDED
@@ -70,7 +69,7 @@ protected slots:
   void stereoSelectionChanged(int id);
 
   /*!
-  initialize the transversal, sagittal, coronal and temporal slider according to the image dimensions
+  initialize the axial, sagittal, coronal and temporal slider according to the image dimensions
   */
   void initNavigators();
 
@@ -90,7 +89,7 @@ protected slots:
   void OnRenderWindow4Clicked();
   void OnTakeHighResolutionScreenshot(); ///< takes screenshot of the 3D window in 4x resolution of the render window
   void OnTakeScreenshot(); ///< takes screenshot of the selected render window
- 
+
 protected:
 
   Ui::QmitkSimpleExampleViewControls* m_Controls;

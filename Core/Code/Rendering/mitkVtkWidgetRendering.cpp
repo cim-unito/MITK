@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-12-18 16:04:12 +0100 (Di, 18 Dez 2007) $
-Version:   $Revision: 13252 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkVtkWidgetRendering.h"
 
@@ -41,14 +40,14 @@ mitk::VtkWidgetRendering::VtkWidgetRendering()
 {
   m_Renderer = vtkRenderer::New();
 }
- 
+
 
 mitk::VtkWidgetRendering::~VtkWidgetRendering()
 {
   if ( m_RenderWindow != NULL )
     if ( this->IsEnabled() )
       this->Disable();
-  
+
   if ( m_Renderer != NULL )
     m_Renderer->Delete();
 }
@@ -106,7 +105,7 @@ void mitk::VtkWidgetRendering::Enable()
       {
         layerController->InsertForegroundRenderer(m_Renderer,false);
       }
-      
+
       m_IsEnabled = true;
     }
   }
@@ -150,7 +149,7 @@ void mitk::VtkWidgetRendering::SetRequestedRegionToLargestPossibleRegion()
 
 bool mitk::VtkWidgetRendering::RequestedRegionIsOutsideOfTheBufferedRegion()
 {
-    return false;    
+    return false;
 }
 
 bool mitk::VtkWidgetRendering::VerifyRequestedRegion()

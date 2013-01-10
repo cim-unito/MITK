@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef QMITK_COLORPROPERTYEDITOR_H_INCLUDED
 #define QMITK_COLORPROPERTYEDITOR_H_INCLUDED
 
@@ -28,18 +27,18 @@ class QListBox;
 class QmitkExt_EXPORT QmitkPopupColorChooser : public QFrame
 {
   Q_OBJECT
-    
+
   public:
 
     QmitkPopupColorChooser(QWidget* parent = 0, unsigned int steps = 16, unsigned int size = 150);
     virtual ~QmitkPopupColorChooser();
-    
+
     void setSteps(int);
-    
+
     virtual void popup(QWidget* parent, const QPoint& point, const mitk::Color* = 0);  /// Call to popup this widget. parent determines popup position
-   
+
   signals:
-    
+
     void colorSelected(QColor);
 
   protected:
@@ -49,7 +48,7 @@ class QmitkExt_EXPORT QmitkPopupColorChooser : public QFrame
     virtual void mouseMoveEvent(QMouseEvent*);
     virtual void mouseReleaseEvent(QMouseEvent*);
     virtual void closeEvent(QCloseEvent*);
-    
+
     virtual void paintEvent(QPaintEvent*);
     void drawGradient(QPainter* p);
 
@@ -76,10 +75,10 @@ class QmitkExt_EXPORT QmitkColorPropertyEditor : public QmitkColorPropertyView
   Q_OBJECT
 
   public:
-    
+
     QmitkColorPropertyEditor( const mitk::ColorProperty*, QWidget* parent );
     virtual ~QmitkColorPropertyEditor();
-      
+
   protected:
 
     virtual void mousePressEvent(QMouseEvent*);

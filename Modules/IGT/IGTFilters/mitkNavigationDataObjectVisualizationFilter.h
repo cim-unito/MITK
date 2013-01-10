@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-01-07 19:23:09 +0100 (Mi, 07 Jan 2009) $
-Version:   $Revision: 16011 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNAVIGATIONDATAOBJECTVISUALIZATIONFILTER_H_HEADER_INCLUDED_
@@ -39,34 +38,34 @@ namespace mitk {
 
     itkNewMacro(Self);
 
-    /** 
-    * \brief Smart Pointer type to a BaseData. 
+    /**
+    * \brief Smart Pointer type to a BaseData.
     */
     typedef BaseData::ConstPointer RepresentationPointer;
 
-    /** 
+    /**
     * \brief STL map of index to BaseData . Using map to be able to set non continuous indices
     */
     typedef std::map<unsigned int, RepresentationPointer> RepresentationPointerMap;
-    
-    /** 
-    * \brief Size type of an std::vector 
+
+    /**
+    * \brief Size type of an std::vector
     */
     typedef RepresentationPointerMap::size_type RepresentationPointerMapSizeType;
 
-    /** 
+    /**
     * \brief Set the representation object of the input
-    * 
-    * \param data The BaseData to be associated to the index 
+    *
+    * \param data The BaseData to be associated to the index
     * \param index the index with which data will be associated
     */
     void SetRepresentationObject(unsigned int index, BaseData* data);
-    
-    /** 
+
+    /**
     * \brief Get the representation object associated with the index idx
     *
     * \param idx the corresponding input number with which the BaseData is associated
-    * \return Returns the desired BaseData if it exists for the given input; Returns NULL 
+    * \return Returns the desired BaseData if it exists for the given input; Returns NULL
     *         if no BaseData was found.
     */
     const BaseData* GetRepresentationObject(unsigned int idx);
@@ -81,8 +80,8 @@ namespace mitk {
     virtual void TransformOrientationOn(unsigned int index);  ///< sets the TransformOrientation flag to true for the given index
     virtual void TransformOrientationOff(unsigned int index); ///< sets the TransformOrientation flag to false for the given index
 
-    /** 
-    *\brief Get the number of added BaseData associated to NavigationData 
+    /**
+    *\brief Get the number of added BaseData associated to NavigationData
     * \return Returns the size of the internal map
     */
     RepresentationPointerMapSizeType GetNumberOfToolRepresentations() const
@@ -109,8 +108,8 @@ namespace mitk {
     **/
     ~NavigationDataObjectVisualizationFilter();
 
-    /** 
-    * \brief An array of the BaseData which represent the tools. 
+    /**
+    * \brief An array of the BaseData which represent the tools.
     */
     RepresentationPointerMap m_RepresentationList;
     BooleanInputMap m_TransformPosition;    ///< if set to true, the filter will use the position part of the input navigation data at the given index for the calculation of the transform. If no entry for the index exists, it defaults to true.

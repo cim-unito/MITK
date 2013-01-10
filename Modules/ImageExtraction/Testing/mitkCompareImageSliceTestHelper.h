@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkCompareImageSliceTestHelperhincluded
 #define mitkCompareImageSliceTestHelperhincluded
@@ -35,7 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
     imagetoitk->SetInput(mitkImage);                                                     \
     imagetoitk->Update();                                                               \
     itkImageTypeFunction(imagetoitk->GetOutput(), itkimage2);                          \
-}                                                              
+}
 
 #define myMITKOverwriteSliceImageFilterAccessAllTypesByItk(mitkImage, itkImageTypeFunction,       dimension, itkimage2)    \
 {                                                                                                                           \
@@ -54,21 +53,21 @@ class CompareImageSliceTestHelper
 {
   private:
 
-/* variables to be used by CompareSlice only */  
+/* variables to be used by CompareSlice only */
 static unsigned int m_Dimension0;
 static unsigned int m_Dimension1;
 static unsigned int m_SliceDimension;
 static unsigned int m_SliceIndex;
 static bool m_ComparisonResult;
 static mitk::Image* m_SliceImage;
-  
+
   public:
 
 template<typename TPixel1, unsigned int VImageDimension1, typename TPixel2, unsigned int VImageDimension2>
 static void ItkImageCompare( itk::Image<TPixel1,VImageDimension1>* inputImage, itk::Image<TPixel2,VImageDimension2>* outputImage )
 {
 m_ComparisonResult = false;
-  
+
   typedef itk::Image<TPixel1, VImageDimension1> SliceImageType;
   typedef itk::Image<TPixel2, VImageDimension2> VolumeImageType;
 
@@ -80,7 +79,7 @@ m_ComparisonResult = false;
   sliceInVolumeRegion = outputImage->GetLargestPossibleRegion();
   sliceInVolumeRegion.SetSize( m_SliceDimension, 1 );             // just one slice
   sliceInVolumeRegion.SetIndex( m_SliceDimension, m_SliceIndex ); // exactly this slice, please
-  
+
   OutputSliceIteratorType outputIterator( outputImage, sliceInVolumeRegion );
   outputIterator.SetFirstDirection(m_Dimension0);
   outputIterator.SetSecondDirection(m_Dimension1);
@@ -98,15 +97,15 @@ m_ComparisonResult = false;
       {
         m_ComparisonResult = outputIterator.Get() == (TPixel2) inputIterator.Get();
         if (!m_ComparisonResult) return; // return on first mismatch
-        ++outputIterator; 
-        ++inputIterator; 
+        ++outputIterator;
+        ++inputIterator;
       }
       outputIterator.NextLine();
     }
     outputIterator.NextSlice();
   }
 }
-    
+
 template<typename TPixel, unsigned int VImageDimension>
 static void ItkImageSwitch( itk::Image<TPixel,VImageDimension>* itkImage )
 {
@@ -155,7 +154,7 @@ static bool CompareSlice( mitk::Image* image, unsigned int sliceDimension, unsig
 }
 
 }; // end class
-  
+
 
 
 #endif

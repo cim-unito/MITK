@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef GROUPTAGPROPERTY_H_HEADER_INCLUDED_C1F4DF54
@@ -28,11 +27,11 @@ namespace mitk {
 # pragma warning(disable: 4522)
 #endif
 
-/*! @brief Property class that has no value. 
-    
+/*! @brief Property class that has no value.
+
   @ingroup DataManagement
 
-    The GroupTag property is used to tag a datatree node to show, that it is member of a 
+    The GroupTag property is used to tag a datatree node to show, that it is member of a
     group of datatree nodes. This can be used to build groups of datatreenodes without the
     need to contain them in a specific hiearchic order in the datatree
 */

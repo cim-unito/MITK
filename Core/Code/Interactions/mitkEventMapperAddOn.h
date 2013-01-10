@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 17:34:48 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21985 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKEVENTMAPPERADDON_H_
 #define MITKEVENTMAPPERADDON_H_
@@ -24,9 +23,9 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
   /**
-  * The event mapper addon resembles an interface, that allows addons, which are not stored in the core <br> 
+  * The event mapper addon resembles an interface, that allows addons, which are not stored in the core <br>
   * to be used inside the core. For an additional input device it is mandatory to inherit from this class.
-  * 
+  *
   * @noimplement This interface is not intended to be implemented by clients.
   * @ingroup Interaction
   */
@@ -38,7 +37,7 @@ namespace mitk {
     *
     *  @param e the event, who should be processed
     */
-    virtual void ForwardEvent(const mitk::StateEvent* e) 
+    virtual void ForwardEvent(const mitk::StateEvent* e)
     {
       mitk::GlobalInteraction::GetInstance()->HandleEvent(e);
     }

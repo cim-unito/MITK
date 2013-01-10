@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-07-05 09:49:37 +0200 (Mo, 05 Jul 2010) $
-Version:   $Revision: 24298 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkRenderWindow.h"
@@ -26,19 +25,19 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkVtkEventProvider.h"
 
 
-mitk::RenderWindow::RenderWindow(vtkRenderWindow* renWin, const char* name, mitk::RenderingManager* rm ) 
+mitk::RenderWindow::RenderWindow(vtkRenderWindow* renWin, const char* name, mitk::RenderingManager* rm )
 : m_vtkRenderWindow(renWin)
 {
-  
+
   if(m_vtkRenderWindow == NULL)
     m_vtkRenderWindow = vtkRenderWindow::New();
 
-  if ( m_vtkRenderWindow->GetSize()[0] <= 10 
+  if ( m_vtkRenderWindow->GetSize()[0] <= 10
     || m_vtkRenderWindow->GetSize()[0] <= 10 )
   {
     m_vtkRenderWindow->SetSize( 100, 100 );
   }
- 
+
   m_vtkRenderWindowInteractor = vtkRenderWindowInteractor::New();
   m_vtkRenderWindowInteractor->SetRenderWindow(m_vtkRenderWindow);
   m_vtkRenderWindowInteractor->Initialize();
@@ -68,7 +67,7 @@ vtkRenderWindow* mitk::RenderWindow::GetVtkRenderWindow()
 
 vtkRenderWindowInteractor* mitk::RenderWindow::GetVtkRenderWindowInteractor()
 {
-  return m_vtkRenderWindowInteractor;   
+  return m_vtkRenderWindowInteractor;
 }
 
 

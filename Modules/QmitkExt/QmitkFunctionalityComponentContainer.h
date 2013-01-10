@@ -1,26 +1,25 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: -1 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITK_FUNCTIONALITYCOMPONENTCONTAINER_H
 #define QMITK_FUNCTIONALITYCOMPONENTCONTAINER_H
 
 #include "QmitkBaseFunctionalityComponent.h"
 #include "QmitkExtExports.h"
- 
+
 #include <qwidget.h>
  #include <qstackedwidget.h>
 #include <qpushbutton.h>
@@ -36,20 +35,20 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 /**
-* \brief ContainerClass for components 
+* \brief ContainerClass for components
 * \ingroup QmitkFunctionalityComponent
-* 
-* 
+*
+*
 * - \ref QmitkBaseFunctionalityComponent
 
-* 
+*
 * \section QmitkFunctionalityComponentContainer Overview
-* 
+*
 * The FunctionalityComponentContainer is a containerclass for several components inherit from it.
-* All Components including to one FunctionalityComponentContainer can be used together as one applied 
+* All Components including to one FunctionalityComponentContainer can be used together as one applied
 * functionality. I.e. in particular that new functionalities can be combined with different components.
 * As common ground for all inherit classes the FunctionalityComponentContainer includes a selector for
-* marked data like image(s), segmentation(s) or model(s). 
+* marked data like image(s), segmentation(s) or model(s).
 */
 
 
@@ -64,14 +63,14 @@ public:
   /***************       CONSTRUCTOR      ***************/
   /** \brief Standard-Constructor. */
   QmitkFunctionalityComponentContainer(QObject *parent=0, const char * parentName = 0,  bool updateSelector = true, bool showSelector = true);
-  
+
   /***************        DESTRUCTOR      ***************/
   /** \brief Destructor. */
   virtual ~QmitkFunctionalityComponentContainer();
 
   /***************        CREATE          ***************/
   /*!
-  \brief Method to create all Signale-Slot-Connections 
+  \brief Method to create all Signale-Slot-Connections
   */
   virtual void CreateConnections();
 
@@ -105,7 +104,7 @@ virtual void SetDataStorage(mitk::DataStorage::Pointer dataStorage);
 
 /** \brief Method to get the DataStorage*/
 virtual mitk::DataStorage::Pointer GetDataStorage();
-  
+
   /** \brief Method to set the Name of the FunctionalityComponent */
   virtual void SetComponentName(QString name);
 
@@ -174,7 +173,7 @@ QPushButton* GetBackButton();
   /** \brief Slot method that will be called if TreeNodeSelector widget was activated. */
   void ImageSelected(const mitk::DataNode* item);
 
-protected slots:  
+protected slots:
 
 
 public slots:
@@ -197,7 +196,7 @@ public slots:
 protected:
 
   /** \brief Vector with all added components */
-  //std::vector<std::list<QmitkBaseFunctionalityComponent*>> m_WidgetStackAddedChildList;  
+  //std::vector<std::list<QmitkBaseFunctionalityComponent*>> m_WidgetStackAddedChildList;
 
   /** \brief Method to update the content of all DataTreeComboBoxes. */
   virtual void UpdateDataTreeComboBoxes();

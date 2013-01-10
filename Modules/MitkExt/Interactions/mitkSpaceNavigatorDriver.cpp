@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #define SPACE_NAVIGATOR_MAIN_SOURCE
 
@@ -63,7 +62,7 @@ inline HRESULT SpaceNavigatorDriver::HookEvent1(CComPtr<ISimpleDevice> device)
 
 inline HRESULT SpaceNavigatorDriver::HookEvent2()
 {
-  return __hook(&_ISensorEvents::SensorInput, m_pISensor, 
+  return __hook(&_ISensorEvents::SensorInput, m_pISensor,
     &SpaceNavigatorDriver::OnSensorInput);
 }
 
@@ -74,13 +73,13 @@ inline HRESULT SpaceNavigatorDriver::HookEvent3(CComPtr<ISimpleDevice> device)
 
 inline HRESULT SpaceNavigatorDriver::HookEvent4()
 {
-  return __hook(&_IKeyboardEvents::KeyDown, m_pIKeyboard, 
+  return __hook(&_IKeyboardEvents::KeyDown, m_pIKeyboard,
     &SpaceNavigatorDriver::OnKeyDown);
 }
 
 inline HRESULT SpaceNavigatorDriver::HookEvent5()
 {
-  return __hook(&_IKeyboardEvents::KeyUp, m_pIKeyboard, 
+  return __hook(&_IKeyboardEvents::KeyUp, m_pIKeyboard,
     &SpaceNavigatorDriver::OnKeyUp);
 }
 
@@ -101,7 +100,7 @@ HRESULT SpaceNavigatorDriver::InitializeCOM()
       hr = _3DxDevice.QueryInterface(&_3DxSimpleDevice);
       if (SUCCEEDED(hr))
       {
-         hr = __hook(&_ISimpleDeviceEvents::DeviceChange, _3DxSimpleDevice, 
+         hr = __hook(&_ISimpleDeviceEvents::DeviceChange, _3DxSimpleDevice,
                         &SpaceNavigatorDriver::OnDeviceChange);
 
          //workaround for .net 2003 Bug Nr. 829749
@@ -142,7 +141,7 @@ HRESULT SpaceNavigatorDriver::OnDeviceChange(long reserved )
       m_pIKeyboard->get_Keys(&keys);
       m_pIKeyboard->get_ProgrammableKeys(&programmableKeys);
       //cout << "Number of Keys=%d\tProgrammable keys=%d\n" << keys << " / " << programmableKeys;
-     
+
       for (long i=1; i<=keys; i++)
       {
          BSTR bstrLabel;
@@ -152,7 +151,7 @@ HRESULT SpaceNavigatorDriver::OnDeviceChange(long reserved )
          CString strLabel(bstrLabel);
          CString strName(bstrName);
 
-         //cout << "Key Label=%s\tKey Name=%s\n" << 
+         //cout << "Key Label=%s\tKey Name=%s\n" <<
            //(const TCHAR *)strLabel << " / " <<  (const TCHAR *)strName;
 
       }
@@ -194,7 +193,7 @@ HRESULT SpaceNavigatorDriver::OnSensorInput(void)
 
       CComPtr<IVector3D> pTranslation;
       hr = m_pISensor->get_Translation(&pTranslation);
-   
+
       double length;
       pTranslation->get_Length(&length);
 
@@ -217,7 +216,7 @@ HRESULT SpaceNavigatorDriver::OnSensorInput(void)
 
         length *= timeFactor;
         length /= ScaleTranslation*Sensitivity;
-        
+
         pTranslation->put_Length(length);
 
         pTranslation->get_X(&val);
@@ -226,7 +225,7 @@ HRESULT SpaceNavigatorDriver::OnSensorInput(void)
         translation[1] = (float)val;
         pTranslation->get_Z(&val);
         translation[2] = (float)val;
-        
+
         pRotation->get_X(&val);
         rotation[0] = (float)val;
         pRotation->get_Y(&val);
@@ -272,7 +271,7 @@ HRESULT SpaceNavigatorDriver::UninitializeCOM()
    if (m_pISensor)
    {
       // unhook (unadvise) the sensor event sink
-      __unhook(&_ISensorEvents::SensorInput, m_pISensor, 
+      __unhook(&_ISensorEvents::SensorInput, m_pISensor,
                      &SpaceNavigatorDriver::OnSensorInput);
 
       m_pISensor.Release();
@@ -280,7 +279,7 @@ HRESULT SpaceNavigatorDriver::UninitializeCOM()
 
    if (m_pIKeyboard)
    {
-      __unhook(&_IKeyboardEvents::KeyDown, m_pIKeyboard, 
+      __unhook(&_IKeyboardEvents::KeyDown, m_pIKeyboard,
                      &SpaceNavigatorDriver::OnKeyDown);
 
       m_pIKeyboard.Release();

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <berryPlatform.h>
 #include <berryIExtensionPointService.h>
@@ -26,7 +25,7 @@ mitk::InputDeviceRegistry::InputDeviceRegistry()
 {
   //initialize the registry by copying all available extension points into a local variable
   berry::IExtensionPointService::Pointer extensionPointService = berry::Platform::GetExtensionPointService();
-  std::vector<berry::IConfigurationElement::Pointer> allExtensionsInputDevices 
+  std::vector<berry::IConfigurationElement::Pointer> allExtensionsInputDevices
     = extensionPointService->GetConfigurationElementsFor(mitk::CoreExtConstants::INPUTDEVICE_EXTENSION_NAME);
 
   for(std::vector<berry::IConfigurationElement::Pointer>::const_iterator it = allExtensionsInputDevices.begin();
@@ -34,7 +33,7 @@ mitk::InputDeviceRegistry::InputDeviceRegistry()
   {
     InputDeviceDescriptorPtr temp(new mitk::InputDeviceDescriptor(*it));
 
-    // The equation with the end means, that if there is no such element and 
+    // The equation with the end means, that if there is no such element and
     // the pointer will be at end (not the last element, actually after it)
     if(this->m_ListRegisteredDevices.find(temp->GetID()) == this->m_ListRegisteredDevices.end())
     {
@@ -64,7 +63,7 @@ mitk::InputDeviceRegistry::InputDeviceDescriptorPtr mitk::InputDeviceRegistry::F
 std::vector<mitk::InputDeviceRegistry::InputDeviceDescriptorPtr> mitk::InputDeviceRegistry::GetInputDevices() const
 {
   std::vector<mitk::InputDeviceRegistry::InputDeviceDescriptorPtr> temp;
-  for(Poco::HashMap<std::string, InputDeviceDescriptorPtr>::ConstIterator it = m_ListRegisteredDevices.begin(); 
+  for(Poco::HashMap<std::string, InputDeviceDescriptorPtr>::ConstIterator it = m_ListRegisteredDevices.begin();
     it != m_ListRegisteredDevices.end();++it)
   {
     // first = key, second = element or vice versa, if inserted different in the hash map

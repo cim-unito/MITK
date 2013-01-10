@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <string>
 #include <stdexcept>
@@ -73,10 +72,10 @@ public:
       // Retrieve the system error message for the last-error code
       LPVOID lpMsgBuf;
       LPVOID lpDisplayBuf;
-      DWORD dw = GetLastError(); 
+      DWORD dw = GetLastError();
 
       FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
@@ -87,12 +86,12 @@ public:
 
         // Display the error message and exit the process
 
-      lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-        (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)libPath.c_str()) + 50) * sizeof(TCHAR)); 
-      StringCchPrintf((LPTSTR)lpDisplayBuf, 
+      lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+        (lstrlen((LPCTSTR)lpMsgBuf) + lstrlen((LPCTSTR)libPath.c_str()) + 50) * sizeof(TCHAR));
+      StringCchPrintf((LPTSTR)lpDisplayBuf,
         LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        TEXT("Loading %s failed with error %d: %s"), 
-        libPath.c_str(), dw, lpMsgBuf); 
+        TEXT("Loading %s failed with error %d: %s"),
+        libPath.c_str(), dw, lpMsgBuf);
 
       std::string errMsg((LPCTSTR)lpDisplayBuf);
 
@@ -102,7 +101,7 @@ public:
       throw std::runtime_error(errMsg);
     }
 #endif
-    
+
     m_Name = name;
   }
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKMASKIMAGEFILTER_H_HEADER_INCLUDED_C1F48A22
@@ -29,7 +28,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
 //##Documentation
-//## @brief 
+//## @brief
 //## @ingroup Process
 class MitkExt_EXPORT MaskImageFilter : public ImageToImageFilter
 {
@@ -40,7 +39,7 @@ public:
 
   void SetMask( const mitk::Image* mask );
   const mitk::Image* GetMask() const;
-  
+
   /**
   * get/set the min Value of the original image in the masked area
   **/
@@ -58,13 +57,13 @@ public:
    * if OverrideOutsideValue is set to true. Default is 0.
    **/
   itkSetMacro( OutsideValue, mitk::ScalarType );
-  
+
   /**
    * This value is used as outside value. This only works
    * if OverrideOutsideValue is set to true. Default is 0.
    */
   itkGetMacro( OutsideValue, mitk::ScalarType );
-  
+
   /**
    * If OverrideOutsideValue is set to false, this minimum
    * of the pixel type of the output image is taken as outside
@@ -100,10 +99,10 @@ protected:
   mitk::ImageTimeSelector::Pointer m_MaskTimeSelector;
   mitk::ImageTimeSelector::Pointer m_OutputTimeSelector;
 
-  //##Description 
+  //##Description
   //## @brief Time when Header was last initialized
   itk::TimeStamp m_TimeOfHeaderInitialization;
-  
+
   mitk::ScalarType m_OutsideValue;
   mitk::ScalarType m_MinValue;
   mitk::ScalarType m_MaxValue;

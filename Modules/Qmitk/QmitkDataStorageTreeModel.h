@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   MITK
- Language:  C++
- Date:      $Date: 2008-08-13 16:56:36 +0200 (Mi, 13 Aug 2008) $
- Version:   $Revision: 14972 $
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef QMITKDATASTORAGETREEMODEL_H_
@@ -70,7 +69,7 @@ public:
   /// Get the DataStorage.
   ///
   const mitk::DataStorage::Pointer GetDataStorage() const;
-  
+
   ///
   /// Get the top placement flag
   ///
@@ -286,6 +285,10 @@ protected:
 private:
   void AddNodeInternal(const mitk::DataNode*);
   void RemoveNodeInternal(const mitk::DataNode*);
+  ///
+  /// Checks if dicom properties patient name, study names and series name exists
+  ///
+  bool DicomPropertiesExists(const mitk::DataNode&) const;
 };
 
 #endif /* QMITKDATASTORAGETREEMODEL_H_ */

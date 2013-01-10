@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-13 18:06:46 +0200 (Mi, 13 Mai 2009) $
-Version:   $Revision: 17258 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKHEIGHTFIELDSURFACECLIPIMAGEFILTER_H_HEADER_INCLUDED
@@ -127,8 +126,8 @@ protected:
 
   template < typename TPixel, unsigned int VImageDimension >
   void _InternalComputeClippedImage(
-    itk::Image< TPixel, VImageDimension > *itkImage, 
-    HeightFieldSurfaceClipImageFilter *clipImageFilter, 
+    itk::Image< TPixel, VImageDimension > *itkImage,
+    HeightFieldSurfaceClipImageFilter *clipImageFilter,
     vtkPolyData *clippingPolyData,
     AffineTransform3D *imageToPlaneTransform );
 
@@ -136,7 +135,7 @@ protected:
   ImageTimeSelector::Pointer m_OutputTimeSelector;
 
   int m_ClippingMode;
-  
+
   ScalarType m_ClippingConstant;
   ScalarType m_MultiplicationFactor;
   unsigned m_MultiPlaneValue;

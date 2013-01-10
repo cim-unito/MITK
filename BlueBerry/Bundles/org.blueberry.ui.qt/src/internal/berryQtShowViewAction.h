@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYQTSHOWVIEWACTION_H_
 #define BERRYQTSHOWVIEWACTION_H_
@@ -38,20 +37,20 @@ namespace berry
 
 class BERRY_UI_QT QtShowViewAction : public QAction {
    Q_OBJECT
-   
+
 private:
-  
+
   IWorkbenchWindow* m_Window;
 
   IViewDescriptor::Pointer m_Desc;
-  
-  
+
+
 public:
-  
+
   QtShowViewAction(IWorkbenchWindow::Pointer window, IViewDescriptor::Pointer desc) ;
 
 protected slots:
-  
+
      /**
       * Implementation of method defined on <code>IAction</code>.
       */

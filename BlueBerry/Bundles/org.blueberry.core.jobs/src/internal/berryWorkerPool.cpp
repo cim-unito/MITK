@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #define NOMINMAX
 
@@ -45,7 +44,7 @@ void WorkerPool::Shutdown()
   for(int i = 0; i<= m_numThreads; i++)
     {
       notify();
-    } 
+    }
 }
 
 void WorkerPool::Add(Worker::Pointer worker)
@@ -205,7 +204,7 @@ void WorkerPool::JobQueued()
 
 void WorkerPool::EndJob(InternalJob::Pointer job, IStatus::Pointer result) {
       DecrementBusyThreads();
-  //TODO LockManager 
+  //TODO LockManager
   //    //need to end rule in graph before ending job so that 2 threads
   //    //do not become the owners of the same rule in the graph
   //    if ((job.getRule() != null) && !(job instanceof ThreadJob)) {

@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include <mitkToFImageWriter.h>
 #include <mitkCommon.h>
 
@@ -24,10 +22,12 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk
 {
   ToFImageWriter::ToFImageWriter():m_Extension(".nrrd"),
-    m_DistanceImageFileName(), m_AmplitudeImageFileName(), m_IntensityImageFileName(),
+    m_DistanceImageFileName(), m_AmplitudeImageFileName(), m_IntensityImageFileName(), m_RGBImageFileName(),
     m_NumOfFrames(0), m_DistanceImageSelected(true), m_AmplitudeImageSelected(true),
-    m_IntensityImageSelected(true),m_CaptureWidth(200),m_CaptureHeight(200), 
-    m_PixelNumber(0), m_ImageSizeInBytes(0), 
+    m_IntensityImageSelected(true), m_RGBImageSelected(true), m_ToFCaptureWidth(200),m_ToFCaptureHeight(200),
+    m_RGBCaptureWidth(200),m_RGBCaptureHeight(200),
+    m_ToFPixelNumber(0), m_ToFImageSizeInBytes(0),
+    m_RGBPixelNumber(0), m_RGBImageSizeInBytes(0),
     m_ToFImageType(ToFImageWriter::ToFImageType3D)
   {
   }

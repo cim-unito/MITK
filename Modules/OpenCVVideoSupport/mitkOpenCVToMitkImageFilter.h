@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-28 18:32:03 +0100 (Do, 28 Jan 2010) $
-Version:   $Revision: 21147 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkOpenCVToMitkImageFilter_h
 #define mitkOpenCVToMitkImageFilter_h
@@ -43,13 +42,13 @@ class MITK_OPENCVVIDEOSUPPORT_EXPORT OpenCVToMitkImageFilter : public ImageSourc
     typedef itk::RGBPixel< float > FloatRGBPixelType;
     typedef itk::RGBPixel< double > DoubleRGBPixelType;
 
-    template <typename TPixel, unsigned int VImageDimension> 
+    template <typename TPixel, unsigned int VImageDimension>
     static mitk::Image::Pointer ConvertIplToMitkImage( const IplImage * input, bool copyBuffer = true );
 
     mitkClassMacro(OpenCVToMitkImageFilter, ImageSource);
     itkNewMacro(OpenCVToMitkImageFilter);
 
-    itkSetObjectMacro(OpenCVImage, const IplImage);
+    void SetOpenCVImage(const IplImage* image);
     itkGetMacro(OpenCVImage, const IplImage*);
 
     itkSetMacro(CopyBuffer, bool);

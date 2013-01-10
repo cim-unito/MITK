@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 3393 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MitkPointSetSliceLMapper2D_H
@@ -43,7 +42,7 @@ class BaseRenderer;
 /**
  * @brief OpenGL-based mapper to display a 2d cut through a poly data
  * OpenGL-based mapper to display a 2D cut through a poly data. The result is
- * normally a line. This class can be added to any data object, which is 
+ * normally a line. This class can be added to any data object, which is
  * rendered in 3D via a vtkPolyData.
  */
 class MitkExt_EXPORT UnstructuredGridMapper2D : public GLMapper2D
@@ -69,7 +68,7 @@ protected:
 
     virtual void GenerateData();
     virtual void GenerateDataForRenderer(BaseRenderer*);
-    
+
     /**
      * Determines, if the associated BaseData is mapped three-dimensionally (mapper-slot id 2)
      * with a class convertable to vtkAbstractMapper3D().
@@ -90,7 +89,7 @@ protected:
     virtual vtkScalarsToColors* GetVtkLUT(BaseRenderer* renderer );
 
     /**
-     * Checks if this mapper can be used to generate cuts through the associated 
+     * Checks if this mapper can be used to generate cuts through the associated
      * base data.
      * @return true if yes or false if not.
      */
@@ -101,7 +100,7 @@ protected:
     vtkPointSet* m_VtkPointSet;
     vtkScalarsToColors* m_ScalarsToColors;
     vtkPiecewiseFunction* m_ScalarsToOpacity;
-    
+
     mitk::ColorProperty::Pointer m_Color;
     mitk::IntProperty::Pointer m_LineWidth;
     mitk::BoolProperty::Pointer m_Outline;

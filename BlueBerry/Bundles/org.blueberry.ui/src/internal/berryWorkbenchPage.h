@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYWORKBENCHPAGE_H_
 #define BERRYWORKBENCHPAGE_H_
@@ -25,7 +24,7 @@
 #include "berryIWorkbenchPartReference.h"
 #include "berryIReusableEditor.h"
 
-#include "berryIStackableContainer.h"
+#include "berryILayoutContainer.h"
 #include "berryIStickyViewManager.h"
 #include "berryWorkbenchPagePartList.h"
 #include "berryWorkbenchPartReference.h"
@@ -168,7 +167,7 @@ private:
      * Returns the last (most recent) iterator (index) of the given container in the activation list, or returns
      * end() if the given container does not appear in the activation list.
      */
-    PartListIter LastIndexOfContainer(SmartPointer<IStackableContainer> container);
+    PartListIter LastIndexOfContainer(SmartPointer<ILayoutContainer> container);
 
     /*
      * Add/Move the active part to end of the list;
@@ -485,10 +484,10 @@ public:
       ISelectionListener::Pointer listener);
 
 private:
-  IStackableContainer::Pointer GetContainer(IWorkbenchPart::Pointer part);
+  ILayoutContainer::Pointer GetContainer(IWorkbenchPart::Pointer part);
 
 private:
-  IStackableContainer::Pointer GetContainer(IWorkbenchPartReference::Pointer part);
+  ILayoutContainer::Pointer GetContainer(IWorkbenchPartReference::Pointer part);
 
 private:
   SmartPointer<PartPane> GetPane(IWorkbenchPart::Pointer part);

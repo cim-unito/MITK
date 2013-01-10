@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkTestingMacros.h>
 #include <mitkToFNrrdImageWriter.h>
@@ -30,7 +28,7 @@ int mitkToFNrrdImageWriterTest(int /* argc */, char* /*argv*/[])
   MITK_TEST_BEGIN("ToFNrrdImageWriter");
 
   mitk::ToFNrrdImageWriter::Pointer tofNrrdWriter = mitk::ToFNrrdImageWriter::New();
-  // testing correct initialization 
+  // testing correct initialization
   MITK_TEST_CONDITION_REQUIRED(tofNrrdWriter.GetPointer(), "Testing initialization of test object!");
   MITK_TEST_CONDITION_REQUIRED(tofNrrdWriter->GetExtension() == ".nrrd", "testing initialization of extension member variable!");
 
@@ -41,23 +39,24 @@ int mitkToFNrrdImageWriterTest(int /* argc */, char* /*argv*/[])
   unsigned int pixelNumber = dimX*dimY;
   unsigned int numOfFrames = 23; //or numberOfSlices
   ////create 3 images filled with random values
-  mitk::Image::Pointer distanceImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,0, 1.0f, 1.0f);
-  mitk::Image::Pointer amplitudeImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,0, 0.0f, 2000.0f);
-  mitk::Image::Pointer intensityImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,0, 0.0f, 100000.0f);
+  mitk::Image::Pointer distanceImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,1.0, 1.0f, 1.0f);
+  mitk::Image::Pointer amplitudeImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,1.0, 1.0f, 2000.0f);
+  mitk::Image::Pointer intensityImage = mitk::ImageGenerator::GenerateRandomImage<float>(dimX, dimY, numOfFrames,1.0, 1.0f, 100000.0f);
 
   //SET NEEDED PARAMETER
   //file names on the disc
   std::string distanceImageFileName("distImg.nrrd");
   std::string amplitudeImageFileName("amplImg.nrrd");
   std::string intensityImageFileName("intImg.nrrd");
- 
+
   // set file name methods
   tofNrrdWriter->SetDistanceImageFileName(distanceImageFileName);
   tofNrrdWriter->SetAmplitudeImageFileName(amplitudeImageFileName);
   tofNrrdWriter->SetIntensityImageFileName(intensityImageFileName);
-  tofNrrdWriter->SetCaptureWidth(dimX);
-  tofNrrdWriter->SetCaptureHeight(dimY);
+  tofNrrdWriter->SetToFCaptureWidth(dimX);
+  tofNrrdWriter->SetToFCaptureHeight(dimY);
   tofNrrdWriter->SetToFImageType(mitk::ToFNrrdImageWriter::ToFImageType3D);
+  tofNrrdWriter->SetRGBImageSelected(false);
 
   //buffer for each slice
   float* distanceArray;
@@ -71,7 +70,7 @@ int mitkToFNrrdImageWriterTest(int /* argc */, char* /*argv*/[])
   tofNrrdWriter->Open(); //open file/stream
 
   for(unsigned int i = 0; i < numOfFrames ; i++)
-  { 
+  {
     distanceArray = (float*)distanceImage->GetSliceData(i, 0, 0)->GetData();
     amplitudeArray = (float*)amplitudeImage->GetSliceData(i, 0, 0)->GetData();
     intensityArray = (float*)intensityImage->GetSliceData(i, 0, 0)->GetData();
@@ -79,7 +78,7 @@ int mitkToFNrrdImageWriterTest(int /* argc */, char* /*argv*/[])
     //write (or add) the three slices to the file
     tofNrrdWriter->Add(distanceArray, amplitudeArray, intensityArray);
   }
- 
+
   tofNrrdWriter->Close(); //close file
 
 
@@ -134,5 +133,5 @@ int mitkToFNrrdImageWriterTest(int /* argc */, char* /*argv*/[])
 
   //delete created image files
 
-  MITK_TEST_END();  
+  MITK_TEST_END();
 }

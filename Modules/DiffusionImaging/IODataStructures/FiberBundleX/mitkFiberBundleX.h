@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Module:    $RCSfile$
- Language:  C++
- Date:      $Date$
- Version:   $Revision: 11989 $
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_FiberBundleX_H
@@ -38,11 +36,11 @@
 
 namespace mitk {
 
-  /**
+/**
    * \brief Base Class for Fiber Bundles;   */
-  class  MitkDiffusionImaging_EXPORT FiberBundleX : public BaseData
-  {
-  public:
+class  MitkDiffusionImaging_EXPORT FiberBundleX : public BaseData
+{
+public:
 
     // fiber colorcodings
     static const char* COLORCODING_ORIENTATION_BASED;
@@ -71,29 +69,51 @@ namespace mitk {
     // fiber smoothing/resampling
     void ResampleFibers(float pointDistance = 1);
     void DoFiberSmoothing(int pointsPerCm);
+    void DoFiberSmoothing(int pointsPerCm, double tension, double continuity, double bias );
+    bool RemoveShortFibers(float lengthInMM);
+    bool RemoveLongFibers(float lengthInMM);
+    bool ApplyCurvatureThreshold(float minRadius, bool deleteFibers);
+    void MirrorFibers(unsigned int axis);
+    void RotateAroundAxis(double x, double y, double z);
+    void TranslateFibers(double x, double y, double z);
 
     // add/subtract fibers
-    mitk::FiberBundleX::Pointer AddBundle(mitk::FiberBundleX* fib);
-    mitk::FiberBundleX::Pointer SubtractBundle(mitk::FiberBundleX* fib);
+    FiberBundleX::Pointer AddBundle(FiberBundleX* fib);
+    FiberBundleX::Pointer SubtractBundle(FiberBundleX* fib);
 
     // fiber subset extraction
-    mitk::FiberBundleX::Pointer ExtractFiberSubset(mitk::PlanarFigure::Pointer pf);
-    std::vector<long> ExtractFiberIdSubset(mitk::PlanarFigure::Pointer pf);
-    vtkSmartPointer<vtkPolyData> GeneratePolyDataByIds( std::vector<long> );
+    FiberBundleX::Pointer           ExtractFiberSubset(PlanarFigure *pf);
+    std::vector<long>               ExtractFiberIdSubset(PlanarFigure* pf);
+    vtkSmartPointer<vtkPolyData>    GeneratePolyDataByIds( std::vector<long> ); // TODO: make protected
+    void                            GenerateFiberIds(); // TODO: make protected
+
+
 
     // get/set data
     void SetFiberPolyData(vtkSmartPointer<vtkPolyData>, bool updateGeometry = true);
     vtkSmartPointer<vtkPolyData> GetFiberPolyData();
     QStringList GetAvailableColorCodings();
     char* GetCurrentColorCoding();
-    itkGetMacro(NumFibers, int);
+    itkGetMacro( NumFibers, int)
+    itkGetMacro( FiberSampling, int)
+    itkGetMacro( MinFiberLength, float )
+    itkGetMacro( MaxFiberLength, float )
+    itkGetMacro( MeanFiberLength, float )
+    itkGetMacro( MedianFiberLength, float )
+    itkGetMacro( LengthStDev, float )
+
+    std::vector<int> GetPointsRoi()
+    {
+        return m_PointsRoi;
+    }
 
     // copy fiber bundle
     mitk::FiberBundleX::Pointer GetDeepCopy();
 
-    void GenerateFiberIds();
+    // compare fiber bundles
+    bool Equals(FiberBundleX* fib);
 
-  protected:
+protected:
 
     FiberBundleX( vtkPolyData* fiberPolyData = NULL );
     virtual ~FiberBundleX();
@@ -106,7 +126,7 @@ namespace mitk {
     // calculate colorcoding values according to m_CurrentColorCoding
     void UpdateColorCoding();
 
-  private:
+private:
 
     // actual fiber container
     vtkSmartPointer<vtkPolyData>  m_FiberPolyData;
@@ -116,7 +136,18 @@ namespace mitk {
 
     char* m_CurrentColorCoding;
     int   m_NumFibers;
-  };
+
+    std::vector< float > m_FiberLengths;
+    float   m_MinFiberLength;
+    float   m_MaxFiberLength;
+    float   m_MeanFiberLength;
+    float   m_MedianFiberLength;
+    float   m_LengthStDev;
+    int     m_FiberSampling;
+
+    std::vector<int> m_PointsRoi; // this global variable needs to be refactored
+
+};
 
 } // namespace mitk
 

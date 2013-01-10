@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkStdMultiWidgetEditor.h"
 
@@ -35,6 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QmitkMouseModeSwitcher.h>
 #include <QmitkStdMultiWidget.h>
 
+#include <mbilogo.h>
 
 class QmitkStdMultiWidgetEditorPrivate
 {
@@ -47,9 +47,11 @@ public:
   QmitkMouseModeSwitcher* m_MouseModeToolbar;
   std::string m_FirstBackgroundColor;
   std::string m_SecondBackgroundColor;
+  bool m_MenuWidgetsEnabled;
   berry::IPartListener::Pointer m_PartListener;
 
   QHash<QString, QmitkRenderWindow*> m_RenderWindows;
+
 };
 
 struct QmitkStdMultiWidgetPartListener : public berry::IPartListener
@@ -74,6 +76,7 @@ struct QmitkStdMultiWidgetPartListener : public berry::IPartListener
       if (d->m_StdMultiWidget == stdMultiWidgetEditor->GetStdMultiWidget())
       {
         d->m_StdMultiWidget->RemovePlanesFromDataStorage();
+        stdMultiWidgetEditor->RequestActivateMenuWidget(false);
       }
     }
   }
@@ -87,6 +90,7 @@ struct QmitkStdMultiWidgetPartListener : public berry::IPartListener
       if (d->m_StdMultiWidget == stdMultiWidgetEditor->GetStdMultiWidget())
       {
         d->m_StdMultiWidget->RemovePlanesFromDataStorage();
+        stdMultiWidgetEditor->RequestActivateMenuWidget(false);
       }
     }
   }
@@ -100,6 +104,7 @@ struct QmitkStdMultiWidgetPartListener : public berry::IPartListener
       if (d->m_StdMultiWidget == stdMultiWidgetEditor->GetStdMultiWidget())
       {
         d->m_StdMultiWidget->AddPlanesToDataStorage();
+        stdMultiWidgetEditor->RequestActivateMenuWidget(true);
       }
     }
   }
@@ -112,6 +117,7 @@ private:
 
 QmitkStdMultiWidgetEditorPrivate::QmitkStdMultiWidgetEditorPrivate()
   : m_StdMultiWidget(0), m_MouseModeToolbar(0)
+  , m_MenuWidgetsEnabled(false)
   , m_PartListener(new QmitkStdMultiWidgetPartListener(this))
 {}
 
@@ -136,20 +142,30 @@ QmitkStdMultiWidget* QmitkStdMultiWidgetEditor::GetStdMultiWidget()
   return d->m_StdMultiWidget;
 }
 
-QmitkRenderWindow *QmitkStdMultiWidgetEditor::GetActiveRenderWindow() const
+QmitkRenderWindow *QmitkStdMultiWidgetEditor::GetActiveQmitkRenderWindow() const
 {
   if (d->m_StdMultiWidget) return d->m_StdMultiWidget->GetRenderWindow1();
   return 0;
 }
 
-QHash<QString, QmitkRenderWindow *> QmitkStdMultiWidgetEditor::GetRenderWindows() const
+QHash<QString, QmitkRenderWindow *> QmitkStdMultiWidgetEditor::GetQmitkRenderWindows() const
 {
   return d->m_RenderWindows;
 }
 
-QmitkRenderWindow *QmitkStdMultiWidgetEditor::GetRenderWindow(const QString &id) const
+QmitkRenderWindow *QmitkStdMultiWidgetEditor::GetQmitkRenderWindow(const QString &id) const
 {
-  if (d->m_RenderWindows.contains(id)) return d->m_RenderWindows[id];
+  static bool alreadyWarned = false;
+
+  if(!alreadyWarned)
+  {
+    MITK_WARN(id == "transversal") << "QmitkStdMultiWidgetEditor::GetRenderWindow(\"transversal\") is deprecated. Use \"axial\" instead.";
+    alreadyWarned = true;
+  }
+
+  if (d->m_RenderWindows.contains(id))
+    return d->m_RenderWindows[id];
+
   return 0;
 }
 
@@ -231,10 +247,7 @@ void QmitkStdMultiWidgetEditor::EnableSlicingPlanes(bool enable)
 
 bool QmitkStdMultiWidgetEditor::IsSlicingPlanesEnabled() const
 {
-  // The QmitkStdMultiWidget has no API for this. Do a poor mans check.
-  mitk::DataStorage::Pointer ds = GetDataStorage();
-  if (ds.IsNull()) return false;
-  mitk::DataNode::Pointer node = ds->GetNamedNode("widget1Plane");
+  mitk::DataNode::Pointer node = this->d->m_StdMultiWidget->GetWidgetPlane1();
   if (node.IsNotNull())
   {
     bool visible = false;
@@ -262,7 +275,7 @@ void QmitkStdMultiWidgetEditor::CreateQtPartControl(QWidget* parent)
 {
   if (d->m_StdMultiWidget == 0)
   {
-    QVBoxLayout* layout = new QVBoxLayout(parent);
+    QHBoxLayout* layout = new QHBoxLayout(parent);
     layout->setContentsMargins(0,0,0,0);
 
     if (d->m_MouseModeToolbar == NULL)
@@ -274,10 +287,11 @@ void QmitkStdMultiWidgetEditor::CreateQtPartControl(QWidget* parent)
     d->m_StdMultiWidget = new QmitkStdMultiWidget(parent);
 
     d->m_RenderWindows.insert("transversal", d->m_StdMultiWidget->GetRenderWindow1());
+    d->m_RenderWindows.insert("axial", d->m_StdMultiWidget->GetRenderWindow1());
     d->m_RenderWindows.insert("sagittal", d->m_StdMultiWidget->GetRenderWindow2());
     d->m_RenderWindows.insert("coronal", d->m_StdMultiWidget->GetRenderWindow3());
     d->m_RenderWindows.insert("3d", d->m_StdMultiWidget->GetRenderWindow4());
-    
+
     d->m_MouseModeToolbar->setMouseModeSwitcher( d->m_StdMultiWidget->GetMouseModeSwitcher() );
     connect( d->m_MouseModeToolbar, SIGNAL( MouseModeSelected(mitk::MouseModeSwitcher::MouseMode) ),
       d->m_StdMultiWidget, SLOT( MouseModeSelected(mitk::MouseModeSwitcher::MouseMode) ) );
@@ -289,7 +303,7 @@ void QmitkStdMultiWidgetEditor::CreateQtPartControl(QWidget* parent)
     // Tell the multiWidget which (part of) the tree to render
     d->m_StdMultiWidget->SetDataStorage(ds);
 
-    // Initialize views as transversal, sagittal, coronar to all data objects in DataStorage
+    // Initialize views as axial, sagittal, coronar to all data objects in DataStorage
     // (from top-left to bottom)
     mitk::TimeSlicedGeometry::Pointer geo = ds->ComputeBoundingGeometry3D(ds->GetAll());
     mitk::RenderingManager::GetInstance()->InitializeViews(geo);
@@ -307,6 +321,9 @@ void QmitkStdMultiWidgetEditor::CreateQtPartControl(QWidget* parent)
 
     d->m_StdMultiWidget->EnableNavigationControllerEventListening();
 
+    // Store the initial visibility status of the menu widget.
+    d->m_MenuWidgetsEnabled = d->m_StdMultiWidget->IsMenuWidgetEnabled();
+
     this->GetSite()->GetPage()->AddPartListener(d->m_PartListener);
 
     berry::IPreferences::Pointer prefs = this->GetPreferences();
@@ -318,16 +335,44 @@ void QmitkStdMultiWidgetEditor::CreateQtPartControl(QWidget* parent)
 
 void QmitkStdMultiWidgetEditor::OnPreferencesChanged(const berry::IBerryPreferences* prefs)
 {
-  // enable change of logo
-  std::string departmentLogoLocation = prefs->Get("DepartmentLogo","");
-  if (departmentLogoLocation.empty())
+  // Enable change of logo. If no DepartmentLogo was set explicitly, MBILogo is used.
+  // Set new department logo by prefs->Set("DepartmentLogo", "PathToImage");
+
+  // If no logo was set for this plug-in specifically, walk the parent preference nodes
+  // and lookup a logo value there.
+
+  const berry::IPreferences* currentNode = prefs;
+
+  while(currentNode)
   {
-    d->m_StdMultiWidget->DisableDepartmentLogo();
-  }
-  else
-  {
-    d->m_StdMultiWidget->SetDepartmentLogoPath(departmentLogoLocation.c_str());
-    d->m_StdMultiWidget->EnableDepartmentLogo();
+    std::vector<std::string> keys = currentNode->Keys();
+
+    bool logoFound = false;
+    for( std::size_t i = 0; i < keys.size(); ++i )
+    {
+      if( keys[i] == "DepartmentLogo")
+      {
+        std::string departmentLogoLocation = currentNode->Get("DepartmentLogo", "");
+
+        if (departmentLogoLocation.empty())
+        {
+          d->m_StdMultiWidget->DisableDepartmentLogo();
+        }
+        else
+        {
+          // we need to disable the logo first, otherwise setting a new logo will have
+          // no effect due to how mitkManufacturerLogo works...
+          d->m_StdMultiWidget->DisableDepartmentLogo();
+          d->m_StdMultiWidget->SetDepartmentLogoPath(departmentLogoLocation.c_str());
+          d->m_StdMultiWidget->EnableDepartmentLogo();
+        }
+        logoFound = true;
+        break;
+      }
+    }
+
+    if (logoFound) break;
+    currentNode = currentNode->Parent().GetPointer();
   }
 
   // preferences for gradient background
@@ -408,3 +453,20 @@ void QmitkStdMultiWidgetEditor::SetFocus()
   if (d->m_StdMultiWidget != 0)
     d->m_StdMultiWidget->setFocus();
 }
+
+void QmitkStdMultiWidgetEditor::RequestActivateMenuWidget(bool on)
+{
+  if (d->m_StdMultiWidget)
+  {
+    if (on)
+    {
+      d->m_StdMultiWidget->ActivateMenuWidget(d->m_MenuWidgetsEnabled);
+    }
+    else
+    {
+      d->m_MenuWidgetsEnabled = d->m_StdMultiWidget->IsMenuWidgetEnabled();
+      d->m_StdMultiWidget->ActivateMenuWidget(false);
+    }
+  }
+}
+

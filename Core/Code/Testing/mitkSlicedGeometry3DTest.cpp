@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkImage.h"
@@ -28,9 +27,9 @@ PURPOSE.  See the above copyright notices for more information.
 #include <fstream>
 
 void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
-{ 
+{
   //Tests for Offset
-  MITK_TEST_OUTPUT( << "====== NOW RUNNING: Tests for pixel-center-based offset concerns ========");  
+  MITK_TEST_OUTPUT( << "====== NOW RUNNING: Tests for pixel-center-based offset concerns ========");
 
 
   // create a SlicedGeometry3D
@@ -47,17 +46,17 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
   newSpacing[1] = 0.9f;
   newSpacing[2] = 0.3f;
   slicedGeo3D->SetSpacing(newSpacing);
-  // create subslices as well  
+  // create subslices as well
   for (int i=0; i < num_slices; i++)
   {
     mitk::Geometry2D::Pointer geo2d = mitk::Geometry2D::New();
     geo2d->Initialize();
     slicedGeo3D->SetGeometry2D(geo2d,i);
-  } 
+  }
 
   // now run tests
-  
-  MITK_TEST_OUTPUT( << "Testing whether slicedGeo3D->GetImageGeometry() is false by default");  
+
+  MITK_TEST_OUTPUT( << "Testing whether slicedGeo3D->GetImageGeometry() is false by default");
   MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetImageGeometry()==false, "");
   MITK_TEST_OUTPUT( << "Testing whether first and last geometry in the SlicedGeometry3D have GetImageGeometry()==false by default");
   mitk::Geometry3D* subSliceGeo2D_first = slicedGeo3D->GetGeometry2D(0);
@@ -66,9 +65,9 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetImageGeometry()==false, "");
 
   // Save some Origins and cornerpoints
-  mitk::Point3D OriginSlicedGeo( slicedGeo3D->GetOrigin() ); 
-  mitk::Point3D OriginFirstGeo( subSliceGeo2D_first->GetOrigin() ); 
-  mitk::Point3D OriginLastGeo( subSliceGeo2D_last->GetOrigin() ); 
+  mitk::Point3D OriginSlicedGeo( slicedGeo3D->GetOrigin() );
+  mitk::Point3D OriginFirstGeo( subSliceGeo2D_first->GetOrigin() );
+  mitk::Point3D OriginLastGeo( subSliceGeo2D_last->GetOrigin() );
   mitk::Point3D CornerPoint0SlicedGeo(slicedGeo3D->GetCornerPoint(0));
   mitk::Point3D CornerPoint1FirstGeo(subSliceGeo2D_first->GetCornerPoint(1));
   mitk::Point3D CornerPoint2LastGeo(subSliceGeo2D_last->GetCornerPoint(2));
@@ -83,10 +82,10 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
   MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetImageGeometry()==true, "");
   MITK_TEST_OUTPUT( << "Testing whether first and last geometry in the SlicedGeometry3D have GetImageGeometry()==true now");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetImageGeometry()==true, "");
-  MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetImageGeometry()==true, "");  
+  MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetImageGeometry()==true, "");
 
   MITK_TEST_OUTPUT( << "Testing wether offset has been added to origins");
-  // Manually adding Offset.  
+  // Manually adding Offset.
   OriginSlicedGeo[0] += (slicedGeo3D->GetSpacing()[0]) / 2;
   OriginSlicedGeo[1] += (slicedGeo3D->GetSpacing()[1]) / 2;
   OriginSlicedGeo[2] += (slicedGeo3D->GetSpacing()[2]) / 2;
@@ -98,7 +97,7 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
   OriginLastGeo[2] += (subSliceGeo2D_last->GetSpacing()[2]) / 2;
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetCornerPoint(1)==CornerPoint1FirstGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetCornerPoint(2)==CornerPoint2LastGeo, "");
-  MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetCornerPoint(0)==CornerPoint0SlicedGeo, "");  
+  MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetCornerPoint(0)==CornerPoint0SlicedGeo, "");
   MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetOrigin()==OriginSlicedGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetOrigin()==OriginFirstGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetOrigin()==OriginLastGeo, "");
@@ -109,7 +108,7 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
   MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetImageGeometry()==false, "");
   MITK_TEST_OUTPUT( << "Testing whether first and last geometry in the SlicedGeometry3D have GetImageGeometry()==false now");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetImageGeometry()==false, "");
-  MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetImageGeometry()==false, "");  
+  MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetImageGeometry()==false, "");
 
   MITK_TEST_OUTPUT( << "Testing wether offset has been added to origins of geometry");
 
@@ -126,18 +125,18 @@ void mitkSlicedGeometry3D_ChangeImageGeometryConsideringOriginOffset_Test()
 
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetCornerPoint(1)==CornerPoint1FirstGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetCornerPoint(2)==CornerPoint2LastGeo, "");
-  MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetCornerPoint(0)==CornerPoint0SlicedGeo, "");  
+  MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetCornerPoint(0)==CornerPoint0SlicedGeo, "");
   MITK_TEST_CONDITION_REQUIRED( slicedGeo3D->GetOrigin()==OriginSlicedGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_first->GetOrigin()==OriginFirstGeo, "");
   MITK_TEST_CONDITION_REQUIRED( subSliceGeo2D_last->GetOrigin()==OriginLastGeo, "");
-  
+
   MITK_TEST_OUTPUT( << "ALL SUCCESSFULLY!");
 }
 
 int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
 {
   mitk::PlaneGeometry::Pointer planegeometry1 = mitk::PlaneGeometry::New();
- 
+
   mitk::Point3D origin;
   mitk::Vector3D right, bottom, normal;
   mitk::ScalarType width, height;
@@ -170,7 +169,7 @@ int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
   matrix = vnlmatrix;
   transform->SetMatrix(matrix);
   transform->SetOffset(planegeometry2->GetIndexToWorldTransform()->GetOffset());
-  
+
   right.Set_vnl_vector( rotation.rotation_matrix_transpose()*right.Get_vnl_vector() );
   bottom.Set_vnl_vector(rotation.rotation_matrix_transpose()*bottom.Get_vnl_vector());
   normal.Set_vnl_vector(rotation.rotation_matrix_transpose()*normal.Get_vnl_vector());
@@ -179,7 +178,7 @@ int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
 
   std::cout << "Setting planegeometry3 to the backside of planegeometry2: " <<std::endl;
   mitk::PlaneGeometry::Pointer planegeometry3 = mitk::PlaneGeometry::New();
-  planegeometry3->InitializeStandardPlane(planegeometry2, mitk::PlaneGeometry::Transversal, 0, false);
+  planegeometry3->InitializeStandardPlane(planegeometry2, mitk::PlaneGeometry::Axial, 0, false);
 
 
   std::cout << "Testing SlicedGeometry3D::InitializeEvenlySpaced(planegeometry3, zSpacing = 1, slices = 5, flipped = false): " <<std::endl;
@@ -197,8 +196,8 @@ int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
   std::cout<<"[PASSED]"<<std::endl;
 
   std::cout << "Testing whether the first geometry in the SlicedGeometry3D is identical to planegeometry3 by axis comparison and origin: "<<std::endl;
-  if((mitk::Equal(accessedplanegeometry3->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) || 
-     (mitk::Equal(accessedplanegeometry3->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) || 
+  if((mitk::Equal(accessedplanegeometry3->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) ||
+     (mitk::Equal(accessedplanegeometry3->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) ||
      (mitk::Equal(accessedplanegeometry3->GetAxisVector(2), planegeometry3->GetAxisVector(2))==false) ||
      (mitk::Equal(accessedplanegeometry3->GetOrigin(), planegeometry3->GetOrigin())==false))
   {
@@ -218,8 +217,8 @@ int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
   std::cout<<"[PASSED]"<<std::endl;
 
   std::cout << "Testing whether the last geometry in the SlicedGeometry3D is identical to planegeometry3 by axis comparison: "<<std::endl;
-  if((mitk::Equal(accessedplanegeometry3last->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) || 
-     (mitk::Equal(accessedplanegeometry3last->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) || 
+  if((mitk::Equal(accessedplanegeometry3last->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) ||
+     (mitk::Equal(accessedplanegeometry3last->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) ||
      (mitk::Equal(accessedplanegeometry3last->GetAxisVector(2), planegeometry3->GetAxisVector(2))==false) ||
      (mitk::Equal(accessedplanegeometry3last->GetOrigin(), origin3last)==false) ||
      (mitk::Equal(accessedplanegeometry3last->GetIndexToWorldTransform()->GetOffset(), origin3last.GetVectorFromOrigin())==false))
@@ -239,8 +238,8 @@ int mitkSlicedGeometry3DTest(int /*argc*/, char* /*argv*/[])
   std::cout<<"[PASSED]"<<std::endl;
 
   std::cout << "Again for first slice - Testing whether the first geometry in the SlicedGeometry3D is identical to planegeometry3 by axis comparison and origin: "<<std::endl;
-  if((mitk::Equal(accessedplanegeometry3->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) || 
-     (mitk::Equal(accessedplanegeometry3->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) || 
+  if((mitk::Equal(accessedplanegeometry3->GetAxisVector(0), planegeometry3->GetAxisVector(0))==false) ||
+     (mitk::Equal(accessedplanegeometry3->GetAxisVector(1), planegeometry3->GetAxisVector(1))==false) ||
      (mitk::Equal(accessedplanegeometry3->GetAxisVector(2), planegeometry3->GetAxisVector(2))==false) ||
      (mitk::Equal(accessedplanegeometry3->GetOrigin(), planegeometry3->GetOrigin())==false) ||
      (mitk::Equal(accessedplanegeometry3->GetIndexToWorldTransform()->GetOffset(), planegeometry3->GetOrigin().GetVectorFromOrigin())==false))

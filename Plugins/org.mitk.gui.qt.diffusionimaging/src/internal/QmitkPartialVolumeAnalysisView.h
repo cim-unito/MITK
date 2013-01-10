@@ -1,26 +1,28 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 20:08:26 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 10185 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #if !defined(QmitkPartialVolumeAnalysisView_H__INCLUDED)
 #define QmitkPartialVolumeAnalysisView_H__INCLUDED
 
-#include "QmitkFunctionality.h"
+//#include "QmitkFunctionality.h"
 #include "ui_QmitkPartialVolumeAnalysisViewControls.h"
 
+#include <QmitkAbstractView.h>
+#include <berryIWorkbenchPartReference.h>
+#include <mitkIZombieViewPart.h>
 
 // berry
 #include <berryISelectionListener.h>
@@ -28,7 +30,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 // itk
 #include <itkTimeStamp.h>
-#include "itkDiffusionTensorPrincipleDirectionImageFilter.h"
+#include <itkDiffusionTensorPrincipalDirectionImageFilter.h>
+#include <itkExtractChannelFromRgbaImageFilter.h>
 
 // qmitk
 #include "QmitkStepperAdapter.h"
@@ -53,7 +56,7 @@ PURPOSE.  See the above copyright notices for more information.
 \sa QmitkFunctionality
 \ingroup Functionalities
 */
-class QmitkPartialVolumeAnalysisView : public QmitkFunctionality//, public itk::ProcessObject
+class QmitkPartialVolumeAnalysisView : public QmitkAbstractView, public mitk::IZombieViewPart//, public itk::ProcessObject
 {
   Q_OBJECT
 
@@ -68,7 +71,7 @@ public:
   typedef mitk::PartialVolumeAnalysisHistogramCalculator HistogramCalculatorType;
   typedef HistogramCalculatorType::HistogramType         HistogramType;
   typedef mitk::PartialVolumeAnalysisClusteringCalculator ClusteringType;
-  typedef itk::DiffusionTensorPrincipleDirectionImageFilter<float,float> DirectionsFilterType;
+  typedef itk::DiffusionTensorPrincipalDirectionImageFilter<float,float> DirectionsFilterType;
 
   /*!
   \brief default constructor
@@ -94,11 +97,19 @@ public:
 
   virtual bool event( QEvent *event );
 
-  void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
+  virtual void OnSelectionChanged(berry::IWorkbenchPart::Pointer part, const QList<mitk::DataNode::Pointer> &nodes);
 
   virtual void Activated();
 
   virtual void Deactivated();
+
+  virtual void ActivatedZombieView(berry::IWorkbenchPartReference::Pointer reference);
+
+  virtual void Hidden();
+
+  virtual void Visible();
+
+  virtual void SetFocus();
 
   bool AssertDrawingIsPossible(bool checked);
 
@@ -150,10 +161,11 @@ protected slots:
   void OnRenderWindowDelete(QObject * obj);
 
   void TextIntON();
+  void ExportClusteringResults();
 
 protected:
 
-  void StdMultiWidgetAvailable( QmitkStdMultiWidget& stdMultiWidget );
+  //void StdMultiWidgetAvailable( QmitkStdMultiWidget& stdMultiWidget );
 
   /** \brief Issues a request to update statistics by sending an event to the
   * Qt event processing queue.
@@ -175,17 +187,17 @@ protected:
 
   void Select( mitk::DataNode::Pointer node, bool clearMaskOnFirstArgNULL=false, bool clearImageOnFirstArgNULL=false );
 
-  void Visible( );
-
   void SetMeasurementInfoToRenderWindow(const QString& text);
 
   void FindRenderWindow(mitk::DataNode* node);
 
   void ExtractTensorImages(
-      mitk::Image::ConstPointer tensorimage);
+      mitk::Image::Pointer tensorimage);
 
   typedef std::map< mitk::Image *, mitk::PartialVolumeAnalysisHistogramCalculator::Pointer >
     PartialVolumeAnalysisMapType;
+
+//  void OnSelectionChanged(const QList<mitk::DataNode::Pointer> &nodes);
 
   /*!
   * controls containing sliders for scrolling through the slices
@@ -243,6 +255,8 @@ protected:
   bool m_GaussianSigmaChangedSliding;
   bool m_NumberBinsSliding;
   bool m_UpsamplingChangedSliding;
+
+  bool m_Visible;
 
   mitk::DataNode::Pointer m_ClusteringResult;
 

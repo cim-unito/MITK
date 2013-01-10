@@ -1,4 +1,3 @@
-#include <usExportMacros.h>
 #include <usModuleActivator.h>
 
 US_USE_NAMESPACE
@@ -11,7 +10,7 @@ public:
 
   void Load(ModuleContext* /*context*/)
   { /* register stuff */ }
-  
+
 
   void Unload(ModuleContext* /*context*/)
   { /* cleanup */ }

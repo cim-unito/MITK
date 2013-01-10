@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2011-01-18 13:22:38 +0100 (Di, 18 Jan 2011) $
-Version:   $Revision: 28959 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKTRACKINGDEVICESOURCECONFIGURATOR_H_HEADER_INCLUDED_
@@ -33,7 +32,7 @@ namespace mitk {
   /**Documentation
   * \brief This class offers a factory method for objects of the class TrackingDeviceSource. It initializes this TrackingDeviceSource with
   *        the given navigation tools and the given tracking device. The factory method also checks if all tools are valid and of the same
-  *        type like the TrackingDevice. You can do this check before trying to create the TrackingDeviceSource by calling the method 
+  *        type like the TrackingDevice. You can do this check before trying to create the TrackingDeviceSource by calling the method
   *        IsCreateTrackingDeviceSourcePossible(), if it returns false you might want to get the error message by calling the method
   *        GetErrorMessage().
   * \ingroup IGT
@@ -50,30 +49,30 @@ namespace mitk {
      */
     bool IsCreateTrackingDeviceSourcePossible();
 
-    /** @return Returns a new TrackingDeviceSource. Returns NULL if there was an error on creating the 
+    /** @return Returns a new TrackingDeviceSource. Returns NULL if there was an error on creating the
      *          TrackingDeviceSource. If there was an error it's availiable as error message.
      */
     mitk::TrackingDeviceSource::Pointer CreateTrackingDeviceSource();
 
-    /** @return Returns a new TrackingDeviceSource. Returns NULL if there was an error on creating the 
+    /** @return Returns a new TrackingDeviceSource. Returns NULL if there was an error on creating the
      *          TrackingDeviceSource. If there was an error it's availiable as error message.
      *  @param visualizationFilter (return value) returns a visualization filter which is already connected to the tracking device source.
      *                             This filter visualises the surfaces which are availiable by the navigation tool storage.
      */
     mitk::TrackingDeviceSource::Pointer CreateTrackingDeviceSource(mitk::NavigationDataObjectVisualizationFilter::Pointer &visualizationFilter);
-    
+
     /** @return Returns the internal number of the corresponding tool in the tool storage of a output navigation data. Returns -1 if there was an error. */
     int GetToolNumberInToolStorage(int outputID);
 
     /** @return Returns the identifier of the corresponding tool in the tool storage of a output navigation data. Returns an empty string if there was an error.*/
     std::string GetToolIdentifierInToolStorage(int outputID);
 
-    /** @return Returns a vector with all internal numbers of the corresponding tools in the tool storage of all outputs. 
+    /** @return Returns a vector with all internal numbers of the corresponding tools in the tool storage of all outputs.
       *         The order is the same like the order of the outputs. Returns an empty vector if there was an error.
       */
     std::vector<int> GetToolNumbersInToolStorage();
 
-    /** @return Returns a vector with all identifier of the corresponding tools in the tool storage of all outputs. 
+    /** @return Returns a vector with all identifier of the corresponding tools in the tool storage of all outputs.
       *         The order is the same like the order of the outputs. Returns an empty vector if there was an error.
       */
     std::vector<std::string> GetToolIdentifiersInToolStorage();

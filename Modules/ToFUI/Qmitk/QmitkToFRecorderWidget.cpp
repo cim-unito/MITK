@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #define _USE_MATH_DEFINES
 #include "QmitkToFRecorderWidget.h"
@@ -73,7 +71,7 @@ void QmitkToFRecorderWidget::CreateConnections()
     connect( (QObject*)(m_Controls->m_PlayButton), SIGNAL(clicked()),(QObject*) this, SLOT(OnPlay()) );
     connect( (QObject*)(m_Controls->m_StopButton), SIGNAL(clicked()),(QObject*) this, SLOT(OnStop()) );
     connect( (QObject*)(m_Controls->m_StartRecordingButton), SIGNAL(clicked()),(QObject*) this, SLOT(OnStartRecorder()) );
-    connect( (QObject*)(m_Controls->m_RecordModeComboBox), SIGNAL(currentIndexChanged(int)),(QObject*) this, SLOT(OnChangeRecordModeComboBox(int)) );    
+    connect( (QObject*)(m_Controls->m_RecordModeComboBox), SIGNAL(currentIndexChanged(int)),(QObject*) this, SLOT(OnChangeRecordModeComboBox(int)) );
 
     connect(this, SIGNAL(RecordingStopped()), this, SLOT(OnRecordingStopped()), Qt::BlockingQueuedConnection);
   }
@@ -109,7 +107,7 @@ void QmitkToFRecorderWidget::ResetGUIToInitial()
 }
 
 void QmitkToFRecorderWidget::OnRecordingStopped()
-{  
+{
   m_Controls->m_StartRecordingButton->setChecked(false);
   m_Controls->m_RecorderGroupBox->setEnabled(true);
 }
@@ -172,14 +170,15 @@ void QmitkToFRecorderWidget::OnStartRecorder()
     bool distanceImageSelected = true;
     bool amplitudeImageSelected = true;
     bool intensityImageSelected = true;
+    bool rgbImageSelected = true;
     bool rawDataSelected = false;
 
     QString tmpFileName("");
     QString selectedFilter("");
     QString imageFileName("");
     mitk::ToFImageWriter::ToFImageType tofImageType;
-    tmpFileName = QmitkToFRecorderWidget::getSaveFileName(tofImageType, 
-      distanceImageSelected, amplitudeImageSelected, intensityImageSelected, rawDataSelected,
+    tmpFileName = QmitkToFRecorderWidget::getSaveFileName(tofImageType,
+      distanceImageSelected, amplitudeImageSelected, intensityImageSelected, rgbImageSelected, rawDataSelected,
       NULL, "Save Image To...", imageFileName, "NRRD Images (*.nrrd);;PIC Images - deprecated (*.pic);;Text (*.csv)", &selectedFilter);
 
     if (tmpFileName.isEmpty())
@@ -210,17 +209,21 @@ void QmitkToFRecorderWidget::OnStartRecorder()
         numOfFramesStr.setNum(numOfFrames);
       }
 
-      std::string distImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(), 
+      std::string distImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(),
         integrationTimeStr.toStdString(), numOfFramesStr.toStdString(), extension, "_DistanceImage");
       MITK_INFO << "Save distance data to: " << distImageFileName;
 
-      std::string amplImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(), 
+      std::string amplImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(),
         integrationTimeStr.toStdString(), numOfFramesStr.toStdString(), extension, "_AmplitudeImage");
       MITK_INFO << "Save amplitude data to: " << amplImageFileName;
 
-      std::string intenImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(), 
+      std::string intenImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(),
         integrationTimeStr.toStdString(), numOfFramesStr.toStdString(), extension, "_IntensityImage");
       MITK_INFO << "Save intensity data to: " << intenImageFileName;
+
+      std::string rgbImageFileName = prepareFilename(dir, baseFilename, modulationFreqStr.toStdString(),
+        integrationTimeStr.toStdString(), numOfFramesStr.toStdString(), extension, "_RGBImage");
+      MITK_INFO << "Save intensity data to: " << rgbImageFileName;
 
       if (selectedFilter.compare("Text (*.csv)") == 0)
       {
@@ -230,8 +233,8 @@ void QmitkToFRecorderWidget::OnStartRecorder()
       {
         //default
         this->m_ToFImageRecorder->SetFileFormat(".pic");
-        
-        QMessageBox::warning(NULL, "Deprecated File Format!", 
+
+        QMessageBox::warning(NULL, "Deprecated File Format!",
           "Please note that *.pic file format is deprecated and not longer supported! The suggested file format for images is *.nrrd!");
       }
       else if (selectedFilter.compare("NRRD Images (*.nrrd)") == 0)
@@ -248,10 +251,12 @@ void QmitkToFRecorderWidget::OnStartRecorder()
       this->m_ToFImageRecorder->SetDistanceImageFileName(distImageFileName);
       this->m_ToFImageRecorder->SetAmplitudeImageFileName(amplImageFileName);
       this->m_ToFImageRecorder->SetIntensityImageFileName(intenImageFileName);
+      this->m_ToFImageRecorder->SetRGBImageFileName(rgbImageFileName);
       this->m_ToFImageRecorder->SetToFImageType(tofImageType);
       this->m_ToFImageRecorder->SetDistanceImageSelected(distanceImageSelected);
       this->m_ToFImageRecorder->SetAmplitudeImageSelected(amplitudeImageSelected);
       this->m_ToFImageRecorder->SetIntensityImageSelected(intensityImageSelected);
+      this->m_ToFImageRecorder->SetRGBImageSelected(rgbImageSelected);
       this->m_ToFImageRecorder->SetRecordMode(this->m_RecordMode);
       this->m_ToFImageRecorder->SetNumOfFrames(numOfFrames);
 
@@ -274,6 +279,7 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
                                      bool& distanceImageSelected,
                                      bool& amplitudeImageSelected,
                                      bool& intensityImageSelected,
+                                     bool& rgbImageSelected,
                                      bool& rawDataSelected,
                                      QWidget *parent,
                                      const QString &caption,
@@ -299,6 +305,9 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
   QCheckBox* intensityImageCheckBox = new QCheckBox;
   intensityImageCheckBox->setText("Intensity image");
   intensityImageCheckBox->setChecked(true);
+  QCheckBox* rgbImageCheckBox = new QCheckBox;
+  rgbImageCheckBox->setText("RGB image");
+  rgbImageCheckBox->setChecked(true);
   QCheckBox* rawDataCheckBox = new QCheckBox;
   rawDataCheckBox->setText("Raw data");
   rawDataCheckBox->setChecked(false);
@@ -307,6 +316,7 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
   checkBoxGroup->addWidget(distanceImageCheckBox);
   checkBoxGroup->addWidget(amplitudeImageCheckBox);
   checkBoxGroup->addWidget(intensityImageCheckBox);
+  checkBoxGroup->addWidget(rgbImageCheckBox);
   checkBoxGroup->addWidget(rawDataCheckBox);
 
   QFileDialog* fileDialog = new QFileDialog(parent, caption, dir, filter);
@@ -314,7 +324,7 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
   QLayout* layout = fileDialog->layout();
   QGridLayout* gridbox = qobject_cast<QGridLayout*>(layout);
 
-  if (gridbox) 
+  if (gridbox)
   {
     gridbox->addWidget(new QLabel("ToF-Image type:"));
     gridbox->addWidget(combo);
@@ -330,7 +340,7 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
     fileDialog->selectNameFilter(*selectedFilter);
   }
 
-  if (fileDialog->exec() == QDialog::Accepted) 
+  if (fileDialog->exec() == QDialog::Accepted)
   {
     if (selectedFilter)
     {
@@ -350,6 +360,7 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
     distanceImageSelected = distanceImageCheckBox->isChecked();
     amplitudeImageSelected = amplitudeImageCheckBox->isChecked();
     intensityImageSelected = intensityImageCheckBox->isChecked();
+    rgbImageSelected = rgbImageCheckBox->isChecked();
     rawDataSelected = rawDataCheckBox->isChecked();
 
     selectedFileName = fileDialog->selectedFiles().value(0);
@@ -359,12 +370,12 @@ QString QmitkToFRecorderWidget::getSaveFileName(mitk::ToFImageWriter::ToFImageTy
   return selectedFileName;
 }
 
-std::string QmitkToFRecorderWidget::prepareFilename(std::string dir, 
-                                                    std::string baseFilename, 
-                                                    std::string modulationFreq, 
-                                                    std::string integrationTime, 
-                                                    std::string numOfFrames, 
-                                                    std::string extension, 
+std::string QmitkToFRecorderWidget::prepareFilename(std::string dir,
+                                                    std::string baseFilename,
+                                                    std::string modulationFreq,
+                                                    std::string integrationTime,
+                                                    std::string numOfFrames,
+                                                    std::string extension,
                                                     std::string imageType)
 {
   std::string filenName("");

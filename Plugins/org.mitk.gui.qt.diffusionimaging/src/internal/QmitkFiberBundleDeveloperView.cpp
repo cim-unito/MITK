@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
- Version:   $Revision: 21975 $
- 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
- 
- =========================================================================*/
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 //=========FOR TESTING==========
 //random generation, number of points equal requested points
 
@@ -25,7 +24,7 @@
 
 // Qmitk
 #include "QmitkFiberBundleDeveloperView.h"
-#include <QmitkStdMultiWidget.h> 
+#include <QmitkStdMultiWidget.h>
 
 // Qt
 #include <QTimer>
@@ -417,7 +416,7 @@ void QmitkFiberThreadMonitorWorker::setThreadStatus(QString status)
     m_itemPackage.st_MultiWidget->RequestUpdate();
 }
 
-/* Methods to set status of running threads 
+/* Methods to set status of running threads
  * Following three methods are usually called
  - before a thread starts and
  - a thread is finished or terminated */
@@ -867,7 +866,7 @@ void QmitkFiberBundleDeveloperView::DoGenerateFibers()
     }
 
 
-} 
+}
 
 void QmitkFiberBundleDeveloperView::DoExtractFibers()
 {
@@ -1702,7 +1701,7 @@ void QmitkFiberBundleDeveloperView::StdMultiWidgetNotAvailable()
 /* OnSelectionChanged is registered to SelectionService, therefore no need to
  implement SelectionService Listener explicitly */
 void QmitkFiberBundleDeveloperView::OnSelectionChanged( std::vector<mitk::DataNode*> nodes )
-{ 
+{
 
     if (nodes.empty())
         return;

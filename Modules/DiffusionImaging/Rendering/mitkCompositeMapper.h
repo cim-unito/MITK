@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef COMPOSITEMAPPER_H_HEADER_INCLUDED
@@ -44,8 +43,8 @@ namespace mitk {
   {
   public:
 
-    mitkClassMacro(CompositeMapper,VtkMapper2D);
-    itkNewMacro(Self);
+    mitkClassMacro(CompositeMapper,VtkMapper2D)
+    itkNewMacro(Self)
 
     virtual void MitkRenderOverlay(BaseRenderer* renderer)
     {
@@ -94,7 +93,7 @@ namespace mitk {
     }
 
     bool HasVtkProp( const vtkProp* prop, BaseRenderer* renderer )
-    { 
+    {
       return m_OdfMapper->HasVtkProp(prop, renderer);
     }
 
@@ -116,7 +115,7 @@ namespace mitk {
       node->AddProperty( "opaclevelwindow", prop );
     }
 
-    bool IsLODEnabled( BaseRenderer * renderer ) const 
+    bool IsLODEnabled( BaseRenderer * renderer ) const
     {
       return m_ImgMapper->IsLODEnabled(renderer) || m_OdfMapper->IsLODEnabled(renderer);
     }
@@ -135,20 +134,21 @@ namespace mitk {
       m_OdfMapper->SetGeometry3D(aGeometry3D);
     }
 
-  protected:
-
-    virtual void GenerateData()
+    virtual void Update(mitk::BaseRenderer* renderer)
     {
-      m_OdfMapper->GenerateData();
+      m_OdfMapper->Update(renderer);
+      GenerateDataForRenderer(renderer);
     }
+
+  protected:
 
     virtual void GenerateDataForRenderer(mitk::BaseRenderer* renderer)
     {
       m_ImgMapper->GenerateDataForRenderer(renderer);
-      if( mitk::RenderingManager::GetInstance()->GetNextLOD( renderer ) > 0 )
-      {
-        m_OdfMapper->GenerateDataForRenderer(renderer);
-      }
+//      if( mitk::RenderingManager::GetInstance()->GetNextLOD( renderer ) > 0 )
+//      {
+//        m_OdfMapper->GenerateDataForRenderer(renderer);
+//      }
     }
 
     CompositeMapper();

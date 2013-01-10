@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkUnstructuredGrid.h"
@@ -30,14 +29,14 @@ void mitk::UnstructuredGrid::SetVtkUnstructuredGrid( vtkUnstructuredGrid* grid, 
   {
     m_GridSeries[ t ]->Delete();
   }
-  
+
   m_GridSeries[ t ] = grid;
 
-  // call m_VtkPolyData->Register(NULL) to tell the reference counting that we 
+  // call m_VtkPolyData->Register(NULL) to tell the reference counting that we
   // want to keep a reference on the object
   if (m_GridSeries[t] != 0)
     m_GridSeries[t]->Register(grid);
-  
+
   this->Modified();
   m_CalculateBoundingBox = true;
 }
@@ -101,9 +100,9 @@ mitk::UnstructuredGrid::UnstructuredGrid() : m_CalculateBoundingBox( false )
   this->InitializeEmpty();
 }
 
-mitk::UnstructuredGrid::UnstructuredGrid(const mitk::UnstructuredGrid &other) : 
+mitk::UnstructuredGrid::UnstructuredGrid(const mitk::UnstructuredGrid &other) :
 BaseData(other),
-m_CalculateBoundingBox( other.m_CalculateBoundingBox ), 
+m_CalculateBoundingBox( other.m_CalculateBoundingBox ),
 m_LargestPossibleRegion(other.m_LargestPossibleRegion)
 {
   if(!other.m_Initialized)
@@ -195,7 +194,7 @@ bool mitk::UnstructuredGrid::RequestedRegionIsOutsideOfTheBufferedRegion()
 
 bool mitk::UnstructuredGrid::VerifyRequestedRegion()
 {
-  if( (m_RequestedRegion.GetIndex(3)>=0) && 
+  if( (m_RequestedRegion.GetIndex(3)>=0) &&
       (m_RequestedRegion.GetIndex(3)+m_RequestedRegion.GetSize(3)<=m_GridSeries.size()) )
     return true;
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTrackingDevice.h"
 #include "mitkTimeStamp.h"
@@ -23,7 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 typedef itk::MutexLockHolder<itk::FastMutexLock> MutexLockHolder;
 
 
-mitk::TrackingDevice::TrackingDevice() : 
+mitk::TrackingDevice::TrackingDevice() :
   m_Data(mitk::DeviceDataUnspecified),
   m_State(mitk::TrackingDevice::Setup),
   m_StopTracking(false), m_ErrorMessage("")
@@ -52,9 +51,9 @@ void mitk::TrackingDevice::SetState( TrackingDeviceState state )
 {
   itkDebugMacro("setting  m_State to " << state);
 
-  MutexLockHolder lock(*m_StateMutex); // lock and unlock the mutex 
+  MutexLockHolder lock(*m_StateMutex); // lock and unlock the mutex
   if (m_State == state)
-  { 
+  {
     return;
   }
   m_State = state;

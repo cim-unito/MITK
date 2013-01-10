@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-03-21 19:27:37 +0100 (Sa, 21 Mrz 2009) $
-Version:   $Revision: 16719 $ 
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkUpdateTimerWidget.h"
 
@@ -27,13 +26,13 @@ static unsigned int MINIMUMUPDATEVALUE = 10; // smallest value for the update ra
 static unsigned int MAXIMUMUPDATEVALUE = 1000; // greatest value for the update rate spinbox
 static unsigned int UPDATEVALUESTEP = 10; // step size for the update rate spinbox
 
-QmitkUpdateTimerWidget::QmitkUpdateTimerWidget(QWidget* parent)  
+QmitkUpdateTimerWidget::QmitkUpdateTimerWidget(QWidget* parent)
 : QWidget(parent), m_Controls(NULL)
 {
   this->m_UpdateTimer = new QTimer( this );
   this->CreateQtPartControl( this );
 
-  this->m_Controls->m_StopNavigationBtn->setEnabled( false );    
+  this->m_Controls->m_StopNavigationBtn->setEnabled( false );
   this->SetupUpdateRateSB( MINIMUMUPDATEVALUE, MAXIMUMUPDATEVALUE, UPDATEVALUESTEP );
 
   this->m_UpdateTimer->setInterval( DEFAULTUPDATEVALUE );
@@ -176,11 +175,11 @@ void QmitkUpdateTimerWidget::SetIcon( WidgetButtons button, const QIcon& icon )
 {
   switch( button )
   {
-  case StartButton: 
+  case StartButton:
     m_Controls->m_StartNavigationBtn->setIcon(icon);
     break;
 
-  case StopButton: m_Controls->m_StopNavigationBtn->setIcon(icon);    
+  case StopButton: m_Controls->m_StopNavigationBtn->setIcon(icon);
     break;
 
   default:

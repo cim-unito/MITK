@@ -1,25 +1,25 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 13129 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __itkImportMitkImageContainer_h
 #define __itkImportMitkImageContainer_h
 
 #include <itkImportImageContainer.h>
 #include <mitkImageDataItem.h>
+#include <mitkImageWriteAccessor.h>
 
 namespace itk
 {
@@ -37,7 +37,7 @@ namespace itk
  * TElement =
  *    The element type stored in the container.
  */
-  
+
 template <typename TElementIdentifier, typename TElement>
 class ImportMitkImageContainer:  public ImportImageContainer<TElementIdentifier, TElement>
 {
@@ -47,14 +47,14 @@ public:
   typedef Object                    Superclass;
   typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
-    
+
   /** Save the template parameters. */
   typedef TElementIdentifier  ElementIdentifier;
   typedef TElement            Element;
-    
+
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
-  
+
   /** Standard part of every itk Object. */
   itkTypeMacro(ImportMitkImageContainer, ImportImageContainer);
 
@@ -62,7 +62,8 @@ public:
   //TElement *GetImportPointer() {return m_ImportPointer;};
 
   /** \brief Set the mitk::ImageDataItem to be imported  */
-  void SetImageDataItem(mitk::ImageDataItem* imageDataItem);
+  //void SetImageDataItem(mitk::ImageDataItem* imageDataItem);
+  void SetImageAccessor(mitk::ImageWriteAccessor* imageAccess, size_t noBytes);
 
 protected:
   ImportMitkImageContainer();
@@ -77,7 +78,8 @@ private:
   ImportMitkImageContainer(const Self&); //purposely not implemented
   void operator=(const Self&); //purposely not implemented
 
-  mitk::ImageDataItem::Pointer m_ImageDataItem;
+  //mitk::ImageDataItem::Pointer m_ImageDataItem;
+  mitk::ImageWriteAccessor* m_imageAccess;
 };
 
 } // end namespace itk

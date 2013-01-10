@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-07 17:17:57 +0100 (Do, 07 Feb 2008) $
-Version:   $Revision: 11989 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef __mitkTensorImage__h
@@ -27,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 #define TENSOR_NUM_ELEMENTS 6
 
-namespace mitk 
+namespace mitk
 {
 
   /**
@@ -40,10 +39,10 @@ namespace mitk
 
     mitkClassMacro( TensorImage, Image );
     itkNewMacro(Self);
-    
-    virtual vtkImageData* GetNonRgbVtkImageData(int t = 0, int n = 0);
 
-    virtual vtkImageData* GetVtkImageData(int t = 0, int n = 0);
+    virtual ImageVtkAccessor* GetNonRgbVtkImageData(int t = 0, int n = 0);
+
+    virtual ImageVtkAccessor* GetVtkImageData(int t = 0, int n = 0);
 
     virtual void ConstructRgbImage();
 

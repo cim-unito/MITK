@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKCYLINDRICTOCARTESIANFILTER_H_HEADER_INCLUDED_C1F48A22
@@ -53,7 +52,7 @@ public:
 
   //##Documentation
   //## @brief Set the size in x-direction of the converted image.
-  //## 
+  //##
   //## A value of 0 (default) means that the filter uses the x-size of the input image.
   itkSetMacro(TargetXSize, unsigned int);
   //##Documentation
@@ -73,18 +72,18 @@ protected:
   mitkIpPicDescriptor * rt_pic, * phit_pic, *fr_pic, * fphi_pic, * coneCutOff_pic;
   float * fz;
   unsigned int * zt;
-  //##Description 
+  //##Description
   //## @brief Cut off line for images that only contain data within a sector
-  //## 
+  //##
   //## y=a x+b
   float a;
-  //##Description 
+  //##Description
   //## @brief Cut off line for images that only contain data within a sector
-  //## 
+  //##
   //## y=a x+b
   float b;
 
-  //##Description 
+  //##Description
   //## @brief Time when Header was last initialized
   itk::TimeStamp m_TimeOfHeaderInitialization;
 protected:

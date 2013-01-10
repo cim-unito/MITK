@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -81,17 +80,17 @@ QWidget* QmitkPropertyDelegate::createEditor(QWidget *parent, const QStyleOption
 
   if(data.isValid())
   {
-  
+
     QWidget* editorWidget = NULL;
 
     if(data.type() == QVariant::Color)
     {
       QPushButton* colorBtn = new QPushButton(parent);
       QColor color = data.value<QColor>();
-      
+
       QColor result = QColorDialog::getColor(color);
       if(result.isValid())
-      {       
+      {
         QPalette palette = colorBtn->palette();
         palette.setColor(QPalette::Button, result);
         colorBtn->setPalette(palette);
@@ -105,7 +104,7 @@ QWidget* QmitkPropertyDelegate::createEditor(QWidget *parent, const QStyleOption
         palette.setColor(QPalette::Button, color);
         colorBtn->setPalette(palette);
         colorBtn->setStyleSheet(QString("background-color: %1;foreground-color: %1; border-style: none;").arg(color.name()));
-      
+
       }
 
       connect(colorBtn, SIGNAL(pressed()), this, SLOT(commitAndCloseEditor()));
@@ -132,7 +131,7 @@ QWidget* QmitkPropertyDelegate::createEditor(QWidget *parent, const QStyleOption
       spinBox->setMaximum(std::numeric_limits<int>::max());
       editorWidget = spinBox;
     }
-    // see qt documentation. cast is correct, it would be obsolete if we 
+    // see qt documentation. cast is correct, it would be obsolete if we
     // store doubles
     else if(static_cast<QMetaType::Type>(data.type()) == QMetaType::Float)
     {
@@ -149,7 +148,7 @@ QWidget* QmitkPropertyDelegate::createEditor(QWidget *parent, const QStyleOption
         spinBox->setMinimum(std::numeric_limits<float>::min());
         spinBox->setMaximum(std::numeric_limits<float>::max());
       }
-      
+
       editorWidget = spinBox;
     }
 
@@ -163,7 +162,7 @@ QWidget* QmitkPropertyDelegate::createEditor(QWidget *parent, const QStyleOption
       editorWidget = comboBox;
     }
 
-    
+
     else
     {
       editorWidget = QStyledItemDelegate::createEditor(parent, option, index);
@@ -223,7 +222,7 @@ void QmitkPropertyDelegate::setEditorData(QWidget *editor, const QModelIndex &in
       QSpinBox* spinBox = qobject_cast<QSpinBox *>(editor);
       spinBox->setValue(data.toInt());
     }
-    // see qt documentation. cast is correct, it would be obsolete if we 
+    // see qt documentation. cast is correct, it would be obsolete if we
     // store doubles
     else if(static_cast<QMetaType::Type>(data.type()) == QMetaType::Float)
     {

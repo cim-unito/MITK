@@ -1,29 +1,28 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkStepper.h"
 
 mitk::Stepper
 ::Stepper()
-: m_Pos( 0 ), 
+: m_Pos( 0 ),
   m_Steps( 0 ),
-  m_AutoRepeat( false ), 
-  m_PingPong( false ), 
+  m_AutoRepeat( false ),
+  m_PingPong( false ),
   m_InverseDirection( false ),
   m_RangeMin( 0.0 ),
   m_RangeMax( -1.0 ),
@@ -38,7 +37,7 @@ mitk::Stepper
 {
 }
 
-void 
+void
 mitk::Stepper
 ::SetRange( ScalarType min, ScalarType max )
 {
@@ -94,7 +93,7 @@ mitk::Stepper
   return m_HasRange;
 }
 
-void 
+void
 mitk::Stepper
 ::SetUnitName( const char *unitName )
 {
@@ -125,7 +124,7 @@ mitk::Stepper
   return m_HasUnitName;
 }
 
-void 
+void
 mitk::Stepper
 ::Increase()
 {
@@ -150,7 +149,7 @@ mitk::Stepper
   }
 }
 
-void 
+void
 mitk::Stepper
 ::Decrease()
 {
@@ -175,7 +174,7 @@ mitk::Stepper
   }
 }
 
-void 
+void
 mitk::Stepper
 ::Next()
 {
@@ -189,7 +188,7 @@ mitk::Stepper
   }
 }
 
-void 
+void
 mitk::Stepper
 ::Previous()
 {
@@ -203,14 +202,14 @@ mitk::Stepper
   }
 }
 
-void 
+void
 mitk::Stepper
 ::First()
 {
   this->SetPos(0);
 }
 
-void 
+void
 mitk::Stepper
 ::Last()
 {

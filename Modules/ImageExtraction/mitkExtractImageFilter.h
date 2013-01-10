@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkExtractImageFilter_h_Included
 #define mitkExtractImageFilter_h_Included
@@ -28,6 +27,9 @@ namespace mitk
 {
 
 /**
+  \deprecated This class is deprecated. Use mitk::ExtractSliceFilter instead.
+  \sa ExtractSliceFilter
+
   \brief Extracts a 2D slice from a 3D image.
 
   \sa SegTool2D
@@ -40,7 +42,7 @@ namespace mitk
 
   This class takes a 3D mitk::Image as input and tries to extract one slice from it.
 
-  Two parameters determine which slice is extracted: the "slice dimension" is that one, which is constant for all points in the plane, e.g. transversal would mean 2.
+  Two parameters determine which slice is extracted: the "slice dimension" is that one, which is constant for all points in the plane, e.g. axial would mean 2.
   The "slice index" is the slice index in the image direction you specified with "affected dimension". Indices count from zero.
 
   Output will not be set if there was a problem extracting the desired slice.
@@ -63,7 +65,7 @@ class ImageExtraction_EXPORT ExtractImageFilter : public ImageToImageFilter
     /**
       \brief The orientation of the slice to be extracted.
 
-      \a Parameter SliceDimension Number of the dimension which is constant for all pixels of the desired slice (e.g. 2 for transversal)
+      \a Parameter SliceDimension Number of the dimension which is constant for all pixels of the desired slice (e.g. 2 for axial)
     */
     itkSetMacro(SliceDimension, unsigned int);
     itkGetConstMacro(SliceDimension, unsigned int);

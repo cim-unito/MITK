@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 13:23:19 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 13561 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKRIGIDREGISTRATIONPRESET_H_HEADER
 #define MITKRIGIDREGISTRATIONPRESET_H_HEADER
@@ -29,11 +28,11 @@ namespace mitk {
 
   /**
    * \brief Class to load and save parameter presets for rigid registration.
-   * 
+   *
    * \ingroup RigidRegistration
    *
-   * This class stores parameter presets for rigid registration applications. To that belong parameters for transformations, metrics, 
-   * optimizer and interpolators. The presets will be stored in a xml file. Existing presets can be opened with LoadPreset() and saved with 
+   * This class stores parameter presets for rigid registration applications. To that belong parameters for transformations, metrics,
+   * optimizer and interpolators. The presets will be stored in a xml file. Existing presets can be opened with LoadPreset() and saved with
    * newPresets(...).
    *
    *
@@ -88,23 +87,23 @@ namespace mitk {
     /**
     * \brief Saves new presets in the previous opened xml file or in the new fileName location.
     *
-    * Every old entry will be removed from the xml file and replaced by the ones stored in the parameter maps. Make sure you have the 
+    * Every old entry will be removed from the xml file and replaced by the ones stored in the parameter maps. Make sure you have the
     * old presets as well as the new ones within the maps.
     */
-    bool newPresets(std::map<std::string, itk::Array<double> > newTransformValues, 
+    bool newPresets(std::map<std::string, itk::Array<double> > newTransformValues,
                     std::map<std::string, itk::Array<double> > newMetricValues,
-                    std::map<std::string, itk::Array<double> > newOptimizerValues, 
+                    std::map<std::string, itk::Array<double> > newOptimizerValues,
                     std::map<std::string, itk::Array<double> > newInterpolatorValues,
-                    std::string fileName = "");  
+                    std::string fileName = "");
 
     private:
 
-      
+
       /**
       * \brief method used in XLM-Reading; gets called when a start-tag is read
       */
       void StartElement (const char *elementName, const char **atts);
-    
+
       /**
       * \brief Saves all preset attributes to xml file.
       */

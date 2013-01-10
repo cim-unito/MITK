@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef FILEWRITERWITHINFORMATION_H_INCLUDED
 #define FILEWRITERWITHINFORMATION_H_INCLUDED
@@ -24,7 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 /**
  * \brief Interface for FileWriters with extra information.
- * Should be merged into FileWriter. 
+ * Should be merged into FileWriter.
 */
 class MITK_CORE_EXPORT FileWriterWithInformation : public FileWriter {
   public:
@@ -33,7 +32,7 @@ class MITK_CORE_EXPORT FileWriterWithInformation : public FileWriter {
     virtual const char *GetDefaultFilename() = 0;
     virtual const char *GetFileDialogPattern() = 0;
     virtual const char *GetDefaultExtension() = 0;
-    virtual bool CanWriteBaseDataType(BaseData::Pointer data) = 0;  
+    virtual bool CanWriteBaseDataType(BaseData::Pointer data) = 0;
     virtual void DoWrite(BaseData::Pointer data) = 0;
 };
 }

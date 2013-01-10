@@ -1,22 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkExtApplicationPlugin.h"
-#include "QmitkExtDefaultPerspective.h"
+#include "perspectives/QmitkExtDefaultPerspective.h"
+#include "perspectives/QmitkEditorPerspective.h"
+#include "QmitkMitkWorkbenchIntroPart.h"
 #include "QmitkExtApplication.h"
 
 #include <mitkVersion.h>
@@ -48,10 +49,12 @@ QmitkExtApplicationPlugin* QmitkExtApplicationPlugin::GetDefault()
 void QmitkExtApplicationPlugin::start(ctkPluginContext* context)
 {
   berry::AbstractUICTKPlugin::start(context);
-  
+
   this->context = context;
-  
+
   BERRY_REGISTER_EXTENSION_CLASS(QmitkExtDefaultPerspective, context);
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkEditorPerspective, context);
+  BERRY_REGISTER_EXTENSION_CLASS(QmitkMitkWorkbenchIntroPart, context);
   BERRY_REGISTER_EXTENSION_CLASS(QmitkExtApplication, context);
 
 

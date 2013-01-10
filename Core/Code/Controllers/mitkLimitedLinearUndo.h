@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef LIMITEDLINEARUNDO_H_HEADER_INCLUDED_C16E9C96
@@ -42,7 +41,7 @@ class MITK_CORE_EXPORT LimitedLinearUndo : public UndoModel
 public:
   typedef std::vector<UndoStackItem*> UndoContainer;
   typedef std::vector<UndoStackItem*>::reverse_iterator UndoContainerRevIter;
-  
+
   mitkClassMacro(LimitedLinearUndo, UndoModel);
   itkNewMacro(Self);
 
@@ -51,7 +50,7 @@ public:
   //##Documentation
   //## @brief Undoes the last changes
   //##
-  //##  Reads the top element of the Undo-Stack,  
+  //##  Reads the top element of the Undo-Stack,
   //##  executes the operation,
   //##  swaps the OperationEvent-Undo with the Operation
   //##  and sets it to Redo-Stack
@@ -65,7 +64,7 @@ public:
   //##Documentation
   //## @brief Undoes the last changes
   //##
-  //## Reads the top element of the Redo-Stack, 
+  //## Reads the top element of the Redo-Stack,
   //## executes the operation,
   //## swaps the OperationEvent-Operation with the Undo-Operation
   //## and sets it to Undo-Stack
@@ -89,15 +88,15 @@ public:
   virtual bool RedoListEmpty();
 
   //##Documentation
-  //## @brief Returns the ObjectEventId of the 
+  //## @brief Returns the ObjectEventId of the
   //## top element in the OperationHistory
   virtual int GetLastObjectEventIdInList();
 
   //##Documentation
-  //## @brief Returns the GroupEventId of the 
+  //## @brief Returns the GroupEventId of the
   //## top element in the OperationHistory
   virtual int GetLastGroupEventIdInList();
-  
+
   //##Documentation
   //## @brief Returns the last specified OperationEvent in Undo-list
   //## corresponding to the given values; if nothing found, then returns NULL
@@ -112,7 +111,7 @@ protected:
   //## Destructor
   virtual ~LimitedLinearUndo();
 
-  //## @brief Convenience method to free the memory of 
+  //## @brief Convenience method to free the memory of
   //## elements in the list and to clear the list
   void ClearList(UndoContainer* list);
 

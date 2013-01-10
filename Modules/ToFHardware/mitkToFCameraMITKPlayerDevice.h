@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision:  $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFCameraMITKPlayerDevice_h
 #define __mitkToFCameraMITKPlayerDevice_h
 
@@ -38,7 +36,7 @@ namespace mitk
   */
   class MITK_TOFHARDWARE_EXPORT ToFCameraMITKPlayerDevice : public ToFCameraDevice
   {
-  public: 
+  public:
 
     mitkClassMacro( ToFCameraMITKPlayerDevice , ToFCameraDevice );
 
@@ -47,24 +45,16 @@ namespace mitk
     /*!
     \brief opens a connection to the ToF camera
     */
-    virtual bool ConnectCamera();
+    virtual bool OnConnectCamera();
     /*!
     \brief closes the connection to the camera
     */
     virtual bool DisconnectCamera();
     /*!
-    \brief starts the continuous updating of the camera. 
+    \brief starts the continuous updating of the camera.
     A separate thread updates the source data, the main thread processes the source data and creates images and coordinates
     */
     virtual void StartCamera();
-    /*!
-    \brief stops the continuous updating of the camera
-    */
-    virtual void StopCamera();
-    /*!
-    \brief returns whether the camera is currently active or not
-    */
-    virtual bool IsCameraActive();
     /*!
     \brief gets the amplitude data from the ToF camera as the strength of the active illumination of every pixel. Caution! The user is responsible for allocating and deleting the images.
     These values can be used to determine the quality of the distance values. The higher the amplitude value, the higher the accuracy of the according distance value
@@ -78,6 +68,12 @@ namespace mitk
     \param imageSequence the actually captured image sequence number
     */
     virtual void GetIntensities(float* intensityArray, int& imageSequence);
+    /*!
+    \brief gets the rgb data from the ToF camera. Caution! The user is responsible for allocating and deleting the images.
+    \param rgbArray contains the returned rgb data as an array.
+    \param imageSequence the actually captured image sequence number
+    */
+    virtual void GetRgb(unsigned char* rgbArray, int& imageSequence);
     /*!
     \brief gets the distance data from the ToF camera measuring the distance between the camera and the different object points in millimeters. Caution! The user is responsible for allocating and deleting the images.
     \param distanceArray contains the returned distances data as an array.
@@ -94,9 +90,9 @@ namespace mitk
     \param capturedImageSequence the actually captured image sequence number
     */
     virtual void GetAllImages(float* distanceArray, float* amplitudeArray, float* intensityArray, char* sourceDataArray,
-                              int requiredImageSequence, int& capturedImageSequence);
+                              int requiredImageSequence, int& capturedImageSequence, unsigned char* rgbDataArray=NULL);
 //    TODO: Buffer size currently set to 1. Once Buffer handling is working correctly, method may be reactivated
-//    /*!
+//    /* // * TODO: Reenable doxygen comment when uncommenting, disabled to fix doxygen warning see bug 12882
 //    \brief pure virtual method resetting the buffer using the specified bufferSize. Has to be implemented by sub-classes
 //    \param bufferSize buffer size the buffer should be reset to
 //    */
@@ -143,6 +139,7 @@ namespace mitk
     float** m_DistanceDataBuffer; ///< buffer holding the last distance images
     float** m_AmplitudeDataBuffer; ///< buffer holding the last amplitude images
     float** m_IntensityDataBuffer; ///< buffer holding the last intensity images
+    unsigned char** m_RGBDataBuffer; ///< buffer holding the last rgb images
 
   };
 } //END mitk namespace

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKCLARONTOOL_H_HEADER_INCLUDED_
 #define MITKCLARONTOOL_H_HEADER_INCLUDED_
@@ -36,7 +35,7 @@ namespace mitk
   public:
     friend class ClaronTrackingDevice;
     mitkClassMacro(ClaronTool, InternalTrackingTool);
-    
+
 
     /**
     * \brief Loads a tool calibration file. Without this file the tool can not be tracked!
@@ -45,10 +44,10 @@ namespace mitk
     /**
     * \brief Loads a tool calibration file. Without this file the tool can not be tracked!
     */
-    bool LoadFile(std::string filename);  
+    bool LoadFile(std::string filename);
 
     std::string GetFile();
-   
+
     /**
     * \brief Sets the handle of the tool.
     * \param handle The new handle of the tool.
@@ -70,7 +69,7 @@ namespace mitk
     * @return Returns the tool handle of the tool.
     */
     claronToolHandle GetToolHandle();
-   
+
   protected:
     itkNewMacro(Self);
     ClaronTool();
@@ -83,4 +82,4 @@ namespace mitk
     std::string m_Filename;
   };
 }//mitk
-#endif // MITKCLARONTOOL_H_HEADER_INCLUDED_ 
+#endif // MITKCLARONTOOL_H_HEADER_INCLUDED_

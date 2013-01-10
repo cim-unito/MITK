@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <Poco/Path.h>
 
@@ -52,6 +51,8 @@ int Platform::ARCH_POWER = BERRY_ARCH_POWER;
 int Platform::ARCH_SPARC = BERRY_ARCH_SPARC;
 int Platform::ARCH_AMD64 = BERRY_ARCH_AMD64;
 int Platform::ARCH_ARM = BERRY_ARCH_ARM;
+
+std::string Platform::PROP_QTPLUGIN_PATH = "BlueBerry.qtplugin_path";
 
 std::string Platform::ARG_NEWINSTANCE = "BlueBerry.newInstance";
 std::string Platform::ARG_CLEAN = "BlueBerry.clean";
@@ -159,9 +160,9 @@ const Poco::Path& Platform::GetUserPath()
   return InternalPlatform::GetInstance()->GetUserPath();
 }
 
-std::string Platform::GetProperty(const std::string& /*key*/)
+std::string Platform::GetProperty(const std::string& key)
 {
-  return "";
+  return GetConfiguration().getString(key, "");
 }
 
 bool Platform::IsRunning()

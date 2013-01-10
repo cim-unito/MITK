@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __mitkNrrdTbssImageReader_cpp
 #define __mitkNrrdTbssImageReader_cpp
@@ -58,23 +57,23 @@ namespace mitk
 
     int vecsize = m_OutputCache->GetImage()->GetVectorLength();
 
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetImage(m_OutputCache->GetImage());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetGroupInfo(m_OutputCache->GetGroupInfo());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetMetaInfo(m_OutputCache->GetMetaInfo());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetIsMeta(m_OutputCache->GetIsMeta());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetContainsDistanceMap(m_OutputCache->GetContainsDistanceMap());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetContainsMeanSkeleton(m_OutputCache->GetContainsMeanSkeleton());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetContainsSkeletonMask(m_OutputCache->GetContainsSkeletonMask());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->SetContainsGradient(m_OutputCache->GetContainsGradient());
-    static_cast<OutputType*>(this->GetOutput())
+    static_cast<OutputType*>(this->GetOutput(0))
         ->InitializeFromVectorImage();
 
   }
@@ -138,10 +137,10 @@ namespace mitk
           //int numberOfGradientImages = 0;
           std::string measurementInfo;
           bool isMeta = false;
-          bool containsSkeleton;
-          bool containsSkeletonMask;
-          bool containsGradient;
-          bool containsDistanceMap;
+          bool containsSkeleton = false;
+          bool containsSkeletonMask = false;
+          bool containsGradient = false;
+          bool containsDistanceMap = false;
 
 
 
@@ -161,17 +160,21 @@ namespace mitk
               std::vector<std::string> tokens;
               this->Tokenize(metaString, tokens, " ");
 
-              if(tokens.size()==2)
+
+              std::pair< std::string, int > p;
+
+              p.first="";
+              for (int i=0; i<tokens.size()-1;i++)
               {
-
-                std::cout << tokens.at(0) << " " << tokens.at(1) << std::endl;
-
-                std::pair< std::string, int > p;
-                p.first = tokens.at(0);
-                std::string s = tokens.at(1);
-                p.second = atoi(tokens.at(1).c_str());
-                groups.push_back(p);
+                p.first.append(" ");
+                p.first.append(tokens.at(i));
               }
+
+              std::cout << p.first << std::endl;
+
+              p.second = atoi(tokens.at(tokens.size()-1 ).c_str());
+              groups.push_back(p);
+
 
 
             }

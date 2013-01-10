@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkRotationOperation.h"
 #include "mitkTestingMacros.h"
 #include "mitkPlanePositionManager.h"
@@ -32,7 +47,7 @@ int SetUpBeforeTest()
 
     //Creating different Geometries
     m_Geometries.reserve(100);
-    mitk::PlaneGeometry::PlaneOrientation views[] = {mitk::PlaneGeometry::Transversal, mitk::PlaneGeometry::Sagittal, mitk::PlaneGeometry::Frontal};
+    mitk::PlaneGeometry::PlaneOrientation views[] = {mitk::PlaneGeometry::Axial, mitk::PlaneGeometry::Sagittal, mitk::PlaneGeometry::Frontal};
     for (unsigned int i = 0; i < 100; ++i)
     {
         mitk::PlaneGeometry::Pointer plane = mitk::PlaneGeometry::New();

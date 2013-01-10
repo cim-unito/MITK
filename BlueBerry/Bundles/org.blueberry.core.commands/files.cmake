@@ -1,8 +1,8 @@
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/internal/berryPluginActivator.h
 )
 
-SET(SRC_CPP_FILES
+set(SRC_CPP_FILES
   berryAbstractHandler.cpp
   berryCommand.cpp
   berryCommandCategory.cpp
@@ -27,11 +27,11 @@ SET(SRC_CPP_FILES
   berryParameterType.cpp
   berryParameterTypeEvent.cpp
   berryState.cpp
-  
+
   util/berryCommandTracing.cpp
 )
 
-SET(COMMON_CPP_FILES
+set(COMMON_CPP_FILES
   berryAbstractBitSetEvent.cpp
   berryAbstractHandleObjectEvent.cpp
   berryAbstractNamedHandleEvent.cpp
@@ -41,19 +41,19 @@ SET(COMMON_CPP_FILES
   berryNamedHandleObject.cpp
 )
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
   berryCommandUtils.cpp
   berryPluginActivator.cpp
 )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${COMMON_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/common/${file})
+  set(CPP_FILES ${CPP_FILES} src/common/${file})
 endforeach(file ${COMMON_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})

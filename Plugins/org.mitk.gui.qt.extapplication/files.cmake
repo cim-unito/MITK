@@ -1,20 +1,28 @@
-SET(SRC_CPP_FILES
+set(SRC_CPP_FILES
 )
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
   QmitkExtApplication.cpp
   QmitkExtApplicationPlugin.cpp
   QmitkExtAppWorkbenchAdvisor.cpp
-  QmitkExtDefaultPerspective.cpp
+  QmitkMitkWorkbenchIntroPart.cpp
+  perspectives/QmitkEditorPerspective.cpp
+  perspectives/QmitkExtDefaultPerspective.cpp
 )
 
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/internal/QmitkExtApplication.h
   src/internal/QmitkExtApplicationPlugin.h
-  src/internal/QmitkExtDefaultPerspective.h
+  src/internal/QmitkMitkWorkbenchIntroPart.h
+  src/internal/perspectives/QmitkEditorPerspective.h
+  src/internal/perspectives/QmitkExtDefaultPerspective.h
 )
 
-SET(CACHED_RESOURCE_FILES
+set(UI_FILES
+  src/internal/perspectives/QmitkWelcomeScreenViewControls.ui
+)
+
+set(CACHED_RESOURCE_FILES
 # list of resource files which can be used by the plug-in
 # system without loading the plug-ins shared library,
 # for example the icon used in the menu and tabs for the
@@ -23,18 +31,19 @@ SET(CACHED_RESOURCE_FILES
   resources/icon_research.xpm
 )
 
-SET(QRC_FILES
+set(QRC_FILES
 # uncomment the following line if you want to use Qt resources
 #  resources/QmitkExtApplication.qrc
+resources/welcome/QmitkWelcomeScreenView.qrc
 )
 
-SET(CPP_FILES )
+set(CPP_FILES )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})
 

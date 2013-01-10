@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // Blueberry
 #include <berryISelectionService.h>
@@ -31,12 +30,10 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkSurface.h>
 
 // MITK-ToF related includes
+#include <mitkToFCameraMITKPlayerDevice.h>
 #include <mitkToFConfig.h> // configuration file holding e.g. plugin paths or path to test file directory
 #include <mitkToFDistanceImageToSurfaceFilter.h> // filter from module ToFProcessing that calculates a surface from the given range image
-#include <mitkToFImageGrabberCreator.h> // creator class that provides pre-configured ToFCameraDevices
 #include <mitkToFImageGrabber.h> // allows access to images provided by the ToF camera
-
-
 
 const std::string QmitkToFTutorialView::VIEW_ID = "org.mitk.views.toftutorial";
 
@@ -51,7 +48,6 @@ QmitkToFTutorialView::~QmitkToFTutorialView()
 {
 }
 
-
 void QmitkToFTutorialView::CreateQtPartControl( QWidget *parent )
 {
   // build up qt view, unless already done
@@ -60,7 +56,7 @@ void QmitkToFTutorialView::CreateQtPartControl( QWidget *parent )
     // create GUI widgets from the Qt Designer's .ui file
     m_Controls = new Ui::QmitkToFTutorialViewControls;
     m_Controls->setupUi( parent );
- 
+
     connect( m_Controls->step1Button, SIGNAL(clicked()), this, SLOT(OnStep1()) );
     connect( m_Controls->step2Button, SIGNAL(clicked()), this, SLOT(OnStep2()) );
   }
@@ -72,26 +68,25 @@ void QmitkToFTutorialView::StdMultiWidgetAvailable (QmitkStdMultiWidget &stdMult
   m_MultiWidget = &stdMultiWidget;
 }
 
-
 void QmitkToFTutorialView::StdMultiWidgetNotAvailable()
 {
   m_MultiWidget = NULL;
 }
 
-
 void QmitkToFTutorialView::OnStep1()
 {
   // clean up data storage
   RemoveAllNodesFromDataStorage();
-  // use ToFImageGrabber to create instance of ToFImageGrabber that holds a ToFCameraMITKPlayerDevice for playing ToF data
-  mitk::ToFImageGrabber::Pointer tofImageGrabber = mitk::ToFImageGrabberCreator::GetInstance()->GetMITKPlayerImageGrabber();
+  // Create an instance of ToFImageGrabber that holds a ToFCameraMITKPlayerDevice for playing ToF data
+  mitk::ToFImageGrabber::Pointer tofImageGrabber = mitk::ToFImageGrabber::New();
+  tofImageGrabber->SetCameraDevice(mitk::ToFCameraMITKPlayerDevice::New());
   // set paths to test data
   std::string distanceFileName = MITK_TOF_DATA_DIR;
-  distanceFileName.append("/PMDCamCube2_MF0_IT0_20Images_DistanceImage.pic"); 
+  distanceFileName.append("/PMDCamCube2_MF0_IT0_20Images_DistanceImage.pic");
   std::string amplitudeFileName = MITK_TOF_DATA_DIR;
-  amplitudeFileName.append("/PMDCamCube2_MF0_IT0_20Images_AmplitudeImage.pic"); 
+  amplitudeFileName.append("/PMDCamCube2_MF0_IT0_20Images_AmplitudeImage.pic");
   std::string intensityFileName = MITK_TOF_DATA_DIR;
-  intensityFileName.append("/PMDCamCube2_MF0_IT0_20Images_IntensityImage.pic"); 
+  intensityFileName.append("/PMDCamCube2_MF0_IT0_20Images_IntensityImage.pic");
   // set file name property in image grabber. This will be propagated to the corresponding device and controller class
   tofImageGrabber->SetProperty("DistanceImageFileName",mitk::StringProperty::New(distanceFileName));
   tofImageGrabber->SetProperty("AmplitudeImageFileName",mitk::StringProperty::New(amplitudeFileName));

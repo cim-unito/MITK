@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkUSLookupTableSource.h"
@@ -39,7 +38,7 @@ mitk::USLookupTableSource::USLookupTableSource() : mitk::LookupTableSource()
     m_Mode = DefaultLUT;
     m_LookupTable = NULL;
 
-    this->Modified();    
+    this->Modified();
     std::cout << "creating USLookupTableSource OK! " << std::endl;
 }
 
@@ -94,7 +93,7 @@ vtkLookupTable* mitk::USLookupTableSource::BuildDSRDopplerLookupTable()
 
 
         else  // no HP lut -> create custom LUT
-        {     
+        {
             std::cout << "  no a.map available! creating custom Doppler LookUpTable ... " << std::endl;
 
             vtkLookupTable *vtkLookupTable = vtkLookupTable::New();
@@ -337,14 +336,14 @@ vtkLookupTable* mitk::USLookupTableSource::BuildStrainRateLookupTable()
                 rgba[ 1 ] = 0;
                 rgba[ 2 ] = 0;
                 rgba[ 3 ] = factor * 1;
-                
+
 //                index = lutSize / 2 -1;  // FIXME: this should be lutSize/2 !!!!????
                 index = 128 ;  // FIXME: this should be lutSize/2 !!!!????
                 std::cout  << "  setting table value " << index << " to zero " << std::endl;
-                
+
                 vtkLookupTable->SetTableValue( index, rgba );
             }
-        
+
 
 //           for (int i=0; i<lutSize; i++)
 //           {
@@ -366,7 +365,7 @@ vtkLookupTable* mitk::USLookupTableSource::BuildStrainRateLookupTable()
 //          std::cout << "  p0=" << (int)p[0] << "  p1=" << (int)p[1] << "  p2=" << (int)p[2]<< std::endl;
 //          p =   vtkLookupTable->GetPointer(128);
 //          std::cout << "  p0=" << (unsigned int)p[0] << "  p1=" <<(unsigned int) p[1] << "  p2=" << (unsigned int)p[2]<< std::endl;
-          
+
         return( vtkLookupTable );
 
 }
@@ -388,7 +387,7 @@ vtkLookupTable* mitk::USLookupTableSource::BuildVtkLookupTable()
 {
 
     std::cout << "mitk::USLookupTableSource::BuildVtkLookupTable() ... " << std::endl;
-    
+
     if ( m_Mode == DSRDoppler )
     {
         return BuildDSRDopplerLookupTable();

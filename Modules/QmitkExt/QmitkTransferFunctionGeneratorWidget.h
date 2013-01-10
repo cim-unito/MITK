@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKTRANSFERFUNCTIONGENERATORWIDGET_H
 #define QMITKTRANSFERFUNCTIONGENERATORWIDGET_H
@@ -45,12 +44,12 @@ class QmitkExt_EXPORT QmitkTransferFunctionGeneratorWidget : public QWidget, pub
     void SetPresetsTabEnabled(bool enable);
     void SetThresholdTabEnabled(bool enable);
     void SetBellTabEnabled(bool enable);
-   
+
   public slots:
 
     void OnSavePreset( );
     void OnLoadPreset( );
-    
+
     void OnDeltaLevelWindow( int dx, int dy );
     void OnDeltaThreshold( int dx, int dy );
 
@@ -58,32 +57,32 @@ class QmitkExt_EXPORT QmitkTransferFunctionGeneratorWidget : public QWidget, pub
 
     void SignalTransferFunctionModeChanged( int );
     void SignalUpdateCanvas();
-   
+
   protected slots:
 
     void OnPreset( int mode );
 
   protected:
- 
+
     mitk::TransferFunctionProperty::Pointer tfpToChange;
-    
+
     double histoMinimum;
     double histoMaximum;
-    
+
     double thPos;
     double thDelta;
 
     double deltaScale;
     double deltaMax;
     double deltaMin;
-    
+
     const mitk::Image::HistogramType *histoGramm;
-    
+
     QString presetFileName;
-    
+
     std::string ReduceFileName(std::string fileNameLong );
 
     double ScaleDelta(int d) const;
-    
+
 };
 #endif

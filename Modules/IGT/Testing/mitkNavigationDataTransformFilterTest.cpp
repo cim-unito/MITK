@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 16010 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNavigationDataTransformFilter.h"
 #include "mitkNavigationData.h"
@@ -36,7 +35,7 @@ int mitkNavigationDataTransformFilterTest(int /* argc */, char* /*argv*/[])
 {
   MITK_TEST_BEGIN("NavigationDataTransformFilter")
 
-    // let's create an object of our class  
+    // let's create an object of our class
     mitk::NavigationDataTransformFilter::Pointer myFilter = mitk::NavigationDataTransformFilter::New();
 
   // first test: did this work?
@@ -163,7 +162,7 @@ int mitkNavigationDataTransformFilterTest(int /* argc */, char* /*argv*/[])
   myFilter->SetInput(0, nd1);
   myFilter->SetInput(1, nd2);
 
-  MITK_TEST_CONDITION(((myFilter->GetInput(0) == nd1) 
+  MITK_TEST_CONDITION(((myFilter->GetInput(0) == nd1)
     && (myFilter->GetInput(1) == nd2)), "Testing Set-/GetInput(index, data)");
   output = NULL;
   output2 = NULL;
@@ -177,7 +176,7 @@ int mitkNavigationDataTransformFilterTest(int /* argc */, char* /*argv*/[])
   MITK_TEST_CONDITION(output->IsDataValid() == initialValid, "Testing if DataValid remains unchanged for output 0");
 
   MITK_TEST_CONDITION(output2->GetPosition() == resultPos2, "Testing if rotation was calculated correct [output 1]");
-  MITK_TEST_CONDITION(mitk::Equal(output2->GetOrientation(), resultOri2),"Testing if orientation rotation was calculated correct [output 1]");  
+  MITK_TEST_CONDITION(mitk::Equal(output2->GetOrientation(), resultOri2),"Testing if orientation rotation was calculated correct [output 1]");
   MITK_TEST_CONDITION(output2->IsDataValid() == initialValid, "Testing if DataValid remains unchanged for output 1");
   //
   //  /* test if anything changes on second ->Update() */

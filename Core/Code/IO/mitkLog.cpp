@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Tue, 12 May 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkLog.h"
 #include "mitkLogMacros.h"
@@ -27,6 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 static itk::SimpleFastMutexLock logMutex;
 static mitk::LoggingBackend *mitkLogBackend = 0;
 static std::ofstream *logFile = 0;
+static std::string logFileName = "";
 static std::stringstream *outputWindow = 0;
 static bool logOutputWindow = false;
 
@@ -40,17 +40,17 @@ void mitk::LoggingBackend::ProcessMessage(const mbilog::LogMessage& l )
 {
   logMutex.Lock();
   #ifdef _WIN32
-    mbilog::BackendCout::FormatSmart( l, (int)GetCurrentThreadId() );
+    FormatSmart( l, (int)GetCurrentThreadId() );
   #else
-    mbilog::BackendCout::FormatSmart( l );
+    FormatSmart( l );
   #endif
-  
+
   if(logFile)
   {
     #ifdef _WIN32
-      mbilog::BackendCout::FormatFull( *logFile, l, (int)GetCurrentThreadId() );
+      FormatFull( *logFile, l, (int)GetCurrentThreadId() );
     #else
-      mbilog::BackendCout::FormatFull( *logFile, l );
+      FormatFull( *logFile, l );
     #endif
   }
   if(logOutputWindow)
@@ -60,9 +60,9 @@ void mitk::LoggingBackend::ProcessMessage(const mbilog::LogMessage& l )
     outputWindow->str("");
     outputWindow->clear();
     #ifdef _WIN32
-      mbilog::BackendCout::FormatFull( *outputWindow, l, (int)GetCurrentThreadId() );
+      FormatFull( *outputWindow, l, (int)GetCurrentThreadId() );
     #else
-      mbilog::BackendCout::FormatFull( *outputWindow, l );
+      FormatFull( *outputWindow, l );
     #endif
     itk::OutputWindow::GetInstance()->DisplayText(outputWindow->str().c_str());
   }
@@ -90,33 +90,58 @@ void mitk::LoggingBackend::Unregister()
 
 void mitk::LoggingBackend::SetLogFile(const char *file)
 {
-  logMutex.Lock();
-  if(logFile)
+  // closing old logfile
   {
-    MITK_INFO << "closing logfile";
-    logFile->close();
-    delete logFile;
-    logFile = 0;
+    bool closed = false;
+    std::string closedFileName;
+
+    logMutex.Lock();
+    if(logFile)
+    {
+      closed = true;
+      closedFileName = logFileName;
+      logFile->close();
+      delete logFile;
+      logFile = 0;
+      logFileName = "";
+    }
+    logMutex.Unlock();
+    if(closed)
+    {
+      MITK_INFO << "closing logfile (" << closedFileName << ")" ;
+    }
   }
+
+  // opening new logfile
   if(file)
   {
-      logFile = new std::ofstream( file,  std::ios_base::out | std::ios_base::app );
-    /*
-    if(*logFile)
+    logMutex.Lock();
+
+    logFileName = file;
+    logFile = new std::ofstream( );
+
+    logFile->open( file,  std::ios_base::out | std::ios_base::app );
+
+    if(logFile->good())
     {
-      std::cout << "opening logfile '" << file << "' for writing failed";
-      MITK_INFO << "logging to '" << file << "'";
+      logMutex.Unlock();
+      MITK_INFO << "Logfile: " << logFileName ;
     }
     else
     {
-      std::cerr << "opening logfile '" << file << "' for writing failed";
-      MITK_ERROR << "opening logfile '" << file << "' for writing failed";
       delete logFile;
       logFile = 0;
+      logMutex.Unlock();
+      MITK_WARN << "opening logfile '" << file << "' for writing failed";
     }
-    */
+
+    // mutex is now unlocked
   }
-  logMutex.Unlock();
+}
+
+std::string mitk::LoggingBackend::GetLogFile()
+{
+  return logFileName;
 }
 
 void mitk::LoggingBackend::CatchLogFileCommandLineParameter(int &argc,char **argv)
@@ -135,11 +160,11 @@ void mitk::LoggingBackend::CatchLogFileCommandLineParameter(int &argc,char **arg
       }
 
       mitk::LoggingBackend::SetLogFile(argv[r+1]);
-     
+
       for(r+=2;r<argc;r++)
         argv[r-2]=argv[r];
-        
-      argc-=2;     
+
+      argc-=2;
       return;
     }
   }

@@ -1,29 +1,31 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkToFUtilView_h
 #define QmitkToFUtilView_h
 
-#include <QmitkFunctionality.h>
 #include <QmitkOverlayController.h>
+#include <QmitkAbstractView.h>
+#include <berryIWorkbenchPartReference.h>
+#include <mitkIZombieViewPart.h>
+
 
 #include <ui_QmitkToFUtilViewControls.h>
 
-#include <QTimer>
+class QTimer;
 
 #include <mitkRealTimeClock.h>
 #include <mitkToFImageGrabber.h>
@@ -35,7 +37,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkToFCompositeFilter.h>
 
 /*!
-  \brief QmitkToFUtilView 
+  \brief QmitkToFUtilView
 
   Application that allows simple playing, recording, visualization, processing and measurement of Time-of-Flight (ToF) data.
   Currently the following features are implemented:
@@ -50,13 +52,13 @@ PURPOSE.  See the above copyright notices for more information.
   \sa QmitkFunctionality
   \ingroup Functionalities
 */
-class QmitkToFUtilView : public QmitkFunctionality
-{  
-  // this is needed for all Qt objects that should have a Qt meta-object
-  // (everything that derives from QObject and wants to have signal/slots)
-  Q_OBJECT
-  
-  public:  
+class QmitkToFUtilView : public QmitkAbstractView, public mitk::IZombieViewPart
+{
+    // this is needed for all Qt objects that should have a Qt meta-object
+    // (everything that derives from QObject and wants to have signal/slots)
+    Q_OBJECT
+
+public:
 
     static const std::string VIEW_ID;
 
@@ -64,15 +66,20 @@ class QmitkToFUtilView : public QmitkFunctionality
     ~QmitkToFUtilView();
 
     virtual void CreateQtPartControl(QWidget *parent);
-    /// \brief Called when the functionality is activated
+    /// \brief Called when the functionality is activated.
     virtual void Activated();
-    /// \brief Called when the functionality is deactivated
-    virtual void Deactivated();
-    virtual void StdMultiWidgetAvailable (QmitkStdMultiWidget &stdMultiWidget);
-    virtual void StdMultiWidgetNotAvailable();
+    /// \brief Called when the functionality is deactivated. In this case the zombie view of this functionality becomes active!
+    virtual void ActivatedZombieView(berry::IWorkbenchPartReference::Pointer zombieView);
 
-  protected slots:
-  
+    virtual void Deactivated();
+    virtual void Visible();
+    virtual void Hidden();
+
+    void SetFocus();
+
+
+protected slots:
+
     /*!
     \brief Slot triggered from the timer to update the images and visualization
     */
@@ -100,13 +107,27 @@ class QmitkToFUtilView : public QmitkFunctionality
     /*!
     \brief Slot invoked when the texture checkbox is checked. Enables the scalar visibility of the surface
     */
+    /**
+     * @brief OnSurfaceCheckboxChecked Slot beeing called, if the "surface"-checkbox is clicked. This method initializes the surface once, if it is necessary.
+     * @param checked Is it checked or not?
+     */
+    void OnSurfaceCheckboxChecked(bool checked);
+
     void OnTextureCheckBoxChecked(bool checked);
     /*!
     \brief Slot invoked when the video texture checkbox is checked. Enables the texture of the surface
     */
-    void OnVideoTextureCheckBoxChecked(bool checked);
+    void OnKinectRGBTextureCheckBoxChecked(bool checked);
+    /*!
+    \brief Slot invoked when user alters the coronal window input from RGB to Intensity or vice versa.
+    */
+    void OnChangeCoronalWindowOutput(int index);
+    /*!
+    \brief Slot invoked when acquisition mode of Kinect is changed
+    */
+    void OnKinectAcquisitionModeChanged();
 
-  protected:
+protected:
 
     /*!
     \brief initialize the visibility settings of ToF data (images + surface)
@@ -120,6 +141,8 @@ class QmitkToFUtilView : public QmitkFunctionality
 
     QTimer* m_Frametimer; ///< Timer used to continuously update the images
 
+    QString m_SelectedCamera; ///< String holding the selected camera
+
     mitk::Image::Pointer m_MitkDistanceImage; ///< member holding a pointer to the distance image of the selected camera
     mitk::Image::Pointer m_MitkAmplitudeImage; ///< member holding a pointer to the amplitude image of the selected camera
     mitk::Image::Pointer m_MitkIntensityImage; ///< member holding a pointer to the intensity image of the selected camera
@@ -128,6 +151,7 @@ class QmitkToFUtilView : public QmitkFunctionality
     mitk::DataNode::Pointer m_DistanceImageNode; ///< DataNode holding the distance image of the selected camera
     mitk::DataNode::Pointer m_AmplitudeImageNode; ///< DataNode holding the amplitude image of the selected camera
     mitk::DataNode::Pointer m_IntensityImageNode; ///< DataNode holding the intensity image of the selected camera
+    mitk::DataNode::Pointer m_RGBImageNode; ///< DataNode holding the rgb image of the selected camera
     mitk::DataNode::Pointer m_SurfaceNode; ///< DataNode holding the surface generated from the distanc image of the selected camera
 
     // ToF processing and recording filter
@@ -136,7 +160,6 @@ class QmitkToFUtilView : public QmitkFunctionality
     mitk::ToFDistanceImageToSurfaceFilter::Pointer m_ToFDistanceImageToSurfaceFilter; ///< Filter for calculating a surface representation from a given distance image
     mitk::ToFCompositeFilter::Pointer m_ToFCompositeFilter; ///< Filter combining several processing steps (thresholding, Median filtering, Bilateral filtering)
 
-    int m_SurfaceDisplayCount; ///< member used to determine whether surface is initialized or not
     int m_2DDisplayCount; ///< member used to determine whether frame rate output should be shown
     // members for calculating the frame rate
     mitk::RealTimeClock::Pointer m_RealTimeClock; ///< real time clock used to calculate the display framerate
@@ -144,14 +167,7 @@ class QmitkToFUtilView : public QmitkFunctionality
     double m_2DTimeBefore; ///< holds the time stamp at the beginning of the display framerate measurement
     double m_2DTimeAfter; ///< holds the time stamp at the end of the display framerate measurement
 
-    // members used for displaying an external video source
-    mitk::OpenCVVideoSource::Pointer m_VideoSource; ///< OpenCV video source to connect a video device
-    unsigned char* m_VideoTexture; ///< texture used to show video image
-    int m_VideoCaptureWidth; ///< width of the video image
-    int m_VideoCaptureHeight; ///< height of the video image
-    bool m_VideoEnabled; ///< flag indicating whether video grabbing is enabled. Set via the RGB texture checkbox
-
-  private:
+private:
 
     /*!
     \brief helper method to replace data of the specified node. If node does not exist it will be created
@@ -162,6 +178,11 @@ class QmitkToFUtilView : public QmitkFunctionality
     mitk::DataNode::Pointer ReplaceNodeData(std::string nodeName, mitk::BaseData* data);
 
     void ProcessVideoTransform();
+
+    /*!
+      \brief Reset all GUI related things to default. E.g. show sagittal and coronal slices in the renderwindows.
+      */
+    void ResetGUIToDefault();
 
     mitk::ToFSurfaceVtkMapper3D::Pointer m_ToFSurfaceVtkMapper3D;
 };

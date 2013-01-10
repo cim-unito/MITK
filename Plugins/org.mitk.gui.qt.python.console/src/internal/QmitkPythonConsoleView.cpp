@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // Blueberry
 #include <berryISelectionService.h>
@@ -45,7 +44,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkPythonPath.h"
 
 
-const std::string QmitkPythonConsoleView::VIEW_ID = "org.mitk.views.pythonconsole"; 
+const std::string QmitkPythonConsoleView::VIEW_ID = "org.mitk.views.pythonconsole";
 
 QmitkPythonConsoleView::QmitkPythonConsoleView()
 : QmitkFunctionality()
@@ -53,7 +52,7 @@ QmitkPythonConsoleView::QmitkPythonConsoleView()
 , m_MultiWidget( NULL )
 ,m_ctkPythonManager( NULL )
 ,m_ctkPythonShell( NULL )
-{  
+{
   // TODO: take it to the activator
 //  std::cout << "running PYTHON PATH COMMANDS" << std::endl;
 
@@ -108,7 +107,7 @@ void QmitkPythonConsoleView::CreateQtPartControl( QWidget *parent )
     gridLayout->addWidget(m_ButtonOpenEditor, 1, 0, 1, 1);
     parent->setWindowTitle(QApplication::translate("parent", "QmitkTemplate", 0, QApplication::UnicodeUTF8));
     m_ButtonOpenEditor->setText(QApplication::translate("parent", "Open Editor", 0, QApplication::UnicodeUTF8));
-    QMetaObject::connectSlotsByName(parent);    
+    QMetaObject::connectSlotsByName(parent);
     mitk::DataStorage::Pointer dataStorage = this->GetDefaultDataStorage();
 
     m_ctkPythonManager->executeString("import mitk");
@@ -134,13 +133,13 @@ void QmitkPythonConsoleView::StdMultiWidgetNotAvailable()
 
 
 void QmitkPythonConsoleView::OnSelectionChanged( std::vector<mitk::DataNode*> nodes )
-{ 
+{
   for( std::vector<mitk::DataNode*>::iterator it = nodes.begin();
        it != nodes.end();
        ++it )
   {
     mitk::DataNode::Pointer node = *it;
-  
+
     if( node.IsNotNull() && dynamic_cast<mitk::Image*>(node->GetData()) )
     {
       return;
@@ -157,7 +156,7 @@ void QmitkPythonConsoleView::OpenEditor()
     berry::FileEditorInput::Pointer editorInput;
     editorInput = new berry::FileEditorInput("");
     m_PythonEditor = this->GetSite()->GetPage()->OpenEditor(editorInput, QmitkPythonEditor::EDITOR_ID, true, berry::IWorkbenchPage::MATCH_NONE).Cast<QmitkPythonEditor>();
-    
+
 }
 
 void QmitkPythonConsoleView::SetCommandHistory(const QString& command)

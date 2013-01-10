@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKOVERLAY_H_HEADER_INCLUDED_C10DC4EB
@@ -34,11 +33,11 @@ PURPOSE.  See the above copyright notices for more information.
 
  This class is the basis for all classes representing objects that can be visualized as overlays in MITK.
  It encapsulates an ID, as well as a display-position and a layer.
- 
+
  The ID is used to access mitkProperties in a PropertyList that holds information that is needed for the visualization,
  e.g. text for TextOverlays or scaleFactor for ScalarBarOverlays ...
 
- The display-position encodes where on the screen the overlay will be positioned at 
+ The display-position encodes where on the screen the overlay will be positioned at
  (see and USE the constants defined by DisplayPosition):
 \verbatim
  0 - 1 - 2
@@ -55,7 +54,7 @@ PURPOSE.  See the above copyright notices for more information.
 */
 class Overlays_EXPORT QmitkOverlay : public QObject
 {
-  Q_OBJECT 
+  Q_OBJECT
 
 public:
 
@@ -84,7 +83,7 @@ public:
 
   /** \brief setter for the display-position  */
   virtual void SetPosition( DisplayPosition );
-  
+
   /** \brief getter for the display-position  */
   virtual DisplayPosition GetPosition();
 
@@ -104,13 +103,15 @@ public:
   */
   virtual QWidget* GetWidget();
 
+  virtual QSize GetNeededSize() = 0;
+
+
 protected:
 
   /**
     \brief Add drop shadow effect via QGraphicsEffect
   */
   void AddDropShadow( QWidget* widget );
-
   /** \brief ID of the overlay */
   const char* m_Id;
 
@@ -118,10 +119,12 @@ protected:
   DisplayPosition m_Position;
 
   /** \brief layer of the overlay */
-  unsigned int m_Layer;   
+  unsigned int m_Layer;
 
   /** \brief internal QWidget representing the overlay */
   QWidget* m_Widget;
+
+  bool m_WidgetIsCustom;
 };
 
 

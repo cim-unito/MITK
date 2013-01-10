@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "berryLog.h"
@@ -478,11 +477,11 @@ BundleLoader::LoadActivator(BundleInfo& bundleInfo)
 
   Poco::Path libPath = this->GetLibraryPathFor(bundleInfo.m_Bundle);
   std::string strLibPath(libPath.toString());
-  
+
   BERRY_INFO(m_ConsoleLog) << "Loading activator library: " << strLibPath;
   try
   {
-  /* retrieves only an empty string and its not required 
+  /* retrieves only an empty string and its not required
 #ifdef BERRY_OS_FAMILY_WINDOWS
     char cDllPath[512];
     GetDllDirectory(512, cDllPath);

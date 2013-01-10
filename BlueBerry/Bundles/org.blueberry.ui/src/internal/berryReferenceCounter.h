@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYREFERENCECOUNTER_H_
 #define BERRYREFERENCECOUNTER_H_
@@ -26,7 +25,7 @@ namespace berry
 
 /**
  * \ingroup org_blueberry_ui_internal
- * 
+ *
  * A ReferenceCounter is used to reference counting objects.
  * Each object is identified by a unique ID.  Together they form
  * an ID - value pair. An object is added to the counter by calling
@@ -94,11 +93,11 @@ public:
 
     int m_RefCount;
   };
-  
+
 private:
   std::map<I, RefRec> mapIdToRec;
-  
-  
+
+
 public:
 
   /**

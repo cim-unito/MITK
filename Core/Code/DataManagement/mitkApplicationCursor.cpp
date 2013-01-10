@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkApplicationCursor.h"
 #include <mitkLogMacros.h>
@@ -38,7 +37,7 @@ ApplicationCursor* ApplicationCursor::GetInstance()
 
   return m_Instance;
 }
-    
+
 void ApplicationCursor::RegisterImplementation(ApplicationCursorImplementation* implementation)
 {
   m_Implementation = implementation;
@@ -69,7 +68,7 @@ void ApplicationCursor::PopCursor()
     throw std::logic_error("No implementation registered for mitk::ApplicationCursor.");
   }
 }
-    
+
 const Point2I ApplicationCursor::GetCursorPosition()
 {
   if (m_Implementation)
@@ -82,7 +81,7 @@ const Point2I ApplicationCursor::GetCursorPosition()
     throw std::logic_error("No implementation registered for mitk::ApplicationCursor.");
   }
 }
-    
+
 void ApplicationCursor::SetCursorPosition(const Point2I& p)
 {
   if (m_Implementation)

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 9502 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkOptimizerParameters.h"
@@ -21,16 +20,16 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace mitk {
 
-  OptimizerParameters::OptimizerParameters() : 
+  OptimizerParameters::OptimizerParameters() :
     m_Optimizer(EXHAUSTIVEOPTIMIZER),
     // for all Optimizer
     m_Dimension(2),
     m_Maximize(false),
-    
+
     // for itk::ExhaustiveOptimizer
     m_StepLengthExhaustive(1.0),
     m_NumberOfStepsExhaustive(10),
-    
+
     // for itk::GradientDescentOptimizer
     m_LearningRateGradientDescent(0.01),
     m_NumberOfIterationsGradientDescent(200),
@@ -111,7 +110,7 @@ namespace mitk {
   }
 
   /********************************** for itk::AmoebaOptimizer ****************************************/
-  
+
   void OptimizerParameters::SetSimplexDeltaAmoeba(itk::Array<double> simplexDelta)
   {
     m_SimplexDeltaAmoeba = simplexDelta;

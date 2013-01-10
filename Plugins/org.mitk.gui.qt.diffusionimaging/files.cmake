@@ -1,12 +1,14 @@
-SET(SRC_CPP_FILES
+set(SRC_CPP_FILES
   QmitkODFDetailsWidget.cpp
   QmitkODFRenderWidget.cpp
   QmitkPartialVolumeAnalysisWidget.cpp
   QmitkIVIMWidget.cpp
   QmitkTbssRoiAnalysisWidget.cpp
+  QmitkResidualAnalysisWidget.cpp
+  QmitkResidualViewWidget.cpp
 )
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
   mitkPluginActivator.cpp
   QmitkQBallReconstructionView.cpp
   QmitkPreprocessingView.cpp
@@ -18,6 +20,7 @@ SET(INTERNAL_CPP_FILES
   QmitkODFDetailsView.cpp
   QmitkGibbsTrackingView.cpp
   QmitkStochasticFiberTrackingView.cpp
+  QmitkStreamlineTrackingView.cpp
   QmitkFiberProcessingView.cpp
   QmitkFiberBundleDeveloperView.cpp
   QmitkPartialVolumeAnalysisView.cpp
@@ -26,9 +29,16 @@ SET(INTERNAL_CPP_FILES
   QmitkTbssTableModel.cpp
   QmitkTbssMetaTableModel.cpp
   QmitkTbssSkeletonizationView.cpp
+  Connectomics/QmitkConnectomicsDataView.cpp
+  Connectomics/QmitkConnectomicsNetworkOperationsView.cpp
+  Connectomics/QmitkConnectomicsStatisticsView.cpp
+  Connectomics/QmitkNetworkHistogramCanvas.cpp
+  QmitkDwiSoftwarePhantomView.cpp
+  QmitkOdfMaximaExtractionView.cpp
+  QmitkFiberfoxView.cpp
 )
 
-SET(UI_FILES
+set(UI_FILES
   src/internal/QmitkQBallReconstructionViewControls.ui
   src/internal/QmitkPreprocessingViewControls.ui
   src/internal/QmitkDiffusionDicomImportViewControls.ui
@@ -38,15 +48,22 @@ SET(UI_FILES
   src/internal/QmitkODFDetailsViewControls.ui
   src/internal/QmitkGibbsTrackingViewControls.ui
   src/internal/QmitkStochasticFiberTrackingViewControls.ui
+  src/internal/QmitkStreamlineTrackingViewControls.ui
   src/internal/QmitkFiberProcessingViewControls.ui
   src/internal/QmitkFiberBundleDeveloperViewControls.ui
   src/internal/QmitkPartialVolumeAnalysisViewControls.ui
   src/internal/QmitkIVIMViewControls.ui
   src/internal/QmitkTractbasedSpatialStatisticsViewControls.ui
   src/internal/QmitkTbssSkeletonizationViewControls.ui
+  src/internal/Connectomics/QmitkConnectomicsDataViewControls.ui
+  src/internal/Connectomics/QmitkConnectomicsNetworkOperationsViewControls.ui
+  src/internal/Connectomics/QmitkConnectomicsStatisticsViewControls.ui
+  src/internal/QmitkDwiSoftwarePhantomViewControls.ui
+  src/internal/QmitkOdfMaximaExtractionViewControls.ui
+  src/internal/QmitkFiberfoxViewControls.ui
 )
 
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/internal/mitkPluginActivator.h
   src/internal/QmitkQBallReconstructionView.h
   src/internal/QmitkPreprocessingView.h
@@ -60,6 +77,7 @@ SET(MOC_H_FILES
   src/QmitkODFDetailsWidget.h
   src/internal/QmitkGibbsTrackingView.h
   src/internal/QmitkStochasticFiberTrackingView.h
+  src/internal/QmitkStreamlineTrackingView.h
   src/internal/QmitkFiberProcessingView.h
   src/internal/QmitkFiberBundleDeveloperView.h
   src/internal/QmitkPartialVolumeAnalysisView.h
@@ -68,9 +86,18 @@ SET(MOC_H_FILES
   src/internal/QmitkTractbasedSpatialStatisticsView.h
   src/internal/QmitkTbssSkeletonizationView.h
   src/QmitkTbssRoiAnalysisWidget.h
+  src/QmitkResidualAnalysisWidget.h
+  src/QmitkResidualViewWidget.h
+  src/internal/Connectomics/QmitkConnectomicsDataView.h
+  src/internal/Connectomics/QmitkConnectomicsNetworkOperationsView.h
+  src/internal/Connectomics/QmitkConnectomicsStatisticsView.h
+  src/internal/Connectomics/QmitkNetworkHistogramCanvas.h
+  src/internal/QmitkDwiSoftwarePhantomView.h
+  src/internal/QmitkOdfMaximaExtractionView.h
+  src/internal/QmitkFiberfoxView.h
 )
 
-SET(CACHED_RESOURCE_FILES
+set(CACHED_RESOURCE_FILES
 # list of resource files which can be used by the plug-in
 # system without loading the plug-ins shared library,
 # for example the icon used in the menu and tabs for the
@@ -90,21 +117,32 @@ SET(CACHED_RESOURCE_FILES
   resources/IVIM_48.png
   resources/stochFB.png
   resources/tbss.png
+  resources/connectomics/QmitkConnectomicsDataViewIcon_48.png
+  resources/connectomics/QmitkConnectomicsNetworkOperationsViewIcon_48.png
+  resources/connectomics/QmitkConnectomicsStatisticsViewIcon_48.png
+  resources/arrow.png
+  resources/qball_peaks.png
+  resources/phantom.png
+  resources/tensor.png
+  resources/qball.png
+  resources/StreamlineTracking.png
+  resources/dwi2.png
+  resources/refresh.xpm
 )
 
-SET(QRC_FILES
+set(QRC_FILES
 # uncomment the following line if you want to use Qt resources
   resources/QmitkDiffusionImaging.qrc
   #resources/QmitkTractbasedSpatialStatisticsView.qrc
 )
 
-SET(CPP_FILES )
+set(CPP_FILES )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})
 

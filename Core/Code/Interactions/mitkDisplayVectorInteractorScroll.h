@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKDISPLAYVECTORINTERACTORSCROLL_H_HEADER_INCLUDED_C10DC4EB
@@ -71,12 +70,12 @@ namespace mitk {
     * @brief Default Constructor
     **/
     DisplayVectorInteractorScroll(const char * type, mitk::OperationActor* destination=NULL);
-    
+
     /**
     * @brief Default Destructor
     **/
     virtual ~DisplayVectorInteractorScroll();
-    
+
     /**
     * @brief Method derived from StateMachine to implement the own actions
     **/
@@ -93,9 +92,9 @@ namespace mitk {
     /**
     * \brief Modifier that defines how many slices are scrolled per pixel that the mouse has moved
     *
-    * This modifier defines how many slices the scene is scrolled per pixel that the mouse cursor has moved. 
-    * By default the modifier is 4. This means that when the user moves the cursor by 4 pixels in Y-direction 
-    * the scene is scrolled by one slice. If the user has moved the the cursor by 20 pixels, the scene is 
+    * This modifier defines how many slices the scene is scrolled per pixel that the mouse cursor has moved.
+    * By default the modifier is 4. This means that when the user moves the cursor by 4 pixels in Y-direction
+    * the scene is scrolled by one slice. If the user has moved the the cursor by 20 pixels, the scene is
     * scrolled by 5 slices.
     *
     * If the cursor has moved less than m_IndexToSliceModifier pixels the scene is scrolled by one slice.
@@ -111,7 +110,7 @@ namespace mitk {
 
     bool m_InvertScrollingDirection;
 
-    bool m_IsAltModifierActive;
+    bool m_IsModifierActive;
 
   };
 

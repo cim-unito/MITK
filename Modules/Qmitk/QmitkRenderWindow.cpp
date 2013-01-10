@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "QmitkRenderWindow.h"
@@ -24,7 +23,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QKeyEvent>
 #include <QResizeEvent>
 #include <QTimer>
-
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include "QmitkEventAdapter.h"
 
 #include "QmitkRenderWindowMenu.h"
@@ -37,7 +37,7 @@ QmitkRenderWindow::QmitkRenderWindow(QWidget *parent, QString name, mitk::VtkPro
 , m_LayoutIndex(0)
 {
   Initialize( renderingManager, name.toStdString().c_str() ); // Initialize mitkRenderWindowBase
- 
+
   setFocusPolicy(Qt::StrongFocus);
   setMouseTracking(true);
 
@@ -46,7 +46,7 @@ QmitkRenderWindow::QmitkRenderWindow(QWidget *parent, QString name, mitk::VtkPro
 QmitkRenderWindow::~QmitkRenderWindow()
 {
   Destroy(); // Destroy mitkRenderWindowBase
- 
+
 }
 
 void QmitkRenderWindow::SetResendQtEvents(bool resend)
@@ -62,7 +62,7 @@ void QmitkRenderWindow::SetLayoutIndex( unsigned int layoutIndex )
 }
 
 unsigned int QmitkRenderWindow::GetLayoutIndex()
-{ 
+{
   if( m_MenuWidget )
     return m_MenuWidget->GetLayoutIndex();
   else
@@ -70,16 +70,16 @@ unsigned int QmitkRenderWindow::GetLayoutIndex()
 }
 
 void QmitkRenderWindow::LayoutDesignListChanged( int layoutDesignIndex )
-{ 
-  if( m_MenuWidget ) 
-    m_MenuWidget->UpdateLayoutDesignList( layoutDesignIndex );  
+{
+  if( m_MenuWidget )
+    m_MenuWidget->UpdateLayoutDesignList( layoutDesignIndex );
 }
 
 void QmitkRenderWindow::mousePressEvent(QMouseEvent *me)
 {
   mitk::MouseEvent myevent(QmitkEventAdapter::AdaptMouseEvent(m_Renderer, me));
   this->mousePressMitkEvent(&myevent);
-  
+
   QVTKWidget::mousePressEvent(me);
 
   if (m_ResendQtEvents) me->ignore();
@@ -89,7 +89,7 @@ void QmitkRenderWindow::mouseReleaseEvent(QMouseEvent *me)
 {
   mitk::MouseEvent myevent(QmitkEventAdapter::AdaptMouseEvent(m_Renderer, me));
   this->mouseReleaseMitkEvent(&myevent);
-  
+
   QVTKWidget::mouseReleaseEvent(me);
 
   if (m_ResendQtEvents) me->ignore();
@@ -99,10 +99,10 @@ void QmitkRenderWindow::mouseMoveEvent(QMouseEvent *me)
 {
   this->AdjustRenderWindowMenuVisibility( me->pos() );
 
-  
+
   mitk::MouseEvent myevent(QmitkEventAdapter::AdaptMouseEvent(m_Renderer, me));
   this->mouseMoveMitkEvent(&myevent);
-  
+
   QVTKWidget::mouseMoveEvent(me);
 
   //if (m_ResendQtEvents) me->ignore();
@@ -110,7 +110,7 @@ void QmitkRenderWindow::mouseMoveEvent(QMouseEvent *me)
   //if( m_MenuWidgetActivated )
   //{
   //  //Show Menu Widget when mouse is inside of the define region of the top right corner
-  //  if( m_MenuWidget->GetLayoutIndex() <= QmitkRenderWindowMenu::CORONAL 
+  //  if( m_MenuWidget->GetLayoutIndex() <= QmitkRenderWindowMenu::CORONAL
   //    && me->pos().x() >= 0
   //    && me->pos().y() <= m_MenuWidget->height() + 20 )
   //  {
@@ -118,8 +118,8 @@ void QmitkRenderWindow::mouseMoveEvent(QMouseEvent *me)
   //    m_MenuWidget->show();
   //    m_MenuWidget->update();
   //  }
-  //  else if( m_MenuWidget->GetLayoutIndex() == QmitkRenderWindowMenu::THREE_D  
-  //    && me->pos().x() >= this->width() - m_MenuWidget->width() - 20 
+  //  else if( m_MenuWidget->GetLayoutIndex() == QmitkRenderWindowMenu::THREE_D
+  //    && me->pos().x() >= this->width() - m_MenuWidget->width() - 20
   //    && me->pos().y() <= m_MenuWidget->height() + 20 )
   //  {
   //    m_MenuWidget->MoveWidgetToCorrectPos(1.0);
@@ -130,7 +130,7 @@ void QmitkRenderWindow::mouseMoveEvent(QMouseEvent *me)
   //  else if( !m_MenuWidget->GetSettingsMenuVisibilty() )
   //  {
   //    m_MenuWidget->hide();
-  //  }    
+  //  }
   //}
 }
 
@@ -141,7 +141,7 @@ void QmitkRenderWindow::wheelEvent(QWheelEvent *we)
 
   QVTKWidget::wheelEvent(we);
 
-  if (m_ResendQtEvents) 
+  if (m_ResendQtEvents)
     we->ignore();
 }
 
@@ -175,9 +175,9 @@ void QmitkRenderWindow::DeferredHideMenu( )
 void QmitkRenderWindow::leaveEvent( QEvent *e )
 {
   MITK_DEBUG << "QmitkRenderWindow::leaveEvent";
-  
+
   if( m_MenuWidget )
-    m_MenuWidget->smoothHide();  
+    m_MenuWidget->smoothHide();
 
   QVTKWidget::leaveEvent(e);
 }
@@ -191,7 +191,7 @@ void QmitkRenderWindow::paintEvent(QPaintEvent* /*event*/)
 void QmitkRenderWindow::resizeEvent(QResizeEvent* event)
 {
   this->resizeMitkEvent(event->size().width(), event->size().height());
-  
+
   QVTKWidget::resizeEvent(event);
 
   emit resized();
@@ -216,30 +216,30 @@ void QmitkRenderWindow::showEvent( QShowEvent* event )
   QTimer::singleShot(0, this ,SIGNAL( moved() ) );
 }
 
-void QmitkRenderWindow::ActivateMenuWidget( bool state )
-{  
-  m_MenuWidgetActivated = state; 
-  
+void QmitkRenderWindow::ActivateMenuWidget( bool state, QmitkStdMultiWidget* stdMultiWidget )
+{
+  m_MenuWidgetActivated = state;
+
   if(!m_MenuWidgetActivated && m_MenuWidget)
   {
     //disconnect Signal/Slot Connection
     disconnect( m_MenuWidget, SIGNAL( SignalChangeLayoutDesign(int) ), this, SLOT(OnChangeLayoutDesign(int)) );
     disconnect( m_MenuWidget, SIGNAL( ResetView() ), this, SIGNAL( ResetView()) );
-    disconnect( m_MenuWidget, SIGNAL( ChangeCrosshairRotationMode(int) ), this, SIGNAL( ChangeCrosshairRotationMode(int)) );    
-    
+    disconnect( m_MenuWidget, SIGNAL( ChangeCrosshairRotationMode(int) ), this, SIGNAL( ChangeCrosshairRotationMode(int)) );
+
     delete m_MenuWidget;
     m_MenuWidget = 0;
   }
   else if(m_MenuWidgetActivated && !m_MenuWidget )
   {
     //create render window MenuBar for split, close Window or set new setting.
-    m_MenuWidget = new QmitkRenderWindowMenu(this,0,m_Renderer);
+    m_MenuWidget = new QmitkRenderWindowMenu(this,0,m_Renderer,stdMultiWidget);
     m_MenuWidget->SetLayoutIndex( m_LayoutIndex );
-    
+
     //create Signal/Slot Connection
     connect( m_MenuWidget, SIGNAL( SignalChangeLayoutDesign(int) ), this, SLOT(OnChangeLayoutDesign(int)) );
     connect( m_MenuWidget, SIGNAL( ResetView() ), this, SIGNAL( ResetView()) );
-    connect( m_MenuWidget, SIGNAL( ChangeCrosshairRotationMode(int) ), this, SIGNAL( ChangeCrosshairRotationMode(int)) );    
+    connect( m_MenuWidget, SIGNAL( ChangeCrosshairRotationMode(int) ), this, SIGNAL( ChangeCrosshairRotationMode(int)) );
   }
 }
 
@@ -273,4 +273,32 @@ void QmitkRenderWindow::FullScreenMode(bool state)
 {
   if( m_MenuWidget )
     m_MenuWidget->ChangeFullScreenMode( state );
-}  
+}
+
+
+void QmitkRenderWindow::dragEnterEvent( QDragEnterEvent *event )
+{
+  if (event->mimeData()->hasFormat("application/x-mitk-datanodes"))
+  {
+    event->accept();
+  }
+}
+
+void QmitkRenderWindow::dropEvent( QDropEvent * event )
+{
+  if (event->mimeData()->hasFormat("application/x-mitk-datanodes"))
+  {
+    QString arg = QString(event->mimeData()->data("application/x-mitk-datanodes").data());
+    QStringList listOfDataNodes = arg.split(",");
+    std::vector<mitk::DataNode*> vectorOfDataNodePointers;
+
+    for (int i = 0; i < listOfDataNodes.size(); i++)
+    {
+      long val = listOfDataNodes[i].toLong();
+      mitk::DataNode* node = static_cast<mitk::DataNode *>((void*)val);
+      vectorOfDataNodePointers.push_back(node);
+    }
+
+    emit NodesDropped(this, vectorOfDataNodePointers);
+  }
+}

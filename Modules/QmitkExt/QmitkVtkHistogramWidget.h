@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-15 18:09:46 +0200 (Fr, 15 Mai 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkVtkHistogramWidget_H_
 #define QmitkVtkHistogramWidget_H_
@@ -37,7 +36,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 
-/** 
+/**
  * \brief Widget for displaying image histograms based on the vtkQtChart
  * framework
  */
@@ -46,7 +45,7 @@ class QmitkExt_EXPORT QmitkVtkHistogramWidget : public QDialog
   Q_OBJECT
 
 public:
-  QmitkVtkHistogramWidget( QWidget * /*parent = 0 */);
+  QmitkVtkHistogramWidget( QWidget * parent = 0 );
   virtual ~QmitkVtkHistogramWidget();
 
   typedef mitk::Image::HistogramType HistogramType;
@@ -66,11 +65,11 @@ public:
 
   /** \brief Set histogram to be displayed directly. */
   void SetHistogram(const HistogramType* histogram);
-  
+
   /** \brief Set image from which to calculate the histogram. */
   void SetImage(const mitk::Image* image);
 
-  /** \brief Set binary image mask determining the voxels to include in 
+  /** \brief Set binary image mask determining the voxels to include in
    * histogram calculation. */
   void SetImageMask(const mitk::Image* imageMask);
 
@@ -83,7 +82,7 @@ public:
 
   /** \brief Set/Get operation mode for Histogram */
   void SetHistogramMode(unsigned int histogramMode);
-  
+
   /** \brief Set/Get operation mode for Histogram */
   unsigned int GetHistogramMode();
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-18 21:46:13 +0200 (So, 18 Okt 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkVtkHistogramWidget.h"
 
@@ -40,8 +39,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 //#include <iostream>
 
-QmitkVtkHistogramWidget::QmitkVtkHistogramWidget( QWidget * /*parent*/ )
-: m_HistogramMode( HISTOGRAM_MODE_ENTIREIMAGE )
+QmitkVtkHistogramWidget::QmitkVtkHistogramWidget( QWidget * parent )
+: QDialog(parent), m_HistogramMode( HISTOGRAM_MODE_ENTIREIMAGE )
 {
   //QGroupBox *hgroupbox = new QGroupBox( "", this );
   //hgroupbox->setMinimumSize( 150, 150 );
@@ -75,7 +74,7 @@ QmitkVtkHistogramWidget::QmitkVtkHistogramWidget( QWidget * /*parent*/ )
   xAxis->getOptions()->setGridVisible(false);
   xAxis->getOptions()->setPrecision( 0 );
   xAxis->getOptions()->setNotation( vtkQtChartAxisOptions::Standard );
-  
+
   vtkQtChartAxis *yAxis = axisLayer->getAxis(vtkQtChartAxis::Left);
   yAxis->getOptions()->setPrecision( 0 );
   yAxis->getOptions()->setNotation( vtkQtChartAxisOptions::Standard );
@@ -183,7 +182,7 @@ void QmitkVtkHistogramWidget::UpdateItemModelFromHistogram()
   {
     const double &frequency = it.GetFrequency();
     const double &measurement = it.GetMeasurementVector()[0];
-    
+
     m_ItemModel->setVerticalHeaderItem( i, new QStandardItem() );
     m_ItemModel->verticalHeaderItem( i )->setData(
       QVariant( measurement ), Qt::DisplayRole );

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYLAYOUTPART_H_
 #define BERRYLAYOUTPART_H_
@@ -38,7 +37,8 @@ struct IWorkbenchWindow;
  * A presentation part is used to build the presentation for the
  * workbench.  Common subclasses are pane and folder.
  */
-class LayoutPart : virtual public Object { //, public ISizeProvider {
+class LayoutPart : virtual public Object, public virtual ISizeProvider
+{
 
 public:
 
@@ -120,6 +120,8 @@ protected: SmartPointer<ILayoutContainer> container;
      * Get the part control.  This method may return null.
      */
     public: virtual void* GetControl() = 0;
+
+    public: virtual bool IsPlaceHolder() const;
 
     /**
      * Gets the ID for this part.
@@ -203,6 +205,11 @@ protected: SmartPointer<ILayoutContainer> container;
      * Sets the parent for this part.
      */
     public: virtual void SetContainer(SmartPointer<ILayoutContainer> container);
+
+    /**
+     * Sets focus to this part.
+     */
+    public: virtual void SetFocus();
 
     /**
      * Sets the part ID.

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 11:19:03 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 11989 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "itkImageRegionIterator.h"
 #include "itkImageRegionConstIterator.h"
@@ -21,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 template<typename TPixelType>
 mitk::DiffusionImage<TPixelType>::DiffusionImage()
-: m_VectorImage(0), m_Directions(0), m_OriginalDirections(0), m_B_Value(-1.0), m_VectorImageAdaptor(0)
+  : m_VectorImage(0), m_Directions(0), m_OriginalDirections(0), m_B_Value(-1.0), m_VectorImageAdaptor(0)
 {
   MeasurementFrameType mf;
   for(int i=0; i<3; i++)
@@ -35,7 +34,8 @@ mitk::DiffusionImage<TPixelType>::DiffusionImage()
 template<typename TPixelType>
 mitk::DiffusionImage<TPixelType>::~DiffusionImage()
 {
-
+  // Remove Observer for m_Directions
+  RemoveDirectionsContainerObserver();
 }
 
 template<typename TPixelType>
@@ -51,7 +51,7 @@ void mitk::DiffusionImage<TPixelType>
   // find bzero index
   int firstZeroIndex = -1;
   for(GradientDirectionContainerType::ConstIterator it = m_Directions->Begin();
-    it != m_Directions->End(); ++it)
+      it != m_Directions->End(); ++it)
   {
     firstZeroIndex++;
     GradientDirectionType g = it.Value();
@@ -71,29 +71,24 @@ void mitk::DiffusionImage<TPixelType>
   int vecLength = m_VectorImage->GetVectorLength();
   InitializeByItk( img.GetPointer(), 1, vecLength );
 
-  //for(int i=0; i<vecLength; i++)
-  //{
-    itk::ImageRegionIterator<ImgType> itw (img, img->GetLargestPossibleRegion() );
-    itw = itw.Begin();
+  itk::ImageRegionIterator<ImgType> itw (img, img->GetLargestPossibleRegion() );
+  itw = itw.Begin();
 
-    itk::ImageRegionConstIterator<ImageType> itr (m_VectorImage, m_VectorImage->GetLargestPossibleRegion() );
-    itr = itr.Begin();
+  itk::ImageRegionConstIterator<ImageType> itr (m_VectorImage, m_VectorImage->GetLargestPossibleRegion() );
+  itr = itr.Begin();
 
-    while(!itr.IsAtEnd())
-    {
-      itw.Set(itr.Get().GetElement(firstZeroIndex));
-      ++itr;
-      ++itw;
-    }
+  while(!itr.IsAtEnd())
+  {
+    itw.Set(itr.Get().GetElement(firstZeroIndex));
+    ++itr;
+    ++itw;
+  }
 
-    // init
-    SetImportVolume(img->GetBufferPointer());//, 0, 0, CopyMemory);
-    //SetVolume( img->GetBufferPointer(), i );
-  //}
+  // init
+  SetImportVolume(img->GetBufferPointer());
 
   m_DisplayIndex = firstZeroIndex;
   MITK_INFO << "Diffusion-Image successfully initialized.";
-
 }
 
 template<typename TPixelType>
@@ -126,74 +121,14 @@ void mitk::DiffusionImage<TPixelType>
   m_DisplayIndex = index;
 }
 
-
-//template<typename TPixelType>
-//bool mitk::DiffusionImage<TPixelType>::RequestedRegionIsOutsideOfTheBufferedRegion()
-//{
-//  return false;
-//}
-//
-//template<typename TPixelType>
-//void mitk::DiffusionImage<TPixelType>::SetRequestedRegion(itk::DataObject * /*data*/)
-//{
-//}
-//
-//template<typename TPixelType>
-//void mitk::DiffusionImage<TPixelType>::SetRequestedRegionToLargestPossibleRegion()
-//{
-//}
-//
-//template<typename TPixelType>
-//bool mitk::DiffusionImage<TPixelType>::VerifyRequestedRegion()
-//{
-//  return true;
-//}
-
-//template<typename TPixelType>
-//void mitk::DiffusionImage<TPixelType>::DuplicateIfSingleSlice()
-//{
-//  // new image
-//  typename ImageType::Pointer oldImage = m_Image;
-//  m_Image = ImageType::New();
-//  m_Image->SetSpacing( oldImage->GetSpacing() );   // Set the image spacing
-//  m_Image->SetOrigin( oldImage->GetOrigin() );     // Set the image origin
-//  m_Image->SetDirection( oldImage->GetDirection() );  // Set the image direction
-//  typename ImageType::RegionType region = oldImage->GetLargestPossibleRegion();
-//  if(region.GetSize(0) == 1)
-//    region.SetSize(0,3);
-//  if(region.GetSize(1) == 1)
-//    region.SetSize(1,3);
-//  if(region.GetSize(2) == 1)
-//    region.SetSize(2,3);
-//  m_Image->SetLargestPossibleRegion( region );
-//  m_Image->SetVectorLength( m_Directions->size() );
-//  m_Image->SetBufferedRegion( region );
-//  m_Image->Allocate();
-//
-//  // average image data that corresponds to identical directions
-//  itk::ImageRegionIterator< ImageType > newIt(m_Image, region);
-//  newIt.GoToBegin();
-//  itk::ImageRegionIterator< ImageType > oldIt(oldImage, oldImage->GetLargestPossibleRegion());
-//  oldIt.GoToBegin();
-//
-//  while(!newIt.IsAtEnd())
-//  {
-//    newIt.Set(oldIt.Get());
-//    ++newIt;
-//    ++oldIt;
-//    if(oldIt.IsAtEnd())
-//      oldIt.GoToBegin();
-//  }
-//
-//}
-
 template<typename TPixelType>
 bool mitk::DiffusionImage<TPixelType>::AreAlike(GradientDirectionType g1,
-                                                  GradientDirectionType g2,
-                                                  double precision)
+                                                GradientDirectionType g2,
+                                                double precision)
 {
   GradientDirectionType diff = g1 - g2;
-  return diff.two_norm() < precision;
+  GradientDirectionType diff2 = g1 + g2;
+  return diff.two_norm() < precision || diff2.two_norm() < precision;
 }
 
 template<typename TPixelType>
@@ -205,18 +140,18 @@ void mitk::DiffusionImage<TPixelType>::CorrectDKFZBrokenGradientScheme(double pr
     MITK_INFO << "Too few directions, assuming and correcting DKFZ-bogus sequence details.";
 
     double v [7][3] =
-     {{ 0,         0,         0        },
-      {-0.707057,  0,         0.707057 },
-      { 0.707057,  0,         0.707057 },
-      { 0,         0.707057,  0.707057 },
-      { 0,         0.707057, -0.707057 },
-      {-0.707057,  0.707057,  0        },
-      { 0.707057,  0.707057,  0        } };
+    {{ 0,         0,         0        },
+     {-0.707057,  0,         0.707057 },
+     { 0.707057,  0,         0.707057 },
+     { 0,         0.707057,  0.707057 },
+     { 0,         0.707057, -0.707057 },
+     {-0.707057,  0.707057,  0        },
+     { 0.707057,  0.707057,  0        } };
 
     int i=0;
 
     for(GradientDirectionContainerType::Iterator it = m_OriginalDirections->Begin();
-    it != m_OriginalDirections->End(); ++it)
+        it != m_OriginalDirections->End(); ++it)
     {
       it.Value().set(v[i++%7]);
     }
@@ -233,12 +168,12 @@ mitk::DiffusionImage<TPixelType>::CalcAveragedDirectionSet(double precision, Gra
 
   // fill new direction container
   for(GradientDirectionContainerType::ConstIterator gdcitOld = directions->Begin();
-  gdcitOld != directions->End(); ++gdcitOld)
+      gdcitOld != directions->End(); ++gdcitOld)
   {
     // already exists?
     bool found = false;
     for(GradientDirectionContainerType::ConstIterator gdcitNew = newDirections->Begin();
-    gdcitNew != newDirections->End(); ++gdcitNew)
+        gdcitNew != newDirections->End(); ++gdcitNew)
     {
       if(AreAlike(gdcitNew.Value(), gdcitOld.Value(), precision))
       {
@@ -271,8 +206,7 @@ void mitk::DiffusionImage<TPixelType>::AverageRedundantGradients(double precisio
   if(m_Directions->size() == newDirs->size() || m_OriginalDirections->size() == newOriginalDirs->size())
     return;
 
-  GradientDirectionContainerType::Pointer oldDirections = m_Directions;
-  GradientDirectionContainerType::Pointer oldOriginalDirections = m_OriginalDirections;
+  GradientDirectionContainerType::Pointer oldDirections = m_OriginalDirections;
   m_Directions = newDirs;
   m_OriginalDirections = newOriginalDirs;
 
@@ -300,11 +234,11 @@ void mitk::DiffusionImage<TPixelType>::AverageRedundantGradients(double precisio
 
   std::vector<std::vector<int> > dirIndices;
   for(GradientDirectionContainerType::ConstIterator gdcitNew = m_Directions->Begin();
-    gdcitNew != m_Directions->End(); ++gdcitNew)
+      gdcitNew != m_Directions->End(); ++gdcitNew)
   {
     dirIndices.push_back(std::vector<int>(0));
     for(GradientDirectionContainerType::ConstIterator gdcitOld = oldDirections->Begin();
-      gdcitOld != oldDirections->End(); ++gdcitOld)
+        gdcitOld != oldDirections->End(); ++gdcitOld)
     {
       if(AreAlike(gdcitNew.Value(), gdcitOld.Value(), precision))
       {
@@ -313,13 +247,13 @@ void mitk::DiffusionImage<TPixelType>::AverageRedundantGradients(double precisio
     }
   }
 
-  int ind1 = -1;
+  //int ind1 = -1;
   while(!newIt.IsAtEnd())
   {
 
     // progress
-    typename ImageType::IndexType ind = newIt.GetIndex();
-    ind1 = ind.m_Index[2];
+    //typename ImageType::IndexType ind = newIt.GetIndex();
+    //ind1 = ind.m_Index[2];
 
     // init new vector with zeros
     newVec.Fill(0.0);
@@ -335,6 +269,11 @@ void mitk::DiffusionImage<TPixelType>::AverageRedundantGradients(double precisio
       {
         newVec[i] += oldVec[dirIndices[i].at(j)];
       }
+      if(numavg == 0)
+      {
+        MITK_ERROR << "mitkDiffusionImage: Error on averaging. Possibly due to corrupted data";
+        return;
+      }
       newVec[i] /= numavg;
     }
 
@@ -343,21 +282,28 @@ void mitk::DiffusionImage<TPixelType>::AverageRedundantGradients(double precisio
     ++newIt;
     ++oldIt;
   }
+  ApplyMeasurementFrame();
+  std::cout << std::endl;
 }
 
 template<typename TPixelType>
 void mitk::DiffusionImage<TPixelType>::ApplyMeasurementFrame()
 {
+  RemoveDirectionsContainerObserver();
+
   m_Directions = GradientDirectionContainerType::New();
   int c = 0;
   for(GradientDirectionContainerType::ConstIterator gdcit = m_OriginalDirections->Begin();
-    gdcit != m_OriginalDirections->End(); ++gdcit)
+      gdcit != m_OriginalDirections->End(); ++gdcit)
   {
     vnl_vector<double> vec = gdcit.Value();
     vec = vec.pre_multiply(m_MeasurementFrame);
     m_Directions->InsertElement(c, vec);
     c++;
   }
+
+  UpdateBValueList();
+  AddDirectionsContainerObserver();
 }
 
 // returns number of gradients
@@ -388,9 +334,9 @@ int mitk::DiffusionImage<TPixelType>::GetNumB0()
 
 // returns a list of indices belonging to the not diffusion weighted images
 template<typename TPixelType>
-std::vector<int> mitk::DiffusionImage<TPixelType>::GetB0Indices()
+typename mitk::DiffusionImage<TPixelType>::IndicesVector mitk::DiffusionImage<TPixelType>::GetB0Indices()
 {
-  std::vector<int> indices;
+  IndicesVector indices;
   for (int i=0; i<m_OriginalDirections->Size(); i++)
     if (GetB_Value(i)<=0)
     {
@@ -409,3 +355,73 @@ bool mitk::DiffusionImage<TPixelType>::IsMultiBval()
       return true;
   return false;
 }
+
+template<typename TPixelType>
+void mitk::DiffusionImage<TPixelType>::UpdateBValueList()
+{
+  m_B_ValueMap.clear();
+
+  GradientDirectionContainerType::ConstIterator gdcit;
+  for( gdcit = this->m_Directions->Begin(); gdcit != this->m_Directions->End(); ++gdcit)
+  {
+    float currentBvalue = std::floor(GetB_Value(gdcit.Index()));
+    double rounded = int((currentBvalue+7.5)/10)*10;
+    m_B_ValueMap[rounded].push_back(gdcit.Index());
+  }
+
+  /*
+  BValueMap::iterator it = m_B_ValueMap.begin();
+  for(;it != m_B_ValueMap.end(); it++)
+  {
+    MITK_INFO << it->first << " : " << it->second.size();
+  }
+  */
+
+}
+
+template<typename TPixelType>
+float mitk::DiffusionImage<TPixelType>::GetB_Value(int i)
+{
+  if(i > m_Directions->Size()-1)
+    return -1;
+
+  if(m_Directions->ElementAt(i).one_norm() <= 0.0)
+  {
+    return 0;
+  }
+  else
+  {
+    double twonorm = m_Directions->ElementAt(i).two_norm();
+    return m_B_Value*twonorm*twonorm ;
+  }
+}
+
+template<typename TPixelType>
+void mitk::DiffusionImage<TPixelType>::SetDirections(const std::vector<itk::Vector<double,3> > directions)
+{
+  m_OriginalDirections = GradientDirectionContainerType::New();
+  for(unsigned int i=0; i<directions.size(); i++)
+  {
+    m_OriginalDirections->InsertElement( i, directions[i].Get_vnl_vector() );
+  }
+  this->ApplyMeasurementFrame();
+}
+
+template<typename TPixelType>
+void mitk::DiffusionImage<TPixelType>::AddDirectionsContainerObserver()
+{
+  // Add Modified Observer to invoke an UpdateBValueList by modifieng the DirectionsContainer (m_Directions)
+  typedef DiffusionImage< TPixelType > Self;
+  typedef itk::SimpleMemberCommand< Self >  DCCommand ;
+  typename DCCommand::Pointer command = DCCommand::New();
+  command->SetCallbackFunction(this, &Self::UpdateBValueList);
+}
+
+template<typename TPixelType>
+void mitk::DiffusionImage<TPixelType>::RemoveDirectionsContainerObserver()
+{
+  if(m_Directions){
+    m_Directions->RemoveAllObservers();
+  }
+}
+

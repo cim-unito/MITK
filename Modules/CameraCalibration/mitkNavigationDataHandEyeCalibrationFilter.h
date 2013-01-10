@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNavigationDataHandEyeCalibrationFilter_H_HEADER_INCLUDED_
@@ -48,12 +47,12 @@ namespace mitk {
     \brief transformation type for itk::QuaternionRigidTransforms
     */
     typedef itk::QuaternionRigidTransform<ScalarType> QuaternionRigidTransformType;
-    /** 
-    * \brief Set the object that will be transformed to tracking coordinates using the current NavigationData 
+    /**
+    * \brief Set the object that will be transformed to tracking coordinates using the current NavigationData
     *        and the given transformation of the HandEyeCalibration
-    * 
+    *
     * \param index index corresponding to the NavigationData and hand-eye transformation to be applied to this BaseData
-    * \param data BaseData to be associated to the index 
+    * \param data BaseData to be associated to the index
     */
     void SetObjectToTransform(unsigned int index, BaseData* data);
 
@@ -83,12 +82,12 @@ namespace mitk {
     **/
     ~NavigationDataHandEyeCalibrationFilter();
 
-    /** 
-    * \brief Map of the BaseDatas that should be transformed. 
+    /**
+    * \brief Map of the BaseDatas that should be transformed.
     */
     std::map<int,BaseData::Pointer> m_ObjectsToTransform;
-    /** 
-    * \brief Map of the hand-eye transformations that should be applied to the BaseDatas 
+    /**
+    * \brief Map of the hand-eye transformations that should be applied to the BaseDatas
     */
     std::map<int,Transform::Pointer> m_HandEyeTransformations;
   };

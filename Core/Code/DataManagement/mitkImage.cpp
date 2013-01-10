@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkImage.h"
 
@@ -22,18 +21,20 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include <vtkImageData.h>
 
+#include <cmath>
+
 #define FILL_C_ARRAY( _arr, _size, _value) for(unsigned int i=0u; i<_size; i++) \
 { _arr[i] = _value; }
 
 
-mitk::Image::Image() : 
+mitk::Image::Image() :
 m_Dimension(0), m_Dimensions(NULL), m_ImageDescriptor(NULL), m_OffsetTable(NULL), m_CompleteData(NULL),
   m_ImageStatistics(NULL)
 {
-  m_Dimensions = new unsigned int[MAX_IMAGE_DIMENSIONS];
-  FILL_C_ARRAY( m_Dimensions, MAX_IMAGE_DIMENSIONS, 0u);
+   m_Dimensions = new unsigned int[MAX_IMAGE_DIMENSIONS];
+   FILL_C_ARRAY( m_Dimensions, MAX_IMAGE_DIMENSIONS, 0u);
 
-  m_Initialized = false;
+   m_Initialized = false;
 }
 
 mitk::Image::Image(const Image &other) : SlicedData(other), m_Dimension(0), m_Dimensions(NULL),
@@ -42,7 +43,11 @@ m_ImageDescriptor(NULL), m_OffsetTable(NULL), m_CompleteData(NULL), m_ImageStati
   m_Dimensions = new unsigned int[MAX_IMAGE_DIMENSIONS];
   FILL_C_ARRAY( m_Dimensions, MAX_IMAGE_DIMENSIONS, 0u);
 
-  this->Initialize(&other);
+  this->Initialize( other.GetPixelType(), other.GetDimension(), other.GetDimensions());
+
+  //Since the above called "Initialize" method doesn't take the geometry into account we need to set it
+  //here manually
+  this->SetGeometry(dynamic_cast<mitk::TimeSlicedGeometry*>(other.GetTimeSlicedGeometry()->Clone().GetPointer()));
 
   if (this->GetDimension() > 3)
   {
@@ -153,10 +158,21 @@ double mitk::Image::GetPixelValueByIndex(const mitk::Index3D &position, unsigned
 
   // Comparison ?>=0 not needed since all position[i] and timestep are unsigned int
   // (position[0]>=0 && position[1] >=0 && position[2]>=0 && timestep>=0)
-  // &&
-  if ( (unsigned int)position[0] < imageDims[0] && (unsigned int)position[1] < imageDims[1] &&
-       ( (imageDims[2] == 0) || (unsigned int)position[2] < imageDims[2]) // in case a 2D Image passed in, the third dimension could be set to 0 causing the if() to fail
-    /*&& (unsigned int)timestep < imageDims[3]*/ )
+  // bug-11978 : we still need to catch index with negative values
+  if ( position[0] < 0 ||
+       position[1] < 0 ||
+       position[2] < 0 )
+  {
+    MITK_WARN << "Given position ("<< position << ") is out of image range, returning 0." ;
+  }
+  // check if the given position is inside the index range of the image, the 3rd dimension needs to be compared only if the dimension is not 0
+  else if ( (unsigned int)position[0] >= imageDims[0] ||
+            (unsigned int)position[1] >= imageDims[1] ||
+            ( imageDims[2] && (unsigned int)position[2] >= imageDims[2] ))
+  {
+    MITK_WARN << "Given position ("<< position << ") is out of image range, returning 0." ;
+  }
+  else
   {
     const unsigned int offset = position[0] + position[1]*imageDims[0] + position[2]*imageDims[0]*imageDims[1] + timestep*imageDims[0]*imageDims[1]*imageDims[2];
 
@@ -177,25 +193,12 @@ double mitk::Image::GetPixelValueByWorldCoordinate(const mitk::Point3D& position
   Index3D itkIndex;
   this->GetGeometry()->WorldToIndex(position, itkIndex);
 
-  const unsigned int* imageDims = this->m_ImageDescriptor->GetDimensions();
-  const mitk::PixelType ptype = this->m_ImageDescriptor->GetChannelTypeById(0);
-
-  //if ( (itkIndex[0]>=0 && itkIndex[1] >=0 && itkIndex[2]>=0 && timestep>=0)
-  //     &&
-  // lines above taken from comparison since always true due to unsigned type
-  if((unsigned int)itkIndex[0] < imageDims[0] && 
-        (unsigned int)itkIndex[1] < imageDims[1] &&
-          (imageDims[2] == 0) || ((unsigned int)itkIndex[2] < imageDims[2])) // in case a 2D Image passed in, the third dimension could be set to 0 causing the if() to fail
-  {
-    const unsigned int offset = itkIndex[0] + itkIndex[1]*imageDims[0] + itkIndex[2]*imageDims[0]*imageDims[1] + timestep*imageDims[0]*imageDims[1]*imageDims[2];
-
-    mitkPixelTypeMultiplex3( AccessPixel, ptype, this->GetData(), offset, value );
-  }
+  value = this->GetPixelValueByIndex( itkIndex, timestep);
 
   return value;
 }
 
-vtkImageData* mitk::Image::GetVtkImageData(int t, int n)
+mitk::ImageVtkAccessor* mitk::Image::GetVtkImageData(int t, int n)
 {
   if(m_Initialized==false)
   {
@@ -205,15 +208,15 @@ vtkImageData* mitk::Image::GetVtkImageData(int t, int n)
       GetSource()->UpdateOutputInformation();
   }
   ImageDataItemPointer volume=GetVolumeData(t, n);
-  if(volume.GetPointer()==NULL || volume->GetVtkImageData() == NULL)
+  if(volume.GetPointer()==NULL || volume->GetVtkImageData(this) == NULL)
     return NULL;
 
 
   float *fspacing = const_cast<float *>(GetSlicedGeometry(t)->GetFloatSpacing());
   double dspacing[3] = {fspacing[0],fspacing[1],fspacing[2]};
-  volume->GetVtkImageData()->SetSpacing( dspacing );
+  volume->GetVtkImageData(this)->SetSpacing( dspacing );
 
-  return volume->GetVtkImageData();
+  return volume->GetVtkImageData(this);
 }
 
 mitk::Image::ImageDataItemPointer mitk::Image::GetSliceData(int s, int t, int n, void *data, ImportMemoryManagementType importMemoryManagement)
@@ -580,7 +583,7 @@ bool mitk::Image::SetImportSlice(void *data, int s, int t, int n, ImportMemoryMa
     if ( sl->GetData() != data )
       std::memcpy(sl->GetData(), data, m_OffsetTable[2]*(ptypeSize));
     sl->Modified();
-    //we have changed the data: call Modified()! 
+    //we have changed the data: call Modified()!
     Modified();
   }
   else
@@ -613,7 +616,7 @@ bool mitk::Image::SetImportVolume(void *data, int t, int n, ImportMemoryManageme
       std::memcpy(vol->GetData(), data, m_OffsetTable[3]*(ptypeSize));
     vol->Modified();
     vol->SetComplete(true);
-    //we have changed the data: call Modified()! 
+    //we have changed the data: call Modified()!
     Modified();
   }
   else
@@ -621,7 +624,7 @@ bool mitk::Image::SetImportVolume(void *data, int t, int n, ImportMemoryManageme
     vol=AllocateVolumeData(t,n,data,importMemoryManagement);
     if(vol.GetPointer()==NULL) return false;
     if ( vol->GetData() != data )
-    { 
+    {
       std::memcpy(vol->GetData(), data, m_OffsetTable[3]*(ptypeSize));
     }
     vol->SetComplete(true);
@@ -642,7 +645,7 @@ bool mitk::Image::SetImportChannel(void *data, int n, ImportMemoryManagementType
 
   ImageDataItemPointer ch;
   if(IsChannelSet(n))
-  {  
+  {
     ch=GetChannelData(n,data,importMemoryManagement);
     if(ch->GetManageMemory()==false)
     {
@@ -653,7 +656,7 @@ bool mitk::Image::SetImportChannel(void *data, int n, ImportMemoryManagementType
       std::memcpy(ch->GetData(), data, m_OffsetTable[4]*(ptypeSize));
     ch->Modified();
     ch->SetComplete(true);
-    //we have changed the data: call Modified()! 
+    //we have changed the data: call Modified()!
     Modified();
   }
   else
@@ -687,7 +690,7 @@ void mitk::Image::Initialize()
     (*it)=NULL;
   }
   m_CompleteData = NULL;
- 
+
   if( m_ImageStatistics == NULL)
   {
     m_ImageStatistics = new mitk::ImageStatisticsHolder( this );
@@ -789,7 +792,7 @@ void mitk::Image::Initialize(const mitk::PixelType& type, unsigned int dimension
   m_Initialized = true;
 }
 
-void mitk::Image::Initialize(const mitk::PixelType& type, const mitk::Geometry3D& geometry, unsigned int channels, int tDim ) 
+void mitk::Image::Initialize(const mitk::PixelType& type, const mitk::Geometry3D& geometry, unsigned int channels, int tDim )
 {
   unsigned int dimensions[5];
   dimensions[0] = (unsigned int)(geometry.GetExtent(0)+0.5);
@@ -809,7 +812,7 @@ void mitk::Image::Initialize(const mitk::PixelType& type, const mitk::Geometry3D
   else
   {
     const mitk::TimeSlicedGeometry* timeGeometry = dynamic_cast<const mitk::TimeSlicedGeometry*>(&geometry);
-    if ( timeGeometry != NULL ) 
+    if ( timeGeometry != NULL )
     {
       dimensions[3] = timeGeometry->GetTimeSteps();
     }
@@ -821,12 +824,12 @@ void mitk::Image::Initialize(const mitk::PixelType& type, const mitk::Geometry3D
   Initialize( type, dimension, dimensions, channels );
 
   SetGeometry(static_cast<Geometry3D*>(geometry.Clone().GetPointer()));
-  
+
   mitk::BoundingBox::BoundsArrayType bounds = geometry.GetBoundingBox()->GetBounds();
   if( (bounds[0] != 0.0) || (bounds[2] != 0.0) || (bounds[4] != 0.0) )
   {
     SlicedGeometry3D* slicedGeometry = GetSlicedGeometry(0);
-  
+
     mitk::Point3D origin; origin.Fill(0.0);
     slicedGeometry->IndexToWorld(origin, origin);
 
@@ -834,8 +837,8 @@ void mitk::Image::Initialize(const mitk::PixelType& type, const mitk::Geometry3D
     bounds[0] = 0.0;      bounds[2] = 0.0;      bounds[4] = 0.0;
 this->m_ImageDescriptor->Initialize( this->m_Dimensions, this->m_Dimension );
     slicedGeometry->SetBounds(bounds);
-    slicedGeometry->GetIndexToWorldTransform()->SetOffset(origin.Get_vnl_vector().data_block());  
-  
+    slicedGeometry->GetIndexToWorldTransform()->SetOffset(origin.Get_vnl_vector().data_block());
+
     GetTimeSlicedGeometry()->InitializeEvenlyTimed(slicedGeometry, m_Dimensions[3]);
   }
 }
@@ -847,12 +850,12 @@ void mitk::Image::Initialize(const mitk::PixelType& type, int sDim, const mitk::
   Initialize(type, *slicedGeometry, channels, tDim);
 }
 
-void mitk::Image::Initialize(const mitk::Image* image) 
+void mitk::Image::Initialize(const mitk::Image* image)
 {
   Initialize(image->GetPixelType(), *image->GetTimeSlicedGeometry());
 }
 
-void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim, int sDim)
+void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim, int sDim, int pDim)
 {
   if(vtkimagedata==NULL) return;
 
@@ -866,6 +869,12 @@ void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim,
       *p=1;
   }
 
+  if(pDim>=0)
+  {
+     tmpDimensions[1]=pDim;
+     if(m_Dimension < 2)
+        m_Dimension = 2;
+  }
   if(sDim>=0)
   {
     tmpDimensions[2]=sDim;
@@ -880,38 +889,38 @@ void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim,
   }
 
 
-  switch ( vtkimagedata->GetScalarType() ) 
+  switch ( vtkimagedata->GetScalarType() )
   {
-  case VTK_BIT: 
-  case VTK_CHAR: 
+  case VTK_BIT:
+  case VTK_CHAR:
     //pixelType.Initialize(typeid(char), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<char>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_UNSIGNED_CHAR: 
+  case VTK_UNSIGNED_CHAR:
     //pixelType.Initialize(typeid(unsigned char), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<unsigned char>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_SHORT: 
+  case VTK_SHORT:
     //pixelType.Initialize(typeid(short), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<short>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_UNSIGNED_SHORT: 
+  case VTK_UNSIGNED_SHORT:
     //pixelType.Initialize(typeid(unsigned short), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<unsigned short>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_INT: 
+  case VTK_INT:
     //pixelType.Initialize(typeid(int), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<int>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_UNSIGNED_INT: 
+  case VTK_UNSIGNED_INT:
     //pixelType.Initialize(typeid(unsigned int), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<unsigned int>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_LONG: 
+  case VTK_LONG:
     //pixelType.Initialize(typeid(long), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<long>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_UNSIGNED_LONG: 
+  case VTK_UNSIGNED_LONG:
     //pixelType.Initialize(typeid(unsigned long), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<unsigned long>(), m_Dimension, tmpDimensions, channels);
     break;
@@ -919,7 +928,7 @@ void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim,
     //pixelType.Initialize(typeid(float), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<float>(), m_Dimension, tmpDimensions, channels);
     break;
-  case VTK_DOUBLE: 
+  case VTK_DOUBLE:
     //pixelType.Initialize(typeid(double), vtkimagedata->GetNumberOfScalarComponents());
     Initialize(mitk::MakeScalarPixelType<double>(), m_Dimension, tmpDimensions, channels);
     break;
@@ -927,8 +936,8 @@ void mitk::Image::Initialize(vtkImageData* vtkimagedata, int channels, int tDim,
     break;
   }
   /*
-  Initialize(pixelType, 
-    m_Dimension, 
+  Initialize(pixelType,
+    m_Dimension,
     tmpDimensions,
     channels);
 */
@@ -1138,11 +1147,11 @@ void mitk::Image::Clear()
 void mitk::Image::SetGeometry(Geometry3D* aGeometry3D)
 {
   // Please be aware of the 0.5 offset/pixel-center issue! See Geometry documentation for further information
-  
+
   if(aGeometry3D->GetImageGeometry()==false)
   {
     MITK_INFO << "WARNING: Applied a non-image geometry onto an image. Please be SURE that this geometry is pixel-center-based! If it is not, you need to call Geometry3D->ChangeImageGeometryConsideringOriginOffset(true) before calling image->setGeometry(..)\n";
-  }  
+  }
   Superclass::SetGeometry(aGeometry3D);
   GetTimeSlicedGeometry()->ImageGeometryOn();
 }
@@ -1197,7 +1206,7 @@ bool mitk::Image::IsRotated() const
       {
         if(i != j)
         {
-          if(abs(mx[i][j]) > ref) // matrix is nd
+          if(std::abs(mx[i][j]) > ref) // matrix is nd
             ret = true;
         }
       }

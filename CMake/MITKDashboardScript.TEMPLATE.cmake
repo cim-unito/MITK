@@ -4,8 +4,8 @@
 # GPU: NA
 #
 
-# Note: The specific version and processor type of this machine should be reported in the 
-# header above. Indeed, this file will be send to the dashboard as a NOTE file. 
+# Note: The specific version and processor type of this machine should be reported in the
+# header above. Indeed, this file will be send to the dashboard as a NOTE file.
 
 cmake_minimum_required(VERSION 2.8.4)
 
@@ -46,14 +46,14 @@ else()
   set(CTEST_BUILD_FLAGS "")
 endif()
 
-# experimental: 
+# experimental:
 #     - run_ctest() macro will be called *ONE* time
 #     - binary directory will *NOT* be cleaned
-# continuous: 
-#     - run_ctest() macro will be called EVERY 5 minutes ... 
+# continuous:
+#     - run_ctest() macro will be called EVERY 5 minutes ...
 #     - binary directory will *NOT* be cleaned
 #     - configure/build will be executed *ONLY* if the repository has been updated
-# nightly: 
+# nightly:
 #     - run_ctest() macro will be called *ONE* time
 #     - binary directory *WILL BE* cleaned
 set(SCRIPT_MODE "experimental") # "experimental", "continuous", "nightly"
@@ -61,12 +61,37 @@ set(SCRIPT_MODE "experimental") # "experimental", "continuous", "nightly"
 #
 # Project specific properties
 #
+# In order to shorten the global path length, the build directory for each DartClient
+# uses the following abrevation sceme:
+# For build configuration:
+# Debug -> d
+# Release -> r
+# For scripte mode:
+# continuous -> c
+# nightly -> n
+# experimental -> e
+# Example directory: /MITK-sb-d-n/ for a nightly MITK superbuild in debug mode.
+set(short_of_ctest_build_configuration "")
+set(short_of_script_mode "")
+string(SUBSTRING ${CTEST_BUILD_CONFIGURATION} 0 1 short_of_ctest_build_configuration)
+string(SUBSTRING ${SCRIPT_MODE} 0 1 short_of_script_mode)
 set(CTEST_SOURCE_DIRECTORY "${CTEST_DASHBOARD_ROOT}/MITK")
-set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/MITK-Superbuild-${CTEST_BUILD_CONFIGURATION}-${SCRIPT_MODE}")
+set(CTEST_BINARY_DIRECTORY "${CTEST_DASHBOARD_ROOT}/MITK-sb-${short_of_ctest_build_configuration}-${short_of_script_mode}")
+
+# Create an initial cache file for MITK. This file is used to configure the MITK-Build. Use ADDITIONAL_CMAKECACHE_OPTION
+# to configure the MITK-Superbuild. The
+set(MITK_INITIAL_CACHE "
+# Example how to set a boolean variable in the MITK-Build via this script:
+#SET(MITK_ENABLE_TOF_HARDWARE \"TRUE\" CACHE INTERNAL \"Enable ToF Hardware\")
+# Example how to set a path variable in the MITK-Build via this script:
+#SET(MITK_PMD_LIB \"/home/kilgus/thomas/PMDSDK2/Linux_x86_64/bin/libpmdaccess2.so\" CACHE INTERNAL \"PMD lib\")
+")
 
 set(ADDITIONAL_CMAKECACHE_OPTION "
+# Superbuild variables are not passed through to the MITK-Build (or any other build like ITK, VTK, ...)
+# Use the MITK_INITIAL_CACHE the pass variables to the MITK-Build.
 # add entries like this
-# MITK_USE_OpenCV:BOOL=OFF
+#MITK_USE_OpenCV:BOOL=OFF
 ")
 
 # List of test that should be explicitly disabled on this machine
@@ -109,7 +134,8 @@ endmacro()
 if(NOT DEFINED GIT_BRANCH OR GIT_BRANCH STREQUAL "")
   set(hb "HEAD")
 else()
-  set(hb "refs/heads/${GIT_BRANCH}")
+  string(REGEX REPLACE "^origin/(.*)$" "\\1" _branch_name ${GIT_BRANCH})
+  set(hb "refs/heads/${_branch_name}")
 endif()
 set(url "http://mitk.org/git/?p=MITK.git;a=blob_plain;f=CMake/MITKDashboardSetup.cmake;hb=${hb}")
 set(dest ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}.setup)

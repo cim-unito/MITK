@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #if(_MSC_VER==1200)
 #include <itkFixedCenterOfRotationAffineTransform.h>
@@ -26,7 +25,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 //
 // The new ITK Statistics framework has
-// a class with the same functionality as 
+// a class with the same functionality as
 // MITKScalarImageToHistogramGenerator.h, but
 // no longer has the classis the MITK class depends on.
 #if !defined(ITK_USE_REVIEW_STATISTICS)
@@ -44,18 +43,18 @@ mitk::HistogramGenerator::~HistogramGenerator()
 {
 }
 
-template < typename TPixel, unsigned int VImageDimension > 
+template < typename TPixel, unsigned int VImageDimension >
 void InternalCompute(itk::Image< TPixel, VImageDimension >* itkImage, const mitk::HistogramGenerator* mitkHistoGenerator, mitk::HistogramGenerator::HistogramType::ConstPointer& histogram)
 {
-  
+
 #if !defined(ITK_USE_REVIEW_STATISTICS)
-  typedef itk::Statistics::MITKScalarImageToHistogramGenerator< 
+  typedef itk::Statistics::MITKScalarImageToHistogramGenerator<
                                               itk::Image< TPixel, VImageDimension >,
                                               double            >   HistogramGeneratorType;
 #else
   typedef itk::Statistics::ScalarImageToHistogramGenerator< itk::Image< TPixel, VImageDimension > >
   HistogramGeneratorType;
-                                               
+
 #endif
   typename HistogramGeneratorType::Pointer histogramGenerator = HistogramGeneratorType::New();
 
@@ -64,7 +63,7 @@ void InternalCompute(itk::Image< TPixel, VImageDimension >* itkImage, const mitk
   histogramGenerator->SetNumberOfBins( mitkHistoGenerator->GetSize() );
 //  histogramGenerator->SetMarginalScale( 10.0 );
   histogramGenerator->Compute();
-  
+
   histogram = histogramGenerator->GetOutput();
 }
 
@@ -90,10 +89,10 @@ void mitk::HistogramGenerator::ComputeHistogram()
   const unsigned int histogramSize = m_Histogram->Size();
 
   MITK_INFO << "Histogram size " << histogramSize << std::endl;
-  
+
   HistogramType::ConstIterator itr = GetHistogram()->Begin();
   HistogramType::ConstIterator end = GetHistogram()->End();
-  
+
   int bin = 0;
   while( itr != end )
     {
@@ -102,7 +101,7 @@ void mitk::HistogramGenerator::ComputeHistogram()
     ++itr;
     ++bin;
     }
-    */ 
+    */
 }
 
 float mitk::HistogramGenerator::GetMaximumFrequency() const {
@@ -110,10 +109,10 @@ float mitk::HistogramGenerator::GetMaximumFrequency() const {
 };
 
 float mitk::HistogramGenerator::CalculateMaximumFrequency(const HistogramType* histogram)
-{  
+{
   HistogramType::ConstIterator itr = histogram->Begin();
   HistogramType::ConstIterator end = histogram->End();
-  
+
   float maxFreq = 0;
   while( itr != end )
     {

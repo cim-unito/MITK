@@ -12,6 +12,7 @@
 #!                              all known plug-in targets (external or internal) are considered.
 #! \param EXCLUDE_PLUGINS <plugin-list> (optional) A list of plug-in symbolic names which should be excluded
 #!                                      from the provisioning entries.
+#! \param NO_INSTALL (option) Suppress the creation of an additional provisioning file suitable for packaging.
 #!
 #! This function creates a provisioning file which can be used to provision a BlueBerry
 #! application. The syntax of entries in the file is
@@ -45,17 +46,17 @@
 #!
 function(FunctionCreateProvisioningFile)
 
-  macro_parse_arguments(_PROV "FILE;INCLUDE;PLUGINS;EXCLUDE_PLUGINS;PLUGIN_DIR" "" ${ARGN})
-  
+  macro_parse_arguments(_PROV "FILE;INCLUDE;PLUGINS;EXCLUDE_PLUGINS;PLUGIN_DIR" "NO_INSTALL" ${ARGN})
+
   if(_PROV_PLUGIN_DIR)
     message(WARNING "The PLUGIN_DIR argument is no longer supported. Either use FunctionCreateProvisioningFile_legacy or adapt your CMake function call.")
   endif()
-  
+
   if(NOT _PROV_FILE)
     message(SEND_ERROR "FILE argument must not be empty")
     return()
   endif()
-  
+
   set(out_var )
   set(out_var_install )
   if(WIN32)
@@ -63,25 +64,29 @@ function(FunctionCreateProvisioningFile)
   else()
     set(file_url "file://")
   endif()
-  
+
   # Include other provisioning files
   foreach(incl ${_PROV_INCLUDE})
     get_filename_component(incl_filename "${incl}" NAME)
     set(out_var "${out_var}READ ${file_url}${incl}\n")
     set(out_var_install "${out_var_install}READ ${file_url}@EXECUTABLE_DIR/${incl_filename}\n")
   endforeach()
-  
+
   if(_PROV_INCLUDE)
     set(out_var "${out_var}\n")
     set(out_var_install "${out_var_install}\n")
   endif()
-  
+
   set(_plugin_list )
   if(_PROV_PLUGINS)
     foreach(_plugin ${_PROV_PLUGINS})
       string(REPLACE "." "_" _plugin_target ${_plugin})
       list(APPEND _plugin_list ${_plugin_target})
     endforeach()
+    # get all plug-in dependencies
+    ctkFunctionGetPluginDependencies(_plugin_deps PLUGINS ${_plugin_list} ALL)
+    # add the dependencies to the list of plug-ins
+    list(APPEND _plugin_list ${_plugin_deps})
   else()
     # Fill the _plugin_list variable with external and internal plug-in target names.
     ctkFunctionGetAllPluginTargets(_plugin_list)
@@ -114,7 +119,7 @@ function(FunctionCreateProvisioningFile)
         set(_plugin_target ${_plugin_target_name})
       endif()
     endif()
-    
+
     if(_plugin_target)
       # We got a valid target, either imported or from this project.
       set(_plugin_location)
@@ -157,9 +162,12 @@ function(FunctionCreateProvisioningFile)
   endforeach()
 
   file(WRITE ${_PROV_FILE} "${out_var}")
-  file(WRITE ${_PROV_FILE}.install "${out_var_install}")
 
-endfunction() 
+  if(NOT _PROV_NO_INSTALL)
+    file(WRITE ${_PROV_FILE}.install "${out_var_install}")
+  endif()
+
+endfunction()
 
 function(FunctionCreateProvisioningFile_legacy)
 
@@ -172,29 +180,29 @@ function(FunctionCreateProvisioningFile_legacy)
   else()
     set(file_url "file://")
   endif()
-  
+
   foreach(incl ${_PROV_INCLUDE})
     get_filename_component(incl_filename "${incl}" NAME)
     set(out_var "${out_var}READ ${file_url}${incl}\n")
     set(out_var_install "${out_var_install}READ ${file_url}@EXECUTABLE_DIR/${incl_filename}\n")
   endforeach()
-  
+
   if(_PROV_INCLUDE)
     set(out_var "${out_var}\n")
     set(out_var_install "${out_var_install}\n")
   endif()
 
   string(REPLACE "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" "@EXECUTABLE_DIR" _PROV_PLUGIN_DIR_install ${_PROV_PLUGIN_DIR})
- 
+
   foreach(plugin ${_PROV_PLUGINS})
     ctkFunctionExtractOptionNameAndValue(${plugin} plugin_name_with_dirs plugin_value)
     string(REPLACE "/" ";" _tokens ${plugin_name_with_dirs})
     list(GET _tokens -1 plugin_name)
     string(REPLACE "." "_" plugin_target ${plugin_name})
-    
+
     set(plugin_url "${file_url}${_PROV_PLUGIN_DIR}/lib${plugin_target}${CMAKE_SHARED_LIBRARY_SUFFIX}")
     set(plugin_url_install "${file_url}${_PROV_PLUGIN_DIR_install}/lib${plugin_target}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    
+
     if(${${plugin_name_with_dirs}_option_name})
       set(out_var "${out_var}START ${plugin_url}\n")
       set(out_var_install "${out_var_install}START ${plugin_url_install}\n")
@@ -207,4 +215,4 @@ function(FunctionCreateProvisioningFile_legacy)
   file(WRITE ${_PROV_FILE} "${out_var}")
   file(WRITE ${_PROV_FILE}.install "${out_var_install}")
 
-endfunction() 
+endfunction()

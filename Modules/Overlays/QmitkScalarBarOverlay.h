@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKSCALARBAROVERLAY_H_HEADER_INCLUDED_C10DC4EB
@@ -56,30 +55,34 @@ PURPOSE.  See the above copyright notices for more information.
     *
     * First, this method sets text-overlay specific properties as described in the class docu above.
     * Secondly, the actual text of the label is set.
-    * 
-    * \WARNING No error will be issued if the property containing the text is not found, the TextOverlay 
+    *
+    * \WARNING No error will be issued if the property containing the text is not found, the TextOverlay
     * will show an empty string!
     */
     virtual void GenerateData( mitk::PropertyList::Pointer );
+
+    QSize GetNeededSize();
+
 
   protected:
 
     /**
     * \brief internal helper class to determine text-properties
     *
-    * This method is only used internally to apply the text specific properties that can be set 
+    * This method is only used internally to apply the text specific properties that can be set
     * using a mitk::PropertyList. If a property cannot be found, a default value is used.
     *
     * The values of these properties are then attributed to the label using QFont and QPalette.
-    */ 
+    */
     void GetProperties( mitk::PropertyList::Pointer );
-   
-    void SetupCallback( mitk::BaseProperty::Pointer prop );
-   
-    void SetScaleFactor();
 
+    void SetupCallback( mitk::BaseProperty::Pointer prop );
+
+    void SetScaleFactor();
     /** \brief QWidget internally representing the TextOverlay */
-    QmitkScalarBar* m_ScalarBar;  
+    QmitkScalarBar* m_ScalarBar;
+
+    mitk::BaseProperty::Pointer m_ObservedProperty;
 
     mitk::PropertyList::Pointer m_PropertyList;
     unsigned long m_ObserverTag;

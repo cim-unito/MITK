@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 /**
@@ -441,7 +440,7 @@ mitk::EventMapper::~EventMapper()
 
 //##Documentation
 //## searches for the event in m_EventDescription and adds the corresponding eventID
-//##  
+//##
 bool mitk::EventMapper::MapEvent(Event* event, GlobalInteraction* globalInteraction, int mitkPostedEventID )
 {
   int eventID = mitkPostedEventID;
@@ -494,7 +493,7 @@ bool mitk::EventMapper::MapEvent(Event* event, GlobalInteraction* globalInteract
   }
 
 #ifdef MBI_INTERNAL_CONFERENCE
-  //Conference - pass local events through 
+  //Conference - pass local events through
   if ( mitkPostedEventID == 0 )
   {
     mitk::CoreObjectFactory::GetInstance()->MapEvent(event,eventID);
@@ -517,13 +516,13 @@ bool mitk::EventMapper::LoadBehavior(std::string fileName)
 {
   if ( fileName.empty() )
     return false;
-  
+
   if (m_XmlFileName.length() > 0)
   {
     if (fileName.compare(m_XmlFileName) == 0)
       return true; // this is nothing bad, we already loaded this file.
   }
-  
+
   this->SetFileName( fileName.c_str() );
   m_XmlFileName    = fileName.c_str();
   return ( this->Parse() );
@@ -579,7 +578,7 @@ void  mitk::EventMapper::StartElement (const char *elementName, const char **att
       ReadXMLIntegerAttribut( ID, atts ));
 
     //check for a double entry unless it is an event for internal usage
-    if (eventDescr.GetType()!= mitk::Type_User) 
+    if (eventDescr.GetType()!= mitk::Type_User)
     {
       for (EventDescriptionVecIter iter = m_EventDescriptions.begin(); iter!=m_EventDescriptions.end(); iter++)
       {
@@ -662,7 +661,7 @@ bool mitk::EventMapper::RefreshStateEvent(mitk::StateEvent* stateEvent)
   }
   else
     return false;
-  
+
   return false;
 }
 

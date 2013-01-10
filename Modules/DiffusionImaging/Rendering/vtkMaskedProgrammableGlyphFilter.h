@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __vtkMaskedProgrammableGlyphFilter_h
 #define __vtkMaskedProgrammableGlyphFilter_h
@@ -28,8 +27,8 @@ class vtkMaskPoints;
  * This class masked points of the input data set and glyphs
  * only the selected poitns. Points may be selected either by
  * random or by ratio.
- * Additionally, this class allows to set the InputScalars, 
- * InputVectors and InputNormals by their field name in the 
+ * Additionally, this class allows to set the InputScalars,
+ * InputVectors and InputNormals by their field name in the
  * input dataset.
  */
 class MitkDiffusionImaging_EXPORT vtkMaskedProgrammableGlyphFilter : public vtkProgrammableGlyphFilter
@@ -53,7 +52,7 @@ public:
    * Set the input to this filter.
    */
   virtual void SetInput(vtkDataSet *input);
-  
+
   /**
    * Set/get whether to mask points
    */
@@ -65,13 +64,13 @@ public:
    */
   void SetRandomMode(int mode);
   int GetRandomMode();
-  
+
   ///**
   // * If you want to use an arbitrary scalars array, then set its name here.
   // * By default this in NULL and the filter will use the active scalar array.
   // */
   //vtkGetStringMacro(InputScalarsSelection);
-  //void SelectInputScalars(const char *fieldName) 
+  //void SelectInputScalars(const char *fieldName)
   //  {this->SetInputScalarsSelection(fieldName);}
 
   ///**
@@ -79,7 +78,7 @@ public:
   // * By default this in NULL and the filter will use the active vector array.
   // */
   //vtkGetStringMacro(InputVectorsSelection);
-  //void SelectInputVectors(const char *fieldName) 
+  //void SelectInputVectors(const char *fieldName)
   //  {this->SetInputVectorsSelection(fieldName);}
 
   ///**
@@ -87,7 +86,7 @@ public:
   // * By default this in NULL and the filter will use the active normal array.
   // */
   //vtkGetStringMacro(InputNormalsSelection);
-  //void SelectInputNormals(const char *fieldName) 
+  //void SelectInputNormals(const char *fieldName)
   //  {this->SetInputNormalsSelection(fieldName);}
 
   void SetGeometry(mitk::Geometry3D::Pointer geo)

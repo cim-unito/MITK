@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.0 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkBinaryThresholdToolGUI_h_Included
 #define QmitkBinaryThresholdToolGUI_h_Included
@@ -31,7 +30,7 @@ class QSlider;
 
   This GUI shows a slider to change the tool's threshold and an OK button to accept a preview for actual thresholding.
 
-  There is only a slider for INT values in QT. So, if the working image has a float/double pixeltype, we need to convert 
+  There is only a slider for INT values in QT. So, if the working image has a float/double pixeltype, we need to convert
   the original float intensity into a respective int value for the slider. The slider range is then between 0 and 99.
 
   If the pixeltype is INT, then we do not need any conversion.
@@ -52,11 +51,17 @@ class QmitkExt_EXPORT QmitkBinaryThresholdToolGUI : public QmitkToolGUI
 
   signals:
 
+    /// \brief Emitted when threshold Accepted
+    void thresholdAccepted();
+
+    /// \brief Emitted when threshold Canceled
+    void thresholdCanceled();
+
   public slots:
 
   protected slots:
 
-    void OnNewToolAssociated(mitk::Tool*);    
+    void OnNewToolAssociated(mitk::Tool*);
     void OnAcceptThresholdPreview();
 
     /// \brief Called when Spinner value has changed. Consider: Spinner contains DOUBLE values

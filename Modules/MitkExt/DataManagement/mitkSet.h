@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef mitkSet_H
 #define mitkSet_H
 
@@ -113,7 +128,7 @@ public:
   int IndexOf(const T& obj) const
   {
     int index = -1;
-    typename std::vector<T>::const_iterator it = m_Objects.begin();
+
     for(unsigned int i=0; i<m_Objects.size(); ++i)
     {
       if(m_Objects.at(i) == obj)

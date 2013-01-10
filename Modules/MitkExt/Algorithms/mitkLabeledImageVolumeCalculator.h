@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_LABELEDIMAGEVOLUMECALCULATOR_H
@@ -50,7 +49,7 @@ public:
   itkNewMacro( LabeledImageVolumeCalculator );
 
   itkSetConstObjectMacro( Image, mitk::Image );
-  
+
 
   virtual void Calculate();
 
@@ -64,18 +63,18 @@ public:
 
   const PointVector &GetCentroids() const;
 
-  
+
 protected:
 
   LabeledImageVolumeCalculator();
-  
+
   virtual ~LabeledImageVolumeCalculator();
 
 
   template < typename TPixel, unsigned int VImageDimension >
   void _InternalCalculateVolumes(
-    itk::Image< TPixel, VImageDimension > *image, 
-    LabeledImageVolumeCalculator *volumeCalculator, 
+    itk::Image< TPixel, VImageDimension > *image,
+    LabeledImageVolumeCalculator *volumeCalculator,
     Geometry3D *geometry );
 
 

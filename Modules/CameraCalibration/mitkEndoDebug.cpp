@@ -1,8 +1,23 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkEndoDebug.h"
 #include <itksys/SystemTools.hxx>
 #include <itkFastMutexLock.h>
 #include <itkMutexLockHolder.h>
-#include <fstream>  
+#include <fstream>
 #include <ctime>
 #include <cstdio>
 
@@ -49,7 +64,7 @@ namespace mitk
     return instance;
   }
 
-  std::string EndoDebug::GetUniqueFileName( const std::string& dir, const std::string& ext )
+  std::string EndoDebug::GetUniqueFileName( const std::string& dir, const std::string& ext, const std::string& prefix )
   {
     std::stringstream s;
     s.precision( 0 );
@@ -60,7 +75,7 @@ namespace mitk
     {
       s.str("");
       s << i;
-      filename = s.str() + "." + ext;
+      filename = prefix + s.str() + "." + ext;
       ++i;
     }
 
@@ -74,20 +89,54 @@ namespace mitk
     return itksys::SystemTools::GetFilenameWithoutExtension( s );
   }
 
-  void EndoDebug::AddFileToDebug(const std::string& s)
+  bool EndoDebug::AddFileToDebug(const std::string& s)
   {
     {
       itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
-      d->m_FilesToDebug.insert( s );
+      std::pair<std::set<std::string>::iterator, bool> res = d->m_FilesToDebug.insert( s );
+      return res.second;
     }
   }
 
-  void EndoDebug::AddSymbolToDebug(const std::string& symbolToDebug)
+  void EndoDebug::SetFilesToDebug(const std::set<std::string> &filesToDebug)
+  {
+      {
+        itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
+        d->m_FilesToDebug = filesToDebug;
+      }
+  }
+
+  std::set<std::string> EndoDebug::GetFilesToDebug()
+  {
+      {
+        itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
+        return d->m_FilesToDebug;
+      }
+  }
+
+  bool EndoDebug::AddSymbolToDebug(const std::string& symbolToDebug)
   {
     {
       itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
-      d->m_SymbolsToDebug.insert( symbolToDebug );
-    }
+      std::pair<std::set<std::string>::iterator, bool> res = d->m_SymbolsToDebug.insert( symbolToDebug );
+      return res.second;
+      }
+  }
+
+  void EndoDebug::SetSymbolsToDebug(const std::set<std::string> &symbolsToDebug)
+  {
+      {
+        itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
+        d->m_SymbolsToDebug = symbolsToDebug;
+      }
+  }
+
+  std::set<std::string> EndoDebug::GetSymbolsToDebug()
+  {
+      {
+        itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
+        return d->m_SymbolsToDebug;
+      }
   }
 
   bool EndoDebug::DebugSymbol(const std::string& s)
@@ -146,7 +195,7 @@ namespace mitk
             debug = false;
         }
       }
-    }    
+    }
 
     return debug;
   }
@@ -208,14 +257,14 @@ namespace mitk
     }
   }
 
-  bool EndoDebug::GetShowImagesTimeOut()
+  size_t EndoDebug::GetShowImagesTimeOut()
   {
     {
       itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
       return d->m_ShowImagesTimeOut;
     }
   }
-  
+
   void EndoDebug::SetLogFile( const std::string& file )
   {
     {
@@ -229,14 +278,14 @@ namespace mitk
     {
       itk::MutexLockHolder<itk::FastMutexLock> lock(*d->m_Mutex);
       if(d->m_Stream.is_open())
-      {    
+      {
         char *timestr;
         struct tm *newtime;
         time_t aclock;
         time(&aclock);
         newtime = localtime(&aclock);
         timestr = asctime(newtime);
-        
+
         d->m_Stream << timestr << ", " << message;
       }
       else

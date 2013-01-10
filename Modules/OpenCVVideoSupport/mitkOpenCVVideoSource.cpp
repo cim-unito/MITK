@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkOpenCVVideoSource.h"
 #include <iostream>
@@ -28,8 +27,8 @@ mitk::OpenCVVideoSource::OpenCVVideoSource()
   m_RepeatVideo(false),
   m_UseCVCAMLib(false),
   m_UndistortImage(false),
-  m_RotationAngle(0.0),
-  m_RotationEnabled(false)
+  m_FlipXAxisEnabled(false),
+  m_FlipYAxisEnabled(false)
 {
 }
 
@@ -79,16 +78,11 @@ unsigned char* mitk::OpenCVVideoSource::GetVideoTexture()
 { // Fetch Frame and return pointer to opengl texture
   FetchFrame();
 
-  if (m_RotationEnabled)
+  if (m_FlipXAxisEnabled || m_FlipYAxisEnabled)
   {
-    //store pointer to release memory for the image after rotation
-    IplImage * tmpImage = m_CurrentImage;
-
     //rotate the image to get a static video
-    m_CurrentImage = this->RotateImage(m_CurrentImage);
+    m_CurrentImage = this->FlipImage(m_CurrentImage);
 
-    // release memory
-    cvReleaseImage(&tmpImage); //
   }
 
   //transfer the image to a texture
@@ -245,7 +239,6 @@ void mitk::OpenCVVideoSource::PauseCapturing()
     // undistort this pause image if necessary
     if(m_UndistortImage)
       m_UndistortCameraImage->UndistortImageFast(m_PauseImage, 0);
-
     m_CurrentImage = m_PauseImage;
   }
   else
@@ -299,7 +292,6 @@ void mitk::OpenCVVideoSource::GetCurrentFrameAsItkHSVPixelImage(HSVPixelImageTyp
     {
       for(char* current = datapointer; current < datapointer + rowsize; current++)
       {
-
           b = *current; current++;
           g = *current; current++;
           r = *current;
@@ -371,25 +363,28 @@ void mitk::OpenCVVideoSource::RGBtoHSV(float r, float g, float b, float &h, floa
 * Rotate input image according to rotation angle around the viewing direction.
 * Angle is supposed to be calculated in QmitkARRotationComponet in the update() method.
 */
-IplImage* mitk::OpenCVVideoSource::RotateImage(IplImage* input)
+IplImage* mitk::OpenCVVideoSource::FlipImage(IplImage* input)
 {
   if(input == NULL)
   { //warn the user and quit
     std::cout<<"openCVVideoSource: Current video image is null! "<< std::endl;
     return input;
   }
-  IplImage* dst = cvCloneImage( input );
-  double angle =  this->GetRotationAngle(); //degree
-  CvPoint2D32f centre;
-  CvMat *translate = cvCreateMat(2, 3, CV_32FC1);
-  cvSetZero(translate);
-  centre.x =   m_CaptureWidth/2;
-  centre.y = m_CaptureHeight/2;
-  cv2DRotationMatrix(centre, angle, 1.0, translate);
-  cvWarpAffine(input, dst, translate,CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS , cvScalarAll(0));
-  cvReleaseMat(&translate);
 
-  return dst;
+  if(m_FlipXAxisEnabled && !m_FlipYAxisEnabled)
+  {
+  cvFlip(input,0,0);
+  }
+  if(!m_FlipXAxisEnabled && m_FlipYAxisEnabled)
+  {
+  cvFlip(input,0,1);
+  }
+  if(m_FlipXAxisEnabled && m_FlipYAxisEnabled)
+  {
+  cvFlip(input,0,-1);
+  }
+
+  return input;
 }
 
 void mitk::OpenCVVideoSource::Reset()
@@ -417,19 +412,15 @@ void mitk::OpenCVVideoSource::Reset()
   // bool m_UndistortImage;
 }
 
-void mitk::OpenCVVideoSource::EnableRotation(bool enable= true)
+void mitk::OpenCVVideoSource::SetEnableXAxisFlip(bool enable)
 {
-  m_RotationEnabled = enable;
-  this->Modified();
+   this->m_FlipXAxisEnabled = enable;
+   this->Modified();
 }
 
-void mitk::OpenCVVideoSource::SetRotationAngle(double rotationAngle)
+void mitk::OpenCVVideoSource::SetEnableYAxisFlip(bool enable)
 {
-  m_RotationAngle = rotationAngle;
-  this->Modified();
+   this->m_FlipXAxisEnabled = enable;
+   this->Modified();
 }
 
-double mitk::OpenCVVideoSource::GetRotationAngle()
-{
-  return m_RotationAngle;
-}

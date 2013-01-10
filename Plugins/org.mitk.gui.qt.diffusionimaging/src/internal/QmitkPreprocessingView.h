@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKPREPROCESSINGVIEW_H_INCLUDED
 #define _QMITKPREPROCESSINGVIEW_H_INCLUDED
@@ -26,10 +24,6 @@ PURPOSE.  See the above copyright notices for more information.
 #include "ui_QmitkPreprocessingViewControls.h"
 
 #include "mitkDiffusionImage.h"
-
-#include <berryIPartListener.h>
-#include <berryISelectionListener.h>
-#include <berryIStructuredSelection.h>
 
 typedef short DiffusionPixelType;
 
@@ -81,20 +75,19 @@ class QmitkPreprocessingView : public QmitkFunctionality
 protected slots:
 
   void AverageGradients();
-  void DoAverageGradients(mitk::DataStorage::SetOfObjects::Pointer inImages);
-
   void ExtractB0();
-  void DoExtractB0(mitk::DataStorage::SetOfObjects::Pointer inImages);
-
-  void BrainMask();
-  void DoBrainMask(mitk::DataStorage::SetOfObjects::Pointer inImages);
-
+  void MergeDwis();
   void DoApplyMesurementFrame();
   void DoReduceGradientDirections();
   void DoShowGradientDirections();
   void DoHalfSphereGradientDirections();
 
 protected:
+  /** Called by ExtractB0 if check-box activated, extracts all b0 images without averaging */
+  void DoExtractBOWithoutAveraging();
+
+  /// \brief called by QmitkFunctionality when DataManager's selection has changed
+  virtual void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
 
   Ui::QmitkPreprocessingViewControls* m_Controls;
 
@@ -102,9 +95,11 @@ protected:
 
   void SetDefaultNodeProperties(mitk::DataNode::Pointer node, std::string name);
 
-  berry::ISelectionListener::Pointer m_SelListener;
-  berry::IStructuredSelection::ConstPointer m_CurrentSelection;
   mitk::DiffusionImage<DiffusionPixelType>::Pointer m_DiffusionImage;
+  std::vector< mitk::DataNode::Pointer >            m_SelectedDiffusionNodes;
+
+  QList<QCheckBox*> m_ReduceGradientCheckboxes;
+  QList<QSpinBox*> m_ReduceGradientSpinboxes;
 };
 
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _Qmitk_Video_Background_h_
 #define _Qmitk_Video_Background_h_
@@ -52,7 +51,7 @@ public:
   /// default ctor, TimerDelay is 40 by default
   /// you must SetVideoSource() and AddRenderWindow() afterwards
   ///
-  explicit QmitkVideoBackground(QObject *parent=0); 
+  explicit QmitkVideoBackground(QObject *parent=0);
   ///
   /// constructs a video background with the given video source
   /// no parent is set here, dont forget to delete the object or
@@ -60,7 +59,7 @@ public:
   /// TimerDelay = refresh rate of video in ms (25 ms = 40 Hz).
   /// you must call AddRenderWindow() afterwards
   ///
-  explicit QmitkVideoBackground(mitk::VideoSource* v, int TimerDelay = 25); 
+  explicit QmitkVideoBackground(mitk::VideoSource* v, int TimerDelay = 25);
   ///
   /// disables all video backgrounds
   ///
@@ -120,7 +119,7 @@ public:
   /// resumes the playback (restarts the update timer)
   ///
   void Resume();
-  
+
   ///
   /// sets a *new* video source (if previously enabled, this will stop
   /// the video background if it was previously enabled

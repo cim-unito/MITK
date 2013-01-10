@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkInteractor.h"
@@ -38,8 +37,8 @@ PURPOSE.  See the above copyright notices for more information.
 const std::string mitk::Interactor::XML_NODE_NAME = "interactor";
 
 mitk::Interactor::Interactor(const char * type, DataNode* dataNode)
-: StateMachine(type), 
-  m_DataNode(dataNode), 
+: StateMachine(type),
+  m_DataNode(dataNode),
   m_Mode(SMDESELECTED)
 {
   if (m_DataNode != NULL)
@@ -55,7 +54,7 @@ mitk::BaseData* mitk::Interactor::GetData() const
 {
   if (m_DataNode != NULL)
     return m_DataNode->GetData();
-  else 
+  else
     return NULL;
 }
 
@@ -64,12 +63,12 @@ mitk::Interactor::SMMode mitk::Interactor::GetMode() const
   return m_Mode;
 }
 
-bool mitk::Interactor::IsNotSelected() const 
+bool mitk::Interactor::IsNotSelected() const
 {
   return (m_Mode==SMDESELECTED);
 }
 
-bool mitk::Interactor::IsSelected() const 
+bool mitk::Interactor::IsSelected() const
 {
   return (m_Mode!=SMDESELECTED);
 }
@@ -84,6 +83,9 @@ void mitk::Interactor::CreateModeOperation(ModeType mode)
     m_UndoController->SetOperationEvent(operationEvent);
   }
   this->ExecuteOperation(doOp);
+
+  if (!m_UndoEnabled)
+    delete doOp;
 }
 
 bool mitk::Interactor::OnModeDeselect(Action* /*action*/, StateEvent const*)
@@ -123,9 +125,9 @@ bool mitk::Interactor::OnModeSubSelect(Action* /*action*/, StateEvent const*)
 float mitk::Interactor::CanHandleEvent(StateEvent const* stateEvent) const
 {
     //return value for boundingbox
-  float returnvalueBB = 0.0, 
+  float returnvalueBB = 0.0,
     //return value for a existing transition
-    returnvalueTransition = 0.0, 
+    returnvalueTransition = 0.0,
     //return value for an existing key transition
     returnvalueKey = 0.0;
 
@@ -154,7 +156,7 @@ float mitk::Interactor::CanHandleEvent(StateEvent const* stateEvent) const
   {
     returnvalueTransition = 0.5;//it can be understood
   }
-  
+
   //compute the center of the data taken care of if != NULL
   if (GetData() != NULL)
   {
@@ -170,7 +172,7 @@ float mitk::Interactor::CanHandleEvent(StateEvent const* stateEvent) const
       Point3D point;
       GetData()->GetTimeSlicedGeometry()->WorldToIndex(event->GetWorldPosition(), point);
 
-      //distance between center and point 
+      //distance between center and point
       BoundingBox::PointType center = bBox->GetCenter();
       returnvalueBB = point.EuclideanDistanceTo(center);
 
@@ -233,7 +235,7 @@ const std::string& mitk::Interactor::GetXMLNodeName() const
 void mitk::Interactor::SetDataNode( DataNode* dataNode )
 {
   m_DataNode = dataNode;
-  
+
   //check for the number of time steps and initialize the vector of CurrentStatePointer accordingly
   if (m_DataNode != NULL)
   {
@@ -258,7 +260,7 @@ void mitk::Interactor::UpdateTimeStep(unsigned int timeStep)
     if (m_DataNode!= NULL)
       if (m_DataNode->GetData()!= NULL)
         m_DataNode->GetData()->Expand(timeStep+1); //+1 becuase the vector starts with 0 and the timesteps with 1
-    
+
     //now check for this object
     this->ExpandStartStateVector(timeStep+1); //nothing is changed if the number of timesteps in data equals the number of startstates held in statemachine
   }

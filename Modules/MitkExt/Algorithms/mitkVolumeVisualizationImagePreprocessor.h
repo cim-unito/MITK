@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkVolumeVisualizationImagePreprocessor_h_include
 #define mitkVolumeVisualizationImagePreprocessor_h_include
@@ -60,7 +59,7 @@ public:
 
   mitkClassMacro(VolumeVisualizationImagePreprocessor, itk::Object);
 
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
 
   mitk::Image::Pointer Process( mitk::Image::Pointer originalCT,
@@ -81,12 +80,12 @@ public:
   {
     return m_MaxThreshold;
   }
-                                
+
   double GetLastUsedThreshold() const
   {
     return m_LastUsedTreshold;
   }
-                                
+
   mitk::TransferFunction::Pointer GetInitialTransferFunction( );
   void UpdateTransferFunction( mitk::TransferFunction::Pointer tf , int treshold );
 
@@ -96,7 +95,7 @@ protected:
   typedef itk::Image<short, 3>          CTImage;
   typedef itk::ImageRegionIterator< CTImage  > CTIteratorType;
   typedef itk::ImageRegionIteratorWithIndex< CTImage  > CTIteratorIndexType;
-  
+
   typedef itk::Image<unsigned char, 3 > BinImage;
   typedef itk::ImageRegionIterator< BinImage > BinIteratorType;
   typedef itk::ImageRegionIteratorWithIndex< BinImage > BinIteratorIndexType;
@@ -135,29 +134,29 @@ protected:
 
 
 
-  // grayvalue of voxel out of liver 
+  // grayvalue of voxel out of liver
   double m_OutOfLiverValue;
 
   // grayvalue liver surface will be set to
   double m_surfaceValue;
 
-  // average of all grayvalues located on the liver surface 
+  // average of all grayvalues located on the liver surface
   double m_realSurfaceValue;
 
   double m_realInLiverValue;
-  
-  //estimated treshold value 
+
+  //estimated treshold value
   double m_EstimatedThreshold;
-  
+
   double m_GreatestStructureThreshold;
 
 
-  //minimum treshold value 
+  //minimum treshold value
   double m_MinThreshold;
 
-  //maximum treshold value 
+  //maximum treshold value
   double m_MaxThreshold;
-  
+
   int m_MinX;
   int m_MinY;
   int m_MinZ;
@@ -167,14 +166,14 @@ protected:
   int m_MaxZ;
 
   int m_LastUsedTreshold;
-  
+
   int histogramm[65536];
   int total;
 
-  
+
   int GetHistogrammValueFromTop( double part );
   int GetHistogrammValueFromBottom( double part );
-  
+
 
 };
 

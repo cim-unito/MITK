@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef MITK_WIIMOTEVTKCAMERACONTROLLER_H
 #define MITK_WIIMOTEVTKCAMERACONTROLLER_H
 
@@ -23,7 +38,7 @@ namespace mitk
     mitkClassMacro(WiiMoteVtkCameraController, CameraController);
     itkNewMacro(Self);
 
-  protected: 
+  protected:
 
     WiiMoteVtkCameraController();
     ~WiiMoteVtkCameraController();
@@ -37,8 +52,8 @@ namespace mitk
     bool m_ClippingRangeIsSet;
     double m_CurrentElevationAngle;
     double m_CurrentAzimuthAngle;
-    
-    // calibration 
+
+    // calibration
     bool m_Calibrated;
     double m_SensitivityXMAX;
     double m_SensitivityXMIN;
@@ -52,10 +67,10 @@ namespace mitk
     bool FinishCalibration(mitk::Action* a, const mitk::StateEvent* e);
 
     // slice scrolling
-    mitk::BaseRenderer::Pointer m_TransversalBR;
+    mitk::BaseRenderer::Pointer m_AxialBR;
     double m_InitialScrollValue;
     int m_UpdateFrequency;
 
-  }; // end class 
+  }; // end class
 } // end namespace mitk
 #endif // MITK_WIIMOTEVTKCAMERACONTROLLER_H

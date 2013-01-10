@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 14123 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __mitkWeakPointer_h
 #define __mitkWeakPointer_h
@@ -73,17 +72,17 @@ public:
   WeakPointer (ObjectType *p)
     : m_DeleteObserverTag(-1),
       m_ModifiedObserverTag(-1),
-      m_Pointer(p) 
+      m_Pointer(p)
   {
     this->AddDeleteAndModifiedObserver();
   }
 
   /** Destructor.  */
   ~WeakPointer ()
-  { 
+  {
     this->RemoveDeleteAndModifiedObserver();
 
-    m_Pointer = 0; 
+    m_Pointer = 0;
   }
 
   /** Overload operator ->.  */
@@ -198,7 +197,7 @@ private:
   void RemoveDeleteAndModifiedObserver()
   {
     if(m_DeleteObserverTag >= 0 && m_ModifiedObserverTag >= 0 && m_Pointer != 0)
-    {      
+    {
       m_Pointer->RemoveObserver(m_DeleteObserverTag);
       m_Pointer->RemoveObserver(m_ModifiedObserverTag);
 

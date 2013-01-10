@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-12-10 18:05:13 +0100 (Mi, 10 Dez 2008) $
-Version:   $Revision: 15922 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __mitkNrrdDiffusionImageWriter__cpp
 #define __mitkNrrdDiffusionImageWriter__cpp
@@ -87,13 +86,13 @@ void mitk::NrrdDiffusionImageWriter<TPixelType>::GenerateData()
   sprintf( valbuffer, "DWMRI");
   itk::EncapsulateMetaData<std::string>(input->GetVectorImage()->GetMetaDataDictionary(),std::string("modality"),std::string(valbuffer));
 
-  if(input->GetOriginalDirections()->Size())
+  if(input->GetDirections()->Size())
   {
     sprintf( valbuffer, "%1f", input->GetB_Value() );
     itk::EncapsulateMetaData<std::string>(input->GetVectorImage()->GetMetaDataDictionary(),std::string("DWMRI_b-value"),std::string(valbuffer));
   }
 
-  for(unsigned int i=0; i<input->GetOriginalDirections()->Size(); i++)
+  for(unsigned int i=0; i<input->GetDirections()->Size(); i++)
   {
     sprintf( keybuffer, "DWMRI_gradient_%04d", i );
 
@@ -101,8 +100,8 @@ void mitk::NrrdDiffusionImageWriter<TPixelType>::GenerateData()
       std::string(keybuffer),tmp))
       continue;*/
 
-    sprintf( valbuffer, "%1f %1f %1f", input->GetOriginalDirections()->ElementAt(i).get(0),
-             input->GetOriginalDirections()->ElementAt(i).get(1), input->GetOriginalDirections()->ElementAt(i).get(2));
+    sprintf( valbuffer, "%1f %1f %1f", input->GetDirections()->ElementAt(i).get(0),
+             input->GetDirections()->ElementAt(i).get(1), input->GetDirections()->ElementAt(i).get(2));
 
     itk::EncapsulateMetaData<std::string>(input->GetVectorImage()->GetMetaDataDictionary(),std::string(keybuffer),std::string(valbuffer));
   }
@@ -261,7 +260,12 @@ void mitk::NrrdDiffusionImageWriter<TPixelType>::GenerateData()
       {
         for(unsigned int i=0; i<input->GetDirections()->Size(); i++)
         {
-          myfile2 << input->GetDirections()->ElementAt(i).get(j) << " ";
+          //need to modify the length
+          typename mitk::DiffusionImage<TPixelType>::GradientDirectionContainerType::Pointer grads = input->GetDirections();
+          typename mitk::DiffusionImage<TPixelType>::GradientDirectionType direction = grads->ElementAt(i);
+          direction.normalize();
+          myfile2 << direction.get(j) << " ";
+          //myfile2 << input->GetDirections()->ElementAt(i).get(j) << " ";
         }
         myfile2 << std::endl;
       }

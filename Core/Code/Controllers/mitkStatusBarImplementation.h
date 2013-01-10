@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKSTATUSBARIMPLEMENTATION_H
@@ -36,7 +35,7 @@ public:
   //##Documentation
   //## @brief Send a string to the applications StatusBar
   virtual void DisplayText(const char* t)=0;
-  
+
   //##Documentation
   //## @brief Send a string with a time delay to the applications StatusBar
   virtual void DisplayText(const char* t, int ms) = 0;
@@ -53,9 +52,9 @@ public:
   virtual void Clear() = 0;
 
   //##Documentation
-  //## @brief Set the SizeGrip of the window 
-  //## (the triangle in the lower right Windowcorner for changing the size) 
-  //## to enabled or disabled 
+  //## @brief Set the SizeGrip of the window
+  //## (the triangle in the lower right Windowcorner for changing the size)
+  //## to enabled or disabled
   virtual void SetSizeGripEnabled(bool enable) = 0;
 };
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2011-01-18 13:22:38 +0100 (Di, 18 Jan 2011) $
-Version:   $Revision: 28959 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkLineEditLevelWindowWidget.h"
 #include "QmitkLevelWindowWidgetContextMenu.h"
@@ -36,14 +35,14 @@ m_Precision(2),
 m_IntensityRangeType(LevelWindow)
 {
   m_Manager = mitk::LevelWindowManager::New();
-  
+
   itk::ReceptorMemberCommand<QmitkLineEditLevelWindowWidget>::Pointer command = itk::ReceptorMemberCommand<QmitkLineEditLevelWindowWidget>::New();
   command->SetCallbackFunction(this, &QmitkLineEditLevelWindowWidget::OnPropertyModified);
   m_ObserverTag = m_Manager->AddObserver(itk::ModifiedEvent(), command);
   m_IsObserverTagSet = true;
 
   m_Contextmenu = new QmitkLevelWindowWidgetContextMenu(this); // true);
-  
+
   QVBoxLayout* layout = new QVBoxLayout( this );
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(0);
@@ -71,6 +70,10 @@ m_IntensityRangeType(LevelWindow)
   m_Validator2 = new QDoubleValidator(std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), m_Precision, this);
   m_LevelInput->setValidator(m_Validator2);
   
+  //QValidator* validatorLevelInput = new QIntValidator(-10000000, 10000000, this);
+  //QValidator* validatorLevelInput = new QDoubleValidator(numeric_limits<double>::min(), numeric_limits<double>::max(), 2, this);
+  //m_LevelInput->setValidator(validatorLevelInput);
+
   this->hide();
 }
 
@@ -89,7 +92,7 @@ void QmitkLineEditLevelWindowWidget::OnPropertyModified(const itk::EventObject& 
   {
     updateInputs();
     m_LevelInput->setEnabled(!m_LevelWindow.IsFixed());
-    m_WindowInput->setEnabled(!m_LevelWindow.IsFixed());  
+    m_WindowInput->setEnabled(!m_LevelWindow.IsFixed());
     this->show();
   }
   catch(...)

@@ -14,8 +14,10 @@
 #! \param EXCLUDE_PLUGINS (optional) A list of plug-ins which should not be used. Mainly
 #!        useful if PLUGINS was not used.
 #! \param LINK_LIBRARIES A list of libraries to be linked with the executable.
+#! \param LIBRARY_DIRS A list of directories to pass through to MITK_INSTALL_TARGETS
 #! \param SHOW_CONSOLE (option) Show the console output window (on Windows).
 #! \param NO_PROVISIONING (option) Do not create provisioning files.
+#! \param NO_INSTALL (option) Do not install this executable
 #!
 #! Assuming that there exists a file called <code>MyApp.cpp</code>, an example call looks like:
 #! \code
@@ -29,7 +31,7 @@
 #!
 function(FunctionCreateBlueBerryApplication)
 
-macro_parse_arguments(_APP "NAME;DESCRIPTION;SOURCES;PLUGINS;EXCLUDE_PLUGINS;LINK_LIBRARIES" "SHOW_CONSOLE;NO_PROVISIONING" ${ARGN})
+macro_parse_arguments(_APP "NAME;DESCRIPTION;SOURCES;PLUGINS;EXCLUDE_PLUGINS;LINK_LIBRARIES;LIBRARY_DIRS" "SHOW_CONSOLE;NO_PROVISIONING;NO_INSTALL" ${ARGN})
 
 if(NOT _APP_NAME)
   message(FATAL_ERROR "NAME argument cannot be empty.")
@@ -48,11 +50,11 @@ else()
     string(REPLACE "." "_" _plugin_target ${_plugin})
     list(APPEND _APP_PLUGINS ${_plugin_target})
   endforeach()
-  
+
   # get all plug-in dependencies
   ctkFunctionGetPluginDependencies(_plugin_deps PLUGINS ${_APP_PLUGINS} ALL)
   # add the dependencies to the list of application plug-ins
-  list (APPEND _APP_PLUGINS ${_plugin_deps})
+  list(APPEND _APP_PLUGINS ${_plugin_deps})
 endif()
 
 #------------------------------------------------------------------------
@@ -76,18 +78,39 @@ include_directories(
 link_directories(${MITK_LINK_DIRECTORIES})
 
 # -----------------------------------------------------------------------
+# Add executable icon (Windows)
+# -----------------------------------------------------------------------
+set(WINDOWS_ICON_RESOURCE_FILE "")
+if(WIN32)
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/icons/${_APP_NAME}.rc")
+    set(WINDOWS_ICON_RESOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/icons/${_APP_NAME}.rc")
+  endif()
+endif()
+
+# -----------------------------------------------------------------------
 # Create the executable and link libraries
 # -----------------------------------------------------------------------
 
 if(_APP_SHOW_CONSOLE)
-  add_executable(${_APP_NAME} MACOSX_BUNDLE ${_APP_SOURCES})
+  add_executable(${_APP_NAME} MACOSX_BUNDLE ${_APP_SOURCES} ${WINDOWS_ICON_RESOURCE_FILE})
 else()
-  add_executable(${_APP_NAME} MACOSX_BUNDLE WIN32 ${_APP_SOURCES})
+  add_executable(${_APP_NAME} MACOSX_BUNDLE WIN32 ${_APP_SOURCES} ${WINDOWS_ICON_RESOURCE_FILE})
 endif()
 
 target_link_libraries(${_APP_NAME} org_blueberry_osgi ${_APP_LINK_LIBRARIES})
 if(WIN32)
   target_link_libraries(${_APP_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTMAIN_LIBRARY})
+endif()
+
+# -----------------------------------------------------------------------
+# Add executable icon (Mac)
+# -----------------------------------------------------------------------
+if(APPLE)
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/icons/icon.icns")
+    set_target_properties(${_APP_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "${CMAKE_CURRENT_SOURCE_DIR}/icons/icon.icns")
+    file(COPY ${MACOSX_BUNDLE_ICON_FILE} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_APP_NAME}.app/Contents/Resources/")
+    file(INSTALL ${MACOSX_BUNDLE_ICON_FILE} DESTINATION "${_APP_NAME}.app/Contents/Resources/")
+  endif()
 endif()
 
 # -----------------------------------------------------------------------
@@ -145,23 +168,35 @@ endif(WIN32)
 # Install support
 # -----------------------------------------------------------------------
 
-# This installs all third-party CTK plug-ins
-FunctionInstallThirdPartyCTKPlugins(${_APP_PLUGINS} EXCLUDE ${_APP_EXCLUDE_PLUGINS})
+if(NOT _APP_NO_INSTALL)
 
-# Install the executable
-MITK_INSTALL_TARGETS(EXECUTABLES ${_APP_NAME} GLOB_PLUGINS )
+  # This installs all third-party CTK plug-ins
+  FunctionInstallThirdPartyCTKPlugins(${_APP_PLUGINS} EXCLUDE ${_APP_EXCLUDE_PLUGINS})
 
-if(NOT _APP_NO_PROVISIONING)
-  # Install the provisioning file
-  mitkFunctionInstallProvisioningFiles(${_prov_file})
+  if(COMMAND BlueBerryApplicationInstallHook)
+    set(_real_app_plugins ${_APP_PLUGINS})
+    if(_APP_EXCLUDE_PLUGINS)
+      list(REMOVE_ITEM _real_app_plugins ${_APP_EXCLUDE_PLUGINS})
+    endif()
+    BlueBerryApplicationInstallHook(APP_NAME ${_APP_NAME} PLUGINS ${_real_app_plugins})
+  endif()
+
+  # Install the executable
+  MITK_INSTALL_TARGETS(EXECUTABLES ${_APP_NAME} LIBRARY_DIRS ${_APP_LIBRARY_DIRS} GLOB_PLUGINS )
+
+  if(NOT _APP_NO_PROVISIONING)
+    # Install the provisioning file
+    mitkFunctionInstallProvisioningFiles(${_prov_file})
+  endif()
+
+  # On Linux, create a shell script to start a relocatable application
+  if(UNIX AND NOT APPLE)
+    install(PROGRAMS "${MITK_SOURCE_DIR}/CMake/RunInstalledApp.sh" DESTINATION "." RENAME ${_APP_NAME}.sh)
+  endif()
+
+  # Tell cpack the executables that you want in the start menu as links
+  set(MITK_CPACK_PACKAGE_EXECUTABLES ${MITK_CPACK_PACKAGE_EXECUTABLES} "${_APP_NAME};${_APP_DESCRIPTION}" CACHE INTERNAL "Collecting windows shortcuts to executables")
+
 endif()
-
-# On Linux, create a shell script to start a relocatable application
-if(UNIX AND NOT APPLE)
-  install(PROGRAMS "${MITK_SOURCE_DIR}/CMake/RunInstalledApp.sh" DESTINATION "." RENAME ${_APP_NAME}.sh)
-endif()
-
-# Tell cpack the executables that you want in the start menu as links
-set(MITK_CPACK_PACKAGE_EXECUTABLES ${MITK_CPACK_PACKAGE_EXECUTABLES} "${_APP_NAME};${_APP_DESCRIPTION}" CACHE INTERNAL "Collecting windows shortcuts to executables")
 
 endfunction()

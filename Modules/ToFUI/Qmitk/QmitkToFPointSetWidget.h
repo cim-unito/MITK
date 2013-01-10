@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QmitkToFPointSetWidget_H_INCLUDED
 #define _QmitkToFPointSetWidget_H_INCLUDED
@@ -30,8 +28,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkPropertyList.h>
 #include <mitkToFDistanceImageToPointSetFilter.h>
 
-// Qmitk headers
-#include <QmitkStdMultiWidget.h>
+//Qmitk headers
+#include <QmitkRenderWindow.h>
 
 // vtk includes
 #include <vtkSmartPointer.h>
@@ -44,6 +42,10 @@ PURPOSE.  See the above copyright notices for more information.
 * The widget allows to
 * 1. Measure the distance between two points in 3D ToF space by clicking the points in the 2D slices
 * 2. Defining a ToF PointSet both in 2D and 3D. CameraIntrinsics are used for calculation between 2D and 3D
+*
+* NOTE:
+* You have to make sure that the widget is initialized at a position in the plugin using it, where the distance
+* image is available. CleanUp has to be called to make sure that all observers and renderers are removed correctly.
 *
 * @ingroup ToFUI
 */
@@ -65,17 +67,22 @@ class mitkTOFUI_EXPORT QmitkToFPointSetWidget :public QWidget
     virtual void CreateConnections();
 
     /*!
-    \brief initializes the widget
+    \brief initializes the widget. Observers to the change events of the point sets are created, text actors are activated
+    to be rendered into the foreground of the render window.
     \param stdMultiWidget QmitkStdMultiWidget used for painting overlays for measurement
     \param dataStorage DataStorage to add PointSets
     \param distanceImage range image used to calculate 3D PointSet from 2D index
     */
-    void InitializeWidget(QmitkStdMultiWidget* stdMultiWidget, mitk::DataStorage::Pointer dataStorage, mitk::Image::Pointer distanceImage);
-
+    void InitializeWidget(QHash<QString, QmitkRenderWindow*> renderWindowHashMap, mitk::DataStorage::Pointer dataStorage, mitk::CameraIntrinsics::Pointer cameraIntrinsics=NULL);
     /*!
-    \brief specify the intrinsic parameters of the camera (holds focal length, principal point, distortion coefficients)
+    \brief cleans up the widget when it's functionality is not used anymore.
+    Removes observers and deletes foreground renderer
     */
-    void SetCameraIntrinsics(mitk::CameraIntrinsics::Pointer cameraIntrinsics);
+    void CleanUpWidget();
+    /*!
+    \brief set the image holding the distance information used for measuring
+    */
+    void SetDistanceImage(mitk::Image::Pointer distanceImage);
 
   signals:
 
@@ -102,7 +109,7 @@ class mitkTOFUI_EXPORT QmitkToFPointSetWidget :public QWidget
 
     Ui::QmitkToFPointSetWidgetControls* m_Controls; ///< member holding the UI elements of this widget
 
-    QmitkStdMultiWidget* m_MultiWidget; ///< multi widget used for overlay visualization
+    mitk::DataStorage::Pointer m_DataStorage; ///< member holding the set DataStorage
 
     mitk::Image::Pointer m_DistanceImage; ///< image holding the range data of the ToF camera
     mitk::CameraIntrinsics::Pointer m_CameraIntrinsics; ///< intrinsic parameters of the camera
@@ -114,6 +121,7 @@ class mitkTOFUI_EXPORT QmitkToFPointSetWidget :public QWidget
     vtkSmartPointer<vtkRenderWindow> m_RenderWindow1; ///< vtk render window used for showing overlay in widget 1
     vtkSmartPointer<vtkRenderWindow> m_RenderWindow2; ///< vtk render window used for showing overlay in widget 2
     vtkSmartPointer<vtkRenderWindow> m_RenderWindow3; ///< vtk render window used for showing overlay in widget 3
+    vtkSmartPointer<vtkRenderWindow> m_RenderWindow4; ///< vtk render window used for showing overlay in widget 3
 
     mitk::PointSet::Pointer m_MeasurementPointSet2D; ///< PointSet holding the 2D ToF image point selection used for measuring
     mitk::DataNode::Pointer m_MeasurementPointSet3DNode; ///< DataNode holding the 3D ToF coordinates used for measuring
@@ -125,6 +133,9 @@ class mitkTOFUI_EXPORT QmitkToFPointSetWidget :public QWidget
 
     long m_MeasurementPointSetChangedObserverTag; ///< observer tag for measurement PointSet observer
     long m_PointSetChangedObserverTag; ///< observer tag for PointSet observer
+//    long m_DistanceImageChangedObserverTag; ///< observer tag for distance image observer
+
+    int m_WindowHeight; ///< Height of the renderWindow
 
   private:
 };

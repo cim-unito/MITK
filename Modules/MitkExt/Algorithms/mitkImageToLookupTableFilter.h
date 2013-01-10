@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _MITK_IMAGE_TO_LOOKUP_TABLE_FILTER__H_
 #define _MITK_IMAGE_TO_LOOKUP_TABLE_FILTER__H_
@@ -26,14 +25,14 @@ namespace mitk
 {
 
 /**
-* Creates a mitk::LookupTable from an image. This may be used to 
+* Creates a mitk::LookupTable from an image. This may be used to
 * create a default coloring scheme for vector images...
 */
 class MitkExt_EXPORT ImageToLookupTableFilter : public LookupTableSource
 {
 public:
 
-  mitkClassMacro( ImageToLookupTableFilter, LookupTableSource );    
+  mitkClassMacro( ImageToLookupTableFilter, LookupTableSource );
 
   itkNewMacro( Self );
 
@@ -50,7 +49,7 @@ public:
 
   const InputImageType * GetInput(unsigned int idx);
 
-protected:   
+protected:
 
   virtual void GenerateData();
 

@@ -1,3 +1,18 @@
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "berryPartList.h"
 
 #include "berrySaveablesList.h"
@@ -183,7 +198,7 @@ void PartList::RemovePart(WorkbenchPartReference::Pointer ref)
 
 //void PartList::BringToTop(IWorkbenchPartReference::Pointer ref)
 //{
-//  IStackableContainer::Pointer targetContainer;
+//  ILayoutContainer::Pointer targetContainer;
 //  if (ref != 0)
 //  {
 //    PartPane::Pointer pane = ref.Cast<WorkbenchPartReference>()->GetPane();
@@ -237,14 +252,14 @@ void PartList::RemovePart(WorkbenchPartReference::Pointer ref)
 //}
 
 //std::deque<IWorkbenchPartReference::Pointer>::iterator
-//PartList::LastIndexOfContainer(IStackableContainer::Pointer container)
+//PartList::LastIndexOfContainer(ILayoutContainer::Pointer container)
 //{
 //  for (std::deque<IWorkbenchPartReference::Pointer>::iterator iter = parts.begin();
 //      iter != parts.end(); ++iter)
 //  {
 //    IWorkbenchPartReference::Pointer ref = *iter;
 //
-//    IStackableContainer::Pointer cnt;
+//    ILayoutContainer::Pointer cnt;
 //    PartPane::Pointer pane = ref.Cast<WorkbenchPartReference>()->GetPane();
 //    if (pane != 0)
 //    {

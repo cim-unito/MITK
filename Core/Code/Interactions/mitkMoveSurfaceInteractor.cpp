@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-09-14 09:48:51 +0200 (Di, 14 Sep 2010) $
-Version:   $Revision: 26074 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkMoveSurfaceInteractor.h"
@@ -49,7 +48,7 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
   case AcDONOTHING:
     ok = true;
     break;
-  case AcCHECKELEMENT: 
+  case AcCHECKELEMENT:
     /*
     * picking: Answer the question if the given position within stateEvent is close enough to select an object
     * send yes if close enough and no if not picked
@@ -65,16 +64,16 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
       mitk::Point3D worldPoint = posEvent->GetWorldPosition();
       /* now we have a worldpoint. check if it is inside our object and select/deselect it accordingly */
 
-      mitk::StateEvent* newStateEvent = NULL;
+      std::auto_ptr<StateEvent> newStateEvent;
       const Geometry3D* geometry = GetData()->GetUpdatedTimeSlicedGeometry()->GetGeometry3D( m_TimeStep );
       if (geometry->IsInside(worldPoint))
-        newStateEvent = new mitk::StateEvent(EIDYES, stateEvent->GetEvent());
+        newStateEvent.reset(new mitk::StateEvent(EIDYES, stateEvent->GetEvent()));
       else
-        newStateEvent = new mitk::StateEvent(EIDNO, stateEvent->GetEvent());
+        newStateEvent.reset(new mitk::StateEvent(EIDNO, stateEvent->GetEvent()));
 
-      /* write new state (selected/not selected) to the property */      
-      this->HandleEvent( newStateEvent );
-    
+      /* write new state (selected/not selected) to the property */
+      this->HandleEvent( newStateEvent.get() );
+
     ok = true;
     break;
     }
@@ -82,14 +81,14 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
     // select the data
     {
       mitk::BoolProperty::Pointer selected = dynamic_cast<mitk::BoolProperty*>(m_DataNode->GetProperty("selected"));
-      if ( selected.IsNull() ) 
+      if ( selected.IsNull() )
       {
         selected = mitk::BoolProperty::New();
         m_DataNode->GetPropertyList()->SetProperty("selected", selected);
       }
 
       mitk::ColorProperty::Pointer color = dynamic_cast<mitk::ColorProperty*>(m_DataNode->GetProperty("color"));
-      if ( color.IsNull() ) 
+      if ( color.IsNull() )
       {
         color = mitk::ColorProperty::New();
         m_DataNode->GetPropertyList()->SetProperty("color", color);
@@ -108,14 +107,14 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
     //deselect the data
     {
       mitk::BoolProperty::Pointer selected = dynamic_cast<mitk::BoolProperty*>(m_DataNode->GetProperty("selected"));
-      if ( selected.IsNull() ) 
+      if ( selected.IsNull() )
       {
         selected = mitk::BoolProperty::New();
         m_DataNode->GetPropertyList()->SetProperty("selected", selected);
       }
 
       mitk::ColorProperty::Pointer color = dynamic_cast<mitk::ColorProperty*>(m_DataNode->GetProperty("color"));
-      if ( color.IsNull() ) 
+      if ( color.IsNull() )
       {
         color = mitk::ColorProperty::New();
         m_DataNode->GetPropertyList()->SetProperty("color", color);
@@ -158,7 +157,7 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
 
       // indicate modification of data tree node
       m_DataNode->Modified();
-      
+
       //update rendering
       mitk::RenderingManager::GetInstance()->RequestUpdateAll();
 
@@ -173,7 +172,7 @@ bool mitk::MoveSurfaceInteractor::ExecuteAction( Action* action, mitk::StateEven
   return ok;
 }
 
-/** 
+/**
 \example mitkMoveSurfaceInteractor.cpp
  * This is an example of how to implement a new Interactor.
  * See more details about this example in tutorial Step10.

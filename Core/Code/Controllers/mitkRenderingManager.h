@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKRENDERINGMANAGER_H_HEADER_INCLUDED_C135A197
@@ -177,11 +176,6 @@ public:
    * (geomtry information is NOT changed). PLATFORM SPECIFIC. */
   virtual bool InitializeView( vtkRenderWindow *renderWindow );
 
-
-  /** Sets the (global) SliceNavigationController responsible for
-   * time-slicing. */
-  void SetTimeNavigationController( SliceNavigationController *nc );
-
   /** Gets the (global) SliceNavigationController responsible for
    * time-slicing. */
   const SliceNavigationController *GetTimeNavigationController() const;
@@ -264,11 +258,11 @@ public:
   /**
   * \brief Setter / Getter for internal DataStorage
   *
-  * Sets / returns the mitk::DataStorage that is used internally. This instance holds all mitk::DataNodes that are 
-  * rendered by the registered BaseRenderers. 
+  * Sets / returns the mitk::DataStorage that is used internally. This instance holds all mitk::DataNodes that are
+  * rendered by the registered BaseRenderers.
   *
   * If this DataStorage is changed at runtime by calling SetDataStorage(),
-  * all currently registered BaseRenderers are automatically given the correct instance. 
+  * all currently registered BaseRenderers are automatically given the correct instance.
   * When a new BaseRenderer is added, it is automatically initialized with the currently active DataStorage.
   */
   void SetDataStorage( mitk::DataStorage* storage );
@@ -276,17 +270,17 @@ public:
   /**
   * \brief Setter / Getter for internal DataStorage
   *
-  * Sets / returns the mitk::DataStorage that is used internally. This instance holds all mitk::DataNodes that are 
-  * rendered by the registered BaseRenderers. 
+  * Sets / returns the mitk::DataStorage that is used internally. This instance holds all mitk::DataNodes that are
+  * rendered by the registered BaseRenderers.
   *
   * If this DataStorage is changed at runtime by calling SetDataStorage(),
-  * all currently registered BaseRenderers are automatically given the correct instance. 
+  * all currently registered BaseRenderers are automatically given the correct instance.
   * When a new BaseRenderer is added, it is automatically initialized with the currently active DataStorage.
   */
   mitk::DataStorage* GetDataStorage();
 
 
-  /** 
+  /**
   * \brief Setter / Getter for internal GloabInteraction
   *
   * Sets / returns the instance of mitk::GlobalInteraction that is internally held.
@@ -295,7 +289,7 @@ public:
   */
   void SetGlobalInteraction( mitk::GlobalInteraction* globalInteraction );
 
-  /** 
+  /**
   * \brief Setter / Getter for internal GloabInteraction
   *
   * Sets / returns the instance of mitk::GlobalInteraction that is internally held.
@@ -365,7 +359,7 @@ protected:
 
   RenderWindowCallbacksList m_RenderWindowCallbacksList;
 
-  SliceNavigationController *m_TimeNavigationController;
+  itk::SmartPointer<SliceNavigationController> m_TimeNavigationController;
 
   static RenderingManager::Pointer s_Instance;
   static RenderingManagerFactory *s_RenderingManagerFactory;
@@ -409,6 +403,7 @@ public:
 protected:
   virtual void GenerateRenderingRequestEvent()
   {
+    ForceImmediateUpdateAll();
   };
 
 };

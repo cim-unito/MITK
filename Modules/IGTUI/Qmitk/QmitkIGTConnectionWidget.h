@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkIGTConnectionWidget_H
 #define QmitkIGTConnectionWidget_H
@@ -32,7 +31,7 @@ PURPOSE.  See the above copyright notices for more information.
 
  /** Documentation:
   *   \brief Simple and fast access to a pre-configured TrackingDeviceSource.
-  *   
+  *
   *   This widget creates a fully configured, connected and started TrackingDeviceSource.
   *   Clicking "Connect" requires to specify a NavigationToolStorage that holds all tools to be used
   *   in the application. Corresponding surfaces are added to the DataStorage that has to be set for
@@ -53,9 +52,9 @@ class MitkIGTUI_EXPORT QmitkIGTConnectionWidget : public QWidget
 
     QmitkIGTConnectionWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~QmitkIGTConnectionWidget();
-    
-    /* @return Returns the preconfigured and connected TrackingDeviceSource ready to use in an IGT pipeline. 
-     */ 
+
+    /* @return Returns the preconfigured and connected TrackingDeviceSource ready to use in an IGT pipeline.
+     */
     mitk::TrackingDeviceSource::Pointer GetTrackingDeviceSource();
     /*!
     \brief Get the NavigationToolStorage holding all tools with corresponding surface objects
@@ -65,8 +64,8 @@ class MitkIGTUI_EXPORT QmitkIGTConnectionWidget : public QWidget
     \brief set DataStorage that is used to put the navigation tools
     */
     void SetDataStorage(mitk::DataStorage::Pointer dataStorage);
-    
-    
+
+
   signals:
     /*!
     \brief signal emitted when TrackingDevice was successfully connected
@@ -84,7 +83,7 @@ class MitkIGTUI_EXPORT QmitkIGTConnectionWidget : public QWidget
     void OnConnect();
 
   protected:
-    
+
     /// \brief Creation of the connections
     virtual void CreateConnections();
 

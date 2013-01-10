@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-04-16 16:53:19 +0200 (Fr, 16 Apr 2010) $
-Version:   $Revision: 16916 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkPlanarFigureObjectFactory.h"
 #include "mitkPlanarFigureWriter.h"
@@ -27,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 typedef std::multimap<std::string, std::string> MultimapType;
 
-mitk::PlanarFigureObjectFactory::PlanarFigureObjectFactory() 
+mitk::PlanarFigureObjectFactory::PlanarFigureObjectFactory()
 {
   static bool alreadyDone = false;
   if ( !alreadyDone )
@@ -48,7 +47,7 @@ mitk::PlanarFigureObjectFactory::PlanarFigureObjectFactory()
   }
 }
 
-mitk::Mapper::Pointer mitk::PlanarFigureObjectFactory::CreateMapper(mitk::DataNode* node, MapperSlotId id) 
+mitk::Mapper::Pointer mitk::PlanarFigureObjectFactory::CreateMapper(mitk::DataNode* node, MapperSlotId id)
 {
   mitk::Mapper::Pointer newMapper=NULL;
   mitk::BaseData *data = node->GetData();
@@ -70,7 +69,7 @@ mitk::Mapper::Pointer mitk::PlanarFigureObjectFactory::CreateMapper(mitk::DataNo
 
 void mitk::PlanarFigureObjectFactory::SetDefaultProperties(mitk::DataNode* node)
 {
-  
+
   if ( node == NULL )
   {
     return;
@@ -82,10 +81,12 @@ void mitk::PlanarFigureObjectFactory::SetDefaultProperties(mitk::DataNode* node)
   if ( pf.IsNotNull() )
   {
     mitk::PlanarFigureMapper2D::SetDefaultProperties(node);
-  } 
+    node->AddProperty( "color", mitk::ColorProperty::New(1.0,1.0,1.0), NULL, true );
+    node->AddProperty( "opacity", mitk::FloatProperty::New(0.8), NULL, true );
+  }
 }
 
-const char* mitk::PlanarFigureObjectFactory::GetFileExtensions() 
+const char* mitk::PlanarFigureObjectFactory::GetFileExtensions()
 {
   return "";
 };
@@ -95,8 +96,8 @@ mitk::CoreObjectFactoryBase::MultimapType mitk::PlanarFigureObjectFactory::GetFi
   return m_FileExtensionsMap;
 }
 
-const char* mitk::PlanarFigureObjectFactory::GetSaveFileExtensions() 
-{ 
+const char* mitk::PlanarFigureObjectFactory::GetSaveFileExtensions()
+{
   //return ";;Planar Figures (*.pf)";  // for mitk::PlanarFigure and derived classes
   std::string fileExtension;
   this->CreateFileExtensions(m_SaveFileExtensionsMap, fileExtension);
@@ -113,7 +114,7 @@ void mitk::PlanarFigureObjectFactory::CreateFileExtensionsMap()
   m_SaveFileExtensionsMap.insert(std::pair<std::string, std::string>("*.pf", "Planar Figure Files"));
 }
 
-void mitk::PlanarFigureObjectFactory::RegisterIOFactories() 
+void mitk::PlanarFigureObjectFactory::RegisterIOFactories()
 {
 }
 

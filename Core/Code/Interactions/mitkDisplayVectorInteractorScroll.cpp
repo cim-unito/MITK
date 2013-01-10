@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Thu, 14 Jan 2010) $
-Version:   $Revision: 21047 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkDisplayVectorInteractorScroll.h"
@@ -37,12 +36,20 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
 
   const DisplayPositionEvent* posEvent=dynamic_cast<const DisplayPositionEvent*>(stateEvent->GetEvent());
 
-  m_IsAltModifierActive = false;
-
   int actionId = action->GetActionId();
-  
+
   switch(actionId)
   {
+  case AcSELECTALL:   // modifier key for uncoupled panning is being pressed
+    {
+      m_IsModifierActive = true;
+      break;
+    }
+  case AcSELECT:   // modifier key for uncoupled panning is NOT being pressed
+    {
+      m_IsModifierActive = false;
+      break;
+    }
   case AcINITMOVE:
     {
       if(posEvent==NULL) return false;
@@ -60,11 +67,6 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
 
     if(wheelEvent != NULL)
     {
-      int buttonState = stateEvent->GetEvent()->GetButtonState();
-      if(buttonState == 1024)
-      {
-        m_IsAltModifierActive = true;
-      }
       mitk::SliceNavigationController::Pointer sliceNaviController = wheelEvent->GetSender()->GetSliceNavigationController();
 
       if ( !sliceNaviController->GetSliceLocked() )
@@ -91,7 +93,6 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
           stepper->Previous();
         }
       }
-      this->InvokeEvent( EndScrollInteractionEvent() );
     }
       ok = true;
       break;
@@ -99,14 +100,6 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
   case AcSCROLL:
   {
       if(posEvent==NULL) return false;
-
-      int buttonState = stateEvent->GetEvent()->GetButtonState();
-      //1025 = Alt+LeftMouseButton+Move
-      //1028 = Alt+MiddleMouseButton+Move
-      if(buttonState == 1025 || buttonState == 1028 )
-      {
-        m_IsAltModifierActive = true;
-      }
 
       mitk::SliceNavigationController::Pointer sliceNaviController = m_Sender->GetSliceNavigationController();
 
@@ -116,7 +109,7 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
 
         int delta = 0;
 
-        delta = m_LastDisplayCoordinate[1]-posEvent->GetDisplayPosition()[1];
+        delta = static_cast<int>(m_LastDisplayCoordinate[1]-posEvent->GetDisplayPosition()[1]);
 
         // if we moved less than 'm_IndexToSliceModifier' pixels slice ONE slice only
         if ( delta>0 && delta<m_IndexToSliceModifier )
@@ -129,11 +122,11 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
         }
 
         delta /= m_IndexToSliceModifier;
-  
+
         if ( m_InvertScrollingDirection )
           delta *= -1;
 
-        int newPos = sliceNaviController->GetSlice()->GetPos() + delta; 
+        int newPos = sliceNaviController->GetSlice()->GetPos() + delta;
 
         // if auto repeat is on, start at first slice if you reach the last slice and vice versa
         int maxSlices = sliceNaviController->GetSlice()->GetSteps();
@@ -160,14 +153,18 @@ bool mitk::DisplayVectorInteractorScroll::ExecuteAction(Action* action, mitk::St
         // set the new position
         sliceNaviController->GetSlice()->SetPos( newPos );
 
-        this->InvokeEvent( EndScrollInteractionEvent() );
       }
 
       m_LastDisplayCoordinate=m_CurrentDisplayCoordinate;
       m_CurrentDisplayCoordinate=posEvent->GetDisplayPosition();
+
+      ok = true;
+      break;
     }
   case AcFINISHMOVE:
     {
+      this->InvokeEvent( EndScrollInteractionEvent() );
+
       ok = true;
       break;
     }
@@ -195,7 +192,7 @@ mitk::DisplayVectorInteractorScroll::DisplayVectorInteractorScroll(const char * 
   , m_IndexToSliceModifier(4)
   , m_AutoRepeat( false )
   , m_InvertScrollingDirection( false )
-  , m_IsAltModifierActive( false )
+  , m_IsModifierActive( false )
 {
   m_StartDisplayCoordinate.Fill(0);
   m_LastDisplayCoordinate.Fill(0);
@@ -220,6 +217,6 @@ void mitk::DisplayVectorInteractorScroll::SetInvertScrollingDirection( bool inve
 
 bool mitk::DisplayVectorInteractorScroll::IsAltModifierActive() const
 {
-  return m_IsAltModifierActive;
+  return m_IsModifierActive;
 }
 

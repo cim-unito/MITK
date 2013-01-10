@@ -1,4 +1,4 @@
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/internal/berryWorkbenchPlugin.h
   src/internal/intro/berryEditorIntroAdapterPart.h
   src/berryWorkbenchPart.h
@@ -7,11 +7,11 @@ SET(MOC_H_FILES
   src/intro/berryIntroPart.h
 )
 
-SET(CACHED_RESOURCE_FILES
+set(CACHED_RESOURCE_FILES
   plugin.xml
 )
 
-SET(SRC_CPP_FILES
+set(SRC_CPP_FILES
   berryAbstractSourceProvider.cpp
   berryAbstractUIPlugin.cpp
   berryAbstractUICTKPlugin.cpp
@@ -21,26 +21,66 @@ SET(SRC_CPP_FILES
   berryFileEditorInput.cpp
   berryGeometry.cpp
   berryIDropTargetListener.cpp
+  berryIEditorDescriptor.cpp
+  berryIEditorInput.cpp
+  berryIEditorMatchingStrategy.cpp
+  berryIEditorPart.cpp
+  berryIEditorReference.cpp
   berryIEditorRegistry.cpp
+  berryIEditorSite.cpp
+  berryIFileEditorMapping.cpp
+  berryIFolderLayout.cpp
   berryImageDescriptor.cpp
   berryIMemento.cpp
+  berryINullSelectionListener.cpp
   berryIPageLayout.cpp
   berryIPartListener.cpp
+  berryIPageService.cpp
+  berryIPartService.cpp
+  berryIPathEditorInput.cpp
+  berryIPerspectiveDescriptor.cpp
+  berryIPerspectiveFactory.cpp
   berryIPerspectiveListener.cpp
+  berryIPerspectiveRegistry.cpp
+  berryIPlaceholderFolderLayout.cpp
+  berryIPostSelectionProvider.cpp
+  berryIPreferencePage.cpp
   berryIPropertyChangeListener.cpp
+  berryIReusableEditor.cpp
   berryISaveablePart.cpp
   berryISaveablesLifecycleListener.cpp
+  berryISaveablesSource.cpp
+  berryISelection.cpp
   berryISelectionChangedListener.cpp
   berryISelectionListener.cpp
+  berryISelectionProvider.cpp
+  berryISelectionService.cpp
   berryIShellListener.cpp
+  berryIShellProvider.cpp
   berryISizeProvider.cpp
+  berryISourceProvider.cpp
   berryISourceProviderListener.cpp
   berryISources.cpp
+  berryIStickyViewDescriptor.cpp
   berryIStructuredSelection.cpp
+  berryIViewCategory.cpp
+  berryIViewDescriptor.cpp
+  berryIViewLayout.cpp
+  berryIViewPart.cpp
+  berryIViewReference.cpp
+  berryIViewRegistry.cpp
+  berryIViewSite.cpp
   berryIWindowListener.cpp
+  berryIWorkbench.cpp
   berryIWorkbenchListener.cpp
   berryIWorkbenchPage.cpp
+  berryIWorkbenchPart.cpp
   berryIWorkbenchPartConstants.cpp
+  berryIWorkbenchPartDescriptor.cpp
+  berryIWorkbenchPartReference.cpp
+  berryIWorkbenchPartSite.cpp
+  berryIWorkbenchSite.cpp
+  berryIWorkbenchWindow.cpp
   berryPlatformUI.cpp
   berryPoint.cpp
   berryPropertyChangeEvent.cpp
@@ -57,12 +97,15 @@ SET(SRC_CPP_FILES
   berryWorkbenchPart.cpp
   berryWorkbenchPreferenceConstants.cpp
   berryXMLMemento.cpp
-  
+
   #application
   application/berryActionBarAdvisor.cpp
+  application/berryIActionBarConfigurer.cpp
+  application/berryIWorkbenchConfigurer.cpp
+  application/berryIWorkbenchWindowConfigurer.cpp
   application/berryWorkbenchAdvisor.cpp
   application/berryWorkbenchWindowAdvisor.cpp
-  
+
   #commands
   #commands/berryAbstractContributionFactory.cpp
   #commands/berryCommandContributionItem.cpp
@@ -80,11 +123,12 @@ SET(SRC_CPP_FILES
   #commands/berryMenuManager.cpp
   #commands/berrySubContributionItem.cpp
   #commands/berryUIElement.cpp
-  
+
   #dialogs
   dialogs/berryIDialog.cpp
+  dialogs/berryIShowViewDialog.cpp
   dialogs/berryMessageDialog.cpp
-  
+
   #guitk
   guitk/berryGuiTkControlEvent.cpp
   guitk/berryGuiTkEvent.cpp
@@ -92,50 +136,66 @@ SET(SRC_CPP_FILES
   guitk/berryGuiTkIMenuListener.cpp
   guitk/berryGuiTkISelectionListener.cpp
   guitk/berryGuiTkSelectionEvent.cpp
-  
+
   #handlers
   handlers/berryHandlerUtil.cpp
   handlers/berryIHandlerActivation.cpp
+  handlers/berryIHandlerService.cpp
   handlers/berryShowViewHandler.cpp
-  
+
   #src
+  intro/berryIIntroManager.cpp
   intro/berryIntroPart.cpp
-  
+  intro/berryIIntroPart.cpp
+  intro/berryIIntroSite.cpp
+
+  #services
+  services/berryIDisposable.cpp
+  services/berryINestable.cpp
+  services/berryIServiceFactory.cpp
+  services/berryIServiceLocator.cpp
+  services/berryIServiceWithSources.cpp
+
   #tweaklets
   tweaklets/berryDnDTweaklet.cpp
   tweaklets/berryGuiWidgetsTweaklet.cpp
   tweaklets/berryImageTweaklet.cpp
   tweaklets/berryMessageDialogTweaklet.cpp
+  tweaklets/berryITracker.cpp
   tweaklets/berryWorkbenchPageTweaklet.cpp
   tweaklets/berryWorkbenchTweaklet.cpp
-  
+
   #presentations
   presentations/berryIPresentablePart.cpp
   presentations/berryIPresentationFactory.cpp
+  presentations/berryIPresentationSerializer.cpp
   presentations/berryIStackPresentationSite.cpp
   presentations/berryStackDropResult.cpp
   presentations/berryStackPresentation.cpp
-  
+
   #testing
   testing/berryTestableObject.cpp
-  
+
   #util
+  util/berryISafeRunnableRunner.cpp
   util/berrySafeRunnable.cpp
-  
+
 )
 
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
 
   #intro
   intro/berryEditorIntroAdapterPart.cpp
+  intro/berryIIntroDescriptor.cpp
+  intro/berryIIntroRegistry.cpp
   intro/berryIntroConstants.cpp
   intro/berryIntroDescriptor.cpp
   intro/berryIntroPartAdapterSite.cpp
   intro/berryIntroRegistry.cpp
   intro/berryViewIntroAdapterPart.cpp
   intro/berryWorkbenchIntroManager.cpp
-  
+
   berryAbstractPartSelectionTracker.cpp
   berryAbstractSelectionService.cpp
   berryBundleUtility.cpp
@@ -157,6 +217,14 @@ SET(INTERNAL_CPP_FILES
   berryFileEditorMapping.cpp
   berryFolderLayout.cpp
   berryIDragOverListener.cpp
+  berryIDropTarget.cpp
+  berryIEvaluationResultCache.cpp
+  berryIEvaluationResultCache.cpp
+  berryILayoutContainer.cpp
+  berryIServiceLocatorCreator.cpp
+  berryIStickyViewManager.cpp
+  berryIWorkbenchLocationService.cpp
+  berryIWorkbenchLocationService.cpp
   berryLayoutHelper.cpp
   berryLayoutPart.cpp
   berryLayoutPartSash.cpp
@@ -194,7 +262,6 @@ SET(INTERNAL_CPP_FILES
   berryServiceLocatorCreator.cpp
   berryShellPool.cpp
   berrySourcePriorityNameMapping.cpp
-  berryStackablePart.cpp
   berryStickyViewDescriptor.cpp
   berryStickyViewManager.cpp
   berryTweaklets.cpp
@@ -224,12 +291,12 @@ SET(INTERNAL_CPP_FILES
   berryWWinPartService.cpp
 )
 
-SET(CPP_FILES )
+set(CPP_FILES )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})

@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 /*=========================================================================
 
 Program:   Tensor ToolKit - TTK
@@ -74,25 +89,33 @@ namespace itk
     void SetBValue( const double& bval)
     { m_BValue = bval; }
 
+    itkSetMacro(Min, OutputScalarType);
+    itkSetMacro(Max, OutputScalarType);
+
+
   protected:
     TensorImageToDiffusionImageFilter()
     {
       m_BValue = 1.0;
       m_BaselineImage = 0;
+      m_Min = 0.0;
+      m_Max = 10000.0;
     };
     ~TensorImageToDiffusionImageFilter(){};
 
     void PrintSelf (std::ostream& os, Indent indent) const
     {
-      Superclass::PrintSelf (os, indent);      
+      Superclass::PrintSelf (os, indent);
     }
 
     void BeforeThreadedGenerateData( void );
 
-    void ThreadedGenerateData( const 
+    void ThreadedGenerateData( const
       OutputImageRegionType &outputRegionForThread, int);
-  
+
     //void GenerateData();
+
+
 
   private:
 
@@ -103,7 +126,10 @@ namespace itk
     double                               m_BValue;
     typename BaselineImageType::Pointer  m_BaselineImage;
 
-  };    
+    OutputScalarType                     m_Min;
+    OutputScalarType                     m_Max;
+
+  };
 
 
 } // end of namespace

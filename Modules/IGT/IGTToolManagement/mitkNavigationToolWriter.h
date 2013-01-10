@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-08-11 15:15:02 +0200 (Di, 11 Aug 2009) $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef NAVIGATIONTOOLWRITER_H_INCLUDED
 #define NAVIGATIONTOOLWRITER_H_INCLUDED
@@ -28,7 +27,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <MitkIGTExports.h>
 
 
-namespace mitk 
+namespace mitk
 {
   /**Documentation
   * \brief This class offers methods to write objects of the class navigation tool permanently
@@ -36,7 +35,7 @@ namespace mitk
   *        by the class NavigationToolReader to restore the object.
   *
   * \ingroup IGT
-  */  
+  */
   class MitkIGT_EXPORT NavigationToolWriter : public itk::Object
   {
   friend class mitk::NavigationToolStorageSerializer;
@@ -44,7 +43,7 @@ namespace mitk
   public:
     mitkClassMacro(NavigationToolWriter,itk::Object);
     itkNewMacro(Self);
-    
+
     /**
      * @brief           Writes a navigation tool to a file.
      * @param  FileName The filename (complete, with path, C:\temp\myTool.igtTool for example)
@@ -62,6 +61,9 @@ namespace mitk
     std::string m_ErrorMessage;
     mitk::DataNode::Pointer ConvertToDataNode(mitk::NavigationTool::Pointer Tool);
     std::string GetFileWithoutPath(std::string FileWithPath);
+    std::string ConvertPointSetToString(mitk::PointSet::Pointer pointSet);
+    std::string ConvertPointToString(mitk::Point3D point);
+    std::string ConvertQuaternionToString(mitk::Quaternion quat);
   };
 } // namespace mitk
 #endif //NAVIGATIONTOOLWRITER

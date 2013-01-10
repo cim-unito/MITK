@@ -15,60 +15,98 @@
 #! \param EXPORTED_INCLUDE_SUFFIXES (optional) a list of sub-directories which should
 #!        be added to the current source directory. The resulting directories
 #!        will be available in the set of include directories of depending plug-ins.
+#! \param DOXYGEN_TAGFILES (optional) Which external tag files should be available for the plugin documentation
 #! \param TEST_PLUGIN (option) Mark this plug-in as a testing plug-in.
-MACRO(MACRO_CREATE_CTK_PLUGIN)
+macro(MACRO_CREATE_CTK_PLUGIN)
 
-  MACRO_PARSE_ARGUMENTS(_PLUGIN "EXPORT_DIRECTIVE;EXPORTED_INCLUDE_SUFFIXES" "TEST_PLUGIN;NO_QHP_TRANSFORM" ${ARGN})
+  MACRO_PARSE_ARGUMENTS(_PLUGIN "EXPORT_DIRECTIVE;EXPORTED_INCLUDE_SUFFIXES;DOXYGEN_TAGFILES" "TEST_PLUGIN;NO_QHP_TRANSFORM" ${ARGN})
 
-  MESSAGE(STATUS "Creating CTK plugin ${PROJECT_NAME}")
+  message(STATUS "Creating CTK plugin ${PROJECT_NAME}")
 
-  SET(PLUGIN_TARGET ${PROJECT_NAME})
+  set(PLUGIN_TARGET ${PROJECT_NAME})
 
-  INCLUDE(files.cmake)
+  include(files.cmake)
 
-  SET(_PLUGIN_CPP_FILES ${CPP_FILES})
-  SET(_PLUGIN_MOC_H_FILES ${MOC_H_FILES})
-  SET(_PLUGIN_UI_FILES ${UI_FILES})
-  SET(_PLUGIN_CACHED_RESOURCE_FILES ${CACHED_RESOURCE_FILES})
-  SET(_PLUGIN_TRANSLATION_FILES ${TRANSLATION_FILES})
-  SET(_PLUGIN_QRC_FILES ${QRC_FILES})
-  SET(_PLUGIN_H_FILES ${H_FILES})
-  SET(_PLUGIN_TXX_FILES ${TXX_FILES})
-  SET(_PLUGIN_DOX_FILES ${DOX_FILES})
-  SET(_PLUGIN_CMAKE_FILES ${CMAKE_FILES} files.cmake)
-  SET(_PLUGIN_FILE_DEPENDENCIES ${FILE_DEPENDENCIES})
+  set(_PLUGIN_CPP_FILES ${CPP_FILES})
+  set(_PLUGIN_MOC_H_FILES ${MOC_H_FILES})
+  set(_PLUGIN_UI_FILES ${UI_FILES})
+  set(_PLUGIN_CACHED_RESOURCE_FILES ${CACHED_RESOURCE_FILES})
+  set(_PLUGIN_TRANSLATION_FILES ${TRANSLATION_FILES})
+  set(_PLUGIN_QRC_FILES ${QRC_FILES})
+  set(_PLUGIN_H_FILES ${H_FILES})
+  set(_PLUGIN_TXX_FILES ${TXX_FILES})
+  set(_PLUGIN_DOX_FILES ${DOX_FILES})
+  set(_PLUGIN_CMAKE_FILES ${CMAKE_FILES} files.cmake)
+  set(_PLUGIN_FILE_DEPENDENCIES ${FILE_DEPENDENCIES})
 
-  IF(CTK_PLUGINS_OUTPUT_DIR)
-    SET(_output_dir "${CTK_PLUGINS_OUTPUT_DIR}")
-  ELSE()
-    SET(_output_dir "")
-  ENDIF()
+  if(CTK_PLUGINS_OUTPUT_DIR)
+    set(_output_dir "${CTK_PLUGINS_OUTPUT_DIR}")
+  else()
+    set(_output_dir "")
+  endif()
 
-  IF(_PLUGIN_TEST_PLUGIN)
-    SET(is_test_plugin "TEST_PLUGIN")
-  ELSE()
-    SET(is_test_plugin)
-  ENDIF()
+  if(_PLUGIN_TEST_PLUGIN)
+    set(is_test_plugin "TEST_PLUGIN")
+  else()
+    set(is_test_plugin)
+  endif()
+
+  # Compute the plugin dependencies
+  ctkFunctionGetTargetLibraries(_PLUGIN_target_libraries)
+
 
   #------------------------------------------------------------#
   #------------------ Qt Help support -------------------------#
 
-  SET(PLUGIN_GENERATED_QCH_FILES )
-  IF (BLUEBERRY_USE_QT_HELP AND
+  set(PLUGIN_GENERATED_QCH_FILES )
+  if(BLUEBERRY_USE_QT_HELP AND
       EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/documentation/UserManual")
-    SET(PLUGIN_DOXYGEN_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/documentation/UserManual")
-    SET(PLUGIN_DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/documentation/UserManual")
-    IF(_PLUGIN_NO_QHP_TRANSFORM)
-      SET(_use_qhp_xsl 0)
-    ELSE()
-      SET(_use_qhp_xsl 1)
-    ENDIF()
-    _FUNCTION_CREATE_CTK_QT_COMPRESSED_HELP(PLUGIN_GENERATED_QCH_FILES ${_use_qhp_xsl})
-    LIST(APPEND _PLUGIN_CACHED_RESOURCE_FILES ${PLUGIN_GENERATED_QCH_FILES})
-  ENDIF()
+    set(PLUGIN_DOXYGEN_INPUT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/documentation/UserManual")
+    set(PLUGIN_DOXYGEN_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/documentation/UserManual")
 
-  # Compute the plugin dependencies
-  ctkFunctionGetTargetLibraries(_PLUGIN_target_libraries)
+    # Create a list of Doxygen tag files from the plug-in dependencies
+    set(PLUGIN_DOXYGEN_TAGFILES)
+    foreach(_dep_target ${_PLUGIN_target_libraries})
+      string(REPLACE _ . _dep ${_dep_target})
+
+      get_target_property(_is_imported ${_dep_target} IMPORTED)
+      if(_is_imported)
+        get_target_property(_import_loc_debug ${_dep_target} IMPORTED_LOCATION_DEBUG)
+        get_target_property(_import_loc_release ${_dep_target} IMPORTED_LOCATION_RELEASE)
+        # There is not necessarily a debug and release build
+        if(_import_loc_release)
+          set(_import_loc ${_import_loc_release})
+        else()
+          set(_import_loc ${_import_loc_debug})
+        endif()
+        get_filename_component(_target_filename "${_import_loc}" NAME)
+        # on windows there might be a Debug or Release subdirectory
+        string(REGEX REPLACE "/bin/plugins/(Debug/|Release/)?${_target_filename}" "/Plugins/${_dep}/documentation/UserManual" plugin_tag_dir "${_import_loc}" )
+      else()
+        set(plugin_tag_dir "${CMAKE_BINARY_DIR}/Plugins/${_dep}/documentation/UserManual")
+      endif()
+
+      set(_tag_file "${plugin_tag_dir}/${_dep_target}.tag")
+      if(EXISTS ${_tag_file})
+        set(PLUGIN_DOXYGEN_TAGFILES "${PLUGIN_DOXYGEN_TAGFILES} ${_tag_file}=qthelp://${_dep}/bundle/")
+      endif()
+    endforeach()
+    if(_PLUGIN_DOXYGEN_TAGFILES)
+      set(PLUGIN_DOXYGEN_TAGFILES "${PLUGIN_DOXYGEN_TAGFILES} ${_PLUGIN_DOXYGEN_TAGFILES}")
+    endif()
+    #message("PLUGIN_DOXYGEN_TAGFILES: ${PLUGIN_DOXYGEN_TAGFILES}")
+
+    if(_PLUGIN_NO_QHP_TRANSFORM)
+      set(_use_qhp_xsl 0)
+    else()
+      set(_use_qhp_xsl 1)
+    endif()
+    _FUNCTION_CREATE_CTK_QT_COMPRESSED_HELP(PLUGIN_GENERATED_QCH_FILES ${_use_qhp_xsl})
+    list(APPEND _PLUGIN_CACHED_RESOURCE_FILES ${PLUGIN_GENERATED_QCH_FILES})
+  endif()
+
+  #------------------------------------------------------------#
+  #------------------ Create Plug-in --------------------------#
 
   ctkMacroBuildPlugin(
     NAME ${PLUGIN_TARGET}
@@ -85,32 +123,33 @@ MACRO(MACRO_CREATE_CTK_PLUGIN)
     ${is_test_plugin}
   )
 
-  IF(mbilog_FOUND)
-    TARGET_LINK_LIBRARIES(${PLUGIN_TARGET} mbilog)
-  ENDIF()
-  
-  INCLUDE_DIRECTORIES(${Poco_INCLUDE_DIRS})
+  if(mbilog_FOUND)
+    target_link_libraries(${PLUGIN_TARGET} mbilog)
+  endif()
 
-  TARGET_LINK_LIBRARIES(${PLUGIN_TARGET}
+  include_directories(${Poco_INCLUDE_DIRS})
+  include_directories(${BlueBerry_BINARY_DIR})
+
+  target_link_libraries(${PLUGIN_TARGET}
     optimized PocoFoundation debug PocoFoundationd
     optimized PocoUtil debug PocoUtild
     optimized PocoXML debug PocoXMLd
   )
-  
-  # Set compiler flags
-  GET_TARGET_PROPERTY(_plugin_compile_flags ${PLUGIN_TARGET} COMPILE_FLAGS)
-  IF(NOT _plugin_compile_flags)
-    SET(_plugin_compile_flags "")
-  ENDIF()
-  IF(WIN32)
-    SET(_plugin_compile_flags "${_plugin_compile_flags} -DPOCO_NO_UNWINDOWS -DWIN32_LEAN_AND_MEAN")
-  ENDIF()
-  SET_TARGET_PROPERTIES(${PLUGIN_TARGET} PROPERTIES COMPILE_FLAGS "${_plugin_compile_flags}")
 
-  SET(_PLUGIN_META_FILES "${CMAKE_CURRENT_SOURCE_DIR}/manifest_headers.cmake")
-  IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml")
-    LIST(APPEND _PLUGIN_META_FILES "${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml")
-  ENDIF()
+  # Set compiler flags
+  get_target_property(_plugin_compile_flags ${PLUGIN_TARGET} COMPILE_FLAGS)
+  if(NOT _plugin_compile_flags)
+    set(_plugin_compile_flags "")
+  endif()
+  if(WIN32)
+    set(_plugin_compile_flags "${_plugin_compile_flags} -DPOCO_NO_UNWINDOWS -DWIN32_LEAN_AND_MEAN")
+  endif()
+  set_target_properties(${PLUGIN_TARGET} PROPERTIES COMPILE_FLAGS "${_plugin_compile_flags}")
+
+  set(_PLUGIN_META_FILES "${CMAKE_CURRENT_SOURCE_DIR}/manifest_headers.cmake")
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml")
+    list(APPEND _PLUGIN_META_FILES "${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml")
+  endif()
 
   MACRO_ORGANIZE_SOURCES(
     SOURCE ${_PLUGIN_CPP_FILES}
@@ -125,26 +164,26 @@ MACRO(MACRO_CREATE_CTK_PLUGIN)
     GEN_QRC ${MY_QRC_SRCS}
   )
 
-  
+
   #------------------------------------------------------------#
   #------------------ Installer support -----------------------#
-  IF(NOT _PLUGIN_TEST_PLUGIN)
-    SET(install_directories "")
-    IF(NOT MACOSX_BUNDLE_NAMES)
-      SET(install_directories bin/plugins)
-    ELSE(NOT MACOSX_BUNDLE_NAMES)
-      FOREACH(bundle_name ${MACOSX_BUNDLE_NAMES})
-        LIST(APPEND install_directories ${bundle_name}.app/Contents/MacOS/plugins)
-      ENDFOREACH(bundle_name)
-    ENDIF(NOT MACOSX_BUNDLE_NAMES)
+  if(NOT _PLUGIN_TEST_PLUGIN)
+    set(install_directories "")
+    if(NOT MACOSX_BUNDLE_NAMES)
+      set(install_directories bin/plugins)
+    else(NOT MACOSX_BUNDLE_NAMES)
+      foreach(bundle_name ${MACOSX_BUNDLE_NAMES})
+        list(APPEND install_directories ${bundle_name}.app/Contents/MacOS/plugins)
+      endforeach(bundle_name)
+    endif(NOT MACOSX_BUNDLE_NAMES)
 
-    FOREACH(install_subdir ${install_directories})
+    foreach(install_subdir ${install_directories})
 
       MACRO_INSTALL_CTK_PLUGIN(TARGETS ${PLUGIN_TARGET}
                                DESTINATION ${install_subdir})
 
-    ENDFOREACH()
-  ENDIF()
+    endforeach()
+  endif()
 
-ENDMACRO()
+endmacro()
 

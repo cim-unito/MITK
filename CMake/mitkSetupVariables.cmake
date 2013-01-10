@@ -6,7 +6,7 @@ set(LIBPOSTFIX "")
 
 # MITK_VERSION
 set(MITK_VERSION_MAJOR "2012")
-set(MITK_VERSION_MINOR "02")
+set(MITK_VERSION_MINOR "12")
 set(MITK_VERSION_PATCH "99")
 set(MITK_VERSION_STRING "${MITK_VERSION_MAJOR}.${MITK_VERSION_MINOR}.${MITK_VERSION_PATCH}")
 if(MITK_VERSION_PATCH STREQUAL "99")
@@ -24,17 +24,22 @@ if(NOT UNIX AND NOT MINGW)
 endif()
 
 # build the MITK_INCLUDE_DIRS variable
-set(MITK_INCLUDE_DIRS ${PROJECT_BINARY_DIR})
-set(CORE_DIRECTORIES DataManagement Algorithms IO Rendering Interactions Controllers Service)
+set(MITK_INCLUDE_DIRS
+    ${ITK_INCLUDE_DIRS}
+    ${VTK_INCLUDE_DIRS}
+    ${PROJECT_BINARY_DIR} # contains mitkConfig.h and similar files
+    ${MODULES_CONF_DIRS} # contains module *Exports.h files
+   )
+set(CORE_DIRECTORIES Common DataManagement Algorithms IO Rendering Interactions Controllers Service)
 foreach(d ${CORE_DIRECTORIES})
   list(APPEND MITK_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/Core/Code/${d})
 endforeach()
-#list(APPEND MITK_INCLUDE_DIRS  
+#list(APPEND MITK_INCLUDE_DIRS
      #${ITK_INCLUDE_DIRS}
      #${VTK_INCLUDE_DIRS}
 #    )
-     
-foreach(d Utilities Utilities/ipPic Utilities/IIL4MITK Utilities/pic2vtk Utilities/tinyxml Utilities/mbilog)
+
+foreach(d Utilities Utilities/ipPic Utilities/pic2vtk Utilities/tinyxml Utilities/mbilog)
   list(APPEND MITK_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/${d})
 endforeach()
 list(APPEND MITK_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/Utilities/mbilog)
@@ -53,7 +58,6 @@ set(VTK_FOR_MITK_LIBRARIES
     vtkGraphics
     vtkCommon
     vtkFiltering
-    vtkftgl
     vtkGraphics
     vtkHybrid
     vtkImaging
@@ -79,17 +83,16 @@ set(MITK_LIBRARIES
     ${MITK_CORE_LIBRARIES}
     ${LIBRARIES_FOR_MITK_CORE}
     pic2vtk
-    IIL4MITK
     ipSegmentation
-    ann 
+    ann
    )
-   
+
 # variables used in CMake macros which are called from external projects
 set(MITK_VTK_LIBRARY_DIRS ${VTK_LIBRARY_DIRS})
 set(MITK_ITK_LIBRARY_DIRS ${ITK_LIBRARY_DIRS})
 
 # variables containing link directories
-set(MITK_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})                                                                                                              
+set(MITK_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(MITK_LINK_DIRECTORIES
     ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
     ${ITK_LIBRARY_DIRS}
@@ -100,19 +103,14 @@ set(MITK_LINK_DIRECTORIES
 if(MITK_USE_QT)
   find_package(Qt4 REQUIRED)
 
-  set(QMITK_INCLUDE_DIRS 
+  set(QMITK_INCLUDE_DIRS
       ${MITK_INCLUDE_DIRS}
-      ${CMAKE_CURRENT_SOURCE_DIR}/CoreUI/Qmitk
-      ${PROJECT_BINARY_DIR}/CoreUI/Qmitk
+      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/Qmitk
+      ${PROJECT_BINARY_DIR}/Modules/Qmitk
      )
-     
-  foreach(d QmitkApplicationBase QmitkModels QmitkPropertyObservers) 
-    list(APPEND QMITK_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/CoreUI/Qmitk/${d})
-  endforeach()
-  list(APPEND QMITK_INCLUDE_DIRS ${QWT_INCLUDE_DIR})
-  
-  set(QMITK_LIBRARIES Qmitk ${MITK_LIBRARIES} ${QT_LIBRARIES})
-  set(QMITK_LINK_DIRECTORIES ${MITK_LINK_DIRECTORIES} ${QT_LIBRARY_DIR})
+
+  set(QMITK_LIBRARIES Qmitk ${MITK_LIBRARIES})
+  set(QMITK_LINK_DIRECTORIES ${MITK_LINK_DIRECTORIES})
 endif()
 
 if(MITK_BUILD_ALL_PLUGINS)
@@ -135,7 +133,9 @@ endfunction()
 set(MITK_ACCESSBYITK_PIXEL_TYPES )
 set(MITK_ACCESSBYITK_PIXEL_TYPES_SEQ )
 set(MITK_ACCESSBYITK_TYPES_DIMN_SEQ )
-foreach(_type INTEGRAL FLOATING COMPOSITE)
+# concatenate only the simple pixel types to the MITK_ACCESSBYITK_PIXEL_TYPE_SEQ list
+# see Bug 12682 for detailed information
+foreach(_type INTEGRAL FLOATING)
   set(_typelist "${MITK_ACCESSBYITK_${_type}_PIXEL_TYPES}")
   if(_typelist)
     if(MITK_ACCESSBYITK_PIXEL_TYPES)
@@ -151,6 +151,11 @@ foreach(_type INTEGRAL FLOATING COMPOSITE)
   set(MITK_ACCESSBYITK_PIXEL_TYPES_SEQ "${MITK_ACCESSBYITK_PIXEL_TYPES_SEQ}${MITK_ACCESSBYITK_${_type}_PIXEL_TYPES_SEQ}")
   set(MITK_ACCESSBYITK_TYPES_DIMN_SEQ "${MITK_ACCESSBYITK_TYPES_DIMN_SEQ}${MITK_ACCESSBYITK_${_type}_TYPES_DIMN_SEQ}")
 endforeach()
+
+# separate processing of the COMPOSITE list to avoid its concatenation to to global list
+_create_type_seq(${MITK_ACCESSBYITK_COMPOSITE_PIXEL_TYPES}
+                 MITK_ACCESSBYITK_COMPOSITE_PIXEL_TYPES_SEQ
+                 MITK_ACCESSBYITK_COMPOSITE_TYPES_DIMN_SEQ)
 
 set(MITK_ACCESSBYITK_DIMENSIONS_SEQ )
 string(REPLACE "," ";" _dimensions "${MITK_ACCESSBYITK_DIMENSIONS}")

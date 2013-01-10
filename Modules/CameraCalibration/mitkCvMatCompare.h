@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef mitkCvMatCompare_h
 #define mitkCvMatCompare_h
 
@@ -31,13 +46,13 @@ namespace mitk
     /// init default values and save references
     ///
     CvMatCompare(
-      const cv::Mat* _CvMat1, 
-      const cv::Mat* _CvMat2, 
-      const Epsilon* _Epsilon, 
-      bool* _Equals): 
-        m_CvMat1(_CvMat1), 
-        m_CvMat2(_CvMat2), 
-        m_Epsilon(_Epsilon), 
+      const cv::Mat* _CvMat1,
+      const cv::Mat* _CvMat2,
+      const Epsilon* _Epsilon,
+      bool* _Equals):
+        m_CvMat1(_CvMat1),
+        m_CvMat2(_CvMat2),
+        m_Epsilon(_Epsilon),
         m_Equals(_Equals)
     {
     }
@@ -58,7 +73,7 @@ namespace mitk
     }
 
     ///
-    /// executes the Algorithm 
+    /// executes the Algorithm
     ///
     void Update()
     {

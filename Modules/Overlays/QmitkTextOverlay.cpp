@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Thu, 14 Jan 2010) $
-Version:   $Revision: 21047 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkTextOverlay.h"
 
@@ -25,6 +24,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 QmitkTextOverlay::QmitkTextOverlay( const char* id )
 : QmitkOverlay(id)
+, m_ObservedProperty( NULL )
 , m_ObserverTag(0)
 {
   m_Widget = m_Label = new QLabel();
@@ -64,8 +64,11 @@ void QmitkTextOverlay::UpdateDisplayedTextFromProperties()
   {
     MITK_DEBUG << "Property " << m_Id << " could not be found";
   }
-  m_Label->setText( text.c_str() );
-  m_Label->repaint();
+  if ( text != m_Label->text().toStdString() )
+  {
+    m_Label->setText( text.c_str() );
+    m_Label->repaint();
+  }
 }
 
 
@@ -79,7 +82,7 @@ void QmitkTextOverlay::UpdateFontProperties( mitk::PropertyList::Pointer pl )
   QFont font = QFont();
 
   // get the desired color of the textOverlays
-  mitk::ColorProperty::Pointer colorProp = 
+  mitk::ColorProperty::Pointer colorProp =
     dynamic_cast<mitk::ColorProperty*>( propertyList->GetProperty( "overlay.color" ) );
 
   if ( colorProp.IsNull() )
@@ -99,18 +102,18 @@ void QmitkTextOverlay::UpdateFontProperties( mitk::PropertyList::Pointer pl )
   //if ( opacityProperty.IsNull() )
   //{
   //  m_Label->setWindowOpacity( 1 );
-  //} 
+  //}
   //else
   //{
   //  m_Label->setWindowOpacity( opacityProperty->GetValue() );
   //}
-  
+
    //set the desired font-size of the overlays
   int fontSize = 0;
   if ( !propertyList->GetIntProperty( "overlay.fontSize", fontSize ) )
   {
     fontSize = 9.5;
-  } 
+  }
   font.setPointSize( fontSize );
 
   bool useKerning = false;
@@ -132,17 +135,35 @@ void QmitkTextOverlay::UpdateFontProperties( mitk::PropertyList::Pointer pl )
 
 void QmitkTextOverlay::SetupCallback( mitk::BaseProperty::Pointer prop )
 {
-  if ( prop.IsNotNull() )
+  if ( m_ObservedProperty != prop && m_ObserverTag == 0 )
   {
-    typedef itk::SimpleMemberCommand< QmitkTextOverlay > MemberCommandType;
-    MemberCommandType::Pointer propModifiedCommand;
-    propModifiedCommand = MemberCommandType::New();
-    propModifiedCommand->SetCallbackFunction( this, &QmitkTextOverlay::UpdateDisplayedTextFromProperties );
-    m_ObserverTag = prop->AddObserver( itk::ModifiedEvent(), propModifiedCommand );
+    if ( prop.IsNotNull() )
+    {
+      if ( m_ObservedProperty.IsNotNull() )
+      {
+        m_ObservedProperty->RemoveObserver( m_ObserverTag );
+      }
+
+      typedef itk::SimpleMemberCommand< QmitkTextOverlay > MemberCommandType;
+      MemberCommandType::Pointer propModifiedCommand;
+      propModifiedCommand = MemberCommandType::New();
+      propModifiedCommand->SetCallbackFunction( this, &QmitkTextOverlay::UpdateDisplayedTextFromProperties );
+      m_ObserverTag = prop->AddObserver( itk::ModifiedEvent(), propModifiedCommand );
+    }
+
+    m_ObservedProperty = prop;
   }
   else
   {
     MITK_DEBUG << "invalid property";
   }
+}
+
+QSize QmitkTextOverlay::GetNeededSize()
+{
+  QFont font = m_Label->font();
+  QFontMetrics fm(font);
+
+  return fm.size( Qt::TextSingleLine, m_Label->text() );
 }
 

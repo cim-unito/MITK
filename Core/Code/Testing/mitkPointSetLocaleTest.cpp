@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkPointSetReader.h"
 #include "mitkPointSetWriter.h"
@@ -48,7 +47,7 @@ bool ChangeLocale(const std::string& locale)
 void ReaderLocaleTest(mitk::Point3D & refPoint, std::string filename)
 {
   MITK_TEST_OUTPUT(<< "---- Reader Test ---- ");
-  
+
   mitk::PointSetReader::Pointer reader = mitk::PointSetReader::New();
   reader -> SetFileName(filename.c_str());
   reader -> Update();
@@ -66,7 +65,7 @@ void ReaderLocaleTest(mitk::Point3D & refPoint, std::string filename)
     MITK_TEST_FAILED_MSG(<< "File "<< filename << " can not be read - test will not applied." );
     return;
   }
-  
+
 }
 
 void WriterLocaleTest(mitk::Point3D & refPoint, std::string filename)
@@ -92,7 +91,7 @@ void WriterLocaleTest(mitk::Point3D & refPoint, std::string filename)
   MITK_TEST_CONDITION_REQUIRED(refStream,"Read reference point set");
   MITK_TEST_CONDITION_REQUIRED(stream,"Read point set");
 
-  
+
   std::string streamLine;
   std::string refStreamLine;
 
@@ -115,7 +114,7 @@ void WriterLocaleTest(mitk::Point3D & refPoint, std::string filename)
     refStream.close();
   }
   MITK_TEST_CONDITION_REQUIRED(!differ, "Write point set correct");
-  
+
 }
 
 int mitkPointSetLocaleTest(int argc, char* argv[])
@@ -127,7 +126,7 @@ int mitkPointSetLocaleTest(int argc, char* argv[])
 
   std::string filename = argv[1];
 
-  MITK_INFO << filename; 
+  MITK_INFO << filename;
 
   //create reference point set
   mitk::PointSet::Pointer refPointSet = mitk::PointSet::New();

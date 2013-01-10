@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKGEOMETRY2DDATATOSURFACEDATAFILTER_H_HEADER_INCLUDED_C10B22CD
@@ -43,7 +42,7 @@ class Geometry2DData;
 
 /** \brief Superclass of all classes having a Geometry2DData as input and
  *  generating Images as output
- * 
+ *
  *  Currently implemented for PlaneGeometry and AbstractTransformGeometry.
  *  Currently, this class does not really have subclasses, but does the job
  *  for itself. It checks which kind of Geometry2D is stored in the
@@ -75,17 +74,17 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     virtual void SetInput(const Geometry2DData *image);
     virtual void SetInput(unsigned int index, const Geometry2DData *image);
 
-    /** \brief If \a true (default), use Geometry3D::GetParametricBounds() to define the resolution in parameter space, 
+    /** \brief If \a true (default), use Geometry3D::GetParametricBounds() to define the resolution in parameter space,
      *  otherwise use m_XResolution and m_YResolution
      */
     itkGetMacro(UseGeometryParametricBounds, bool);
-    /** \brief If \a true (default), use Geometry3D::GetParametricBounds() to define the resolution in parameter space, 
+    /** \brief If \a true (default), use Geometry3D::GetParametricBounds() to define the resolution in parameter space,
      *  otherwise use m_XResolution and m_YResolution
      */
     itkSetMacro(UseGeometryParametricBounds, bool);
 
     /** \brief Get x-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in x-direction (see vtkPlaneSource::SetXResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -94,7 +93,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
      */
     itkGetMacro(XResolution, int);
     /** \brief Set x-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in x-direction (see vtkPlaneSource::SetXResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -104,7 +103,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     itkSetMacro(XResolution, int);
 
     /** \brief Get y-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in y-direction (see vtkPlaneSource::SetYResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -114,7 +113,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     itkGetMacro(YResolution, int);
 
     /** \brief Set y-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in y-direction (see vtkPlaneSource::SetYResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -124,22 +123,22 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     itkSetMacro(YResolution, int);
 
     /** \brief Get whether the Surface is at the origin and placed using the Geometry
-     * 
+     *
      *  Default is \a false, i.e., the transform of the Geometry is the identity, thus
-     *  the points within the Surface are at their final position. Otherwise 
+     *  the points within the Surface are at their final position. Otherwise
      *  (m_PlaceByGeometry==\a true), the first cornerpoint of the created Surface is
-     *  at the origin and the actual position is determined by the transform of the 
+     *  at the origin and the actual position is determined by the transform of the
      *  Geometry.
      *  \sa m_PlaceByGeometry
      */
     itkGetConstMacro(PlaceByGeometry, bool);
 
     /** \brief Set whether the Surface is at the origin and placed using the Geometry
-     * 
+     *
      *  Default is \a false, i.e., the transform of the Geometry is the identity, thus
-     *  the points within the Surface are at their final position. Otherwise 
+     *  the points within the Surface are at their final position. Otherwise
      *  (m_PlaceByGeometry==\a true), the first cornerpoint of the created Surface is
-     *  at the origin and the actual position is determined by the transform of the 
+     *  at the origin and the actual position is determined by the transform of the
      *  Geometry.
      *  \sa m_PlaceByGeometry
      */
@@ -152,7 +151,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
 
     void SetBoundingBox( const BoundingBox *boundingBox );
     const BoundingBox *GetBoundingBox() const;
-    
+
   protected:
 
     Geometry2DDataToSurfaceFilter();
@@ -168,13 +167,13 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
      */
     vtkTransformPolyDataFilter* m_VtkTransformPlaneFilter;
 
-    /** \brief If \a true, use Geometry3D::GetParametricBounds() to define the resolution in parameter space, 
+    /** \brief If \a true, use Geometry3D::GetParametricBounds() to define the resolution in parameter space,
      *  otherwise use m_XResolution and m_YResolution
      */
     bool m_UseGeometryParametricBounds;
 
     /** \brief X-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in x-direction (see vtkPlaneSource::SetXResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -184,7 +183,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     int m_XResolution;
 
     /** \brief Y-resolution in parameter space
-     * 
+     *
      *  The m_PlaneSource will create this many sub-rectangles
      *  in y-direction (see vtkPlaneSource::SetYResolution)
      *  \note Only used, when GetUseGeometryParametricBounds() is \a false, otherwise the
@@ -193,11 +192,11 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     int m_YResolution;
 
     /** \brief Define whether the Surface is at the origin and placed using the Geometry
-     * 
+     *
      *  Default is \a false, i.e., the transform of the Geometry is the identity, thus
-     *  the points within the Surface are at their final position. Otherwise 
+     *  the points within the Surface are at their final position. Otherwise
      *  (m_PlaceByGeometry==\a true), the first cornerpoint of the created Surface is
-     *  at the origin and the actual position is determined by the transform of the 
+     *  at the origin and the actual position is determined by the transform of the
      *  Geometry.
      */
     bool m_PlaceByGeometry;
@@ -209,7 +208,7 @@ class MITK_CORE_EXPORT Geometry2DDataToSurfaceFilter : public SurfaceSource
     vtkCubeSource *m_CubeSource;
     vtkTransform *m_Transform;
     vtkTransformPolyDataFilter *m_PolyDataTransformer;
-    
+
     vtkPlane *m_Plane;
     vtkCutter *m_PlaneCutter;
     vtkStripper *m_PlaneStripper;

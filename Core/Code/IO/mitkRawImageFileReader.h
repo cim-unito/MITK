@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef RawImageFileReader_H_HEADER_INCLUDED
@@ -23,7 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkFileReader.h"
 #include "mitkImageSource.h"
 
-namespace mitk 
+namespace mitk
 {
 
 //##Documentation
@@ -52,21 +51,21 @@ public:
     itkSetStringMacro(FilePattern);
     itkGetMacro(FilePattern, std::string);
     itkGetStringMacro(FilePattern);
-    
+
     /** Supported pixel types. */
     typedef enum {UCHAR,SCHAR,USHORT,SSHORT, UINT, SINT, FLOAT, DOUBLE} IOPixelType;
     itkSetMacro(PixelType, IOPixelType);
-    
+
     /** Endianity of bits. */
     typedef enum {LITTLE, BIG} EndianityType;
     itkSetMacro(Endianity, EndianityType);
-    
+
     itkSetMacro(Dimensionality, int);
     itkGetMacro(Dimensionality, int);
-    
+
     /** Image dimensions must be set one by one, starting from dimension 0. */
     void SetDimensions(unsigned int i, unsigned int dim);
-     
+
     unsigned int GetDimensions(unsigned int i) const;
 
     static bool CanReadFile(const std::string filename, const std::string filePrefix, const std::string filePattern);
@@ -78,7 +77,7 @@ protected:
     ~RawImageFileReader();
 
     virtual void GenerateData();
-    
+
     template < typename TPixel, unsigned int VImageDimensions > void TypedGenerateData();
 
     /** Name of file to be read.*/
@@ -89,18 +88,18 @@ protected:
 
     /** File pattern. */
     std::string m_FilePattern;
-    
+
     /** Pixel type of image to be read. Must be of type IOPixelType. */
     IOPixelType m_PixelType;
 
-    /** Dimensionality of file to be read. Can be 2 or 3. */    
+    /** Dimensionality of file to be read. Can be 2 or 3. */
     int m_Dimensionality;
-    
+
     /** Endianity. Must be set to LITTLE or BIG. Default is BIG. */
     EndianityType m_Endianity;
-    
+
     /** Vector containing dimensions of image to be read. */
-    itk::Vector<int, 3> m_Dimensions; 
+    itk::Vector<int, 3> m_Dimensions;
 
 };
 

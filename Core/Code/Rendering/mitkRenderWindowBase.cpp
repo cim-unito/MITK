@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-07-05 09:49:37 +0200 (Mo, 05 Jul 2010) $
-Version:   $Revision: 24298 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkRenderWindowBase.h"
@@ -23,7 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "vtkRenderer.h"
 
 
-mitk::RenderWindowBase::RenderWindowBase( ) 
+mitk::RenderWindowBase::RenderWindowBase( )
 : m_ProcessWheelEvents(true),
 m_InvertScrollingDirection(false)
 {
@@ -45,7 +44,7 @@ void mitk::RenderWindowBase::Initialize( mitk::RenderingManager* renderingManage
   {
     renderingManager = mitk::RenderingManager::GetInstance();
   }
-  
+
   if(m_Renderer.IsNull())
   {
       m_Renderer = mitk::VtkPropRenderer::New( name , GetVtkRenderWindow(), renderingManager );
@@ -65,7 +64,7 @@ void mitk::RenderWindowBase::Initialize( mitk::RenderingManager* renderingManage
       && (this->GetVtkRenderWindow()->GetSize()[1] > 10))
     m_Renderer->InitSize(this->GetVtkRenderWindow()->GetSize()[0], this->GetVtkRenderWindow()->GetSize()[1]);
 
-  m_InResize = false;  
+  m_InResize = false;
 }
 
 void mitk::RenderWindowBase::Destroy()
@@ -95,7 +94,7 @@ void mitk::RenderWindowBase::mouseReleaseMitkEvent(mitk::MouseEvent *me)
 
 void mitk::RenderWindowBase::mouseMoveMitkEvent(mitk::MouseEvent *me)
 {
-  if (m_Renderer.IsNotNull()) 
+  if (m_Renderer.IsNotNull())
      m_Renderer->MouseMoveEvent(me);
 }
 
@@ -103,11 +102,11 @@ void mitk::RenderWindowBase::wheelMitkEvent(mitk::WheelEvent *we)
 {
   if ( !m_ProcessWheelEvents )
   {
-    if(m_Renderer.IsNotNull()) 
+    if(m_Renderer.IsNotNull())
       m_Renderer->WheelEvent(we);
     return;
   }
- 
+
   if ( !GetSliceNavigationController()->GetSliceLocked() )
   {
     mitk::Stepper* stepper = GetSliceNavigationController()->GetSlice();
@@ -132,9 +131,9 @@ void mitk::RenderWindowBase::wheelMitkEvent(mitk::WheelEvent *we)
     }
 
     //also send to Renderer to send if to MITK interaction mechanism
-    if(m_Renderer.IsNotNull()) 
+    if(m_Renderer.IsNotNull())
       m_Renderer->WheelEvent(we);
-    
+
   }
 }
 

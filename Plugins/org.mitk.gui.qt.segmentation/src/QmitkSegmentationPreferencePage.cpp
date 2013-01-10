@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date$
- Version:   $Revision: 18019 $
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkSegmentationPreferencePage.h"
 
@@ -49,7 +48,7 @@ void QmitkSegmentationPreferencePage::Init(berry::IWorkbench::Pointer )
 void QmitkSegmentationPreferencePage::CreateQtControl(QWidget* parent)
 {
   m_Initializing = true;
-  berry::IPreferencesService::Pointer prefService 
+  berry::IPreferencesService::Pointer prefService
     = berry::Platform::GetServiceRegistry()
     .GetServiceById<berry::IPreferencesService>(berry::IPreferencesService::ID);
 
@@ -103,7 +102,7 @@ void QmitkSegmentationPreferencePage::CreateQtControl(QWidget* parent)
   surfaceLayout->addRow("Closing Ratio", m_ClosingSpinBox);
 
   formLayout->addRow("Smoothed surface creation", surfaceLayout);
-  
+
   m_MainControl->setLayout(formLayout);
   this->Update();
   m_Initializing = false;
@@ -167,7 +166,7 @@ void QmitkSegmentationPreferencePage::OnVolumeRenderingCheckboxChecked(int state
   if ( state != Qt::Unchecked )
   {
     QMessageBox::information(NULL,
-                             "Memory warning", 
+                             "Memory warning",
                              "Turning on volume rendering of segmentations will make the application more memory intensive (and potentially prone to crashes).\n\n"
                              "If you encounter out-of-memory problems, try turning off volume rendering again.");
   }

@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKTOFPMDPARAMETERWIDGET_H_INCLUDED
 #define _QMITKTOFPMDPARAMETERWIDGET_H_INCLUDED
@@ -54,13 +52,13 @@ class mitkTOFUI_EXPORT QmitkToFPMDParameterWidget :public QWidget
     virtual void CreateConnections();
 
     /*!
-    \brief returns the ToFImageGrabber which was provided by the ToFImageGrabberCreator after selecting a camera / player
+    \brief returns the ToFImageGrabber which was configured after selecting a camera / player
     \return ToFImageGrabber currently used by the widget
     */
     mitk::ToFImageGrabber* GetToFImageGrabber();
 
     /*!
-    \brief sets the ToFImageGrabber which was provided by the ToFImageGrabberCreator after selecting a camera / player
+    \brief sets the ToFImageGrabber which was configured after selecting a camera / player
     */
     void SetToFImageGrabber(mitk::ToFImageGrabber* aToFImageGrabber);
 
@@ -68,7 +66,7 @@ class mitkTOFUI_EXPORT QmitkToFPMDParameterWidget :public QWidget
     \brief activate camera settings according to the parameters from GUI
     */
     void ActivateAllParameters();
-  
+
   signals:
 
     /*!
@@ -94,7 +92,7 @@ class mitkTOFUI_EXPORT QmitkToFPMDParameterWidget :public QWidget
     void ToFCameraSelected(int);
 
   protected slots:
-  
+
     /*!
     \brief slot updating the member m_IntegrationTime and the parameter "integration time" of the current ToFImageGrabber
     */

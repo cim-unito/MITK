@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-09-18 09:35:44 +0200 (Do, 18 Sep 2008) $
-Version:   $Revision: 15278 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <qregexp.h>
 #include <qmessagebox.h>
@@ -21,13 +20,13 @@ PURPOSE.  See the above copyright notices for more information.
 #include <qstring.h>
 #include <QDateTime>
 #include <string>
-#include <strstream>
 #include "mitkPointSetWriter.h"
 #include "mitkConfig.h"
 #include "mitkCoreObjectFactory.h"
 #include "QmitkCommonFunctionality.h"
 #include <mitkImageAccessByItk.h>
 #include <mitkPicFileReader.h>
+#include <mitkConvert2Dto3DImageFilter.h>
 
 #include <mitkIpPic.h>
 
@@ -36,16 +35,20 @@ PURPOSE.  See the above copyright notices for more information.
 #include <vtkPNGWriter.h>
 #include <vtkCellArray.h>
 #include <vtkTriangleFilter.h>
+#include <QApplication>
+#include <QMessageBox>
 
 #include <Poco/Path.h>
 
 void CommonFunctionality::SaveToFileWriter( mitk::FileWriterWithInformation::Pointer fileWriter, mitk::BaseData::Pointer data, const char* aFileName, const char* propFileName)
-{ 
+{
+   // Check if desired format is supported
   if (! fileWriter->CanWriteBaseDataType(data) ) {
     QMessageBox::critical(NULL,"ERROR","Could not write file. Invalid data type for file writer.");
     return;
   }
 
+  // Ensure a valid filename
   QString fileName;
   if (aFileName == NULL)
   {
@@ -81,6 +84,8 @@ void CommonFunctionality::SaveToFileWriter( mitk::FileWriterWithInformation::Poi
   else
     fileName = aFileName;
 
+
+  // Write
   if (fileName.isEmpty() == false )
   {
     fileWriter->SetFileName( fileName.toLocal8Bit().constData() );
@@ -129,21 +134,21 @@ void CommonFunctionality::SaveBaseData( mitk::BaseData* data, const char * aFile
           else
             fileName = aFileName;
 
-          
-          
+
+
           fileName = itksys::SystemTools::GetFilenameWithoutExtension(fileName);
-                    
+
           QString initialFileName = QString::fromStdString(fileName);
 
           QString selected_suffix("MITK Point-Sets (*.mps)");
           QString possible_suffixes("MITK Point-Sets (*.mps)");
-          
+
 
           /*QString qfileName = QFileDialog::getSaveFileName( NULL, "Save image", initialFilename ,mitk::CoreObjectFactory::GetInstance()->GetSaveFileExtensions(),&selected_suffix);
           */
           QString qfileName = GetSaveFileNameStartingInLastDirectory("Save file", initialFileName, possible_suffixes, &selected_suffix);
-          
-          
+
+
           MITK_INFO<<qfileName.toLocal8Bit().constData();
 
           mitk::PointSetWriter::Pointer writer = mitk::PointSetWriter::New();
@@ -198,11 +203,11 @@ void CommonFunctionality::SaveBaseData( mitk::BaseData* data, const char * aFile
             mitk::CoreObjectFactory::FileWriterList fileWriters = mitk::CoreObjectFactory::GetInstance()->GetFileWriters();
             bool writerFound = false;
 
-            for (mitk::CoreObjectFactory::FileWriterList::iterator it = fileWriters.begin() ; it != fileWriters.end() ; ++it) 
+            for (mitk::CoreObjectFactory::FileWriterList::iterator it = fileWriters.begin() ; it != fileWriters.end() ; ++it)
             {
               if ( (*it)->CanWriteBaseDataType(data) ) {
                 writerFound = true;
-                SaveToFileWriter(*it, data, NULL, aFileName); 
+                SaveToFileWriter(*it, data, NULL, aFileName);
                 fileNameUsed = (*it)->GetFileName();
                 // correct writer has been found->break
                 if(!(fileNameUsed.length()>0)){
@@ -211,12 +216,12 @@ void CommonFunctionality::SaveBaseData( mitk::BaseData* data, const char * aFile
                   writingSuccessful = true;
                   break;
                 }
-              } 
+              }
             }
             if(!writerFound)
             {
-              // no appropriate writer has been found 
-              QMessageBox::critical(NULL,"ERROR","Could not find file writer for this data type"); 
+              // no appropriate writer has been found
+              QMessageBox::critical(NULL,"ERROR","Could not find file writer for this data type");
               return;
             }
           }
@@ -224,7 +229,7 @@ void CommonFunctionality::SaveBaseData( mitk::BaseData* data, const char * aFile
 
       }
     } else {
-      QMessageBox::critical(NULL,"ERROR","Cannot write data (invalid/empty)"); 
+      QMessageBox::critical(NULL,"ERROR","Cannot write data (invalid/empty)");
       return;
     }
   } catch(itk::ExceptionObject & e)
@@ -472,6 +477,7 @@ std::string CommonFunctionality::SaveSurface(mitk::Surface* surface, const char*
 std::string CommonFunctionality::SaveImage(mitk::Image* image, const char* aFileName, bool askForDifferentFilename)
 {
   QString selected_suffix("Nearly Raw Raster Data (*.nrrd)");
+  std::string defaultExtension = ".nrrd";
 
   std::string fileName;
   if(aFileName == NULL || askForDifferentFilename)
@@ -494,13 +500,8 @@ std::string CommonFunctionality::SaveImage(mitk::Image* image, const char* aFile
     std::string baseFilename = itksys::SystemTools::GetFilenameWithoutLastExtension( fileName );
     std::string extension = itksys::SystemTools::GetFilenameLastExtension( fileName );
 
-    if (extension == "") // if no extension has been entered manually into the filename
-    {
-      // get from combobox selected file extension
-      extension = itksys::SystemTools::GetFilenameLastExtension( selected_suffix.toLocal8Bit().constData());
-      extension = extension.substr(0, extension.size()-1);
-      fileName += extension;
-    }
+    if( extension == "" )
+      extension = defaultExtension;
 
     if (extension == ".gz")
     {
@@ -514,20 +515,81 @@ std::string CommonFunctionality::SaveImage(mitk::Image* image, const char* aFile
     mitk::ImageWriter::Pointer imageWriter = mitk::ImageWriter::New();
     if (!imageWriter->IsExtensionValid(extension))
     {
+      // muellerm, 12-05-02, using default file extension
+      // if no valid extension was given, see bug 11799
+
+      MITK_WARN << extension << " extension is unknown. Writing image to file " << fileName
+                   << defaultExtension;
+      extension = defaultExtension;
+      baseFilename = itksys::SystemTools::GetFilenameName( fileName );
+      //MITK_INFO << baseFilename;
+
+      /*
       QString message;
       message.append("File extension not suitable for writing image data. Choose one extension of this list: ");
       message.append(imageWriter->GetPossibleFileExtensionsAsString().c_str());
       QMessageBox::critical(NULL,"ERROR",message);
       return "";
+      */
     }
 
     dir += "/";
     dir += baseFilename;
-   
+
+    if( itksys::SystemTools::FileExists( (dir + extension).c_str() ) )
+    {
+      int answer = QMessageBox::question( QApplication::topLevelWidgets().at(0), "Warning",
+                                          QString("File %1 already exists. Overwrite?").arg( QString::fromStdString(dir + extension) ),
+                                          QMessageBox::Yes,
+                                          QMessageBox::No );
+      if( answer == QMessageBox::No )
+        return "";
+    }
+
+
+    // Check if Image data/ Geometry information is lost
+    if (image->GetDimension() == 2)
+    {
+       if (!image->GetGeometry()->Is2DConvertable())
+       {
+          // information will be lost, if continuing to save this file as 2D
+          // tell it the user and offer to save it as 3D
+
+          // todo: if format is png, jpg, etc.. forget it, no geometry information at all
+          QMessageBox msgBox;
+          msgBox.setText("You are trying to save a 2D image that has 3D geometry informations.");
+          msgBox.setInformativeText("You will lose the 3D geometry information this way. Do you rather want to save it as a 3D image?");
+          msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+          msgBox.setDefaultButton(QMessageBox::Yes);
+          int ret = msgBox.exec();
+
+          if (ret == QMessageBox::YesRole)
+          {
+             // convert image to 2D
+             mitk::Convert2Dto3DImageFilter::Pointer convertFilter = mitk::Convert2Dto3DImageFilter::New();
+             convertFilter->SetInput(image);
+             convertFilter->Update();
+             image = convertFilter->GetOutput();
+          }
+          else if (ret == QMessageBox::NoRole)
+          {
+             // Continue Saving as 2D
+
+          }
+          else
+          {
+             // Abort, don't save anything
+             return 0;
+          }
+       }
+    }
+
+    // write image
     imageWriter->SetInput(image);
     imageWriter->SetFileName(dir.c_str());
     imageWriter->SetExtension(extension.c_str());
     imageWriter->Write();
+    fileName = dir + extension;
   }
   catch ( itk::ExceptionObject &err)
   {
@@ -570,7 +632,7 @@ std::string CommonFunctionality::SaveScreenshot( vtkRenderWindow* renderWindow ,
   //
   //QPixmap buffer = QPixmap::grabWindow( qtRenderWindow->winId() );
 
-  // new Version: 
+  // new Version:
   //// take screenshot of render window without the coloured frame of 2 pixels by cropping the raw image data
   vtkWindowToImageFilter* wti = vtkWindowToImageFilter::New();
   wti->SetInput( renderWindow );
@@ -598,7 +660,7 @@ std::string CommonFunctionality::SaveScreenshot( vtkRenderWindow* renderWindow ,
   vtkPNGWriter* pngWriter = vtkPNGWriter::New();
 
   //
-  // if the provided filename is empty ask the user 
+  // if the provided filename is empty ask the user
   // for the name of the file in which the screenshot
   // should be saved
   //
@@ -622,7 +684,7 @@ std::string CommonFunctionality::SaveScreenshot( vtkRenderWindow* renderWindow ,
 
   if ( pos == std::string::npos )
     concreteFilename = concreteFilename + '.' + outFileSuffix;
-  else 
+  else
   {
     std::string extname = concreteFilename.substr(pos+1);
     if ( extname.empty() ) concreteFilename += outFileSuffix; // name ended with '.'
@@ -632,7 +694,7 @@ std::string CommonFunctionality::SaveScreenshot( vtkRenderWindow* renderWindow ,
 
   //
   // wait for 500 ms to let the file chooser close itself
-  //  
+  //
   // int msecs = 500;
   // clock_t ticks = ( clock_t )( ( ( ( float ) msecs ) / 1000.0f ) * ( ( float ) CLOCKS_PER_SEC ) );
   // clock_t goal = ticks + std::clock();
@@ -654,7 +716,7 @@ std::string CommonFunctionality::SaveScreenshot( vtkRenderWindow* renderWindow ,
 
   wti->Delete();
   pngWriter->Delete();
-  return concreteFilename;  
+  return concreteFilename;
 }
 
 QString CommonFunctionality::GetSaveFileNameStartingInLastDirectory(QString caption, QString defaultFilename, QString filter, QString* selectedFilter)
@@ -671,4 +733,3 @@ if (returnValue != "")
   }
 return returnValue;
 }
-

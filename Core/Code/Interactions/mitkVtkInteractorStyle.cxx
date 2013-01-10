@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-07-22 16:41:18 +0200 (Fr, 17 Aug 2007) $
-Version:   $Revision: 11618 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkVtkInteractorStyle.h"
 
@@ -29,13 +28,13 @@ mitkVtkInteractorStyle::mitkVtkInteractorStyle()
 {
 }
 
-mitkVtkInteractorStyle::~mitkVtkInteractorStyle() 
+mitkVtkInteractorStyle::~mitkVtkInteractorStyle()
 {
 }
 
 void mitkVtkInteractorStyle::OnMouseWheelForward()
 {
-  if (this->HasObserver(vtkCommand::MouseWheelForwardEvent)) 
+  if (this->HasObserver(vtkCommand::MouseWheelForwardEvent))
   {
     this->InvokeEvent(vtkCommand::MouseWheelForwardEvent, NULL);
   }
@@ -43,7 +42,7 @@ void mitkVtkInteractorStyle::OnMouseWheelForward()
 
 void mitkVtkInteractorStyle::OnMouseWheelBackward()
 {
-  if (this->HasObserver(vtkCommand::MouseWheelBackwardEvent)) 
+  if (this->HasObserver(vtkCommand::MouseWheelBackwardEvent))
   {
     this->InvokeEvent(vtkCommand::MouseWheelBackwardEvent, NULL);
   }

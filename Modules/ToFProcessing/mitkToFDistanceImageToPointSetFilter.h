@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFDistanceImageToPointSetFilter_h
 #define __mitkToFDistanceImageToPointSetFilter_h
 
@@ -22,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkCameraIntrinsics.h>
 #include "mitkImage.h"
 #include "mitkPointSet.h"
-#include <mitkPointSetSource.h> 
+#include <mitkPointSetSource.h>
 #include "mitkImageSource.h"
 #include <mitkToFProcessingCommon.h>
 #include "mitkToFProcessingExports.h"
@@ -37,7 +35,7 @@ namespace mitk
   * If a subset of indizes of the image is defined via SetSubset(), the output PointSet will only contain the cartesian coordinates
   * of the corresponding 3D points.
   *
-  * The coordinate conversion follows the model of a common pinhole camera where the origin of the camera 
+  * The coordinate conversion follows the model of a common pinhole camera where the origin of the camera
   * coordinate system (world coordinates) is at the pinhole
   * \image html ../Modules/ToFProcessing/Documentation/PinholeCameraModel.png
   * The definition of the image plane and its coordinate systems (pixel and mm) is depicted in the following image
@@ -77,7 +75,7 @@ namespace mitk
     \brief Returns the input of this filter
     */
      Image* GetInput();
-   
+
     /*!
     \brief Returns the input with id idx of this filter
     */
@@ -95,6 +93,17 @@ namespace mitk
     \param PointSet specified in index coordinates.
     */
     void SetSubset( mitk::PointSet::Pointer pointSet);
+
+    /*!
+    \brief Sets the reconstruction mode, if using no interpixeldistances and focal lenghts in pixel units (=true) or interpixeldistances and focal length in mm (=false)
+    */
+    void SetReconstructionMode(bool withoutInterpixdist = true);
+
+    /*!
+    \brief Returns the reconstruction mode
+    */
+    bool GetReconstructionMode();
+
 
   protected:
     /*!
@@ -115,7 +124,7 @@ namespace mitk
     * \brief Create an output for each input
     *
     * This Method sets the number of outputs to the number of inputs
-    * and creates missing outputs objects. 
+    * and creates missing outputs objects.
     * \warning any additional outputs that exist before the method is called are deleted
     */
     void CreateOutputsForAllInputs();
@@ -123,6 +132,7 @@ namespace mitk
     std::vector<Index3D> m_Subset; ///< If this subset is specified only the contained indizes are converted to cartesian coordinates
     mitk::CameraIntrinsics::Pointer m_CameraIntrinsics; ///< Member holding the intrinsic parameters needed for PointSet calculation
     ToFProcessingCommon::ToFPoint2D m_InterPixelDistance; ///< distance in mm between two adjacent pixels on the ToF camera chip
+    bool m_ReconstructionMode; ///< true = Reconstruction without interpixeldistance and with focal lengths in pixel units. false = Reconstruction with interpixeldistance and with focal length in mm.
   };
 } //END mitk namespace
 #endif

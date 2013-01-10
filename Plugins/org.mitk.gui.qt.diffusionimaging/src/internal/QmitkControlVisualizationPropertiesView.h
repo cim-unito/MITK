@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKControlVisualizationPropertiesView_H_INCLUDED
 #define _QMITKControlVisualizationPropertiesView_H_INCLUDED
@@ -130,6 +128,10 @@ protected:
   virtual void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
 
   virtual void NodeAdded(const mitk::DataNode *node);
+  void SetFiberBundleCustomColor(const itk::EventObject& /*e*/);
+  bool IsPlaneRotated();
+
+  void SliceRotation(const itk::EventObject&);
 
   Ui::QmitkControlVisualizationPropertiesViewControls* m_Controls;
 
@@ -163,6 +165,11 @@ protected:
   // for planarfigure and bundle handling:
   mitk::DataNode* m_SelectedNode;
   mitk::DataNode* m_CurrentPickingNode;
+
+  unsigned long m_SlicesRotationObserverTag1;
+  unsigned long m_SlicesRotationObserverTag2;
+  unsigned long m_FiberBundleObserverTag;
+  mitk::ColorProperty::Pointer m_Color;
 };
 
 

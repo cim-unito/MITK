@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkImageToPlanarFigureFilter.h"
@@ -34,7 +33,7 @@ mitk::ImageToPlanarFigureFilter::~ImageToPlanarFigureFilter()
 void mitk::ImageToPlanarFigureFilter::SetInput(const mitk::ImageToPlanarFigureFilter::InputImageType *input)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(0, 
+  this->ProcessObject::SetNthInput(0,
     const_cast< mitk::ImageToPlanarFigureFilter::InputImageType * >( input ) );
 }
 
@@ -42,14 +41,14 @@ void mitk::ImageToPlanarFigureFilter::SetInput(const mitk::ImageToPlanarFigureFi
 /**
 * Connect one of the operands for pixel-wise addition
 */
-void mitk::ImageToPlanarFigureFilter::SetInput( unsigned int index, const mitk::ImageToPlanarFigureFilter::InputImageType * image ) 
+void mitk::ImageToPlanarFigureFilter::SetInput( unsigned int index, const mitk::ImageToPlanarFigureFilter::InputImageType * image )
 {
   if( index+1 > this->GetNumberOfInputs() )
   {
     this->SetNumberOfRequiredInputs( index + 1 );
   }
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(index, 
+  this->ProcessObject::SetNthInput(index,
     const_cast< mitk::ImageToPlanarFigureFilter::InputImageType *>( image ) );
 }
 
@@ -58,7 +57,7 @@ void mitk::ImageToPlanarFigureFilter::SetInput( unsigned int index, const mitk::
 /**
 *
 */
-const mitk::ImageToPlanarFigureFilter::InputImageType *mitk::ImageToPlanarFigureFilter::GetInput(void) 
+const mitk::ImageToPlanarFigureFilter::InputImageType *mitk::ImageToPlanarFigureFilter::GetInput(void)
 {
   if (this->GetNumberOfInputs() < 1)
   {

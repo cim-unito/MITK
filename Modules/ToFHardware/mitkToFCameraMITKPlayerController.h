@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision:  $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFCameraMITKPlayerController_h
 #define __mitkToFCameraMITKPlayerController_h
 
@@ -36,7 +34,7 @@ namespace mitk
   */
   class MITK_TOFHARDWARE_EXPORT ToFCameraMITKPlayerController : public itk::Object
   {
-  public: 
+  public:
 
     mitkClassMacro( ToFCameraMITKPlayerController , itk::Object );
 
@@ -66,6 +64,10 @@ namespace mitk
     */
     virtual void GetDistances(float* distanceArray);
     /*!
+    \brief gets the current RGB frame from the input if available
+    */
+    virtual void GetRgb(unsigned char* rgbArray);
+    /*!
     \brief updates the current image frames from input
     */
     virtual void UpdateCamera();
@@ -77,10 +79,12 @@ namespace mitk
     itkGetMacro( DistanceImageFileName, std::string );
     itkGetMacro( AmplitudeImageFileName, std::string );
     itkGetMacro( IntensityImageFileName, std::string );
+    itkGetMacro( RGBImageFileName, std::string );
 
     itkSetMacro( DistanceImageFileName, std::string );
     itkSetMacro( AmplitudeImageFileName, std::string );
     itkSetMacro( IntensityImageFileName, std::string );
+    itkSetMacro( RGBImageFileName, std::string );
     enum ToFImageType{ ToFImageType3D, ToFImageType2DPlusT };
 
   protected:
@@ -103,19 +107,23 @@ namespace mitk
     Image::Pointer m_DistanceImage;
     Image::Pointer m_AmplitudeImage;
     Image::Pointer m_IntensityImage;
+    Image::Pointer m_RGBImage;
     std::vector<bool> m_ImageStatus;
 
     FILE* m_DistanceInfile; ///< file holding the distance data
     FILE* m_AmplitudeInfile; ///< file holding the amplitude data
     FILE* m_IntensityInfile; ///< file holding the intensity data
+    FILE* m_RGBInfile; ///< file holding the rgb data
 
     float* m_IntensityArray; ///< member holding the current intensity frame
     float* m_DistanceArray; ///< member holding the current distance frame
     float* m_AmplitudeArray; ///< member holding the current amplitude frame
+    unsigned char* m_RGBArray; ///< member holding the current rgb frame
 
     std::string m_DistanceImageFileName; ///< file name of the distance image to be played
     std::string m_AmplitudeImageFileName; ///< file name of the amplitude image to be played
     std::string m_IntensityImageFileName; ///< file name of the intensity image to be played
+    std::string m_RGBImageFileName; ///< file name of the rgb image to be played
 
     long m_PixelStartInFile;
     int m_CurrentFrame;

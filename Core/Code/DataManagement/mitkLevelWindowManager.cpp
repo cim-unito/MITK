@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkLevelWindowManager.h"
@@ -57,16 +56,16 @@ mitk::LevelWindowManager::~LevelWindowManager()
     m_IsPropertyModifiedTagSet = false;
   }
 
-  for( std::map<unsigned long, mitk::BaseProperty::Pointer>::iterator iter = m_PropObserverToNode.begin(); 
-       iter != m_PropObserverToNode.end(); 
-       ++iter ) 
+  for( std::map<unsigned long, mitk::BaseProperty::Pointer>::iterator iter = m_PropObserverToNode.begin();
+       iter != m_PropObserverToNode.end();
+       ++iter )
   {
     (*iter).second->RemoveObserver((*iter).first);
   }
 
-  for( std::map<unsigned long, mitk::BaseProperty::Pointer>::iterator iter = m_PropObserverToNode2.begin(); 
-       iter != m_PropObserverToNode2.end(); 
-       ++iter ) 
+  for( std::map<unsigned long, mitk::BaseProperty::Pointer>::iterator iter = m_PropObserverToNode2.begin();
+       iter != m_PropObserverToNode2.end();
+       ++iter )
   {
     (*iter).second->RemoveObserver((*iter).first);
   }
@@ -87,7 +86,7 @@ void mitk::LevelWindowManager::SetDataStorage( mitk::DataStorage* ds )
   }
 
   /* register listener for new DataStorage */
-  m_DataStorage = ds;  // register 
+  m_DataStorage = ds;  // register
   m_DataStorage->AddNodeEvent.AddListener(
       MessageDelegate1<LevelWindowManager, const mitk::DataNode*>( this, &LevelWindowManager::DataStorageChanged ));
   m_DataStorage->RemoveNodeEvent.AddListener(
@@ -137,7 +136,7 @@ void mitk::LevelWindowManager::SetAutoTopMostImage(bool autoTopMost, const mitk:
 
     if (node->IsVisible(NULL) == false)
       continue;
-    
+
     int layer = 0;
     node->GetIntProperty("layer", layer);
     if ( layer < maxLayer )
@@ -150,7 +149,7 @@ void mitk::LevelWindowManager::SetAutoTopMostImage(bool autoTopMost, const mitk:
     m_LevelWindowProperty = levelWindowProperty;
     m_CurrentImage = dynamic_cast<mitk::Image*>(node->GetData());
     topLevelNode = node;
-    
+
     maxLayer = layer;
   }
 
@@ -158,7 +157,7 @@ void mitk::LevelWindowManager::SetAutoTopMostImage(bool autoTopMost, const mitk:
   {
     topLevelNode->SetBoolProperty( "imageForLevelWindow", true );
   }
-   
+
   this->SetLevelWindowProperty( m_LevelWindowProperty );
 
   if ( m_LevelWindowProperty.IsNull() )
@@ -238,17 +237,17 @@ void mitk::LevelWindowManager::DataStorageChanged( const mitk::DataNode* )
 void mitk::LevelWindowManager::DataStorageRemovedNode( const mitk::DataNode* removedNode )
 {
   /* remove old observers */
-  for (ObserverToPropertyMap::iterator iter = m_PropObserverToNode.begin(); 
-       iter != m_PropObserverToNode.end(); 
-       ++iter) 
+  for (ObserverToPropertyMap::iterator iter = m_PropObserverToNode.begin();
+       iter != m_PropObserverToNode.end();
+       ++iter)
   {
     (*iter).second->RemoveObserver((*iter).first);
   }
   m_PropObserverToNode.clear();
 
-  for (ObserverToPropertyMap::iterator iter = m_PropObserverToNode2.begin(); 
-       iter != m_PropObserverToNode2.end(); 
-       ++iter) 
+  for (ObserverToPropertyMap::iterator iter = m_PropObserverToNode2.begin();
+       iter != m_PropObserverToNode2.end();
+       ++iter)
   {
     (*iter).second->RemoveObserver((*iter).first);
   }
@@ -262,8 +261,8 @@ void mitk::LevelWindowManager::DataStorageRemovedNode( const mitk::DataNode* rem
   /* listen to changes  in visible property of all images */
 
   mitk::DataStorage::SetOfObjects::ConstPointer all = this->GetRelevantNodes();
-  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
-       it != all->End(); 
+  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+       it != all->End();
        ++it)
   {
     if (it->Value().IsNull())
@@ -277,8 +276,8 @@ void mitk::LevelWindowManager::DataStorageRemovedNode( const mitk::DataNode* rem
 
   /* listen to changes  in layer property of all images */
 
-  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
-       it != all->End(); 
+  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+       it != all->End();
        ++it)
   {
     if (it->Value().IsNull())
@@ -325,8 +324,8 @@ void mitk::LevelWindowManager::Update(const itk::EventObject&)  // visible prope
     return;
   }
   mitk::DataStorage::SetOfObjects::ConstPointer all = this->GetRelevantNodes();
-  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin(); 
-       it != all->End(); 
+  for (mitk::DataStorage::SetOfObjects::ConstIterator it = all->Begin();
+       it != all->End();
        ++it)
   {
     mitk::DataNode::Pointer node = it->Value();
@@ -362,7 +361,7 @@ mitk::DataStorage::SetOfObjects::ConstPointer mitk::LevelWindowManager::GetRelev
   mitk::BoolProperty::Pointer trueProp = mitk::BoolProperty::New(true);
   mitk::NodePredicateProperty::Pointer notBinary = mitk::NodePredicateProperty::New("binary", mitk::BoolProperty::New(false));
   mitk::NodePredicateProperty::Pointer hasLevelWindow = mitk::NodePredicateProperty::New("levelwindow", NULL);
-  
+
   mitk::NodePredicateDataType::Pointer isImage = mitk::NodePredicateDataType::New("Image");
   mitk::NodePredicateDataType::Pointer isDImage = mitk::NodePredicateDataType::New("DiffusionImage");
   mitk::NodePredicateDataType::Pointer isTImage = mitk::NodePredicateDataType::New("TensorImage");
@@ -372,14 +371,14 @@ mitk::DataStorage::SetOfObjects::ConstPointer mitk::LevelWindowManager::GetRelev
   predicateTypes->AddPredicate(isDImage);
   predicateTypes->AddPredicate(isTImage);
   predicateTypes->AddPredicate(isQImage);
-  
+
   mitk::NodePredicateAnd::Pointer predicate = mitk::NodePredicateAnd::New();
   predicate->AddPredicate(notBinary);
-  predicate->AddPredicate(hasLevelWindow); 
+  predicate->AddPredicate(hasLevelWindow);
   predicate->AddPredicate(predicateTypes);
 
   mitk::DataStorage::SetOfObjects::ConstPointer relevantNodes = m_DataStorage->GetSubset( predicate );
-  return relevantNodes; 
+  return relevantNodes;
 }
 
 

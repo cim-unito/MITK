@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 18029 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPlanarAngle.h"
@@ -102,7 +101,7 @@ void mitk::PlanarAngle::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
   //else we start drawing from the other arm (we want to draw in the mathematically positive direction)
   if( angle > testAngle )
   {
-    v1[0] = v0[0] * cos( -0.001 ) - v0[1] * sin( -0.001 ); 
+    v1[0] = v0[0] * cos( -0.001 ) - v0[1] * sin( -0.001 );
     v1[1] = v0[0] * sin( -0.001 ) + v0[1] * cos( -0.001 );
 
     //We determine if the arm is mathematically forward or backward
@@ -118,7 +117,7 @@ void mitk::PlanarAngle::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
   }
   else
   {
-    v0[0] = v1[0] * cos( -0.001 ) - v1[1] * sin( -0.001 ); 
+    v0[0] = v1[0] * cos( -0.001 ) - v1[1] * sin( -0.001 );
     v0[1] = v1[0] * sin( -0.001 ) + v1[1] * cos( -0.001 );
     //We determine if the arm is mathematically forward or backward
     //assuming we rotate between -pi and pi

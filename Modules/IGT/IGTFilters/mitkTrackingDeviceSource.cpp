@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTrackingDeviceSource.h"
 
@@ -23,7 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkTimeStamp.h"
 
 
-mitk::TrackingDeviceSource::TrackingDeviceSource() 
+mitk::TrackingDeviceSource::TrackingDeviceSource()
 : mitk::NavigationDataSource(), m_TrackingDevice(NULL)
 {
 }
@@ -61,7 +60,7 @@ void mitk::TrackingDeviceSource::GenerateData()
     //this->CreateOutputs();
 
     std::stringstream ss;
-    ss << "mitk::TrackingDeviceSource: not enough outputs available for all tools. " 
+    ss << "mitk::TrackingDeviceSource: not enough outputs available for all tools. "
       << this->GetNumberOfOutputs() << " outputs available, but "
       << m_TrackingDevice->GetToolCount() << " tools available in the tracking device.";
     throw std::out_of_range(ss.str());
@@ -97,11 +96,14 @@ void mitk::TrackingDeviceSource::GenerateData()
 
 void mitk::TrackingDeviceSource::SetTrackingDevice( mitk::TrackingDevice* td )
 {
-  itkDebugMacro("setting TrackingDevice to " << td );
+  MITK_DEBUG << "Setting TrackingDevice to " << td;
   if (this->m_TrackingDevice.GetPointer() != td)
   {
     this->m_TrackingDevice = td;
     this->CreateOutputs();
+    std::stringstream name; // create a human readable name for the source
+    name << td->GetData().Model << " Tracking Source";
+    this->SetName(name.str());
   }
 }
 
@@ -113,7 +115,7 @@ void mitk::TrackingDeviceSource::CreateOutputs(){
       this->RemoveOutput(this->GetOutput(numOP));
     this->Modified();
   }
-  
+
   //fill the outputs if a valid tracking device is set
   if (m_TrackingDevice.IsNull())
     return;
@@ -128,7 +130,7 @@ void mitk::TrackingDeviceSource::CreateOutputs(){
       static_cast<mitk::NavigationData*>(newOutput.GetPointer())->SetName(m_TrackingDevice->GetTool(idx)->GetToolName()); // set NavigationData name to ToolName
       this->SetNthOutput(idx, newOutput);
       this->Modified();
-    }    
+    }
   }
 }
 
@@ -140,8 +142,8 @@ void mitk::TrackingDeviceSource::Connect()
     return;
   if (m_TrackingDevice->OpenConnection() == false)
     throw std::runtime_error(std::string("mitk::TrackingDeviceSource: Could not open connection to tracking device. Error: ") + m_TrackingDevice->GetErrorMessage());
-  
-  /* NDI Aurora needs a connection to discover tools that are connected to it. 
+
+  /* NDI Aurora needs a connection to discover tools that are connected to it.
      Therefore we need to create outputs for these tools now */
   //if (m_TrackingDevice->GetType() == mitk::NDIAurora)
     //this->CreateOutputs();
@@ -189,8 +191,8 @@ void mitk::TrackingDeviceSource::UpdateOutputInformation()
 
 //unsigned int mitk::TrackingDeviceSource::GetToolCount()
 //{
-//  if (m_TrackingDevice) 
-//    return m_TrackingDevice->GetToolCount(); 
+//  if (m_TrackingDevice)
+//    return m_TrackingDevice->GetToolCount();
 //  return 0;
 //}
 
@@ -199,7 +201,7 @@ bool mitk::TrackingDeviceSource::IsConnected()
 {
   if (m_TrackingDevice.IsNull())
     return false;
-  
+
   return (m_TrackingDevice->GetState() == mitk::TrackingDevice::Ready) || (m_TrackingDevice->GetState() == mitk::TrackingDevice::Tracking);
 }
 

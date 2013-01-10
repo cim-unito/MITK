@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-07-13 17:30:13 +0200 (Fr, 13 Jul 2007) $
-Version:   $Revision: 11283 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/ for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _vtk_Colored_Rectangle_Rendering_h_
 #define _vtk_Colored_Rectangle_Rendering_h_
@@ -39,7 +38,7 @@ namespace mitk {
  * at the boarders of vtkRenderWindows.
  * The rectangle rendering itself is performed by means of a
  * vtkProp (vtkMitkRectangleProp).
- * This class instantiates the vtkProp and a corresponding vtkRenderer instance. 
+ * This class instantiates the vtkProp and a corresponding vtkRenderer instance.
  */
 class MITK_CORE_EXPORT RenderWindowFrame : public BaseData
 {
@@ -49,12 +48,12 @@ public:
   itkNewMacro( Self );
 
   /**
-   * Sets the renderwindow, in which colored rectangle boarders will be shown. 
+   * Sets the renderwindow, in which colored rectangle boarders will be shown.
    * Make sure, you have called this function
    * before calling Enable()
    */
   virtual void SetRenderWindow( vtkRenderWindow* renderWindow );
-  
+
   /**
    * Enables drawing of the colored rectangle.
    * If you want to disable it, call the Disable() function.
@@ -66,31 +65,31 @@ public:
    * If you want to enable it, call the Enable() function.
    */
   virtual void Disable();
-  
+
   /**
    * Checks, if the text is currently
    * enabled (visible)
    */
   virtual bool IsEnabled();
-   
+
   /**
    * Empty implementation, since the rectangle rendering doesn't
    * support the requested region concept
    */
   virtual void SetRequestedRegionToLargestPossibleRegion();
-  
+
   /**
    * Empty implementation, since the rectangle rendering doesn't
    * support the requested region concept
    */
   virtual bool RequestedRegionIsOutsideOfTheBufferedRegion();
-  
+
   /**
    * Empty implementation, since the rectangle rendering doesn't
    * support the requested region concept
    */
   virtual bool VerifyRequestedRegion();
-  
+
   /**
    * Empty implementation, since the rectangle rendering doesn't
    * support the requested region concept
@@ -110,9 +109,9 @@ public:
    */
   virtual vtkRenderer* GetVtkRenderer();
 
-   
+
 protected:
-  
+
   /**
    * Constructor
    */
@@ -122,11 +121,11 @@ protected:
    * Destructor
    */
   ~RenderWindowFrame();
-  
+
   vtkRenderWindow*    m_RenderWindow;
   vtkRenderer*        m_RectangleRenderer;
   bool                m_IsEnabled;
- 
+
 };
 
 } //end of namespace mitk

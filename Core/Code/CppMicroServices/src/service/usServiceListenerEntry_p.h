@@ -23,7 +23,7 @@
 #ifndef USSERVICELISTENERENTRY_H
 #define USSERVICELISTENERENTRY_H
 
-#include <usUtils.h>
+#include <usUtils_p.h>
 #include <usModuleContext.h>
 
 #include "usLDAPExpr_p.h"
@@ -61,7 +61,7 @@ public:
   void SetRemoved(bool removed) const;
   bool IsRemoved() const;
 
-  ServiceListenerEntry(Module* mc, const ServiceListener& l, const std::string& filter = "");
+  ServiceListenerEntry(Module* mc, const ServiceListener& l, void* data, const std::string& filter = "");
 
   Module* GetModule() const;
 
@@ -76,7 +76,7 @@ public:
 private:
 
   US_HASH_FUNCTION_FRIEND(ServiceListenerEntry);
-  
+
   ExplicitlySharedDataPointer<ServiceListenerEntryData> d;
 };
 

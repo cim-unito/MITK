@@ -1,25 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYPARTSTACK_H_
 #define BERRYPARTSTACK_H_
 
 #include "berryLayoutPart.h"
-#include "berryIStackableContainer.h"
+#include "berryILayoutContainer.h"
 #include "berryWorkbenchPage.h"
 #include "berryPresentablePart.h"
 #include "berryPartPlaceholder.h"
@@ -46,7 +45,7 @@ namespace berry {
  *
  * @since 3.0
  */
-class PartStack : public LayoutPart, public IStackableContainer {
+class PartStack : public LayoutPart, public ILayoutContainer {
 
   friend class EditorSashContainer;
   friend class PartSashContainer;
@@ -56,7 +55,7 @@ public: berryObjectMacro(PartStack);
 
     public: static const int PROP_SELECTION; // = 0x42;
 
-    private: typedef std::list<StackablePart::Pointer> ChildVector;
+    private: typedef std::list<LayoutPart::Pointer> ChildVector;
     private: ChildVector children;
 
     private: WorkbenchPage* page;
@@ -78,7 +77,7 @@ public: berryObjectMacro(PartStack);
      * are re-enabled, the stack will update the presentation selection to match the requested
      * current pointer.
      */
-    private: StackablePart::Pointer requestedCurrent;
+    private: LayoutPart::Pointer requestedCurrent;
 
     /**
      * Stores the current part for the stack. Whenever the outside world asks a PartStack
@@ -87,7 +86,7 @@ public: berryObjectMacro(PartStack);
      * internal state. If the stack is still in the process of updating the presentation,
      * it will still point to the previous part until the presentation is up-to-date.
      */
-    private: StackablePart::Pointer current;
+    private: LayoutPart::Pointer current;
 
     /**
      * Stores the presentable part sent to the presentation. Whenever the presentation
@@ -208,7 +207,7 @@ public: berryObjectMacro(PartStack);
 
     protected: virtual bool CanMoveFolder();
 
-    protected: virtual void DerefPart(StackablePart::Pointer toDeref);
+    protected: virtual void DerefPart(LayoutPart::Pointer toDeref);
 
     protected: virtual bool AllowsDrop(PartPane::Pointer part);
 
@@ -270,14 +269,14 @@ public: berryObjectMacro(PartStack);
     /**
      * See IVisualContainer#add
      */
-    public: void Add(StackablePart::Pointer child);
+    public: void Add(LayoutPart::Pointer child);
 
     /**
      * Add a part at a particular position
      */
-    protected: void Add(StackablePart::Pointer newChild, Object::Pointer cookie);
+    protected: void Add(LayoutPart::Pointer newChild, Object::Pointer cookie);
 
-    public: bool AllowsAdd(StackablePart::Pointer toAdd);
+    public: bool AllowsAdd(LayoutPart::Pointer toAdd);
 
     /*
      * (non-Javadoc)
@@ -322,7 +321,7 @@ public: berryObjectMacro(PartStack);
      */
     public: void Dispose();
 
-    public: void FindSashes(PartPane::Sashes& sashes);
+    public: void FindSashes(LayoutPart::Pointer toFind, PartPane::Sashes& sashes);
 
     /**
      * Gets the presentation bounds.
@@ -362,7 +361,7 @@ public: berryObjectMacro(PartStack);
      */
     public: PresentableVector GetPresentableParts();
 
-    private: PresentablePart::Pointer GetPresentablePart(StackablePart::Pointer pane);
+    private: PresentablePart::Pointer GetPresentablePart(LayoutPart::Pointer pane);
 
     protected: StackPresentation::Pointer GetPresentation();
 
@@ -370,14 +369,14 @@ public: berryObjectMacro(PartStack);
      * Returns the visible child.
      * @return the currently visible part, or null if none
      */
-    public: StackablePart::Pointer GetSelection();
+    public: PartPane::Pointer GetSelection();
 
     private: void PresentationSelectionChanged(IPresentablePart::Pointer newSelection);
 
     /**
      * See IVisualContainer#remove
      */
-    public: void Remove(StackablePart::Pointer child);
+    public: void Remove(LayoutPart::Pointer child);
 
     /**
      * Reparent a part. Also reparent visible children...
@@ -387,7 +386,7 @@ public: berryObjectMacro(PartStack);
     /**
      * See IVisualContainer#replace
      */
-    public: void Replace(StackablePart::Pointer oldChild, StackablePart::Pointer newChild);
+    public: void Replace(LayoutPart::Pointer oldChild, LayoutPart::Pointer newChild);
 
   /* (non-Javadoc)
    * @see org.blueberry.ui.internal.LayoutPart#computePreferredSize(boolean, int, int, int)
@@ -433,7 +432,7 @@ public: berryObjectMacro(PartStack);
      */
     public: void SetBounds(const Rectangle& r);
 
-    public: void SetSelection(StackablePart::Pointer part);
+    public: void SetSelection(LayoutPart::Pointer part);
 
     /**
      * Updates the enablement state of actions
@@ -691,7 +690,7 @@ public: berryObjectMacro(PartStack);
      * @param part the part to add to the stack
      * @param cookie other information
      */
-    private: void ShowPart(StackablePart::Pointer part, Object::Pointer cookie);
+    private: void ShowPart(LayoutPart::Pointer part, Object::Pointer cookie);
 
     /**
    * Update the container to show the correct visible tab based on the
@@ -708,7 +707,7 @@ public: berryObjectMacro(PartStack);
 
     public: void ShowPartList();
 
-    public: std::vector<void*> GetTabList(StackablePart::Pointer part);
+    public: std::vector<void*> GetTabList(LayoutPart::Pointer part);
 
     /**
      *
@@ -755,7 +754,7 @@ public: berryObjectMacro(PartStack);
      */
     public: void CopyAppearanceProperties(PartStack::Pointer copyTo);
 
-    public: void ResizeChild(StackablePart::Pointer childThatChanged);
+    public: void ResizeChild(LayoutPart::Pointer childThatChanged);
 };
 
 }

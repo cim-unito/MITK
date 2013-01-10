@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkImageWriter.h"
 
@@ -21,6 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkImage.h"
 #include "mitkImageTimeSelector.h"
 #include "mitkImageAccessByItk.h"
+#include "mitkImageReadAccessor.h"
 
 #include <itkImageIOBase.h>
 #include <itkImageIOFactory.h>
@@ -54,13 +54,35 @@ static void writeVti(const char * filename, mitk::Image* image, int t=0)
   vtkwriter->Delete();
 }
 
+#include <itkRGBAPixel.h>
+
 void mitk::ImageWriter::WriteByITK(mitk::Image* image, const std::string& fileName)
 {
   // Pictures and picture series like .png are written via a different mechanism then volume images.
   // So, they are still multiplexed and thus not support vector images.
   if (fileName.find(".png") != std::string::npos || fileName.find(".tif") != std::string::npos || fileName.find(".jpg") != std::string::npos)
   {
-    AccessByItk_1( image, _mitkItkPictureWrite, fileName );
+    try
+    {
+      // switch processing of single/multi-component images
+      if( image->GetPixelType(0).GetNumberOfComponents() == 1)
+      {
+        AccessByItk_1( image, _mitkItkPictureWrite, fileName );
+      }
+      else
+      {
+        AccessFixedPixelTypeByItk_1( image, _mitkItkPictureWriteComposite, MITK_ACCESSBYITK_PIXEL_TYPES_SEQ MITK_ACCESSBYITK_COMPOSITE_PIXEL_TYPES_SEQ , fileName);
+      }
+    }
+    catch(itk::ExceptionObject &e)
+    {
+      std::cerr << "Caught " << e.what() << std::endl;
+    }
+    catch(std::exception &e)
+    {
+      std::cerr << "Caught std::exception " << e.what() << std::endl;
+    }
+
     return;
   }
 
@@ -84,9 +106,12 @@ void mitk::ImageWriter::WriteByITK(mitk::Image* image, const std::string& fileNa
   // Set the necessary information for imageIO
   imageIO->SetNumberOfDimensions(dimension);
   imageIO->SetPixelTypeInfo( pixelType.GetTypeId() );
+  // Set also the PixelTypeIO information since it is available after
+  // the changes in PixelType for Bug #12838
+  imageIO->SetPixelType( pixelType.GetPixelTypeId() );
 
   if(pixelType.GetNumberOfComponents() > 1)
-    imageIO->SetNumberOfComponents(pixelType.GetNumberOfComponents());
+    imageIO->SetNumberOfComponents( pixelType.GetNumberOfComponents() );
 
   itk::ImageIORegion ioRegion( dimension );
 
@@ -115,8 +140,8 @@ void mitk::ImageWriter::WriteByITK(mitk::Image* image, const std::string& fileNa
   imageIO->SetIORegion(ioRegion);
   imageIO->SetFileName(fileName);
 
-  const void * data = image->GetData();
-  imageIO->Write(data);
+  ImageReadAccessor imageAccess(image);
+  imageIO->Write(imageAccess.GetData());
 }
 
 void mitk::ImageWriter::GenerateData()
@@ -151,14 +176,36 @@ void mitk::ImageWriter::GenerateData()
   fclose(tempFile);
   remove(m_FileName.c_str());
 
-  mitk::Image::Pointer input = const_cast<mitk::Image*>(this->GetInput());
+  // Creating clone of input image, since i might change the geometry
+  mitk::Image::Pointer input = const_cast<mitk::Image*>(this->GetInput())->Clone();
+
+  // Check if geometry information will be lost
+  if (input->GetDimension() == 2)
+  {
+     if (!input->GetGeometry()->Is2DConvertable())
+     {
+        MITK_WARN << "Saving a 2D image with 3D geometry information. Geometry information will be lost! You might consider using Convert2Dto3DImageFilter before saving.";
+
+        // set matrix to identity
+        mitk::AffineTransform3D::Pointer affTrans = mitk::AffineTransform3D::New();
+        affTrans->SetIdentity();
+        mitk::Vector3D spacing = input->GetGeometry()->GetSpacing();
+        mitk::Point3D origin = input->GetGeometry()->GetOrigin();
+        input->GetGeometry()->SetIndexToWorldTransform(affTrans);
+        input->GetGeometry()->SetSpacing(spacing);
+        input->GetGeometry()->SetOrigin(origin);
+     }
+  }
 
   bool vti = (m_Extension.find(".vti") != std::string::npos);
 
-  // If the extension is NOT .pic and NOT .nrrd the following block is entered
+  // If the extension is NOT .pic and NOT .nrrd and NOT .nii and NOT .nii.gz the following block is entered
   if ( m_Extension.find(".pic") == std::string::npos
        && m_Extension.find(".nrrd") == std::string::npos
-       && m_Extension.find(".hdr") == std::string::npos)
+       && m_Extension.find(".hdr") == std::string::npos
+       && m_Extension.find(".nii") == std::string::npos
+       && m_Extension.find(".nii.gz") == std::string::npos
+       )
   {
     if(input->GetDimension() > 3)
     {
@@ -189,7 +236,7 @@ void mitk::ImageWriter::GenerateData()
         }
         else
         {
-          WriteByITK(input, filename.str());
+          WriteByITK(image, filename.str());
         }
       }
     }
@@ -231,7 +278,10 @@ void mitk::ImageWriter::GenerateData()
 
     // use the ITK .nrrd Image writer
     else if( m_Extension.find(".nrrd") != std::string::npos
-             || m_Extension.find(".hdr") != std::string::npos)
+        || m_Extension.find(".hdr") != std::string::npos
+        || m_Extension.find(".nii") != std::string::npos
+        || m_Extension.find(".nii.gz") != std::string::npos
+        )
     {
         ::itk::OStringStream filename;
         filename <<  this->m_FileName.c_str() << this->m_Extension;

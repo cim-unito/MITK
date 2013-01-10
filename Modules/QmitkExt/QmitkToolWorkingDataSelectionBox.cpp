@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-10-30 12:33:31 +0100 (Do, 30 Okt 2008) $
-Version:   $Revision: 15606 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkToolWorkingDataSelectionBox.h"
 
@@ -131,7 +130,7 @@ void QmitkToolWorkingDataSelectionBox::UpdateDataDisplay()
 
     if (node) // delete this check when datastorage is really used
     {
-      // get name and color 
+      // get name and color
       std::string name = node->GetName();
       float rgb[3]; rgb[0] = 1.0; rgb[1] = 0.0; rgb[2] = 0.0;
       node->GetColor(rgb);
@@ -139,7 +138,7 @@ void QmitkToolWorkingDataSelectionBox::UpdateDataDisplay()
 
       QPixmap pixmap(25,18);
       pixmap.fill(QColor(qrgb));
-      
+
       // create a list item
       QListWidgetItem* newItem = new QListWidgetItem();
       QString qname = QString::fromLocal8Bit(name.c_str());

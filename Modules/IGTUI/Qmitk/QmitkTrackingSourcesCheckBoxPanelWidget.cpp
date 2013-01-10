@@ -1,26 +1,25 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-03-21 19:27:37 +0100 (Sa, 21 Mrz 2009) $
-Version:   $Revision: 16719 $ 
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkTrackingSourcesCheckBoxPanelWidget.h"
 
 #include <QMessageBox>
 
 
-QmitkTrackingSourcesCheckBoxPanelWidget::QmitkTrackingSourcesCheckBoxPanelWidget(QWidget* parent)  
+QmitkTrackingSourcesCheckBoxPanelWidget::QmitkTrackingSourcesCheckBoxPanelWidget(QWidget* parent)
 : QWidget(parent), m_Controls(NULL), m_SourceCheckboxes(NULL), m_NavigationDatas(NULL), m_SelectedIds(NULL)
 {
   this->CreateQtPartControl( this );
@@ -54,7 +53,7 @@ void QmitkTrackingSourcesCheckBoxPanelWidget::CreateConnections()
 
 
 void QmitkTrackingSourcesCheckBoxPanelWidget::SetNavigationDatas(std::vector<mitk::NavigationData::Pointer>* navDatas)
-{ 
+{
   if( navDatas != NULL )
     m_NavigationDatas = navDatas;
 }
@@ -140,7 +139,7 @@ void QmitkTrackingSourcesCheckBoxPanelWidget::ShowSourceCheckboxes()
     connect( checkBox, SIGNAL(toggled(bool)), this , SLOT(OnCheckboxClicked(bool)) );
 
     m_SourceCheckboxes->push_back(checkBox);
-    m_Controls->m_GridLayout->addWidget(checkBox,row,column);  
+    m_Controls->m_GridLayout->addWidget(checkBox,row,column);
 
   }
 
@@ -195,7 +194,7 @@ void QmitkTrackingSourcesCheckBoxPanelWidget::OnCheckboxClicked(bool checked)
     if(sender == m_SourceCheckboxes->at(i))
     {   idx=i;
     break;
-    }    
+    }
   }
 
   if(idx>-1)
@@ -240,7 +239,7 @@ void QmitkTrackingSourcesCheckBoxPanelWidget::OnPerformActionClicked(bool toggle
 {
   if(this->GetSelectedTrackingSourcesIDs()->empty())
   {
-    m_Controls->m_ActionButton->setChecked(false);   
+    m_Controls->m_ActionButton->setChecked(false);
     return;
   }
 
@@ -270,7 +269,7 @@ void QmitkTrackingSourcesCheckBoxPanelWidget::OnPerformActionClicked()
 {
   if(this->GetSelectedTrackingSourcesIDs()->empty()){
     m_Controls->m_ActionButton->setChecked(false);
-    return;   
+    return;
   }
 
   emit Action();

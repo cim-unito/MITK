@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // mitk includes
 #include <mitkImage.h>
@@ -185,7 +184,7 @@ int mitkImageTest(int argc, char* argv[])
   vtkimage->SetScalarType( VTK_SHORT );
   vtkimage->AllocateScalars();
   std::cout<<"[PASSED]"<<std::endl;
-  
+
   MITK_TEST_OUTPUT(<< " Testing mitk::Image::Initialize(vtkImageData*, ...)");
   mitk::Image::Pointer mitkByVtkImage = mitk::Image::New();
   mitkByVtkImage ->Initialize(vtkimage);
@@ -213,7 +212,7 @@ int mitkImageTest(int argc, char* argv[])
   // TODO test the following initializers on channel-incorporation
   //  void mitk::Image::Initialize(const mitk::PixelType& type, unsigned int dimension, unsigned int *dimensions, unsigned int channels)
   //  void mitk::Image::Initialize(const mitk::PixelType& type, int sDim, const mitk::Geometry2D& geometry2d, bool flipped, unsigned int channels, int tDim )
-  //  void mitk::Image::Initialize(const mitk::Image* image) 
+  //  void mitk::Image::Initialize(const mitk::Image* image)
   //  void mitk::Image::Initialize(const mitkIpPicDescriptor* pic, int channels, int tDim, int sDim)
 
   //mitk::Image::Pointer vecImg = mitk::Image::New();
@@ -222,7 +221,7 @@ int mitkImageTest(int argc, char* argv[])
 
   // testing access by index coordinates and by world coordinates
 
-  MITK_TEST_CONDITION_REQUIRED(argc == 2, "Check if test image is accessible!"); 
+  MITK_TEST_CONDITION_REQUIRED(argc == 2, "Check if test image is accessible!");
   const std::string filename = std::string(argv[1]);
   mitk::ItkImageFileReader::Pointer imageReader = mitk::ItkImageFileReader::New();
   try
@@ -233,10 +232,10 @@ int mitkImageTest(int argc, char* argv[])
   catch(...) {
     MITK_TEST_FAILED_MSG(<< "Could not read file for testing: " << filename);
     return 0;
-  }  
-  
+  }
+
   mitk::Image::Pointer image = imageReader->GetOutput();
-  
+
   // generate a random point in world coordinates
   mitk::Point3D xMax, yMax, zMax, xMaxIndex, yMaxIndex, zMaxIndex;
   xMaxIndex.Fill(0.0f);
@@ -263,12 +262,30 @@ int mitkImageTest(int argc, char* argv[])
   mitk::ScalarType imageMin = image->GetStatistics()->GetScalarValueMin();
   mitk::ScalarType imageMax = image->GetStatistics()->GetScalarValueMax();
   mitk::ScalarType value = image->GetPixelValueByWorldCoordinate(point);
-  MITK_TEST_CONDITION( (value>=imageMin && value <=imageMax), "Value returned is between max/min");
   MITK_INFO << imageMin << " "<< imageMax << " "<< value << "";
+  MITK_TEST_CONDITION( (value >= imageMin && value <= imageMax), "Value returned is between max/min");
 
+  // test accessing PixelValue with coordinate leading to a negative index
+  const mitk::Point3D geom_origin = image->GetGeometry()->GetOrigin();
+  const mitk::Point3D geom_center = image->GetGeometry()->GetCenter();
+  const unsigned int timestep = 0;
+
+  // shift position from origin outside of the image ( in the opposite direction to [center-origin] vector which points in the inside)
+  mitk::Point3D position = geom_origin + (geom_origin - geom_center);
+  MITK_TEST_CONDITION_REQUIRED( image->GetPixelValueByWorldCoordinate(position, timestep) == 0, "Test access to the outside of the image")
+
+
+  // testing the clone method of mitk::Image
   mitk::Image::Pointer cloneImage = image->Clone();
   MITK_TEST_CONDITION_REQUIRED(cloneImage->GetDimension() == image->GetDimension(), "Clone (testing dimension)");
   MITK_TEST_CONDITION_REQUIRED(cloneImage->GetPixelType() == image->GetPixelType(), "Clone (testing pixel type)");
+  // After cloning an image the geometry of both images should be equal too
+  MITK_TEST_CONDITION_REQUIRED(cloneImage->GetGeometry()->GetOrigin() == image->GetGeometry()->GetOrigin(), "Clone (testing origin)");
+  MITK_TEST_CONDITION_REQUIRED(cloneImage->GetGeometry()->GetSpacing() == image->GetGeometry()->GetSpacing(), "Clone (testing spacing)");
+  MITK_TEST_CONDITION_REQUIRED(mitk::MatrixEqualElementWise(cloneImage->GetGeometry()->GetIndexToWorldTransform()->GetMatrix(), image->GetGeometry()->GetIndexToWorldTransform()->GetMatrix()),
+                               "Clone (testing transformation matrix)");
+  MITK_TEST_CONDITION_REQUIRED(mitk::MatrixEqualElementWise(cloneImage->GetTimeSlicedGeometry()->GetGeometry3D(cloneImage->GetDimension(3)-1)->GetIndexToWorldTransform()->GetMatrix(),
+    cloneImage->GetTimeSlicedGeometry()->GetGeometry3D(image->GetDimension(3)-1)->GetIndexToWorldTransform()->GetMatrix()), "Clone(testing time sliced geometry)");
 
   for (unsigned int i = 0u; i < cloneImage->GetDimension(); ++i)
   {
@@ -301,11 +318,11 @@ int mitkImageTest(int argc, char* argv[])
 
     MITK_TEST_CONDITION_REQUIRED( mitk::Equal(point,backTransformedPoint), "Testing world->itk-physical->world consistency");
 
-    itk::Index<3> idx;  
+    itk::Index<3> idx;
     bool status = itkimage->TransformPhysicalPointToIndex(itkPhysicalPoint, idx);
 
     MITK_INFO << "ITK Index " << idx[0] << " "<< idx[1] << " "<< idx[2] << "";
-   
+
     if(status)
     {
       float valByItk = itkimage->GetPixel(idx);
@@ -319,6 +336,18 @@ int mitkImageTest(int argc, char* argv[])
   else
   {
     MITK_INFO << "Image does not contain three dimensions, some test cases are skipped!";
-  } 
+  }
+
+  // clone generated 3D image with one slice in z direction (cf. bug 11058)
+  unsigned int* threeDdim = new unsigned int[3];
+  threeDdim[0] = 100;
+  threeDdim[1] = 200;
+  threeDdim[2] = 1;
+  mitk::Image::Pointer threeDImage = mitk::Image::New();
+  threeDImage->Initialize(mitk::MakeScalarPixelType<float>(), 3, threeDdim);
+  mitk::Image::Pointer cloneThreeDImage = threeDImage->Clone();
+  // check that the clone image has the same dimensionality as the source image
+  MITK_TEST_CONDITION_REQUIRED( cloneThreeDImage->GetDimension() == 3, "Testing if the clone image initializes with 3D!");
+
   MITK_TEST_END();
 }

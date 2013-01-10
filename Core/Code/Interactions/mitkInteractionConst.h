@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKINTERACTCONST_H
@@ -154,6 +153,35 @@ enum EEventIds
   EV_NEW_LANDMARK = 5551009,
   EV_REMOVE_LANDMARK = 5551010,
   EIDINSIDE = 2500,
+  EIDA = 4001,
+  EIDB = 4002,
+  EIDC = 4003,
+  EIDD = 4004,
+  EIDF = 4005,
+  EIDG = 4006,
+  EIDI = 4007,
+  EIDJ = 4008,
+  EIDK = 4009,
+  EIDL = 4010,
+  EIDM = 4011,
+  EIDO = 4012,
+  EIDQ = 4013,
+  EIDU = 4014,
+  EIDV = 4015,
+  EIDW = 4016,
+  EIDX = 4017,
+  EIDY = 4018,
+  EIDZ = 4019,
+  EID1 = 4020,
+  EID2 = 4021,
+  EID3 = 4022,
+  EID4 = 4023,
+  EID5 = 4024,
+  EID6 = 4025,
+  EID7 = 4026,
+  EID8 = 4027,
+  EID9 = 4028,
+  EID0 = 4029,
   EIDFIGUREHOVER = 12340,
   EIDNOFIGUREHOVER = 12341
 };
@@ -238,6 +266,7 @@ enum EActions
   AcINITNEUTRAL = 47,  // used in SeedsInteractor for setting the neutral seeds (rubber)
   AcINITUPDATE = 1235,  // For shape model deformation
   AcADDPOINT = 10,
+  AcADDPOINTRMB = 6000, // in mitralPointSetInteractor used to set a different type of point
   AcADD = 11,
   AcADDLINE = 12,
   AcADDANDFINISH = 13,

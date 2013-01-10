@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef STATEMACHINEFACTORY_H_HEADER_INCLUDED_C19AEDDD
@@ -23,7 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkState.h"
 #include "mitkTransition.h"
 #include "mitkAction.h"
-#include <vtkXMLParser.h> 
+#include <vtkXMLParser.h>
 #include <iostream>
 #include <set>
 
@@ -36,10 +35,10 @@ namespace mitk {
   * According to the XML-File every different statemachine is build up. A new
   * instance of a new StateMachine grabs a StartState of one certain
   * state machine. Two instances of one kind of state machine share that
-  * state machine. 
+  * state machine.
   * During buildprocess at runtime each state machine is parsed for well formed style.
   * Currently different interaction styles are not yet supported.
-  * To add individual state machine patterns, call LoadBehavior(...) 
+  * To add individual state machine patterns, call LoadBehavior(...)
   * and it will be parsed added to the internal list of patterns
   *
   * @ingroup Interaction
@@ -61,12 +60,12 @@ namespace mitk {
     **/
     typedef std::set<int>                               HistorySet;
     typedef HistorySet::iterator                        HistorySetIter;
-    
+
     /**
     * @brief This type holds all states of one statemachine.
     **/
     typedef std::map<int,State::Pointer>                StateMachineMapType;
-    
+
     /**
     * @brief this type holds all states of all statemachines so that a specific state can be accessed for persistence
     **/
@@ -77,7 +76,7 @@ namespace mitk {
     *
     * Returns NULL if no entry with name type is found.
     * Here a Smartpointer is returned to ensure, that StateMachines are also considered during reference counting.
-    **/    
+    **/
     State* GetStartState(const char* type);
 
     /**
@@ -96,7 +95,7 @@ namespace mitk {
     * Search strategy:
     * \li try environment variable "MITKCONF" (path to "StateMachine.xml")
     * \li try "./StateMachine.xml"
-    * \li try via source directory (using MITKROOT from cmake-created 
+    * \li try via source directory (using MITKROOT from cmake-created
     * mitkConfig.h) "MITKROOT/Interactions/mitkBaseInteraction/StateMachine.xml"
     **/
     bool LoadStandardBehavior();
@@ -109,7 +108,7 @@ namespace mitk {
     /**
     * @brief Adds the given pattern to the internal list of patterns
     *
-    * Method to support addition of externaly loaded patterns. 
+    * Method to support addition of externaly loaded patterns.
     * Instances of states, transitions and actions are maintained within this class and freed on destruction.
     * The states already have to be connected by transitions and actions and checked for errors.
     * @params type name of the pattern to add. Will be used during initialization of a new interactor.
@@ -168,7 +167,7 @@ namespace mitk {
     bool ReadXMLBooleanAttribut( std::string name, const char** atts );
 
     /**
-    * @brief Returns a Pointer to the desired state if found. 
+    * @brief Returns a Pointer to the desired state if found.
     **/
     mitk::State* GetState( const char* type, int StateId );
 
@@ -216,7 +215,7 @@ namespace mitk {
 
     std::string m_AktStateMachineName;
 
-    /** 
+    /**
     * @brief Variable to skip a state machine pattern if the state machine name is not unique
     **/
     bool m_SkipStateMachine;

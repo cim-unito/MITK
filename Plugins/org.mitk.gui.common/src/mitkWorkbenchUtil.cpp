@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkWorkbenchUtil.h"
@@ -21,6 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <berryPlatformUI.h>
 #include <berryIEditorRegistry.h>
 #include <berryUIException.h>
+#include <berryIPreferencesService.h>
 
 #include <mitkDataNodeFactory.h>
 #include "mitkIDataStorageService.h"
@@ -40,6 +40,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include <QMessageBox>
 #include <QApplication>
+#include <QDateTime>
 
 #include "internal/org_mitk_gui_common_Activator.h"
 
@@ -94,8 +95,9 @@ struct WorkbenchUtilPrivate {
     return editorDesc;
   }
 };
-
-void WorkbenchUtil::LoadFiles(const QStringList &fileNames, berry::IWorkbenchWindow::Pointer window)
+// //! [UtilLoadFiles]
+void WorkbenchUtil::LoadFiles(const QStringList &fileNames, berry::IWorkbenchWindow::Pointer window, bool openEditor)
+// //! [UtilLoadFiles]
 {
   if (fileNames.empty())
      return;
@@ -128,8 +130,27 @@ void WorkbenchUtil::LoadFiles(const QStringList &fileNames, berry::IWorkbenchWin
 
   // Do the actual work of loading the data into the data storage
   std::vector<std::string> fileNames2;
-  ctk::qListToSTLVector(fileNames, fileNames2);
+
+  // Correct conversion for File names.(BUG 12252)
+  fileNames2.resize(fileNames.size());
+  for (int i = 0; i< fileNames.size(); i++)
+    fileNames2[i] = std::string(QFile::encodeName(fileNames[i]).data());
+
+  // Old conversion which returns wrong encoded Non-Latin-Characters.
+  //ctk::qListToSTLVector(fileNames, fileNames2);
+
+  // Turn off ASSERT
+  #if defined(_MSC_VER) && !defined(NDEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
+      int lastCrtReportType = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_DEBUG );
+  #endif
+
   const bool dsmodified = mitk::IOUtil::LoadFiles(fileNames2, *dataStorage);
+
+  // Set ASSERT status back to previous status.
+  #if defined(_MSC_VER) && !defined(NDEBUG) && defined(_DEBUG) && defined(_CRT_ERROR)
+    if (lastCrtReportType)
+      _CrtSetReportMode( _CRT_ASSERT, lastCrtReportType );
+  #endif
 
   // Check if there is an open perspective. If not, open the default perspective.
   if (window->GetActivePage().IsNull())
@@ -138,33 +159,36 @@ void WorkbenchUtil::LoadFiles(const QStringList &fileNames, berry::IWorkbenchWin
     window->GetWorkbench()->ShowPerspective(defaultPerspId, window);
   }
 
-  try
+  if (openEditor)
   {
-    // Activate the editor using the same data storage or open the default editor
-    mitk::DataStorageEditorInput::Pointer input(new mitk::DataStorageEditorInput(dataStorageRef));
-    berry::IEditorPart::Pointer editor = mitk::WorkbenchUtil::OpenEditor(window->GetActivePage(), input, true);
-    mitk::IRenderWindowPart* renderEditor = dynamic_cast<mitk::IRenderWindowPart*>(editor.GetPointer());
-    mitk::IRenderingManager* renderingManager = renderEditor == 0 ? 0 : renderEditor->GetRenderingManager();
-
-    if(dsmodified && renderingManager)
+    try
     {
-      // get all nodes that have not set "includeInBoundingBox" to false
-      mitk::NodePredicateNot::Pointer pred
-          = mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("includeInBoundingBox"
-                                                                         , mitk::BoolProperty::New(false)));
+      // Activate the editor using the same data storage or open the default editor
+      mitk::DataStorageEditorInput::Pointer input(new mitk::DataStorageEditorInput(dataStorageRef));
+      berry::IEditorPart::Pointer editor = mitk::WorkbenchUtil::OpenEditor(window->GetActivePage(), input, true);
+      mitk::IRenderWindowPart* renderEditor = dynamic_cast<mitk::IRenderWindowPart*>(editor.GetPointer());
+      mitk::IRenderingManager* renderingManager = renderEditor == 0 ? 0 : renderEditor->GetRenderingManager();
 
-      mitk::DataStorage::SetOfObjects::ConstPointer rs = dataStorage->GetSubset(pred);
-      // calculate bounding geometry of these nodes
-      mitk::TimeSlicedGeometry::Pointer bounds = dataStorage->ComputeBoundingGeometry3D(rs);
-      // initialize the views to the bounding geometry
-      renderingManager->InitializeViews(bounds);
+      if(dsmodified && renderingManager)
+      {
+        // get all nodes that have not set "includeInBoundingBox" to false
+        mitk::NodePredicateNot::Pointer pred
+            = mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("includeInBoundingBox"
+                                                                           , mitk::BoolProperty::New(false)));
+
+        mitk::DataStorage::SetOfObjects::ConstPointer rs = dataStorage->GetSubset(pred);
+        // calculate bounding geometry of these nodes
+        mitk::TimeSlicedGeometry::Pointer bounds = dataStorage->ComputeBoundingGeometry3D(rs);
+        // initialize the views to the bounding geometry
+        renderingManager->InitializeViews(bounds);
+      }
     }
-  }
-  catch (const berry::PartInitException& e)
-  {
-    QString msg = "An error occurred when displaying the file(s): %1";
-    QMessageBox::warning(QApplication::activeWindow(), "Error displaying file",
-                         msg.arg(QString::fromStdString(e.message())));
+    catch (const berry::PartInitException& e)
+    {
+      QString msg = "An error occurred when displaying the file(s): %1";
+      QMessageBox::warning(QApplication::activeWindow(), "Error displaying file",
+                           msg.arg(QString::fromStdString(e.message())));
+    }
   }
 }
 
@@ -250,6 +274,75 @@ berry::IEditorDescriptor::Pointer WorkbenchUtil::GetDefaultEditor(const QString&
 
   // Try lookup with filename
   return editorReg->GetDefaultEditor(name.toStdString()); //, contentType);
+}
+
+bool WorkbenchUtil::SetDepartmentLogoPreference(const QString &logoResource, ctkPluginContext *context)
+{
+  // The logo must be available in the local filesystem. We check if we have not already extracted the
+  // logo from the plug-in or if this plug-ins timestamp is newer then the already extracted logo timestamp.
+  // If one of the conditions is true, extract it and write it to the plug-in specific storage location.
+  const QString logoFileName = logoResource.mid(logoResource.lastIndexOf('/')+1);
+  const QString logoPath = context->getDataFile("").absoluteFilePath();
+
+  bool extractLogo = true;
+  QFileInfo logoFileInfo(logoPath + "/" + logoFileName);
+
+  if (logoFileInfo.exists())
+  {
+    // The logo has been extracted previously. Check if the plugin timestamp is newer, which
+    // means it might contain an updated logo.
+    QString pluginLocation = QUrl(context->getPlugin()->getLocation()).toLocalFile();
+    if (!pluginLocation.isEmpty())
+    {
+      QFileInfo pluginFileInfo(pluginLocation);
+      if (logoFileInfo.lastModified() > pluginFileInfo.lastModified())
+      {
+        extractLogo = false;
+      }
+    }
+  }
+
+  if (extractLogo)
+  {
+    // Extract the logo from the shared library and write it to disk.
+    QFile logo(logoResource);
+    if (logo.open(QIODevice::ReadOnly))
+    {
+      QFile localLogo(logoPath + "/" + logoFileName);
+      if (localLogo.open(QIODevice::WriteOnly))
+      {
+        localLogo.write(logo.readAll());
+      }
+    }
+  }
+
+  logoFileInfo.refresh();
+  if (logoFileInfo.exists())
+  {
+    // Get the preferences service
+    ctkServiceReference prefServiceRef = context->getServiceReference<berry::IPreferencesService>();
+    berry::IPreferencesService* prefService = NULL;
+    if (prefServiceRef)
+    {
+      prefService = context->getService<berry::IPreferencesService>(prefServiceRef);
+    }
+
+    if (prefService)
+    {
+      prefService->GetSystemPreferences()->Put("DepartmentLogo", qPrintable(logoFileInfo.absoluteFilePath()));
+    }
+    else
+    {
+      BERRY_WARN << "Preferences service not available, unable to set custom logo.";
+      return false;
+    }
+  }
+  else
+  {
+    BERRY_WARN << "Custom logo at " << logoFileInfo.absoluteFilePath().toStdString() << " does not exist";
+    return false;
+  }
+  return true;
 }
 
 } // namespace mitk

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKMATRIXCONVERT_H_HEADER_INCLUDED_C1EBD0AD
@@ -36,7 +35,7 @@ namespace mitk
 
   for ( int i=0; i < 3; ++i)
     for( int j=0; j < 3; ++j )
-      vnlMatrix[i][j] = vtkmatrix->GetElement( i, j );    
+      vnlMatrix[i][j] = vtkmatrix->GetElement( i, j );
   // *This* ensures m_MatrixMTime.Modified(), which is therewith not equal to
   // m_InverseMatrixMTime, thus a new inverse will be calculated (when
   // requested).
@@ -84,7 +83,7 @@ namespace mitk
 
     for ( int i=0; i < 3; ++i)
       for( int j=0; j < 3; ++j )
-        destVnlMatrix[i][j] = sourceVnlMatrix[i][j];    
+        destVnlMatrix[i][j] = sourceVnlMatrix[i][j];
 
     // *This* ensures m_MatrixMTime.Modified(), which is therewith not equal to
     // m_InverseMatrixMTime, thus a new inverse will be calculated (when
@@ -138,7 +137,7 @@ namespace mitk
 
     for ( int i=0; i < 3; ++i)
       for( int j=0; j < 3; ++j )
-        destVnlMatrix[i][j] = inverseRotationVnlMatrix[i][j];    
+        destVnlMatrix[i][j] = inverseRotationVnlMatrix[i][j];
     // *This* ensures m_MatrixMTime.Modified(), which is therewith not equal to
     // m_InverseMatrixMTime, thus a new inverse will be calculated (when
     // requested).

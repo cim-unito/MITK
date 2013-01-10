@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITK_ENUMERATIONPROPERTYWIDGET_H_INCLUDED
 #define QMITK_ENUMERATIONPROPERTYWIDGET_H_INCLUDED
@@ -37,7 +36,7 @@ class QmitkExt_EXPORT QmitkEnumerationPropertyWidget : public QComboBox
   Q_OBJECT
 
   public:
-    
+
     QmitkEnumerationPropertyWidget(QWidget* parent = 0);
     ~QmitkEnumerationPropertyWidget();
 
@@ -46,7 +45,7 @@ class QmitkExt_EXPORT QmitkEnumerationPropertyWidget : public QComboBox
   protected slots:
 
     void OnIndexChanged(int index);
-      
+
   protected:
 
     _EnumPropEditorImpl* propView;

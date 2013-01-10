@@ -1,9 +1,25 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "itkTractsToFiberEndingsImageFilter.h"
 
 // VTK
 #include <vtkPolyLine.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <boost/progress.hpp>
 
 namespace itk{
 
@@ -13,6 +29,7 @@ namespace itk{
     , m_UpsamplingFactor(1)
     , m_InputImage(NULL)
     , m_UseImageGeometry(false)
+    , m_BinaryOutput(false)
   {
 
   }
@@ -104,8 +121,10 @@ namespace itk{
     vLines->InitTraversal();
 
     int numFibers = m_FiberBundle->GetNumFibers();
+    boost::progress_display disp(numFibers);
     for( int i=0; i<numFibers; i++ )
     {
+        ++disp;
       vtkIdType   numPoints(0);
       vtkIdType*  points(NULL);
       vLines->GetNextCell ( numPoints, points );
@@ -116,7 +135,10 @@ namespace itk{
         itk::Point<float, 3> vertex = GetItkPoint(fiberPolyData->GetPoint(points[0]));
         itk::Index<3> index;
         outImage->TransformPhysicalPointToIndex(vertex, index);
-        outImage->SetPixel(index, 1);
+        if (m_BinaryOutput)
+            outImage->SetPixel(index, 1);
+        else
+            outImage->SetPixel(index, outImage->GetPixel(index)+1);
       }
 
       if (numPoints>2)
@@ -124,7 +146,10 @@ namespace itk{
         itk::Point<float, 3> vertex = GetItkPoint(fiberPolyData->GetPoint(points[numPoints-1]));
         itk::Index<3> index;
         outImage->TransformPhysicalPointToIndex(vertex, index);
-        outImage->SetPixel(index, 1);
+        if (m_BinaryOutput)
+            outImage->SetPixel(index, 1);
+        else
+            outImage->SetPixel(index, outImage->GetPixel(index)+1);
       }
     }
 

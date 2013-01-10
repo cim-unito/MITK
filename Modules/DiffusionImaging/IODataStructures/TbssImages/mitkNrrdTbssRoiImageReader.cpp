@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __mitkNrrdTbssRoiReader_cpp
 #define __mitkNrrdTbssRoiReader_cpp
@@ -139,15 +138,15 @@ namespace mitk
       if((ndim==3) && (dimensions[2]<=1))
         ndim = 2;
 
-      mitk::PixelType pixelType = mitk::PixelType(imageIO->GetComponentTypeInfo(), imageIO->GetComponentTypeInfo(),
+      mitk::PixelType pixelType = mitk::PixelType(imageIO->GetComponentTypeInfo(), imageIO->GetPixelType(),
                                                   imageIO->GetComponentSize(), imageIO->GetNumberOfComponents(),
                                                   imageIO->GetComponentTypeAsString( imageIO->GetComponentType() ).c_str(),
                                                   imageIO->GetPixelTypeAsString( imageIO->GetPixelType() ).c_str() );
 
       //pixelType.Initialize( imageIO->GetComponentTypeInfo(), imageIO->GetNumberOfComponents(), imageIO->GetPixelType() );
 
-      static_cast<OutputType*>(this->GetOutput())->Initialize( pixelType, ndim, dimensions );
-      static_cast<OutputType*>(this->GetOutput())->SetImportChannel( buffer, 0, Image::ManageMemory );
+      static_cast<OutputType*>(this->GetOutput(0))->Initialize( pixelType, ndim, dimensions );
+      static_cast<OutputType*>(this->GetOutput(0))->SetImportChannel( buffer, 0, Image::ManageMemory );
 
       // access direction of itk::Image and include spacing
       mitk::Matrix3D matrix;
@@ -160,20 +159,20 @@ namespace mitk
       // re-initialize PlaneGeometry with origin and direction
       PlaneGeometry* planeGeometry = static_cast<PlaneGeometry*>
                                      (static_cast<OutputType*>
-                                      (this->GetOutput())->GetSlicedGeometry(0)->GetGeometry2D(0));
+                                      (this->GetOutput(0))->GetSlicedGeometry(0)->GetGeometry2D(0));
       planeGeometry->SetOrigin(origin);
       planeGeometry->GetIndexToWorldTransform()->SetMatrix(matrix);
 
       // re-initialize SlicedGeometry3D
-      SlicedGeometry3D* slicedGeometry = static_cast<OutputType*>(this->GetOutput())->GetSlicedGeometry(0);
-      slicedGeometry->InitializeEvenlySpaced(planeGeometry, static_cast<OutputType*>(this->GetOutput())->GetDimension(2));
+      SlicedGeometry3D* slicedGeometry = static_cast<OutputType*>(this->GetOutput(0))->GetSlicedGeometry(0);
+      slicedGeometry->InitializeEvenlySpaced(planeGeometry, static_cast<OutputType*>(this->GetOutput(0))->GetDimension(2));
       slicedGeometry->SetSpacing(spacing);
 
       // re-initialize TimeSlicedGeometry
-      static_cast<OutputType*>(this->GetOutput())->GetTimeSlicedGeometry()->InitializeEvenlyTimed(slicedGeometry, static_cast<OutputType*>(this->GetOutput())->GetDimension(3));
+      static_cast<OutputType*>(this->GetOutput(0))->GetTimeSlicedGeometry()->InitializeEvenlyTimed(slicedGeometry, static_cast<OutputType*>(this->GetOutput(0))->GetDimension(3));
 
       buffer = NULL;
-      MITK_INFO << "number of image components: "<< static_cast<OutputType*>(this->GetOutput())->GetPixelType().GetNumberOfComponents() << std::endl;
+      MITK_INFO << "number of image components: "<< static_cast<OutputType*>(this->GetOutput(0))->GetPixelType().GetNumberOfComponents() << std::endl;
 
 
 
@@ -193,7 +192,7 @@ namespace mitk
 
         img = reader->GetOutput();
 
-        static_cast<OutputType*>(this->GetOutput())->SetImage(img);
+        static_cast<OutputType*>(this->GetOutput(0))->SetImage(img);
 
         itk::MetaDataDictionary imgMetaDictionary = img->GetMetaDataDictionary();
         ReadRoiInfo(imgMetaDictionary);
@@ -258,18 +257,18 @@ namespace mitk
       else if(itKey->find("preprocessed FA") != std::string::npos)
       {
         MITK_INFO << *itKey << " ---> " << metaString;
-        static_cast<OutputType*>(this->GetOutput())->SetPreprocessedFA(true);
-        static_cast<OutputType*>(this->GetOutput())->SetPreprocessedFAFile(metaString);
+        static_cast<OutputType*>(this->GetOutput(0))->SetPreprocessedFA(true);
+        static_cast<OutputType*>(this->GetOutput(0))->SetPreprocessedFAFile(metaString);
       }
 
       // Name of structure
       if (itKey->find("structure") != std::string::npos)
       {
         MITK_INFO << *itKey << " ---> " << metaString;
-        static_cast<OutputType*>(this->GetOutput())->SetStructure(metaString);
+        static_cast<OutputType*>(this->GetOutput(0))->SetStructure(metaString);
       }
     }
-    static_cast<OutputType*>(this->GetOutput())->SetRoi(roi);
+    static_cast<OutputType*>(this->GetOutput(0))->SetRoi(roi);
 
   }
 

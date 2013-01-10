@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkMesh.h"
@@ -63,8 +62,8 @@ unsigned long mitk::Mesh::GetNumberOfCells( int t )
 }
 
 
-//search a line that is close enough according to the given position 
-bool mitk::Mesh::SearchLine( Point3D point, float distance, 
+//search a line that is close enough according to the given position
+bool mitk::Mesh::SearchLine( Point3D point, float distance,
   unsigned long &lineId, unsigned long &cellId, int t )
 {
   //returns true if a line is found
@@ -81,7 +80,7 @@ bool mitk::Mesh::SearchLine( Point3D point, float distance,
       PointIdIterator inAIt = cellIt.Value()->PointIdsBegin(); // first point
       PointIdIterator inBIt = cellIt.Value()->PointIdsBegin(); // second point
       PointIdIterator inEnd = cellIt.Value()->PointIdsEnd();
-      
+
       ++inAIt; //so it points to the point before inBIt
 
       int currentLineId = 0;
@@ -147,7 +146,7 @@ int mitk::Mesh::SearchFirstCell( unsigned long pointId, int t )
   ConstCellIterator end = m_PointSetSeries[t]->GetCells()->End();
   while( it != end)
   {
-    PointIdIterator position = std::find(it->Value()->PointIdsBegin(), 
+    PointIdIterator position = std::find(it->Value()->PointIdsBegin(),
       it->Value()->PointIdsEnd(), pointId);
 
     if ( position != it->Value()->PointIdsEnd())
@@ -163,7 +162,7 @@ int mitk::Mesh::SearchFirstCell( unsigned long pointId, int t )
 // using vtkCell::EvaluatePosition (changing iterator!) we must implement
 // it in mitk::Mesh
 // make it easy and look for hit points and hit lines: needs to be done anyway!
-bool mitk::Mesh::EvaluatePosition( mitk::Point3D point, 
+bool mitk::Mesh::EvaluatePosition( mitk::Point3D point,
   unsigned long &cellId, float precision, int t )
 {
   int pointId = this->SearchPoint( point, precision, t );
@@ -187,7 +186,7 @@ unsigned long mitk::Mesh::GetNewCellId( int t )
   long nextCellId = -1;
   ConstCellIterator it = m_PointSetSeries[t]->GetCells()->Begin();
   ConstCellIterator end = m_PointSetSeries[t]->GetCells()->End();
-  
+
   while (it!=end)
   {
     nextCellId = it.Index();
@@ -201,7 +200,7 @@ int mitk::Mesh::SearchSelectedCell( int t )
 {
   CellDataIterator cellDataIt, cellDataEnd;
   cellDataEnd = m_PointSetSeries[t]->GetCellData()->End();
-  for ( cellDataIt = m_PointSetSeries[t]->GetCellData()->Begin(); 
+  for ( cellDataIt = m_PointSetSeries[t]->GetCellData()->Begin();
         cellDataIt != cellDataEnd;
         cellDataIt++ )
   {
@@ -215,21 +214,21 @@ int mitk::Mesh::SearchSelectedCell( int t )
 }
 
 // get the cell; then iterate through the Ids times lineId. Then IdA ist the
-// one, IdB ist ne next.don't forget the last closing line if the cell is 
+// one, IdB ist ne next.don't forget the last closing line if the cell is
 // closed
-bool mitk::Mesh::GetPointIds( unsigned long cellId, unsigned long lineId, 
+bool mitk::Mesh::GetPointIds( unsigned long cellId, unsigned long lineId,
   int &idA, int &idB, int t )
 {
   bool ok = false;
   bool found = false;
   CellAutoPointer cellAutoPointer;
   ok = m_PointSetSeries[t]->GetCell(cellId, cellAutoPointer);
-  if (ok) 
+  if (ok)
   {
 
     CellType * cell = cellAutoPointer.GetPointer();
 
-    //Get the cellData to also check the closing line 
+    //Get the cellData to also check the closing line
     CellDataType cellData;
     m_PointSetSeries[t]->GetCellData(cellId, &cellData);
     bool closed = cellData.closed;
@@ -281,9 +280,9 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
   case OpNEWCELL:
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
-      
+
       // if no lineoperation, then call superclass pointSet
       if (lineOp == NULL)
       {
@@ -294,9 +293,9 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      
+
       // if it doesn't already exist
-      if (!ok) 
+      if (!ok)
       {
         cellAutoPointer.TakeOwnership( new PolygonType );
         m_PointSetSeries[0]->SetCell(cellId, cellAutoPointer);
@@ -339,10 +338,10 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
           return;
       }
       CellAutoPointer cellAutoPointer;
-      
+
       //get directly the celldata!TODO
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
@@ -363,7 +362,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
@@ -373,11 +372,11 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
     }
     break;
 
-  case OpADDLINE: 
+  case OpADDLINE:
     // inserts the ID of the selected point into the indexes of lines in the
     // selected cell afterwars the added line is selected
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
 
       int cellId = -1;
@@ -406,14 +405,14 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       bool ok;
       CellAutoPointer cellAutoPointer;
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellType * cell = cellAutoPointer.GetPointer();
         if( cell->GetType() == CellType::POLYGON_CELL )
         {
           PolygonType * polygon = static_cast<PolygonType *>( cell );
-          // add the pointId to the Cell. filling the empty cell with 
-          // one id doesn't mean to add a line, it means, that the 
+          // add the pointId to the Cell. filling the empty cell with
+          // one id doesn't mean to add a line, it means, that the
           // initilal PointId is set. The next addition of a pointId adds
           // a line
           polygon->AddPointId(pId);
@@ -462,7 +461,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       bool ok;
       CellAutoPointer cellAutoPointer;
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellType * cell = cellAutoPointer.GetPointer();
         if( cell->GetType() == CellType::POLYGON_CELL )
@@ -491,7 +490,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
             for(it = oldPolygon->PointIdsBegin(); it != oldend; ++it)
               newPolygonCell->AddPointId(*it);
           }
-          oldPolygon->SetPointIds(0, newPolygonCell->GetNumberOfPoints(), 
+          oldPolygon->SetPointIds(0, newPolygonCell->GetNumberOfPoints(),
             newPolygonCell->PointIdsBegin());
         }
       }
@@ -502,7 +501,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
     //Remove the given Index in the given cell through copying everything
     // into a new cell accept the one that has to be deleted.
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
       if (lineOp == NULL)//if no lineoperation, then call superclass pointSet
       {
@@ -513,7 +512,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       CellAutoPointer cellAutoPointer;
       int cellId = lineOp->GetCellId();
       ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (!ok) 
+      if (!ok)
         return;
 
       CellType * cell = cellAutoPointer.GetPointer();
@@ -568,13 +567,13 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
     //    //the points of the given PointIds have to exist in the PointSet
     //    bool ok;
     //    ok = m_PointSetSeries[0]->GetPoints()->IndexExists(pIdA);
-    //    if (!ok) 
+    //    if (!ok)
     //      return;
     //    ok = m_PointSetSeries[0]->GetPoints()->IndexExists(pIdB);
-    //    if (!ok) 
+    //    if (!ok)
     //      return;
     //  ok = m_PointSetSeries[0]->GetPoints()->IndexExists(pIdC);
-    //    if (!ok) 
+    //    if (!ok)
     //      return;
 
     //    // so the points do exist. So now check, if there is already a cell
@@ -585,11 +584,11 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
     //    return;
 
     //  //pIdA and pIdB should exist in the cell
-    //    
+    //
     //  PointIdIterator pit = cell->PointIdsBegin();
     //    PointIdIterator end = cell->PointIdsEnd();
-    //    
-    //  //now arrange the new Ids in the cell like desired; pIdC between 
+    //
+    //  //now arrange the new Ids in the cell like desired; pIdC between
     //  // pIdA and pIdB
     //  unsigned int nuPoints = cell->GetNumberOfPoints();
 
@@ -622,7 +621,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
   case OpMOVELINE://(moves two points)
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
 
       if (lineOp == NULL)
@@ -649,9 +648,9 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       pointB[1] += lineOp->GetVector()[1];
       pointB[2] += lineOp->GetVector()[2];
 
-      mitk::PointOperation* operationA = 
+      mitk::PointOperation* operationA =
         new mitk::PointOperation(OpMOVE, pointA, lineOp->GetPIdA());
-      mitk::PointOperation* operationB = 
+      mitk::PointOperation* operationB =
         new mitk::PointOperation(OpMOVE, pointB, lineOp->GetPIdB());
 
       Superclass::ExecuteOperation(operationA);
@@ -661,7 +660,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
   case OpSELECTLINE://(select the given line)
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
       if (lineOp == NULL)//if no lineoperation, then call superclass pointSet
       {
@@ -670,12 +669,12 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
       bool ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
         SelectedLinesType *selectedLines = &(cellData.selectedLines);
-        SelectedLinesIter position = std::find(selectedLines->begin(), 
+        SelectedLinesIter position = std::find(selectedLines->begin(),
           selectedLines->end(), (unsigned int) lineOp->GetId());
 
         if (position == selectedLines->end())//if not alsready selected
@@ -690,14 +689,14 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
   case OpDESELECTLINE://(deselect the given line)
     {
       mitk::LineOperation *lineOp = dynamic_cast<mitk::LineOperation *>(operation);
-      if (lineOp == NULL) 
+      if (lineOp == NULL)
       {
         Superclass::ExecuteOperation(operation);
       }
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
       bool ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
@@ -716,7 +715,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
   case OpSELECTCELL://(select the given cell)
     {
-      mitk::LineOperation *lineOp = 
+      mitk::LineOperation *lineOp =
         dynamic_cast<mitk::LineOperation *>(operation);
       if (lineOp == NULL)//if no lineoperation, then call superclass pointSet
       {
@@ -725,10 +724,10 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
-      
+
       //directly get the data!//TODO
       bool ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
@@ -748,7 +747,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
       int cellId = lineOp->GetCellId();
       CellAutoPointer cellAutoPointer;
       bool ok = m_PointSetSeries[0]->GetCell(cellId, cellAutoPointer);
-      if (ok) 
+      if (ok)
       {
         CellDataType cellData;
         m_PointSetSeries[0]->GetCellData(cellId, &cellData);
@@ -778,7 +777,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
       CellDataType cellData;
       m_PointSetSeries[0]->GetCellData(cellId, &cellData);
-      // iterate through the pointIds of the CellData and move those points in 
+      // iterate through the pointIds of the CellData and move those points in
       // the pointset
       PointIdIterator it = cellAutoPointer->PointIdsBegin();
       PointIdIterator end = cellAutoPointer->PointIdsEnd();
@@ -813,7 +812,7 @@ void mitk::Mesh::ExecuteOperation(Operation* operation)
 
 }
 
-mitk::Mesh::DataType::BoundingBoxPointer 
+mitk::Mesh::DataType::BoundingBoxPointer
 mitk::Mesh::GetBoundingBoxFromCell( unsigned long cellId, int t )
 {
   // itk::CellInterface has also a GetBoundingBox, but it

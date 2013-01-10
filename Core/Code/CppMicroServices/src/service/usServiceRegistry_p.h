@@ -28,7 +28,7 @@
 #include "usServiceRegistration.h"
 #include "usServiceProperties.h"
 
-#include "usThreads.h"
+#include "usThreads_p.h"
 
 US_BEGIN_NAMESPACE
 
@@ -37,7 +37,7 @@ class ModulePrivate;
 
 
 /**
- * Here we handle all the US services that are registered.
+ * Here we handle all the CppMicroServices services that are registered.
  */
 class ServiceRegistry
 {

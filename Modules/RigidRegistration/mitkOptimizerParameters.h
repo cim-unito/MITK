@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 11215 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKOPTIMIZERPARAMETERS_H
 #define MITKOPTIMIZERPARAMETERS_H
@@ -26,13 +25,13 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
   /*!
-  \brief This class is used to hold all optimizer parameters needed for a rigid registration process.  
+  \brief This class is used to hold all optimizer parameters needed for a rigid registration process.
 
   To use the rigid registration framework you have to create an instance of this class and fill it with the parameters
-  belonging to the selected optimizer. To let the rigid registration work properly, this instance has to be given 
+  belonging to the selected optimizer. To let the rigid registration work properly, this instance has to be given
   to mitkImageRegistrationMethod before calling the update() method in mitkImageRegistrationMethod.
 
-  Also instances of the classes mitkTransformParameters and mitkMetricParameters have to be set in mitkImageRegistrationMethod 
+  Also instances of the classes mitkTransformParameters and mitkMetricParameters have to be set in mitkImageRegistrationMethod
   before calling the update() method.
 
   \ingroup RigidRegistration
@@ -79,7 +78,7 @@ namespace mitk {
     \brief Sets the images dimension which have to be registered.
     */
     itkSetMacro( Dimension, unsigned int );
-    
+
     /**
     \brief Returns the images dimension which have to be registered.
     */
@@ -89,7 +88,7 @@ namespace mitk {
     \brief Sets whether the optimizer should maximize or minimize the metrics value.
     */
     itkSetMacro( Maximize, bool );
-    
+
     /**
     \brief Returns whether the optimizer should maximize or minimize the metrics value.
     */
@@ -99,7 +98,7 @@ namespace mitk {
     \brief for itk::ExhaustiveOptimizer
     */
     itkSetMacro( StepLengthExhaustive, float );
-    
+
     /**
     \brief for itk::ExhaustiveOptimizer
     */
@@ -109,7 +108,7 @@ namespace mitk {
     \brief for itk::ExhaustiveOptimizer
     */
     itkSetMacro( NumberOfStepsExhaustive, int );
-    
+
     /**
     \brief for itk::ExhaustiveOptimizer
     */
@@ -119,7 +118,7 @@ namespace mitk {
     \brief for itk::GradientDescentOptimizer
     */
     itkSetMacro( LearningRateGradientDescent, float );
-    
+
     /**
     \brief for itk::GradientDescentOptimizer
     */
@@ -129,7 +128,7 @@ namespace mitk {
     \brief for itk::GradientDescentOptimizer
     */
     itkSetMacro( NumberOfIterationsGradientDescent, int );
-    
+
     /**
     \brief for itk::GradientDescentOptimizer
     */
@@ -139,7 +138,7 @@ namespace mitk {
     \brief for itk::QuaternionRigidTransformGradientDescentOptimizer
     */
     itkSetMacro( LearningRateQuaternionRigidTransformGradientDescent, float );
-    
+
     /**
     \brief for itk::QuaternionRigidTransformGradientDescentOptimizer
     */
@@ -149,7 +148,7 @@ namespace mitk {
     \brief for itk::QuaternionRigidTransformGradientDescentOptimizer
     */
     itkSetMacro( NumberOfIterationsQuaternionRigidTransformGradientDescent, int );
-    
+
     /**
     \brief for itk::QuaternionRigidTransformGradientDescentOptimizer
     */
@@ -159,7 +158,7 @@ namespace mitk {
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
     itkSetMacro( GrowthFactorOnePlusOneEvolutionary, float );
-    
+
     /**
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
@@ -169,7 +168,7 @@ namespace mitk {
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
     itkSetMacro( ShrinkFactorOnePlusOneEvolutionary, float );
-    
+
     /**
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
@@ -179,7 +178,7 @@ namespace mitk {
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
     itkSetMacro( EpsilonOnePlusOneEvolutionary, float );
-    
+
     /**
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
@@ -189,7 +188,7 @@ namespace mitk {
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
     itkSetMacro( InitialRadiusOnePlusOneEvolutionary, float );
-    
+
     /**
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
@@ -199,7 +198,7 @@ namespace mitk {
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
     itkSetMacro( NumberOfIterationsOnePlusOneEvolutionary, int );
-    
+
     /**
     \brief for itk::OnePlusOneEvolutionaryOptimizer
     */
@@ -209,7 +208,7 @@ namespace mitk {
     \brief for itk::PowellOptimizer
     */
     itkSetMacro( StepLengthPowell, float );
-    
+
     /**
     \brief for itk::PowellOptimizer
     */
@@ -219,7 +218,7 @@ namespace mitk {
     \brief for itk::PowellOptimizer
     */
     itkSetMacro( StepTolerancePowell, float );
-    
+
     /**
     \brief for itk::PowellOptimizer
     */
@@ -229,7 +228,7 @@ namespace mitk {
     \brief for itk::PowellOptimizer
     */
     itkSetMacro( ValueTolerancePowell, float );
-    
+
     /**
     \brief for itk::PowellOptimizer
     */
@@ -239,7 +238,7 @@ namespace mitk {
     \brief for itk::PowellOptimizer
     */
     itkSetMacro( NumberOfIterationsPowell, int );
-    
+
     /**
     \brief for itk::PowellOptimizer
     */
@@ -249,7 +248,7 @@ namespace mitk {
     \brief for itk::FRPROptimizer
     */
     itkSetMacro( StepLengthFRPR, float );
-    
+
     /**
     \brief for itk::FRPROptimizer
     */
@@ -259,7 +258,7 @@ namespace mitk {
     \brief for itk::FRPROptimizer
     */
     itkSetMacro( FletchReevesFRPR, bool );
-    
+
     /**
     \brief for itk::FRPROptimizer
     */
@@ -269,7 +268,7 @@ namespace mitk {
     \brief for itk::FRPROptimizer
     */
     itkSetMacro( PolakRibiereFRPR, bool );
-    
+
     /**
     \brief for itk::FRPROptimizer
     */
@@ -279,7 +278,7 @@ namespace mitk {
     \brief for itk::FRPROptimizer
     */
     itkSetMacro( NumberOfIterationsFRPR, int );
-    
+
     /**
     \brief for itk::FRPROptimizer
     */
@@ -289,7 +288,7 @@ namespace mitk {
     \brief for itk::RegularStepGradientDescentOptimizer
     */
     itkSetMacro( GradientMagnitudeToleranceRegularStepGradientDescent, float );
-    
+
     /**
     \brief for itk::RegularStepGradientDescentOptimizer
     */
@@ -299,7 +298,7 @@ namespace mitk {
     \brief for itk::RegularStepGradientDescentOptimizer
     */
     itkSetMacro( MinimumStepLengthRegularStepGradientDescent, float );
-    
+
     /**
     \brief for itk::RegularStepGradientDescentOptimizer
     */
@@ -309,7 +308,7 @@ namespace mitk {
     \brief for itk::RegularStepGradientDescentOptimizer
     */
     itkSetMacro( MaximumStepLengthRegularStepGradientDescent, float );
-   
+
     /**
     \brief for itk::RegularStepGradientDescentOptimizer
     */
@@ -319,7 +318,7 @@ namespace mitk {
     \brief for itk::RegularStepGradientDescentOptimizer
     */
     itkSetMacro( NumberOfIterationsRegularStepGradientDescent, int );
-    
+
     /**
     \brief for itk::RegularStepGradientDescentOptimizer
     */
@@ -329,7 +328,7 @@ namespace mitk {
     \brief for itk::RegularStepGradientDescentOptimizer
     */
     itkSetMacro( RelaxationFactorRegularStepGradientDescent, double );
-    
+
     /**
     \brief for itk::RegularStepGradientDescentOptimizer
     */
@@ -339,7 +338,7 @@ namespace mitk {
     \brief for itk::VersorRigid3DTransformOptimizer
     */
     itkSetMacro( GradientMagnitudeToleranceVersorRigid3DTransform, float );
-    
+
     /**
     \brief for itk::VersorRigid3DTransformOptimizer
     */
@@ -349,7 +348,7 @@ namespace mitk {
     \brief for itk::VersorRigid3DTransformOptimizer
     */
     itkSetMacro( MinimumStepLengthVersorRigid3DTransform, float );
-    
+
     /**
     \brief for itk::VersorRigid3DTransformOptimizer
     */
@@ -359,7 +358,7 @@ namespace mitk {
     \brief for itk::VersorRigid3DTransformOptimizer
     */
     itkSetMacro( MaximumStepLengthVersorRigid3DTransform, float );
-    
+
     /**
     \brief for itk::VersorRigid3DTransformOptimizer
     */
@@ -369,7 +368,7 @@ namespace mitk {
     \brief for itk::VersorRigid3DTransformOptimizer
     */
     itkSetMacro( NumberOfIterationsVersorRigid3DTransform, int );
-    
+
     /**
     \brief for itk::VersorRigid3DTransformOptimizer
     */
@@ -379,7 +378,7 @@ namespace mitk {
     \brief for itk::VersorTransformOptimizer
     */
     itkSetMacro( GradientMagnitudeToleranceVersorTransform, float );
-    
+
     /**
     \brief for itk::VersorTransformOptimizer
     */
@@ -389,7 +388,7 @@ namespace mitk {
     \brief for itk::VersorTransformOptimizer
     */
     itkSetMacro( MinimumStepLengthVersorTransform, float );
-    
+
     /**
     \brief for itk::VersorTransformOptimizer
     */
@@ -399,7 +398,7 @@ namespace mitk {
     \brief for itk::VersorTransformOptimizer
     */
     itkSetMacro( MaximumStepLengthVersorTransform, float );
-    
+
     /**
     \brief for itk::VersorTransformOptimizer
     */
@@ -409,7 +408,7 @@ namespace mitk {
     \brief for itk::VersorTransformOptimizer
     */
     itkSetMacro( NumberOfIterationsVersorTransform, int );
-    
+
     /**
     \brief for itk::VersorTransformOptimizer
     */
@@ -419,7 +418,7 @@ namespace mitk {
     \brief for itk::AmoebaOptimizer
     */
     void SetSimplexDeltaAmoeba(itk::Array<double> simplexDelta);
-    
+
     /**
     \brief for itk::AmoebaOptimizer
     */
@@ -429,7 +428,7 @@ namespace mitk {
     \brief for itk::AmoebaOptimizer
     */
     itkSetMacro( ParametersConvergenceToleranceAmoeba, float );
-    
+
     /**
     \brief for itk::AmoebaOptimizer
     */
@@ -439,7 +438,7 @@ namespace mitk {
     \brief for itk::AmoebaOptimizer
     */
     itkSetMacro( FunctionConvergenceToleranceAmoeba, float );
-    
+
     /**
     \brief for itk::AmoebaOptimizer
     */
@@ -461,7 +460,7 @@ namespace mitk {
     \brief for itk::LBFGSOptimizer
     */
     itkSetMacro( GradientConvergenceToleranceLBFGS, float );
-    
+
     /**
     \brief for itk::LBFGSOptimizer
     */
@@ -471,7 +470,7 @@ namespace mitk {
     \brief for itk::LBFGSOptimizer
     */
     itkSetMacro( LineSearchAccuracyLBFGS, float );
-    
+
     /**
     \brief for itk::LBFGSOptimizer
     */
@@ -481,7 +480,7 @@ namespace mitk {
     \brief for itk::LBFGSOptimizer
     */
     itkSetMacro( DefaultStepLengthLBFGS, float );
-    
+
     /**
     \brief for itk::LBFGSOptimizer
     */
@@ -491,7 +490,7 @@ namespace mitk {
     \brief for itk::LBFGSOptimizer
     */
     itkSetMacro( TraceOnLBFGS, bool );
-    
+
     /**
     \brief for itk::LBFGSOptimizer
     */
@@ -501,7 +500,7 @@ namespace mitk {
     \brief for itk::LBFGSOptimizer
     */
     itkSetMacro( NumberOfIterationsLBFGS, int );
-    
+
     /**
     \brief for itk::LBFGSOptimizer
     */
@@ -521,7 +520,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( ASPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -531,7 +530,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( AlphaSPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -541,7 +540,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( cSPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -551,7 +550,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( GammaSPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -561,7 +560,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( ToleranceSPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -571,7 +570,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( StateOfConvergenceDecayRateSPSA, float );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -581,7 +580,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( MinimumNumberOfIterationsSPSA, int );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -591,7 +590,7 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( NumberOfPerturbationsSPSA, int );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
@@ -601,21 +600,21 @@ namespace mitk {
     \brief for itk::SPSAOptimizer
     */
     itkSetMacro( NumberOfIterationsSPSA, int );
-    
+
     /**
     \brief for itk::SPSAOptimizer
     */
     itkGetMacro( NumberOfIterationsSPSA, int );
 
   protected:
-    OptimizerParameters(); 
+    OptimizerParameters();
     ~OptimizerParameters(){};
 
     // for all Optimizer
     int m_Optimizer;
     unsigned int m_Dimension;
     bool m_Maximize;
-    
+
     // for itk::ExhaustiveOptimizer
     float m_StepLengthExhaustive;
     int m_NumberOfStepsExhaustive;
@@ -661,7 +660,7 @@ namespace mitk {
     float m_MinimumStepLengthVersorRigid3DTransform;
     float m_MaximumStepLengthVersorRigid3DTransform;
     int m_NumberOfIterationsVersorRigid3DTransform;
-    
+
     // for itk::VersorTransformOptimizer
     float m_GradientMagnitudeToleranceVersorTransform;
     float m_MinimumStepLengthVersorTransform;

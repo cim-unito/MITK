@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKSTDMULTIWIDGETEDITOR_H_
 #define QMITKSTDMULTIWIDGETEDITOR_H_
@@ -47,22 +46,26 @@ public:
 
   QmitkStdMultiWidget* GetStdMultiWidget();
 
+  /// \brief If on=true will request the QmitkStdMultiWidget set the Menu widget to
+  /// whatever was the last known enabled state, and if on=false will turn the Menu widget off.
+  void RequestActivateMenuWidget(bool on);
+
   // -------------------  mitk::IRenderWindowPart  ----------------------
 
   /**
-   * \see mitk::IRenderWindowPart::GetActiveRenderWindow()
+   * \see mitk::IRenderWindowPart::GetActiveQmitkRenderWindow()
    */
-  QmitkRenderWindow* GetActiveRenderWindow() const;
+  QmitkRenderWindow* GetActiveQmitkRenderWindow() const;
 
   /**
-   * \see mitk::IRenderWindowPart::GetRenderWindows()
+   * \see mitk::IRenderWindowPart::GetQmitkRenderWindows()
    */
-  QHash<QString,QmitkRenderWindow*> GetRenderWindows() const;
+  QHash<QString,QmitkRenderWindow*> GetQmitkRenderWindows() const;
 
   /**
-   * \see mitk::IRenderWindowPart::GetRenderWindow(QString)
+   * \see mitk::IRenderWindowPart::GetQmitkRenderWindow(QString)
    */
-  QmitkRenderWindow* GetRenderWindow(const QString& id) const;
+  QmitkRenderWindow* GetQmitkRenderWindow(const QString& id) const;
 
   /**
    * \see mitk::IRenderWindowPart::GetSelectionPosition()

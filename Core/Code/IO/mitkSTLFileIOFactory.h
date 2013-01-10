@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkSTLFileIOFactory_h
 #define __mitkSTLFileIOFactory_h
 
@@ -32,17 +31,17 @@ namespace mitk
 //## @ingroup IO
 class MITK_CORE_EXPORT STLFileIOFactory : public itk::ObjectFactoryBase
 {
-public:  
+public:
   /** Standard class typedefs. */
   typedef STLFileIOFactory   Self;
   typedef itk::ObjectFactoryBase  Superclass;
   typedef itk::SmartPointer<Self>  Pointer;
   typedef itk::SmartPointer<const Self>  ConstPointer;
-  
+
   /** Class methods used to interface with the registered factories. */
   virtual const char* GetITKSourceVersion(void) const;
   virtual const char* GetDescription(void) const;
-    
+
   /** Method for class instantiation. */
   itkFactorylessNewMacro(Self);
   static STLFileIOFactory* FactoryNew() { return new STLFileIOFactory;}
@@ -55,7 +54,7 @@ public:
     STLFileIOFactory::Pointer STLFileIOFactory = STLFileIOFactory::New();
     ObjectFactoryBase::RegisterFactory(STLFileIOFactory);
   }
-  
+
 protected:
   STLFileIOFactory();
   ~STLFileIOFactory();
@@ -65,8 +64,8 @@ private:
   void operator=(const Self&); //purposely not implemented
 
 };
-  
-  
+
+
 } // end namespace mitk
 
 #endif

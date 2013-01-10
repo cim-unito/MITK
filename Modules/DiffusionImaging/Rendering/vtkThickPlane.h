@@ -1,25 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // .NAME vtkPlane - perform various plane computations
 // .SECTION Description
 // vtkPlane provides methods for various plane computations. These include
-// projecting points onto a plane, evaluating the plane equation, and 
-// returning plane normal. vtkPlane is a concrete implementation of the 
+// projecting points onto a plane, evaluating the plane equation, and
+// returning plane normal. vtkPlane is a concrete implementation of the
 // abstract class vtkImplicitFunction.
 
 #ifndef __vtkThickPlane_h
@@ -53,12 +52,12 @@ public:
   // Set/get plane normal. Plane is defined by point and normal.
   virtual void SetPose (double _n1, double _n2, double _n3, double _o1, double _o2, double _o3);
   virtual void SetPose (double _n[3], double _o[3]);
-  
+
   vtkGetVectorMacro(Normal,double,3);
   vtkGetVectorMacro(Origin,double,3);
 
   // Description:
-  // Set/get point through which plane passes. Plane is defined by point 
+  // Set/get point through which plane passes. Plane is defined by point
   // and normal.
   virtual void SetThickness (double _arg);
   vtkGetMacro(Thickness,double);
@@ -73,9 +72,9 @@ protected:
   // Set/get plane normal. Plane is defined by point and normal.
   virtual void SetNormal (double _arg1, double _arg2, double _arg3);
   virtual void SetNormal (double _arg[3]);
-  
+
   // Description:
-  // Set/get point through which plane passes. Plane is defined by point 
+  // Set/get point through which plane passes. Plane is defined by point
   // and normal.
   virtual void SetOrigin (double _arg1, double _arg2, double _arg3);
   virtual void SetOrigin (double _arg[3]);

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTransferFunction.h"
 #include "mitkImageToItk.h"
@@ -32,7 +31,7 @@ TransferFunction::TransferFunction()
   m_ScalarOpacityFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
   m_ColorTransferFunction = vtkSmartPointer<vtkColorTransferFunction>::New();
   m_GradientOpacityFunction = vtkSmartPointer<vtkPiecewiseFunction>::New();
-  
+
   m_ScalarOpacityFunction->Initialize();
   m_ScalarOpacityFunction->AddPoint(0,1);
 
@@ -44,7 +43,7 @@ TransferFunction::TransferFunction()
   m_ColorTransferFunction->AddRGBPoint(0,1,1,1);
 }
 
-TransferFunction::~TransferFunction() 
+TransferFunction::~TransferFunction()
 {
 }
 
@@ -52,7 +51,7 @@ bool TransferFunction::operator==(Self& other)
 {
   if ((m_Min != other.m_Min) || (m_Max != other.m_Max))
     return false;
-  
+
   bool sizes = (m_ScalarOpacityFunction->GetSize() == other.m_ScalarOpacityFunction->GetSize())
             && (m_GradientOpacityFunction->GetSize() == other.m_GradientOpacityFunction->GetSize())
             && (m_ColorTransferFunction->GetSize() == other.m_ColorTransferFunction->GetSize());
@@ -128,19 +127,19 @@ void TransferFunction::SetRGBPoints(TransferFunction::RGBControlPoints rgbpoints
   m_ColorTransferFunction->RemoveAllPoints();
   for(unsigned int i=0; i<=rgbpoints.size()-1;i++)
   {
-    this->AddRGBPoint(rgbpoints[i].first, rgbpoints[i].second[0], 
+    this->AddRGBPoint(rgbpoints[i].first, rgbpoints[i].second[0],
       rgbpoints[i].second[1], rgbpoints[i].second[2]);
-  }  
+  }
 }
 
 void TransferFunction::AddScalarOpacityPoint(double x, double value)
-{ 
+{
   m_ScalarOpacityFunction->AddPoint(x, value);
 }
-  
+
 
 void TransferFunction::AddGradientOpacityPoint(double x, double value)
-{ 
+{
   m_GradientOpacityFunction->AddPoint(x, value);
 }
 
@@ -216,7 +215,7 @@ void TransferFunction::ClearScalarOpacityPoints()
 {
   m_ScalarOpacityFunction->RemoveAllPoints();
 }
-  
+
 
 void TransferFunction::ClearGradientOpacityPoints()
 {
@@ -236,7 +235,7 @@ void TransferFunction::InitializeByItkHistogram(
   m_Histogram = histogram;
   m_Min = (int)GetHistogram()->GetBinMin(0,0);
   m_Max = (int)GetHistogram()->GetBinMax(0, GetHistogram()->Size()-1);
-  
+
   /*
   m_ScalarOpacityFunction->Initialize();
   m_ScalarOpacityFunction->AddPoint(m_Min,0.0);
@@ -251,7 +250,7 @@ void TransferFunction::InitializeByItkHistogram(
   m_GradientOpacityFunction->AddPoint(m_Max,1.0);
   m_ColorTransferFunction->RemoveAllPoints();
   m_ColorTransferFunction->AddRGBPoint(m_Min,1,0,0);
-  m_ColorTransferFunction->AddRGBPoint(m_Max,1,1,0);  
+  m_ColorTransferFunction->AddRGBPoint(m_Max,1,1,0);
   m_ColorTransferFunction->SetColorSpaceToHSV();
   MITK_INFO << "min/max in tf-c'tor:" << m_Min << "/" << m_Max << std::endl;
   */
@@ -279,7 +278,7 @@ void TransferFunction::InitializeByMitkImage( const Image * image )
   m_GradientOpacityFunction->AddPoint(m_Max,1.0);
   m_ColorTransferFunction->RemoveAllPoints();
   m_ColorTransferFunction->AddRGBPoint(m_Min,1,0,0);
-  m_ColorTransferFunction->AddRGBPoint(m_Max,1,1,0);  
+  m_ColorTransferFunction->AddRGBPoint(m_Max,1,1,0);
   m_ColorTransferFunction->SetColorSpaceToHSV();
   //MITK_INFO << "min/max in tf-c'tor:" << m_Min << "/" << m_Max << std::endl;
 }

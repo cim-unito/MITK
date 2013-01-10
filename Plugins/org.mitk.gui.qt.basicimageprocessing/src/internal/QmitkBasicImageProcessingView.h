@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 10185 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #if !defined(QmitkBasicImageProcessingView_H__INCLUDED)
 #define QmitkBasicImageProcessingView_H__INCLUDED
@@ -29,15 +28,15 @@ PURPOSE.  See the above copyright notices for more information.
 #include <mitkDataStorageSelection.h>
 
 /*!
-\brief This module allows to use some basic image processing filters for preprocessing, image enhancement and testing purposes 
+\brief This module allows to use some basic image processing filters for preprocessing, image enhancement and testing purposes
 
-Several basic ITK image processing filters, like denoising, morphological and edge detection  
+Several basic ITK image processing filters, like denoising, morphological and edge detection
 are encapsulated in this module and can be selected via a list and an intuitive parameter input.
 The selected filter will be applied on the image, and a new image showing the output is displayed
-as result. 
-Also, some image arithmetic operations are available.  
+as result.
+Also, some image arithmetic operations are available.
 
-Images can be 3D or 4D. 
+Images can be 3D or 4D.
 In the 4D case, the filters work on the 3D image selected via the
 time slider. The result is also a 3D image.
 
@@ -51,14 +50,14 @@ time slider. The result is also a 3D image.
 */
 
 class BASICIMAGEPROCESSING_EXPORT QmitkBasicImageProcessing : public QmitkFunctionality
-{  
+{
   Q_OBJECT
 
 public:
 
-  /*!  
-  \brief default constructor  
-  */  
+  /*!
+  \brief default constructor
+  */
   QmitkBasicImageProcessing();
   QmitkBasicImageProcessing(const QmitkBasicImageProcessing& other)
   {
@@ -66,30 +65,30 @@ public:
       throw std::runtime_error("Copy constructor not implemented");
   }
 
-  /*!  
-  \brief default destructor  
-  */  
+  /*!
+  \brief default destructor
+  */
   virtual ~QmitkBasicImageProcessing();
 
-  /*!  
-  \brief method for creating the widget containing the application controls, like sliders, buttons etc.  
-  */  
+  /*!
+  \brief method for creating the widget containing the application controls, like sliders, buttons etc.
+  */
   virtual void CreateQtPartControl(QWidget *parent);
 
-  /*!  
-  \brief method for creating the connections of main and control widget  
-  */  
+  /*!
+  \brief method for creating the connections of main and control widget
+  */
   virtual void CreateConnections();
 
   virtual void Activated();
 
-  /*!  
+  /*!
   \brief Invoked when the DataManager selection changed
   */
   virtual void OnSelectionChanged(std::vector<mitk::DataNode*> nodes);
 
 
-  protected slots:  
+  protected slots:
 
     /*
     * When an action is selected in the "one image ops" list box
@@ -116,7 +115,7 @@ public:
     */
     void ChangeGUI();
 
-private: 
+private:
 
   /*
   * After a one image operation, reset the "one image ops" panel
@@ -133,9 +132,9 @@ private:
   */
   void ResetTwoImageOpPanel();
 
-  /*!  
-  * controls containing sliders for scrolling through the slices  
-  */  
+  /*!
+  * controls containing sliders for scrolling through the slices
+  */
   Ui::QmitkBasicImageProcessingViewControls *m_Controls;
 
   //mitk::DataNode*       m_SelectedImageNode;
@@ -148,7 +147,7 @@ private:
     NOACTIONSELECTED,
     CATEGORY_DENOISING,
     GAUSSIAN,
-    MEDIAN,	
+    MEDIAN,
     TOTALVARIATION,
     CATEGORY_MORPHOLOGICAL,
     DILATION,
@@ -163,7 +162,8 @@ private:
     THRESHOLD,
     INVERSION,
     DOWNSAMPLING,
-  } m_SelectedAction; 
+    FLIPPING
+  } m_SelectedAction;
 
   enum OperationType{
     TWOIMAGESNOACTIONSELECTED,
@@ -172,6 +172,7 @@ private:
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
+    RESAMPLE_TO,
     CATEGORY_BOOLEAN,
     AND,
     OR,

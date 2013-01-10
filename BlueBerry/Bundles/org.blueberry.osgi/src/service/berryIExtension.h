@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYIEXTENSION_H_
 #define BERRYIEXTENSION_H_
@@ -30,28 +29,28 @@ struct IConfigurationElement;
 
 /**
  * An extension declared in a host.
- * All information is obtained from the declaring host 
- * extensions manifest file. 
+ * All information is obtained from the declaring host
+ * extensions manifest file.
  * <p>
  * This interface is not intended to be implemented by clients.
- * 
+ *
  */
 struct BERRY_OSGI IExtension {
-  
+
   /**
    * Returns all configuration elements declared by this extension.
-   * These elements are a direct reflection of the configuration 
-   * markup supplied in the manifest file for the host that declares 
+   * These elements are a direct reflection of the configuration
+   * markup supplied in the manifest file for the host that declares
    * this extension.
    * Returns an empty array if this extension does not declare any
    * configuration elements.
    *
-   * @return the configuration elements declared by this extension 
+   * @return the configuration elements declared by this extension
    */
   virtual const std::vector<SmartPointer<IConfigurationElement> > GetConfigurationElements() const = 0;
-  
+
   virtual std::string GetNamespace() const = 0;
-  
+
   /**
    * Returns the unique identifier of the extension point
    * that this extension gets plugged into.
@@ -63,15 +62,15 @@ struct BERRY_OSGI IExtension {
   /**
    * Returns the simple identifier of this extension, or <code>null</code>
    * if this extension does not have an identifier.
-   * This identifier is specified in the extensions manifest  
-   * file as a non-empty string containing no period characters 
+   * This identifier is specified in the extensions manifest
+   * file as a non-empty string containing no period characters
    * (<code>'.'</code>) and must be unique within the defining host.
    *
    * @return the simple identifier of the extension (e.g. <code>"main"</code>)
    *  or <code>null</code>
    */
   virtual std::string GetSimpleIdentifier() const = 0;
-  
+
   /**
    * Returns the unique identifier of this extension, or <code>null</code>
    * if this extension does not have an identifier.
@@ -83,7 +82,7 @@ struct BERRY_OSGI IExtension {
    *    (e.g. <code>"com.example.acme.main"</code>), or <code>null</code>
    */
   virtual std::string GetUniqueIdentifier() const = 0;
-  
+
   /**
    * Returns a displayable label for this extension.
    * Returns the empty string if no label for this extension
@@ -96,9 +95,9 @@ struct BERRY_OSGI IExtension {
    *    possibly the empty string
    */
   virtual std::string GetLabel() const = 0;
-  
+
   virtual bool operator<(const IExtension* e2) const = 0;
-  
+
   virtual ~IExtension() {}
 
 };

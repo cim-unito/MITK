@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include <mitkAction.h>
@@ -39,7 +38,7 @@ int mitkActionTest(int /*argc*/, char* /*argv*/[])
   action->AddProperty("boolproperty", mitk::BoolProperty::New(true));
   action->AddProperty("intproperty", mitk::IntProperty::New(10));
   action->AddProperty("floatproperty", mitk::FloatProperty::New(10.05));
-  
+
   std::cout << "try adding property BOOL and read them: ";
   bool boolproperty = false;
   boolproperty = dynamic_cast<mitk::BoolProperty *>(action->GetProperty("boolproperty"))->GetValue();
@@ -72,7 +71,7 @@ int mitkActionTest(int /*argc*/, char* /*argv*/[])
 
   //delete the action
   //action->Delete();
-  
+
   //well done!!! Passed!
   std::cout<<"[EVERYTHING PASSED]"<<std::endl;
 

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkVolumetryView.h"
 
@@ -87,9 +86,9 @@ void QmitkVolumetryView::CreateConnections()
     connect( (QObject*)(m_Controls->m_ThresholdSlider), SIGNAL(valueChanged(int)), this, SLOT(OnThresholdSliderChanged(int)) );
     //connect( (QObject*)(m_Controls->m_ThresholdLineEdit), SIGNAL(valueChanged(int)), this, SLOT(OnThresholdLineEdit(int)) );
     //connect( (QObject*)(m_Controls->m_TextEdit), SIGNAL(valueChanged(int)), this, SLOT(OnTextEditChanged(int)) );
-    connect( (QObject*)(m_Controls->m_CalcButton), SIGNAL(clicked()), this, SLOT(OnCalculateVolume()) ); 
-    connect( (QObject*)(m_Controls->m_TimeSeriesButton), SIGNAL(clicked()), this, SLOT(OnTimeSeriesButtonClicked()) ); 
-    connect( (QObject*)(m_Controls->m_SaveCsvButton), SIGNAL(clicked()), this, SLOT(OnSaveCsvButtonClicked()) ); 
+    connect( (QObject*)(m_Controls->m_CalcButton), SIGNAL(clicked()), this, SLOT(OnCalculateVolume()) );
+    connect( (QObject*)(m_Controls->m_TimeSeriesButton), SIGNAL(clicked()), this, SLOT(OnTimeSeriesButtonClicked()) );
+    connect( (QObject*)(m_Controls->m_SaveCsvButton), SIGNAL(clicked()), this, SLOT(OnSaveCsvButtonClicked()) );
   }
 }
 
@@ -113,7 +112,7 @@ void QmitkVolumetryView::OnImageSelected(const mitk::DataNode* item)
   if( item->GetData()->GetSource().IsNull() )
   {
     m_SelectedDataNode = 0;
-    return; 
+    return;
   }
 
   m_SelectedDataNode = const_cast<mitk::DataNode*>(item);
@@ -134,7 +133,7 @@ void QmitkVolumetryView::OnImageSelected(const mitk::DataNode* item)
   }
 
   this->CreateOverlayChild();
-  
+
   //std::string name;
   //if (node->GetName(name))
   //{
@@ -392,7 +391,7 @@ mitk::Image* QmitkVolumetryView::GetImage()
 void QmitkVolumetryView::OnSaveCsvButtonClicked()
 {
   static QString lastSavePath = QDir::homePath();
-  
+
 
   QString s = QFileDialog::getSaveFileName( this->m_Parent, "Save as..", lastSavePath, "CSV Files (*.csv)");
     /*"Save file dialog"
@@ -403,7 +402,7 @@ void QmitkVolumetryView::OnSaveCsvButtonClicked()
   {
     lastSavePath = s;
     QFile saveFile(s);
-    
+
     if ( saveFile.open(QIODevice::WriteOnly))
     {
       QTextStream stream( &saveFile );

@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __itkShortestPathCostFunctionTbss_h
 #define __itkShortestPathCostFunctionTbss_h
 
@@ -11,7 +26,7 @@
 namespace itk
 {
 
-  template <class TInputImageType>            
+  template <class TInputImageType>
   class ShortestPathCostFunctionTbss : public ShortestPathCostFunction<TInputImageType>
   {
   public:
@@ -31,7 +46,7 @@ namespace itk
 
     /** Run-time type information (and related methods). */
     itkTypeMacro(Self, Superclass);
-   
+
     // \brief calculates the costs for going from p1 to p2
     virtual double GetCost( IndexType p1, IndexType p2);
 

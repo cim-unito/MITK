@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-05-13 17:32:17 +0200 (Do, 13 Mai 2010) $
-Version:   $Revision: 18029 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPlanarArrow.h"
@@ -54,7 +53,7 @@ void mitk::PlanarArrow::GeneratePolyLine()
   this->AppendPointToPolyLine( 0, PolyLineElement( this->GetControlPoint( 1 ), 0 ));
 
   // TODO: start line at specified start point...
-  // Generate poly-line 
+  // Generate poly-line
   //m_PolyLines->ElementAt( 0 )->Reserve( 2 );
   //m_PolyLines->ElementAt( 0 )->ElementAt( 0 ) = m_ControlPoints->ElementAt( 0 );
   //m_PolyLines->ElementAt( 0 )->ElementAt( 1 ) = m_ControlPoints->ElementAt( 1 );
@@ -68,7 +67,7 @@ void mitk::PlanarArrow::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
   {
     m_HelperPolyLinesToBePainted->SetElement( 0, false );
     m_HelperPolyLinesToBePainted->SetElement( 1, false );
- 
+
     return;
   }
 
@@ -76,7 +75,7 @@ void mitk::PlanarArrow::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
 
   m_HelperPolyLinesToBePainted->SetElement( 0, true );
   m_HelperPolyLinesToBePainted->SetElement( 1, true );
- 
+
   //Fixed size depending on screen size for the angle
   float scaleFactor = 0.015;
   if ( m_ArrowTipScaleFactor > 0.0 )
@@ -94,7 +93,7 @@ void mitk::PlanarArrow::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
   //const Point2D& p2 = m_ControlPoints->ElementAt( 1 );
   Vector2D n1 = p1 - p2;
   n1.Normalize();
- 
+
   double degrees = 100.0;
   Vector2D temp;
   temp[0] = n1[0] * cos(degrees) - n1[1] * sin(degrees);
@@ -112,10 +111,10 @@ void mitk::PlanarArrow::GenerateHelperPolyLine(double mmPerDisplayUnit, unsigned
   //m_HelperPolyLines->ElementAt( 0 )->ElementAt( 1 ) = p1 - temp * nonScalingLength;
   //m_HelperPolyLines->ElementAt( 1 )->ElementAt( 0 ) = p1;
   //m_HelperPolyLines->ElementAt( 1 )->ElementAt( 1 ) = p1 - temp2 * nonScalingLength;
- 
+
 }
 
-  
+
 void mitk::PlanarArrow::EvaluateFeaturesInternal()
 {
   // Calculate line length

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkCompressedImageContainer.h"
 #include "itkSmartPointerForwardReference.txx"
@@ -79,7 +78,7 @@ void mitk::CompressedImageContainer::SetImage( Image* image )
     // allocate a buffer as specified by zlib
     unsigned long bufferSize = m_OneTimeStepImageSizeInBytes + static_cast<unsigned long>(m_OneTimeStepImageSizeInBytes * 0.2) + 12;
     unsigned char* byteBuffer = (unsigned char*) malloc(bufferSize);
-    
+
     if (itk::Object::GetDebug())
     {
     // compress image here into a buffer
@@ -119,7 +118,7 @@ void mitk::CompressedImageContainer::SetImage( Image* image )
     byteBuffer = (unsigned char*) realloc( byteBuffer, destLen );
     bufferSize = destLen;
     //MITK_INFO << "Using " << bufferSize << " bytes to store compressed image (" << destLen << " needed)" << std::endl;
-  
+
     m_ByteBuffers.push_back( std::pair<unsigned char*, unsigned long>( byteBuffer, bufferSize ) );
   }
 }
@@ -133,7 +132,7 @@ mitk::Image::Pointer mitk::CompressedImageContainer::GetImage()
   unsigned int dims[20]; // more than 20 dimensions and bang
   for (unsigned int dim = 0; dim < m_ImageDimension; ++dim)
     dims[dim] = m_ImageDimensions[dim];
-  
+
   image->Initialize( *m_PixelType, m_ImageDimension, dims ); // this IS needed, right ?? But it does allocate memory -> does create one big lump of memory (also in windows)
 
   unsigned int timeStep(0);

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_UNSTRUCTURED_GRID_H_
@@ -35,33 +34,37 @@ class MitkExt_EXPORT UnstructuredGrid : public BaseData
 
 public:
   // not yet the best choice of a region-type for surfaces, but it works for the time being
-  typedef itk::ImageRegion< 5 >  RegionType;  
-  
+  typedef itk::ImageRegion< 5 >  RegionType;
+
   mitkClassMacro(UnstructuredGrid, BaseData);
-  
+
   itkNewMacro(Self);
 
   mitkCloneMacro(UnstructuredGrid);
-  
+
   virtual void SetVtkUnstructuredGrid(vtkUnstructuredGrid* grid, unsigned int t = 0);
-  
+
   virtual vtkUnstructuredGrid* GetVtkUnstructuredGrid(unsigned int t = 0);
-  
+
   virtual void UpdateOutputInformation();
-  
+
   virtual void SetRequestedRegionToLargestPossibleRegion();
-  
+
   virtual bool RequestedRegionIsOutsideOfTheBufferedRegion();
-  
+
   virtual bool VerifyRequestedRegion();
- 
+
   virtual void SetRequestedRegion(itk::DataObject *data);
 
   virtual void SetRequestedRegion(UnstructuredGrid::RegionType *region);
 
   virtual void CopyInformation(const itk::DataObject *data);
-  
+
   virtual void Update();
+
+  // Initialize should not be called manually;
+  // The polydata vector is initialized automatically when enlarged;
+  virtual void Expand( unsigned int timeSteps = 1 );
 
   const RegionType& GetLargestPossibleRegion() const
   {
@@ -84,15 +87,11 @@ public:
 protected:
 
   typedef std::vector< vtkUnstructuredGrid* > VTKUnstructuredGridSeries;
- 
-  // Initialize should not be called manually;
-  // The polydata vector is initialized automatically when enlarged;
-  virtual void Expand( unsigned int timeSteps = 1 );
- 
+
   UnstructuredGrid();
 
   UnstructuredGrid(const mitk::UnstructuredGrid & other);
-  
+
   virtual ~UnstructuredGrid();
 
   virtual void ClearData();
@@ -104,7 +103,7 @@ protected:
   mutable RegionType m_LargestPossibleRegion;
 
   RegionType m_RequestedRegion;
-  
+
   bool m_CalculateBoundingBox;
 };
 

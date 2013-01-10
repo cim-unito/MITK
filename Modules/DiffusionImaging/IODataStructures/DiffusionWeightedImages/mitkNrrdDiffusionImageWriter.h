@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-08-27 17:18:46 +0200 (Mi, 27 Aug 2008) $
-Version:   $Revision: 15096 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _MITK_NRRDDIFFVOL_WRITER__H_
 #define _MITK_NRRDDIFFVOL_WRITER__H_
@@ -39,9 +38,9 @@ public:
     mitkWriterMacro;
 
     itkNewMacro( Self );
-    
+
     typedef mitk::DiffusionImage<TPixelType> InputType;
-    
+
     /**
      * Sets the filename of the file to write.
      * @param FileName the name of the file to write.
@@ -88,7 +87,7 @@ public:
      * Returns false if an error happened during writing
      */
     itkGetMacro( Success, bool );
-   
+
     /**
     * @return possible file extensions for the data type associated with the writer
     */
@@ -106,29 +105,29 @@ public:
 
     virtual void DoWrite(BaseData::Pointer data) {
       if (CanWriteBaseDataType(data)) {
-        this->SetInput(dynamic_cast<mitk::DiffusionImage<TPixelType>*>(data.GetPointer())); 
-        this->Update(); 
+        this->SetInput(dynamic_cast<mitk::DiffusionImage<TPixelType>*>(data.GetPointer()));
+        this->Update();
       }
     }
 
 protected:
-        
+
     NrrdDiffusionImageWriter();
 
     virtual ~NrrdDiffusionImageWriter();
 
     virtual void GenerateData();
-    
+
     std::string m_FileName;
 
     std::string m_FilePrefix;
 
     std::string m_FilePattern;
-    
+
     bool m_Success;
-            
-};    
-       
+
+};
+
 
 } // end of namespace mitk
 

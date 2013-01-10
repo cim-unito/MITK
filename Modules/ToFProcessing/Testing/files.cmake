@@ -1,7 +1,10 @@
-SET(MODULE_TESTS
+set(MODULE_TESTS
   mitkToFDistanceImageToPointSetFilterTest.cpp
   mitkToFDistanceImageToSurfaceFilterTest.cpp
   mitkToFCompositeFilterTest.cpp
   mitkToFProcessingCommonTest.cpp
-  mitkToFImageDownsamplingFilterTest.cpp
+)
+
+set(MODULE_CUSTOM_TESTS
+  #mitkToFImageDownsamplingFilterTest.cpp
 )

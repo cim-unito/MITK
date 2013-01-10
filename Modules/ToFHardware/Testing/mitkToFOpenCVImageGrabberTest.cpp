@@ -1,27 +1,26 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-12 14:05:50 +0100 (Fr, 12 Mrz 2010) $
-Version:   $Revision: 16010 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkTestingMacros.h>
 #include <mitkToFOpenCVImageGrabber.h>
 
 #include <mitkImageDataItem.h>
 #include <mitkPicFileReader.h>
+#include <mitkToFCameraMITKPlayerDevice.h>
 #include <mitkToFConfig.h>
-#include <mitkToFImageGrabberCreator.h>
 
 static bool CompareImages(mitk::Image::Pointer mitkImage, cv::Mat openCVImage)
 {
@@ -57,7 +56,8 @@ int mitkToFOpenCVImageGrabberTest(int /* argc */, char* /*argv*/[])
   MITK_TEST_BEGIN("ToFOpenCVImageGrabber");
 
   std::string dirName = MITK_TOF_DATA_DIR;
-  mitk::ToFImageGrabber::Pointer tofImageGrabber = mitk::ToFImageGrabberCreator::GetInstance()->GetMITKPlayerImageGrabber();
+  mitk::ToFImageGrabber::Pointer tofImageGrabber = mitk::ToFImageGrabber::New();
+  tofImageGrabber->SetCameraDevice(mitk::ToFCameraMITKPlayerDevice::New());
   std::string distanceFileName = dirName + "/PMDCamCube2_MF0_IT0_1Images_DistanceImage.pic";
   tofImageGrabber->SetProperty("DistanceImageFileName",mitk::StringProperty::New(distanceFileName));
   std::string amplitudeFileName = dirName + "/PMDCamCube2_MF0_IT0_1Images_AmplitudeImage.pic";

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkLookupTableProperty.h"
@@ -53,14 +52,14 @@ mitk::LookupTableProperty::ValueType mitk::LookupTableProperty::GetValue() const
 void mitk::LookupTableProperty::SetLookupTable(const mitk::LookupTable::Pointer aLookupTable)
 {
 //    MITK_INFO << "setting LUT property ... " << std::endl;
-   
+
     if((m_LookupTable != aLookupTable) || (*m_LookupTable != *aLookupTable))
     {
         m_LookupTable = aLookupTable;
         Modified();
     }
-          
-//    MITK_INFO << "setting LUT property OK! " << std::endl;    
+
+//    MITK_INFO << "setting LUT property OK! " << std::endl;
 }
 
 void mitk::LookupTableProperty::SetValue(const ValueType & value)

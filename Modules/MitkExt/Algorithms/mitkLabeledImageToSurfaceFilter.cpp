@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkLabeledImageToSurfaceFilter.h>
 
@@ -53,10 +52,10 @@ void mitk::LabeledImageToSurfaceFilter::GenerateOutputInformation()
   //
   m_AvailableLabels = this->GetAvailableLabels();
   m_IdxToLabels.clear();
-  
+
   //
   // if we don't want to generate surfaces for all labels
-  // we have to remove all labels except m_Label and m_BackgroundLabel 
+  // we have to remove all labels except m_Label and m_BackgroundLabel
   // from the list of available labels
   //
   if ( ! m_GenerateAllLabels )
@@ -68,20 +67,20 @@ void mitk::LabeledImageToSurfaceFilter::GenerateOutputInformation()
       tmp[m_Label] = it->second;
     else
       tmp[m_Label] = 0;
-    
+
     it = m_AvailableLabels.find( m_BackgroundLabel );
     if ( it != m_AvailableLabels.end() )
       tmp[m_BackgroundLabel] = it->second;
     else
       tmp[m_BackgroundLabel] = 0;
-    
+
     m_AvailableLabels = tmp;
   }
-  
+
   //
   // check for the number of labels: if the whole image is filled, no
-  // background is available and thus the numberOfOutpus is equal to the 
-  // number of available labels in the image (which is a special case). 
+  // background is available and thus the numberOfOutpus is equal to the
+  // number of available labels in the image (which is a special case).
   // If we have background voxels, the number of outputs is one less than
   // then number of available labels.
   //
@@ -100,7 +99,7 @@ void mitk::LabeledImageToSurfaceFilter::GenerateOutputInformation()
   //
   mitk::Image* image =  ( mitk::Image* )GetInput();
   unsigned int numberOfTimeSteps = image->GetTimeSlicedGeometry()->GetTimeSteps();
-    
+
   //
   // set the number of outputs to the number of labels used.
   // initialize the output surfaces accordingly (incl. time steps)
@@ -113,7 +112,7 @@ void mitk::LabeledImageToSurfaceFilter::GenerateOutputInformation()
     {
       mitk::Surface::Pointer output = static_cast<mitk::Surface*>( this->MakeOutput(0).GetPointer() );
       assert ( output.IsNotNull() );
-      output->Expand( numberOfTimeSteps ); 
+      output->Expand( numberOfTimeSteps );
       this->SetNthOutput( i, output.GetPointer() );
     }
   }
@@ -128,14 +127,14 @@ void mitk::LabeledImageToSurfaceFilter::GenerateData()
     itkWarningMacro("Image is NULL");
     return;
   }
-    
+
   mitk::Image::RegionType outputRegion = image->GetRequestedRegion();
 
   m_IdxToLabels.clear();
-  
+
   if ( this->GetNumberOfOutputs() == 0 )
     return;
-  
+
   //
   // traverse the known labels and create surfaces for them.
   //
@@ -146,11 +145,11 @@ void mitk::LabeledImageToSurfaceFilter::GenerateData()
       continue;
     if ( ( it->second == 0 ) && m_GenerateAllLabels )
       continue;
-    
+
     assert ( currentOutputIndex < this->GetNumberOfOutputs() );
     mitk::Surface::Pointer surface = this->GetOutput( currentOutputIndex );
     assert( surface.IsNotNull() );
-    
+
     int tstart=outputRegion.GetIndex(3);
     int tmax=tstart+outputRegion.GetSize(3); //GetSize()==1 - will aber 0 haben, wenn nicht zeitaufgeloet
     int t;
@@ -175,12 +174,12 @@ void mitk::LabeledImageToSurfaceFilter::CreateSurface( int time, vtkImageData *v
     //indexCoordinatesImageFilter->Delete();
     threshold->SetInValue( 100 );
     threshold->SetOutValue( 0 );
-    threshold->ThresholdBetween( label, label ); 
+    threshold->ThresholdBetween( label, label );
     threshold->SetOutputScalarTypeToUnsignedChar();
     threshold->ReleaseDataFlagOn();
 
     vtkImageGaussianSmooth *gaussian = vtkImageGaussianSmooth::New();
-    gaussian->SetInput( threshold->GetOutput() ); 
+    gaussian->SetInput( threshold->GetOutput() );
     //threshold->Delete();
     gaussian->SetDimensionality( 3  );
     gaussian->SetRadiusFactor( 0.49 );
@@ -320,7 +319,7 @@ mitk::LabeledImageToSurfaceFilter::LabelMapType mitk::LabeledImageToSurfaceFilte
 void mitk::LabeledImageToSurfaceFilter::CreateSurface(int, vtkImageData*, mitk::Surface*, const ScalarType)
 {
   itkWarningMacro( "This function should never be called!" );
-  assert(false);  
+  assert(false);
 }
 
 mitk::LabeledImageToSurfaceFilter::LabelType mitk::LabeledImageToSurfaceFilter::GetLabelForNthOutput( const unsigned int& idx )
@@ -344,10 +343,10 @@ mitk::ScalarType mitk::LabeledImageToSurfaceFilter::GetVolumeForNthOutput( const
 
 mitk::ScalarType mitk::LabeledImageToSurfaceFilter::GetVolumeForLabel( const mitk::LabeledImageToSurfaceFilter::LabelType& label )
 {
-  // get the image spacing 
+  // get the image spacing
   mitk::Image* image =  ( mitk::Image* )GetInput();
   const float* spacing = image->GetSlicedGeometry()->GetFloatSpacing();
-  
+
   // get the number of voxels encountered for the given label,
   // calculate the volume and return it.
   LabelMapType::iterator it = m_AvailableLabels.find( label );

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkDiffusionImagingAppIntroPart.h"
 
@@ -24,7 +23,12 @@
 #include <berryIPerspectiveRegistry.h>
 #include <berryWorkbenchPreferenceConstants.h>
 #include <berryIPreferences.h>
+
 #include <berryIEditorReference.h>
+#include <berryIEditorInput.h>
+
+#include <mitkIDataStorageService.h>
+#include <mitkDataStorageEditorInput.h>
 
 #include <mitkLogMacros.h>
 
@@ -42,10 +46,9 @@
 #include <QByteArray>
 #include <QDesktopServices>
 
-#include "QmitkStdMultiWidget.h"
-#include "QmitkStdMultiWidgetEditor.h"
-#include "mitkPluginActivator.h"
+#include "QmitkDiffusionApplicationPlugin.h"
 #include "mitkDataStorageEditorInput.h"
+#include <string>
 
 #include "mitkBaseDataIOFactory.h"
 #include "mitkSceneIO.h"
@@ -57,7 +60,7 @@
 QmitkDiffusionImagingAppIntroPart::QmitkDiffusionImagingAppIntroPart()
   : m_Controls(NULL)
 {
-  berry::IPreferences::Pointer workbenchPrefs = mitkPluginActivator::GetDefault()->GetPreferencesService()->GetSystemPreferences();
+  berry::IPreferences::Pointer workbenchPrefs = QmitkDiffusionApplicationPlugin::GetDefault()->GetPreferencesService()->GetSystemPreferences();
   workbenchPrefs->PutBool(berry::WorkbenchPreferenceConstants::SHOW_INTRO, true);
   workbenchPrefs->Flush();
 }
@@ -67,13 +70,13 @@ QmitkDiffusionImagingAppIntroPart::~QmitkDiffusionImagingAppIntroPart()
   // if the workbench is not closing (that means, welcome screen was closed explicitly), set "Show_intro" false
   if (!this->GetIntroSite()->GetPage()->GetWorkbenchWindow()->GetWorkbench()->IsClosing())
   {
-    berry::IPreferences::Pointer workbenchPrefs = mitkPluginActivator::GetDefault()->GetPreferencesService()->GetSystemPreferences();
+    berry::IPreferences::Pointer workbenchPrefs = QmitkDiffusionApplicationPlugin::GetDefault()->GetPreferencesService()->GetSystemPreferences();
     workbenchPrefs->PutBool(berry::WorkbenchPreferenceConstants::SHOW_INTRO, false);
     workbenchPrefs->Flush();
   }
   else
   {
-    berry::IPreferences::Pointer workbenchPrefs = mitkPluginActivator::GetDefault()->GetPreferencesService()->GetSystemPreferences();
+    berry::IPreferences::Pointer workbenchPrefs = QmitkDiffusionApplicationPlugin::GetDefault()->GetPreferencesService()->GetSystemPreferences();
     workbenchPrefs->PutBool(berry::WorkbenchPreferenceConstants::SHOW_INTRO, true);
     workbenchPrefs->Flush();
   }
@@ -155,66 +158,29 @@ void QmitkDiffusionImagingAppIntroPart::DelegateMeTo(const QUrl& showMeNext)
       // is working fine as long as the perspective id is valid, if not the application crashes
       GetIntroSite()->GetWorkbenchWindow()->GetWorkbench()->ShowPerspective(perspectiveId, GetIntroSite()->GetWorkbenchWindow() );
 
-      mitk::DataStorageEditorInput::Pointer editorInput;
-      editorInput = new mitk::DataStorageEditorInput();
-      berry::IEditorPart::Pointer editor = GetIntroSite()->GetPage()->OpenEditor(editorInput, QmitkStdMultiWidgetEditor::EDITOR_ID);
+      // search the Workbench for opened StdMultiWidgets to ensure the focus does not stay on the welcome screen and is switched to
+      // an StdMultiWidget if one available
+      mitk::IDataStorageService::Pointer service =
+          berry::Platform::GetServiceRegistry().GetServiceById<mitk::IDataStorageService>(mitk::IDataStorageService::ID);
+      berry::IEditorInput::Pointer editorInput;
+      editorInput = new mitk::DataStorageEditorInput( service->GetActiveDataStorage() );
 
+      // the solution is not clean, but the dependency to the StdMultiWidget was removed in order to fix a crash problem
+      // as described in Bug #11715
+      // This is the correct way : use the static string ID variable
+      // berry::IEditorPart::Pointer editor = GetIntroSite()->GetPage()->FindEditors( editorInput, QmitkStdMultiWidgetEditor::EDITOR_ID );
+      // QuickFix: we use the same string for an local variable
+      const std::string stdEditorID = "org.mitk.editors.stdmultiwidget";
 
-      QmitkStdMultiWidgetEditor::Pointer multiWidgetEditor;
-      mitk::DataStorage::Pointer dataStorage;
+      // search for opened StdMultiWidgetEditors
+      std::vector<berry::IEditorReference::Pointer> editorList = GetIntroSite()->GetPage()->FindEditors( editorInput, stdEditorID, 1 );
 
-      if (editor.Cast<QmitkStdMultiWidgetEditor>().IsNull())
+      // if an StdMultiWidgetEditor open was found, give focus to it
+      if(editorList.size())
       {
-        editorInput = new mitk::DataStorageEditorInput();
-        dataStorage = editorInput->GetDataStorageReference()->GetDataStorage();
-      }
-      else
-      {
-        multiWidgetEditor = editor.Cast<QmitkStdMultiWidgetEditor>();
-        multiWidgetEditor->GetStdMultiWidget()->RequestUpdate();
-        dataStorage = multiWidgetEditor->GetEditorInput().Cast<mitk::DataStorageEditorInput>()->GetDataStorageReference()->GetDataStorage();
-      }
-
-      bool dsmodified = false;
-     if(dataStorage.IsNotNull() && dsmodified)
-      {
-        // get all nodes that have not set "includeInBoundingBox" to false
-        mitk::NodePredicateNot::Pointer pred
-            = mitk::NodePredicateNot::New(mitk::NodePredicateProperty::New("includeInBoundingBox"
-                                                                           , mitk::BoolProperty::New(false)));
-
-        mitk::DataStorage::SetOfObjects::ConstPointer rs = dataStorage->GetSubset(pred);
-
-        if(rs->Size() > 0)
-        {
-          // calculate bounding geometry of these nodes
-          mitk::TimeSlicedGeometry::Pointer bounds = dataStorage->ComputeBoundingGeometry3D(rs);
-          // initialize the views to the bounding geometry
-          mitk::RenderingManager::GetInstance()->InitializeViews(bounds);
-        }
+        GetIntroSite()->GetPage()->Activate( editorList[0]->GetPart(true) );
       }
 
-    }
-    // searching for the load
-    if(urlHostname.contains(QByteArray("perspectives")) )
-    {
-      // the simplified method removes every whitespace
-      // ( whitespace means any character for which the standard C++ isspace() method returns true)
-      urlPath = urlPath.simplified();
-      QString tmpPerspectiveId(urlPath.data());
-      tmpPerspectiveId.replace(QString("/"), QString("") );
-      std::string perspectiveId  = tmpPerspectiveId.toStdString();
-
-      // is working fine as long as the perspective id is valid, if not the application crashes
-      GetIntroSite()->GetWorkbenchWindow()->GetWorkbench()->ShowPerspective(perspectiveId, GetIntroSite()->GetWorkbenchWindow() );
-
-      mitk::DataStorageEditorInput::Pointer editorInput;
-      editorInput = new mitk::DataStorageEditorInput();
-      GetIntroSite()->GetPage()->OpenEditor(editorInput, QmitkStdMultiWidgetEditor::EDITOR_ID);
-    }
-    else
-    {
-      MITK_INFO << "Unkown mitk action keyword (see documentation for mitk links)" ;
     }
   }
   // if the scheme is set to http, by default no action is performed, if an external webpage needs to be

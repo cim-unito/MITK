@@ -1,26 +1,25 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 //mitk includes
 #include "mitkTestingMacros.h"
 #include "mitkUnstructuredGrid.h"
 
 //vtk includes
-#include "vtkUnstructuredGrid.h"  
+#include "vtkUnstructuredGrid.h"
 
 /**
  *Unit test for the UnstructuredGríd class
@@ -31,12 +30,12 @@ int mitkUnstructuredGridTest(int /* argc */, char* /*argv*/[])
   // always start with this!
   MITK_TEST_BEGIN("UnstructuredGrid")
 
-  // let's create an object of our class  
+  // let's create an object of our class
   mitk::UnstructuredGrid::Pointer testObject = mitk::UnstructuredGrid::New();
   MITK_TEST_CONDITION_REQUIRED(testObject.IsNotNull(),"Testing instantiation")
   MITK_TEST_CONDITION_REQUIRED( testObject->VerifyRequestedRegion(), "Requested region verification after initialization!");
 
-  //create a clone object 
+  //create a clone object
   mitk::UnstructuredGrid::Pointer cloneObject = testObject->Clone();
   MITK_TEST_CONDITION_REQUIRED(cloneObject.IsNotNull(),"Testing instantiation of clone")
   MITK_TEST_CONDITION_REQUIRED( cloneObject->VerifyRequestedRegion(), "Requested region verification after initialization of clone!");

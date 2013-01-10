@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-09-07 13:46:44 +0200 (Di, 07 Sep 2010) $
-Version:   $Revision: 25948 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKPYTHONTEXTEDITOR_H_
 #define QMITKPYTHONTEXTEDITOR_H_
@@ -36,12 +35,12 @@ public:
   virtual void paste(const QString& command);
 signals:
 
-protected slots:  
+protected slots:
 
 protected:
   virtual void dragEnterEvent(QDragEnterEvent *event);
   virtual void dropEvent(QDropEvent *event);
-  
+
   virtual bool canInsertFromMimeData( const QMimeData *source ) const;
   //virtual void QmitkPythonTextEditor::insertFromMimeData( const QMimeData *source );
 

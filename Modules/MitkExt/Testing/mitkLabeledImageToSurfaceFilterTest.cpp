@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkLabeledImageToSurfaceFilter.h"
 #include <itksys/SystemTools.hxx>
@@ -34,7 +33,7 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
     std::cout<<"no path to testing specified [FAILED]"<<std::endl;
     return EXIT_FAILURE;
   }
-  
+
   std::string fileIn = argv[1];
   std::cout<<"Eingabe Datei: "<<fileIn<<std::endl;
   mitk::Image::Pointer image = NULL;
@@ -107,44 +106,44 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Testing index to label conversion: ";
   if ( filter->GetLabelForNthOutput( 0 ) != 257 )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Testing volume for label calculation: ";
   if ( ! equals ( filter->GetVolumeForLabel( 257 ) , 14.328 ) )
   {
      std::cout<<filter->GetVolumeForLabel( 257 )<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-    
+
   std::cout << "Testing volume for index calculation: ";
   if ( ! equals ( filter->GetVolumeForNthOutput( 0 ) , 14.328 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
- 
+
+
   std::cout << "Create surface using optimised settings: ";
   filter->GenerateAllLabelsOn();
-  filter->SetGaussianStandardDeviation( 1.5 ); 
+  filter->SetGaussianStandardDeviation( 1.5 );
   filter->SetSmooth(true); // smooth wireframe
   filter->SetDecimate( mitk::ImageToSurfaceFilter::DecimatePro );
   filter->SetTargetReduction( 0.8 );
@@ -157,7 +156,7 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Create surface for label 257: ";
   filter->GenerateAllLabelsOff();
   filter->SetLabel(257);
@@ -181,29 +180,29 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Testing volume for label calculation: ";
   if ( ! equals ( filter->GetVolumeForLabel( 257 ) , 14.328 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-    
+
   std::cout << "Testing volume for index calculation: ";
   if ( ! equals ( filter->GetVolumeForNthOutput( 0 ) , 14.328 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Create surface for multiple labels: ";
   filter->GenerateAllLabelsOn();
   filter->SetBackgroundLabel(32000);
@@ -237,7 +236,7 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Testing volume for label calculation: ";
   if ( ! equals ( filter->GetVolumeForLabel( 257 ) , 14.328 ) )
   {
@@ -253,13 +252,13 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-    
+
   std::cout << "Testing volume for index calculation: ";
   if ( ! equals( filter->GetVolumeForNthOutput( 1 ), 14.328 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else if ( ! equals ( filter->GetVolumeForNthOutput( 0 ), 12.672 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
@@ -272,7 +271,7 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
 
   mitk::ReferenceCountWatcher::Pointer outputSurface1Watcher = new mitk::ReferenceCountWatcher(filter->GetOutput(1), "outputSurface1");
   mitk::ReferenceCountWatcher::Pointer filterWatcher = new mitk::ReferenceCountWatcher(filter, "filter");
-  
+
   std::cout << "Create surface for background (label 0): " << std::flush;
   filter->GenerateAllLabelsOff();
   filter->SetLabel(0);
@@ -281,7 +280,7 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   //std::cout<< surface->GetReferenceCount() << std::endl;
   filter->Update();
   //surface = NULL;
-  
+
   if ( filter->GetNumberOfOutputs() != 1 )
   {
      std::cout<<"Wrong number of outputs, [FAILED]"<<std::endl;
@@ -325,34 +324,34 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Testing volume for label calculation: ";
   if ( ! equals ( filter->GetVolumeForLabel( filter->GetLabel() ) , 12.672 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
+  }
   else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-    
+
   std::cout << "Testing volume for index calculation: ";
   if ( ! equals( filter->GetVolumeForNthOutput( 0 ), 12.672 ) )
   {
      std::cout<<"[FAILED]"<<std::endl;
      return EXIT_FAILURE;
-  }  
-  else 
+  }
+  else
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
+
   std::cout << "Create surface for invalid label: ";
   filter->GenerateAllLabelsOff();
   filter->SetLabel(1);
@@ -371,10 +370,10 @@ int mitkLabeledImageToSurfaceFilterTest(int argc, char* argv[])
   {
      std::cout<<"[PASSED]"<<std::endl;
   }
-  
-  
+
+
 
   std::cout<<"[TEST DONE]"<<std::endl;
   return EXIT_SUCCESS;
-  
+
 }

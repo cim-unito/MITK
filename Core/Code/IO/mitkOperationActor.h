@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef OPERATIONACTOR_H_HEADER_INCLUDED_C16E28BD
@@ -21,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include <MitkExports.h>
 
-namespace mitk 
+namespace mitk
 {
 
   class Operation;
@@ -38,7 +37,7 @@ namespace mitk
 
   //##Documentation
   //## @brief abstract class, that can be used  by Undo to undo an operation.
-  //## 
+  //##
   //## @ingroup Undo
   class MITK_CORE_EXPORT OperationActor
   {

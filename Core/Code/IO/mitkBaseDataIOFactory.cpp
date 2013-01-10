@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifdef _MSC_VER
 #pragma warning ( disable : 4786 )
@@ -38,7 +37,7 @@ std::vector<BaseData::Pointer> BaseDataIO::LoadBaseDataFromFile(const std::strin
   std::list<LightObject::Pointer> allobjects = itk::ObjectFactoryBase::CreateAllInstance("mitkIOAdapter");
 
   for( std::list<LightObject::Pointer>::iterator i = allobjects.begin();
-                                                 i != allobjects.end(); 
+                                                 i != allobjects.end();
                                                  ++i)
   {
     IOAdapterBase* io = dynamic_cast<IOAdapterBase*>(i->GetPointer());
@@ -49,28 +48,28 @@ std::vector<BaseData::Pointer> BaseDataIO::LoadBaseDataFromFile(const std::strin
     else
     {
       MITK_ERROR << "Error BaseDataIO factory did not return an IOAdapterBase: "
-        << (*i)->GetNameOfClass() 
+        << (*i)->GetNameOfClass()
         << std::endl;
     }
   }
 
   for( std::list<IOAdapterBase::Pointer>::iterator k = possibleIOAdapter.begin();
-                                                   k != possibleIOAdapter.end(); 
+                                                   k != possibleIOAdapter.end();
                                                    ++k )
-  { 
+  {
     bool canReadFile = false;
-    
+
     if ( series )
-      canReadFile = (*k)->CanReadFile(filePrefix, filePrefix, filePattern); // we have to provide a filename without extension here to 
+      canReadFile = (*k)->CanReadFile(filePrefix, filePrefix, filePattern); // we have to provide a filename without extension here to
     else                                                                    // prevent the "normal" (non-series) readers to report that
       canReadFile = (*k)->CanReadFile(path, filePrefix, filePattern);       // they could read the file
-    
+
     if( canReadFile )
     {
       BaseProcess::Pointer ioObject = (*k)->CreateIOProcessObject(path, filePrefix, filePattern);
       ioObject->Update();
       int numberOfContents = static_cast<int>(ioObject->GetNumberOfOutputs());
-      
+
       if (numberOfContents > 0)
       {
         BaseData::Pointer baseData;

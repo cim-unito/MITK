@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 20:04:59 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17180 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkRenderWindowMenu.h"
 
@@ -47,11 +46,11 @@ PURPOSE.  See the above copyright notices for more information.
 #include <math.h>
 
 #ifdef QMITK_USE_EXTERNAL_RENDERWINDOW_MENU
-QmitkRenderWindowMenu::QmitkRenderWindowMenu(QWidget *parent, Qt::WindowFlags f, mitk::BaseRenderer *b )
+QmitkRenderWindowMenu::QmitkRenderWindowMenu(QWidget *parent, Qt::WindowFlags f, mitk::BaseRenderer *b, QmitkStdMultiWidget* mw )
 :QWidget(parent, Qt::Tool | Qt::FramelessWindowHint ),
 
 #else
-QmitkRenderWindowMenu::QmitkRenderWindowMenu(QWidget *parent, Qt::WindowFlags f, mitk::BaseRenderer *b )
+QmitkRenderWindowMenu::QmitkRenderWindowMenu(QWidget *parent, Qt::WindowFlags f, mitk::BaseRenderer *b, QmitkStdMultiWidget* mw )
 :QWidget(parent,f),
 #endif
 
@@ -60,38 +59,43 @@ m_CrosshairMenu(NULL),
 m_Layout(0),
 m_LayoutDesign(0),
 m_OldLayoutDesign(0),
-m_FullScreenMode(false)
+m_FullScreenMode(false),
+m_Entered(false),
+m_Hidden(true),
+m_Renderer(b),
+m_MultiWidget(mw)
 {
-  m_Renderer = b;
-  m_Entered = false;
-  m_Hidden = true;
 
   MITK_DEBUG << "creating renderwindow menu on baserenderer " << b;
-
-  this->setFocusPolicy( Qt::NoFocus );
 
   //Create Menu Widget
   this->CreateMenuWidget();
   this->setMinimumWidth(61); //DIRTY.. If you add or remove a button, you need to change the size.
   this->setMaximumWidth(61);
   this->setAutoFillBackground( true );
-  
+
+  //Workaround for fix for bug 3192 which fixed the render window menu issue on linux
+  //but lead to focus issues on Mac OS X
+#ifdef Q_OS_MAC
   this->show();
-  this->setWindowOpacity(0.0);
-  
+  this->setWindowOpacity(0.0f);
+#else
+   this->setVisible(false);
+#endif
+
   //this->setAttribute( Qt::WA_NoSystemBackground  );
   //this->setBackgroundRole( QPalette::Dark );
   //this->update();
 
-  //SetOpacity  --  its just posible if the widget is a window. 
-  //Windows indicates that the widget is a window, usually with a window system frame and a title bar, 
+  //SetOpacity  --  its just posible if the widget is a window.
+  //Windows indicates that the widget is a window, usually with a window system frame and a title bar,
   //irrespective of whether the widget has a parent or not.
   /*
   this->setWindowFlags( Qt::Window | Qt::FramelessWindowHint);
   */
   //this->setAttribute(Qt::WA_TranslucentBackground);
   //this->setWindowOpacity(0.75);
-  
+
   currentCrosshairRotationMode = 0;
 
   // for autorotating
@@ -164,7 +168,7 @@ void QmitkRenderWindowMenu::CreateSettingsWidget()
   m_Big3DLayoutAction = new QAction( "Big 3D", m_Settings );
   m_Big3DLayoutAction->setDisabled( false );
 
-  m_Widget1LayoutAction = new QAction( "Transversal plane", m_Settings );
+  m_Widget1LayoutAction = new QAction( "Axial plane", m_Settings );
   m_Widget1LayoutAction->setDisabled( false );
 
   m_Widget2LayoutAction = new QAction( "Sagittal plane", m_Settings );
@@ -182,10 +186,10 @@ void QmitkRenderWindowMenu::CreateSettingsWidget()
   m_SmallUpperWidget2Big3and4LayoutAction = new QAction( "Sagittal top, Coronal n 3D bottom", m_Settings );
   m_SmallUpperWidget2Big3and4LayoutAction->setDisabled( false );
 
-  m_2x2Dand3DWidgetLayoutAction = new QAction( "Transversal n Sagittal left, 3D right", m_Settings );
+  m_2x2Dand3DWidgetLayoutAction = new QAction( "Axial n Sagittal left, 3D right", m_Settings );
   m_2x2Dand3DWidgetLayoutAction->setDisabled( false );
 
-  m_Left2Dand3DRight2DLayoutAction = new QAction( "Transversal n 3D left, Sagittal right", m_Settings );
+  m_Left2Dand3DRight2DLayoutAction = new QAction( "Axial n 3D left, Sagittal right", m_Settings );
   m_Left2Dand3DRight2DLayoutAction->setDisabled( false );
 
   m_Settings->addAction(m_DefaultLayoutAction);
@@ -234,32 +238,44 @@ void QmitkRenderWindowMenu::SetLayoutIndex( unsigned int layoutIndex )
 void QmitkRenderWindowMenu::HideMenu( )
 {
   MITK_DEBUG << "menu hideEvent";
-  
+
   m_Hidden = true;
 
   if( ! m_Entered )
-    setWindowOpacity(0.0f);
-    //hide();
-
+  {
+    //Workaround for fix for bug 3192 which fixed the render window menu issue on linux
+    //but lead to focus issues on Mac OS X
+#ifdef Q_OS_MAC
+    this->setWindowOpacity(0.0f);
+#else
+    this->setVisible(false);
+#endif
+  }
 }
 
 void QmitkRenderWindowMenu::ShowMenu( )
 {
   MITK_DEBUG << "menu showMenu";
-  
+
   m_Hidden = false;
-  setWindowOpacity(1.0f);
+  //Workaround for fix for bug 3192 which fixed the render window menu issue on linux
+  //but lead to focus issues on Mac OS X
+#ifdef Q_OS_MAC
+  this->setWindowOpacity(1.0f);
+#else
+  this->setVisible(true);
+#endif
 }
 
 
 void QmitkRenderWindowMenu::enterEvent( QEvent * /*e*/ )
 {
   MITK_DEBUG << "menu enterEvent";
-  
+
   m_Entered=true;
-  
+
   m_Hidden=false;
-  
+
  // setWindowOpacity(1.0f);
 }
 
@@ -267,31 +283,40 @@ void QmitkRenderWindowMenu::DeferredHideMenu( )
 {
   MITK_DEBUG << "menu deferredhidemenu";
   if(m_Hidden)
-    setWindowOpacity(0.0f);
+  {
+#ifdef Q_OS_MAC
+  this->setWindowOpacity(0.0f);
+#else
+   this->setVisible(false);
+#endif
+  }
+
+//    setVisible(false);
+//    setWindowOpacity(0.0f);
   ///hide();
 }
 
 void QmitkRenderWindowMenu::leaveEvent( QEvent * /*e*/ )
 {
   MITK_DEBUG << "menu leaveEvent";
-  
+
   smoothHide();
 
 }
 
-/* This method is responsible for non fluttering of 
+/* This method is responsible for non fluttering of
  the renderWindowMenu when mouse cursor moves along the renderWindowMenu*/
 void QmitkRenderWindowMenu::smoothHide()
 {
 
   MITK_DEBUG<< "menu leaveEvent";
-  
+
   m_Entered=false;
-  
+
   m_Hidden = true;
-  
+
   QTimer::singleShot(10,this,SLOT( DeferredHideMenu( ) ) );
-  
+
 
 }
 
@@ -310,9 +335,9 @@ void QmitkRenderWindowMenu::OnFullScreenButton( bool  /*checked*/ )
 
     switch( m_Layout )
     {
-    case TRANSVERSAL:
+    case AXIAL:
       {
-        emit SignalChangeLayoutDesign( LAYOUT_TRANSVERSAL );
+        emit SignalChangeLayoutDesign( LAYOUT_AXIAL );
         break;
       }
 
@@ -351,7 +376,7 @@ void QmitkRenderWindowMenu::OnFullScreenButton( bool  /*checked*/ )
     //change icon
     this->ChangeFullScreenIcon();
   }
-  
+
   DeferredShowMenu( );
 
 }
@@ -388,7 +413,7 @@ void QmitkRenderWindowMenu::OnChangeLayoutTo2DImagesLeft(bool)
 
   m_LayoutDesign = LAYOUT_2DIMAGELEFT;
   emit SignalChangeLayoutDesign( LAYOUT_2DIMAGELEFT );
-  
+
   DeferredShowMenu( );
 }
 void QmitkRenderWindowMenu::OnChangeLayoutToDefault(bool)
@@ -399,22 +424,27 @@ void QmitkRenderWindowMenu::OnChangeLayoutToDefault(bool)
 
   m_LayoutDesign = LAYOUT_DEFAULT;
   emit SignalChangeLayoutDesign( LAYOUT_DEFAULT );
-  
+
   DeferredShowMenu( );
-  
+
 }
 
 void QmitkRenderWindowMenu::DeferredShowMenu()
-{   
-  
+{
+
   MITK_DEBUG << "deferred show menu";
-  
-  show();
-  setWindowOpacity(1.0);
+
+  //Workaround for fix for bug 3192 which fixed the render window menu issue on linux
+  //but lead to focus issues on Mac OS X
+#ifdef Q_OS_MAC
+  this->setWindowOpacity(1.0f);
+#else
+  this->setVisible(true);
+#endif
 }
 
 void QmitkRenderWindowMenu::OnChangeLayoutToBig3D(bool)
-{ 
+{
   MITK_DEBUG << "OnChangeLayoutToBig3D";
 
   //set Full Screen Mode to false, if Layout Design was changed by the LayoutDesign_List
@@ -423,7 +453,7 @@ void QmitkRenderWindowMenu::OnChangeLayoutToBig3D(bool)
 
   m_LayoutDesign = LAYOUT_BIG3D;
   emit SignalChangeLayoutDesign( LAYOUT_BIG3D );
-  
+
   DeferredShowMenu( );
 
 }
@@ -434,8 +464,8 @@ void QmitkRenderWindowMenu::OnChangeLayoutToWidget1(bool)
   m_FullScreenMode = false;
   this->ChangeFullScreenIcon();
 
-  m_LayoutDesign = LAYOUT_TRANSVERSAL;
-  emit SignalChangeLayoutDesign( LAYOUT_TRANSVERSAL );
+  m_LayoutDesign = LAYOUT_AXIAL;
+  emit SignalChangeLayoutDesign( LAYOUT_AXIAL );
 
   DeferredShowMenu( );
 }
@@ -592,7 +622,7 @@ void QmitkRenderWindowMenu::UpdateLayoutDesignList( int layoutDesignIndex )
       m_Left2Dand3DRight2DLayoutAction->setEnabled(true);
       break;
     }
-  case LAYOUT_TRANSVERSAL:
+  case LAYOUT_AXIAL:
     {
       m_DefaultLayoutAction->setEnabled(true);
       m_2DImagesUpLayoutAction->setEnabled(true);
@@ -641,7 +671,7 @@ void QmitkRenderWindowMenu::UpdateLayoutDesignList( int layoutDesignIndex )
       break;
     }
   case LAYOUT_2X2DAND3DWIDGET:
-    { 
+    {
       m_DefaultLayoutAction->setEnabled(true);
       m_2DImagesUpLayoutAction->setEnabled(true);
       m_2DImagesLeftLayoutAction->setEnabled(true);
@@ -736,7 +766,7 @@ void QmitkRenderWindowMenu::MoveWidgetToCorrectPos(float /*opacity*/)
   QPoint pos = this->parentWidget()->mapToGlobal( QPoint(0,0) );
 
   this->move( X+pos.x(), Y+pos.y() );
-  
+
   if(opacity<0) opacity=0;
   else if(opacity>1) opacity=1;
 
@@ -752,7 +782,7 @@ void QmitkRenderWindowMenu::ChangeFullScreenIcon()
 {
 
  if( m_FullScreenMode )
- {   
+ {
    const QIcon icon( iconLeaveFullScreen_xpm );
    m_FullScreenButton->setIcon(icon);
  }
@@ -765,21 +795,20 @@ void QmitkRenderWindowMenu::ChangeFullScreenIcon()
 
 void QmitkRenderWindowMenu::OnCrosshairRotationModeSelected(QAction* action)
 {
-  MITK_DEBUG << "selected crosshair mode " << action->data().toInt() ; 
+  MITK_DEBUG << "selected crosshair mode " << action->data().toInt() ;
   emit ChangeCrosshairRotationMode( action->data().toInt() );
 }
 
 void QmitkRenderWindowMenu::SetCrossHairVisibility( bool state )
 {
-  if(m_Renderer.IsNotNull())  
+  if(m_Renderer.IsNotNull())
   {
-    mitk::DataStorage *ds=m_Renderer->GetDataStorage();
     mitk::DataNode *n;
-    if(ds)
+    if(this->m_MultiWidget)
     {
-      n = ds->GetNamedNode("widget1Plane"); if(n) n->SetVisibility(state);
-      n = ds->GetNamedNode("widget2Plane"); if(n) n->SetVisibility(state);
-      n = ds->GetNamedNode("widget3Plane"); if(n) n->SetVisibility(state);
+      n = this->m_MultiWidget->GetWidgetPlane1(); if(n) n->SetVisibility(state);
+      n = this->m_MultiWidget->GetWidgetPlane2(); if(n) n->SetVisibility(state);
+      n = this->m_MultiWidget->GetWidgetPlane3(); if(n) n->SetVisibility(state);
       m_Renderer->GetRenderingManager()->RequestUpdateAll();
     }
   }
@@ -789,7 +818,7 @@ void QmitkRenderWindowMenu::OnTSNumChanged(int num)
 {
   MITK_DEBUG << "Thickslices num: " << num << " on renderer " << m_Renderer.GetPointer();
 
-  if(m_Renderer.IsNotNull())  
+  if(m_Renderer.IsNotNull())
   {
     if(num==0)
     {
@@ -813,31 +842,31 @@ void QmitkRenderWindowMenu::OnTSNumChanged(int num)
 void QmitkRenderWindowMenu::OnCrossHairMenuAboutToShow()
 {
   QMenu *crosshairModesMenu = m_CrosshairMenu;
-  
+
   crosshairModesMenu->clear();
-  
+
   QAction* resetViewAction = new QAction(crosshairModesMenu);
   resetViewAction->setText("Reset view");
   crosshairModesMenu->addAction( resetViewAction );
   connect( resetViewAction, SIGNAL(triggered()), this, SIGNAL(ResetView()));
-  
+
   // Show hide crosshairs
   {
     bool currentState = true;
-    
-    if(m_Renderer.IsNotNull())  
+
+    if(m_Renderer.IsNotNull())
     {
       mitk::DataStorage *ds=m_Renderer->GetDataStorage();
       mitk::DataNode *n;
       if(ds)
       {
-        n = ds->GetNamedNode("widget1Plane"); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
-        n = ds->GetNamedNode("widget2Plane"); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
-        n = ds->GetNamedNode("widget3Plane"); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
+        n = this->m_MultiWidget->GetWidgetPlane1(); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
+        n = this->m_MultiWidget->GetWidgetPlane2(); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
+        n = this->m_MultiWidget->GetWidgetPlane3(); if(n) { bool v; if(n->GetVisibility(v,0)) currentState&=v; }
       }
     }
 
-  
+
     QAction* showHideCrosshairVisibilityAction = new QAction(crosshairModesMenu);
     showHideCrosshairVisibilityAction->setText("Show crosshair");
     showHideCrosshairVisibilityAction->setCheckable(true);
@@ -886,11 +915,11 @@ void QmitkRenderWindowMenu::OnCrossHairMenuAboutToShow()
     swivelMode->setCheckable(true);
     swivelMode->setChecked(currentCrosshairRotationMode==3);
     swivelMode->setData( 3 );
-    crosshairModesMenu->addAction( swivelMode );   
+    crosshairModesMenu->addAction( swivelMode );
 
-    connect( rotationModeActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(OnCrosshairRotationModeSelected(QAction*)) ); 
+    connect( rotationModeActionGroup, SIGNAL(triggered(QAction*)), this, SLOT(OnCrosshairRotationModeSelected(QAction*)) );
   }
-  
+
   // auto rotation support
   if( m_Renderer.IsNotNull() && m_Renderer->GetMapperID() == mitk::BaseRenderer::Standard3D )
   {
@@ -898,7 +927,7 @@ void QmitkRenderWindowMenu::OnCrossHairMenuAboutToShow()
     autoRotationGroupSeparator->setSeparator(true);
     crosshairModesMenu->addAction( autoRotationGroupSeparator );
 
-    QAction* autoRotationAction = crosshairModesMenu->addAction( "Auto Rotation" );    
+    QAction* autoRotationAction = crosshairModesMenu->addAction( "Auto Rotation" );
     autoRotationAction->setCheckable(true);
     autoRotationAction->setChecked( m_AutoRotationTimer.isActive() );
     connect( autoRotationAction, SIGNAL(triggered()), this, SLOT(OnAutoRotationActionTriggered()) );
@@ -921,7 +950,7 @@ void QmitkRenderWindowMenu::OnCrossHairMenuAboutToShow()
       if( m.IsNotNull() )
         currentMode = m->GetValueAsId();
     }
-                            
+
     int currentNum = 1;
     {
       mitk::IntProperty::Pointer m = dynamic_cast<mitk::IntProperty*>(m_Renderer->GetCurrentWorldGeometry2DNode()->GetProperty( "reslice.thickslices.num" ));
@@ -932,15 +961,15 @@ void QmitkRenderWindowMenu::OnCrossHairMenuAboutToShow()
         if(currentNum > 10) currentNum = 10;
       }
     }
-    
+
     if(currentMode==0)
       currentNum=0;
-    
+
     QSlider *m_TSSlider = new QSlider(crosshairModesMenu);
     m_TSSlider->setMinimum(0);
     m_TSSlider->setMaximum(9);
     m_TSSlider->setValue(currentNum);
-    
+
     m_TSSlider->setOrientation(Qt::Horizontal);
 
     connect( m_TSSlider, SIGNAL( valueChanged(int) ), this, SLOT( OnTSNumChanged(int) ) );

@@ -1,22 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkToFCameraDevice.h"
+#include <itksys/SystemTools.hxx>
 
+//Microservices
+#include <usGetModuleContext.h>
+#include "mitkModuleContext.h"
 
 namespace mitk
 {
@@ -32,11 +34,14 @@ namespace mitk
     this->m_MultiThreader = itk::MultiThreader::New();
     this->m_ImageMutex = itk::FastMutexLock::New();
     this->m_CameraActiveMutex = itk::FastMutexLock::New();
+
+    this->m_RGBImageWidth  = this->m_CaptureWidth;
+    this->m_RGBImageHeight  = this->m_CaptureHeight;
+    this->m_RGBPixelNumber = this->m_RGBImageWidth* this->m_RGBImageHeight;
   }
 
   ToFCameraDevice::~ToFCameraDevice()
   {
-    CleanupPixelArrays();
   }
 
   void ToFCameraDevice::SetBoolProperty( const char* propertyKey, bool boolValue )
@@ -69,9 +74,9 @@ namespace mitk
     return this->m_PropertyList->GetProperty(propertyKey);
   }
 
-  bool ToFCameraDevice::GetBoolProperty(BaseProperty* propertyValue, bool& boolValue)
+  bool ToFCameraDevice::GetBoolProperty(const char *propertyKey, bool& boolValue)
   {
-    mitk::BoolProperty::Pointer boolprop = dynamic_cast<mitk::BoolProperty*>(propertyValue);
+    mitk::BoolProperty::Pointer boolprop = dynamic_cast<mitk::BoolProperty*>(this->GetProperty(propertyKey));
     if(boolprop.IsNull())
       return false;
 
@@ -79,22 +84,22 @@ namespace mitk
     return true;
   }
 
-  bool ToFCameraDevice::GetStringProperty(BaseProperty* propertyValue, std::string& string)
+  bool ToFCameraDevice::GetStringProperty(const char *propertyKey, std::string& string)
   {
-    mitk::StringProperty::Pointer stringProp = dynamic_cast<mitk::StringProperty*>(propertyValue);
+    mitk::StringProperty::Pointer stringProp = dynamic_cast<mitk::StringProperty*>(this->GetProperty(propertyKey));
     if(stringProp.IsNull())
     {
       return false;
-    } 
-    else 
+    }
+    else
     {
       string = stringProp->GetValue();
       return true;
     }
   }
-  bool ToFCameraDevice::GetIntProperty(BaseProperty* propertyValue, int& integer)
+  bool ToFCameraDevice::GetIntProperty(const char *propertyKey, int& integer)
   {
-    mitk::IntProperty::Pointer intProp = dynamic_cast<mitk::IntProperty*>(propertyValue);
+    mitk::IntProperty::Pointer intProp = dynamic_cast<mitk::IntProperty*>(this->GetProperty(propertyKey));
     if(intProp.IsNull())
     {
       return false;
@@ -133,5 +138,51 @@ namespace mitk
     for(int i=0; i<this->m_PixelNumber; i++) {this->m_DistanceArray[i]=0.0;}
     this->m_AmplitudeArray = new float[this->m_PixelNumber];
     for(int i=0; i<this->m_PixelNumber; i++) {this->m_AmplitudeArray[i]=0.0;}
+  }
+
+  int ToFCameraDevice::GetRGBCaptureWidth()
+  {
+    return this->m_RGBImageWidth;
+  }
+
+  int ToFCameraDevice::GetRGBCaptureHeight()
+  {
+    return this->m_RGBImageHeight;
+  }
+
+  void ToFCameraDevice::StopCamera()
+  {
+    m_CameraActiveMutex->Lock();
+    m_CameraActive = false;
+    m_CameraActiveMutex->Unlock();
+    itksys::SystemTools::Delay(100);
+    if (m_MultiThreader.IsNotNull())
+    {
+      m_MultiThreader->TerminateThread(m_ThreadID);
+    }
+    // wait a little to make sure that the thread is terminated
+    itksys::SystemTools::Delay(100);
+  }
+
+  bool ToFCameraDevice::IsCameraActive()
+  {
+    m_CameraActiveMutex->Lock();
+    bool ok = m_CameraActive;
+    m_CameraActiveMutex->Unlock();
+    return ok;
+}
+  bool ToFCameraDevice::ConnectCamera()
+  {
+      // Prepare connection, fail if this fails.
+      if (! this->OnConnectCamera()) return false;
+
+      // Get Context and Module
+      mitk::ModuleContext* context = GetModuleContext();
+      return true;
+  }
+
+  bool ToFCameraDevice::IsCameraConnected()
+  {
+    return m_CameraConnected;
   }
 }

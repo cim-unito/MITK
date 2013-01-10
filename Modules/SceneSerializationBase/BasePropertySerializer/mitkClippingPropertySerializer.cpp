@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-07 15:56:37 +0200 (Di, 07. Jul 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkClippingPropertySerializer_h_included
 #define mitkClippingPropertySerializer_h_included
@@ -56,13 +55,13 @@ class SceneSerializationBase_EXPORT ClippingPropertySerializer : public BaseProp
         element->LinkEndChild(normalElement);
         return element;
       }
-      else 
+      else
         return NULL;
     }
 
     virtual BaseProperty::Pointer Deserialize(TiXmlElement* element)
     {
-      if (!element) 
+      if (!element)
         return NULL;
       bool enabled = std::string(element->Attribute("enabled")) == "true";
 
@@ -70,21 +69,21 @@ class SceneSerializationBase_EXPORT ClippingPropertySerializer : public BaseProp
       if (originElement == NULL)
         return NULL;
       Point3D origin;
-      if ( originElement->QueryFloatAttribute( "x", &origin[0] ) != TIXML_SUCCESS ) 
+      if ( originElement->QueryFloatAttribute( "x", &origin[0] ) != TIXML_SUCCESS )
         return NULL;
-      if ( originElement->QueryFloatAttribute( "y", &origin[1] ) != TIXML_SUCCESS ) 
+      if ( originElement->QueryFloatAttribute( "y", &origin[1] ) != TIXML_SUCCESS )
         return NULL;
-      if ( originElement->QueryFloatAttribute( "z", &origin[2] ) != TIXML_SUCCESS ) 
+      if ( originElement->QueryFloatAttribute( "z", &origin[2] ) != TIXML_SUCCESS )
         return NULL;
       TiXmlElement* normalElement = element->FirstChildElement("normal");
       if (normalElement == NULL)
         return NULL;
       Vector3D normal;
-      if ( normalElement->QueryFloatAttribute( "x", &normal[0] ) != TIXML_SUCCESS ) 
+      if ( normalElement->QueryFloatAttribute( "x", &normal[0] ) != TIXML_SUCCESS )
         return NULL;
-      if ( normalElement->QueryFloatAttribute( "y", &normal[1] ) != TIXML_SUCCESS ) 
+      if ( normalElement->QueryFloatAttribute( "y", &normal[1] ) != TIXML_SUCCESS )
         return NULL;
-      if ( normalElement->QueryFloatAttribute( "z", &normal[2] ) != TIXML_SUCCESS ) 
+      if ( normalElement->QueryFloatAttribute( "z", &normal[2] ) != TIXML_SUCCESS )
         return NULL;
       ClippingProperty::Pointer cp = ClippingProperty::New(origin, normal);
       cp->SetClippingEnabled(enabled);

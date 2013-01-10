@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkPartialVolumeAnalysisWidget.h"
 
@@ -69,9 +74,9 @@ void QmitkPartialVolumeAnalysisWidget::SetParameters( ParamsType *params, Result
 
   if(params != 0 && results != 0)
   {
-    hist->Print();
-    params->Print();
-    results->Print();
+//    hist->Print();
+//    params->Print();
+//    results->Print();
 
 
     for(unsigned int i=0; i<m_Vals.size(); i++)
@@ -95,16 +100,11 @@ void QmitkPartialVolumeAnalysisWidget::SetParameters( ParamsType *params, Result
     double fiberFA = 0.0;
     double weights = 0.0;
 
-    std::cout << "x, y, fiber, nonFiber, mixed, combi" << std::endl;
     for(int i=0; i<xVals->size(); ++i)
     {
 
       fiberFA += xVals->at(i) * fiberVals->at(i);
       weights += fiberVals->at(i);
-
-      std::cout << xVals->at(i) << " " << yVals->at(i) << " " << fiberVals->at(i)
-          << " " << nonFiberVals->at(i) << " " << mixedVals->at(i) << " " << combiVals->at(i) << std::endl;
-
     }
 
     fiberFA = fiberFA / weights;
@@ -123,14 +123,14 @@ void QmitkPartialVolumeAnalysisWidget::SetParameters( ParamsType *params, Result
     curveId = this->InsertCurve( "fiber" );
     this->SetCurveData(curveId, (*hist->GetXVals()), (*fiberVals));
     this->SetCurvePen( curveId, QPen( Qt::NoPen ) );
-    this->SetCurveBrush(curveId, QBrush(QColor::fromRgbF(0,1,0,.5), Qt::SolidPattern));
+    this->SetCurveBrush(curveId, QBrush(QColor::fromRgbF(1,0,0,.5), Qt::SolidPattern));
     m_Vals.push_back(fiberVals);
 
 
     curveId = this->InsertCurve( "nonfiber" );
     this->SetCurveData( curveId, (*hist->GetXVals()), (*nonFiberVals) );
     this->SetCurvePen( curveId, QPen( Qt::NoPen ) );
-    this->SetCurveBrush(curveId, QBrush(QColor::fromRgbF(1,0,0,.5), Qt::SolidPattern));
+    this->SetCurveBrush(curveId, QBrush(QColor::fromRgbF(0,1,0,.5), Qt::SolidPattern));
     m_Vals.push_back(nonFiberVals);
 
 

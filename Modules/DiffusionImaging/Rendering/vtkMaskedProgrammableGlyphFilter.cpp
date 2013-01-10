@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "vtkMaskedProgrammableGlyphFilter.h"
 
@@ -72,7 +71,7 @@ void vtkMaskedProgrammableGlyphFilter::Execute()
     {
       this->Superclass::SetInput(this->MaskPoints->GetInput());
     }
-  
+
   this->Superclass::Execute();
 }
 
@@ -93,7 +92,7 @@ int vtkMaskedProgrammableGlyphFilter::RequestData(
   {
     this->Superclass::SetInput(this->MaskPoints->GetInput());
   }
-  
+
   return this->Superclass::RequestData(
     request,inputVector,outputVector);
 }
@@ -102,18 +101,18 @@ int vtkMaskedProgrammableGlyphFilter::RequestData(
 void vtkMaskedProgrammableGlyphFilter::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os,indent);
-  //os << indent << "InputScalarsSelection: " 
+  //os << indent << "InputScalarsSelection: "
   //   << (this->InputScalarsSelection ? this->InputScalarsSelection : "(none)")
   //   << endl;
 
-  //os << indent << "InputVectorsSelection: " 
+  //os << indent << "InputVectorsSelection: "
   //   << (this->InputVectorsSelection ? this->InputVectorsSelection : "(none)")
   //   << endl;
 
-  //os << indent << "InputNormalsSelection: " 
+  //os << indent << "InputNormalsSelection: "
   //   << (this->InputNormalsSelection ? this->InputNormalsSelection : "(none)")
   //   << endl;
-  
+
   os << indent << "MaximumNumberOfPoints: " << this->GetMaximumNumberOfPoints()
      << endl;
 

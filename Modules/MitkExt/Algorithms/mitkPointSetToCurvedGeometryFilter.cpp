@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkPointSetToCurvedGeometryFilter.h"
 #include "mitkThinPlateSplineCurvedGeometry.h"
@@ -57,7 +56,7 @@ void mitk::PointSetToCurvedGeometryFilter::GenerateOutputInformation()
 
   if ( output.IsNull() )
     itkGenericExceptionMacro ( "Output is NULL!" );
-  
+
   if ( m_ImageToBeMapped.IsNull() )
     itkGenericExceptionMacro ( "Image to be mapped is NULL!" );
 
@@ -70,7 +69,7 @@ void mitk::PointSetToCurvedGeometryFilter::GenerateOutputInformation()
   {
     mitk::ThinPlateSplineCurvedGeometry::Pointer curvedGeometry = mitk::ThinPlateSplineCurvedGeometry::New();
     output->SetGeometry(curvedGeometry);
-    
+
     /*
     mitk::TimeSlicedGeometry::Pointer timeGeometry = mitk::TimeSlicedGeometry::New();
     mitk::ThinPlateSplineCurvedGeometry::Pointer curvedGeometry = mitk::ThinPlateSplineCurvedGeometry::New();
@@ -121,7 +120,7 @@ void mitk::PointSetToCurvedGeometryFilter::GenerateData()
     m_XYPlane = mitk::PlaneGeometry::New();
     m_XZPlane = mitk::PlaneGeometry::New();
     m_YZPlane = mitk::PlaneGeometry::New();
-    m_XYPlane->InitializeStandardPlane ( imageGeometry, mitk::PlaneGeometry::Transversal );
+    m_XYPlane->InitializeStandardPlane ( imageGeometry, mitk::PlaneGeometry::Axial );
     m_YZPlane->InitializeStandardPlane ( imageGeometry, mitk::PlaneGeometry::Sagittal );
     m_XZPlane->InitializeStandardPlane ( imageGeometry, mitk::PlaneGeometry::Frontal );
   }

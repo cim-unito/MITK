@@ -1,25 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include <mitkToFImageCsvWriter.h>
 
 namespace mitk
 {
-  ToFImageCsvWriter::ToFImageCsvWriter(): ToFImageWriter(), m_DistanceOutfile(NULL), 
+  ToFImageCsvWriter::ToFImageCsvWriter(): ToFImageWriter(), m_DistanceOutfile(NULL),
     m_AmplitudeOutfile(NULL), m_IntensityOutfile(NULL)
   {
     this->m_Extension = std::string(".csv");
@@ -35,8 +33,8 @@ namespace mitk
     this->CheckForFileExtension(this->m_AmplitudeImageFileName);
     this->CheckForFileExtension(this->m_IntensityImageFileName);
 
-    this->m_PixelNumber = this->m_CaptureWidth * this->m_CaptureHeight;
-    this->m_ImageSizeInBytes = this->m_PixelNumber * sizeof(float);
+    this->m_ToFPixelNumber = this->m_ToFCaptureWidth * this->m_ToFCaptureHeight;
+    this->m_ToFImageSizeInBytes = this->m_ToFPixelNumber * sizeof(float);
 
     if (this->m_DistanceImageSelected)
     {
@@ -69,7 +67,7 @@ namespace mitk
     }
   }
 
-  void ToFImageCsvWriter::Add(float* distanceFloatData, float* amplitudeFloatData, float* intensityFloatData)
+  void ToFImageCsvWriter::Add(float* distanceFloatData, float* amplitudeFloatData, float* intensityFloatData, unsigned char* rgbData)
   {
     if (this->m_DistanceImageSelected)
     {
@@ -88,7 +86,7 @@ namespace mitk
 
   void ToFImageCsvWriter::WriteCsvFile(FILE* outfile, float* floatData)
   {
-    for(int i=0; i<this->m_PixelNumber; i++)
+    for(int i=0; i<this->m_ToFPixelNumber; i++)
     {
       if (this->m_NumOfFrames==0 && i==0)
       {

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNDITrackingDevice.h"
 #include "mitkNDIPassiveTool.h"
@@ -29,13 +28,14 @@ int mitkNDIAuroraHardwareTest(int  argc , char* argv[])
   MITK_TEST_BEGIN("NDIAuroraHardware (An NDI tracking device has to be connected to this system!)");
 
   if (argc<2) {MITK_TEST_FAILED_MSG(<<"Error: test must be called with the com port as second parameter!");}
-  
+
   int comPort = *argv[1] - '0';
 
    //create an aurora tracking device
   mitk::NDITrackingDevice::Pointer myNDITrackingDevice = mitk::NDITrackingDevice::New();
   myNDITrackingDevice->SetType(mitk::NDIAurora);
 
+#ifdef WIN32
   //set port
   switch (comPort)
     {
@@ -67,7 +67,11 @@ int mitkNDIAuroraHardwareTest(int  argc , char* argv[])
       myNDITrackingDevice->SetPortNumber(mitk::SerialCommunication::COM9);
       break;
     }
-  
+#else
+  MITK_INFO << std::string(argv[1]);
+  myNDITrackingDevice->SetDeviceName(std::string(argv[1]));
+#endif
+
   //TODO: add tools
 
   //OpenConnection

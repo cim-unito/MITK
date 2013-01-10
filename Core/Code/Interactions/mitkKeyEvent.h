@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 21:01:03 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17190 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef KeyEvent_H_HEADER_INCLUDED_C184F366
@@ -28,9 +27,9 @@ namespace mitk {
 
 //##Documentation
 //## @brief Event that stores coordinates and the key which is pressed
-//## 
-//## Stores display position of the mouse. If requested, the correspondent 
-//## 3D world position in mm is calculated via picking (delegated to the 
+//##
+//## Stores display position of the mouse. If requested, the correspondent
+//## 3D world position in mm is calculated via picking (delegated to the
 //## BaseRenderer).
 //## @ingroup Interaction
 class MITK_CORE_EXPORT KeyEvent : public Event
@@ -71,7 +70,7 @@ class MITK_CORE_EXPORT KeyEvent : public Event
     std::string m_Text;
     mutable Point3D m_WorldPosition;
     mutable bool m_WorldPositionIsSet;
-    
+
 };
 
 } // namespace mitk

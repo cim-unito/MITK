@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkTimeSlicedGeometry.h"
@@ -109,8 +108,8 @@ mitk::Geometry3D* mitk::TimeSlicedGeometry::GetGeometry3D(int t) const
   if(IsValidTime(t))
   {
     geometry3d = m_Geometry3Ds[t];
-    //if (a) we don't have a Geometry3D stored for the requested time, 
-    //(b) m_EvenlyTimed is activated and (c) the first geometry (t=0) 
+    //if (a) we don't have a Geometry3D stored for the requested time,
+    //(b) m_EvenlyTimed is activated and (c) the first geometry (t=0)
     //is set, then we clone the geometry and set the m_TimeBounds accordingly.
     if((m_EvenlyTimed) && (geometry3d.IsNull()))
     {
@@ -160,7 +159,7 @@ int mitk::TimeSlicedGeometry::MSToTimeStep(mitk::ScalarType time_in_ms) const
     if(m_TimeBounds[0] == m_TimeBounds[1])
       return 0;
     if((m_TimeBounds[0]>ScalarTypeNumericTraits::NonpositiveMin()) && (m_TimeBounds[1]<ScalarTypeNumericTraits::max()))
-    {   
+    {
       return (int) ceil(((time_in_ms - m_TimeBounds[0])/(m_TimeBounds[1]-m_TimeBounds[0])*m_TimeSteps)-0.5);
     }
     return 0;
@@ -188,7 +187,7 @@ mitk::ScalarType mitk::TimeSlicedGeometry::TimeStepToMS(int timestep) const
   {
     if ( timestep == 0 )
       return m_TimeBounds[0];
-    else 
+    else
     {
       assert( ! (m_TimeBounds[0] == ScalarTypeNumericTraits::NonpositiveMin() && m_TimeBounds[1] == ScalarTypeNumericTraits::max() ) );
       return ((mitk::ScalarType)timestep)/m_TimeSteps*(m_TimeBounds[1]-m_TimeBounds[0])+m_TimeBounds[0];
@@ -272,7 +271,7 @@ void mitk::TimeSlicedGeometry::ExpandToNumberOfTimeSteps( unsigned int timeSteps
   {
     Geometry3D* g3d = m_Geometry3Ds[0];
     const TimeBounds & timeBounds = g3d->GetTimeBounds();
-    if( (timeBounds[0] == ScalarTypeNumericTraits::NonpositiveMin()) || 
+    if( (timeBounds[0] == ScalarTypeNumericTraits::NonpositiveMin()) ||
         (timeBounds[1]==ScalarTypeNumericTraits::max())
       )
     {
@@ -357,6 +356,12 @@ bool mitk::TimeSlicedGeometry::IsValidTime(int t) const
 {
   return (t>=0) && (t< (int)m_TimeSteps);
 }
+
+bool mitk::TimeSlicedGeometry::IsValid() const
+{
+   return Superclass::IsValid() && (m_TimeSteps > 0);
+}
+
 
 void mitk::TimeSlicedGeometry::CopyTimes(const mitk::TimeSlicedGeometry* timeslicedgeometry, unsigned int t, unsigned int endtimeindex)
 {

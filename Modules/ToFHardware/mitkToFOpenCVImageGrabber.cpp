@@ -1,24 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkToFOpenCVImageGrabber.h"
 
 // mitk includes
 #include "mitkImageDataItem.h"
+#include <mitkImageStatisticsHolder.h>
 
 #include "vtkSmartPointer.h"
 #include "vtkColorTransferFunction.h"
@@ -166,8 +165,8 @@ namespace mitk
     floatArrayInt = vtkFloatArray::New();
     floatArrayInt->Initialize();
     floatArrayInt->SetArray(floatData, numOfPixel, 0);
-    mitk::ScalarType min = mitkImage->GetScalarValueMin();
-    mitk::ScalarType max = mitkImage->GetScalarValueMaxNoRecompute();
+    mitk::ScalarType min = mitkImage->GetStatistics()->GetScalarValueMin();
+    mitk::ScalarType max = mitkImage->GetStatistics()->GetScalarValueMaxNoRecompute();
     MITK_INFO<<"Minimum: "<<min;
     MITK_INFO<<"Maximum: "<<max;
     colorTransferFunction->RemoveAllPoints();

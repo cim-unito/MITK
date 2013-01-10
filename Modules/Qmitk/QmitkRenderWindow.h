@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef QMITKRENDERWINDOW_H_HEADER_INCLUDED_C1C40D66
@@ -25,6 +24,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include "QVTKWidget.h"
 #include "QmitkRenderWindowMenu.h"
+
+class QmitkStdMultiWidget;
+class QDragEnterEvent;
+class QDropEvent;
 
 /**
  * \brief MITK implementation of the QVTKWidget
@@ -38,7 +41,7 @@ public:
 
   QmitkRenderWindow(QWidget *parent = 0, QString name = "unnamed renderwindow", mitk::VtkPropRenderer* renderer = NULL, mitk::RenderingManager* renderingManager = NULL);
   virtual ~QmitkRenderWindow();
- 
+
   /**
    * \brief Whether Qt events should be passed to parent (default: true)
    *
@@ -48,7 +51,7 @@ public:
    * reached through to the widget's parent.
    *
    * This reaching through to the parent was implicitly required by QmitkMaterialWidget / QmitkMaterialShowCase.
-   *
+   *QmitkStdMultiWidget
    * The default behaviour of QmitkRenderWindow is now to clear the "accepted" flag
    * of Qt events after they were handled by QVTKWidget. This way parents can also
    * handle events.
@@ -59,25 +62,25 @@ public:
 
   // Set Layout Index to define the Layout Type
   void SetLayoutIndex( unsigned int layoutIndex );
-    
+
   // Get Layout Index to define the Layout Type
   unsigned int GetLayoutIndex();
 
   //MenuWidget need to update the Layout Design List when Layout had changed
   void LayoutDesignListChanged( int layoutDesignIndex );
-  
-  
+
+
   void HideRenderWindowMenu( );
 
-  //Activate or Deactivate MenuWidget. 
-  void ActivateMenuWidget( bool state );
-  
+  //Activate or Deactivate MenuWidget.
+  void ActivateMenuWidget( bool state, QmitkStdMultiWidget* stdMultiWidget = 0);
+
   bool GetActivateMenuWidgetFlag()
   {  return m_MenuWidgetActivated; }
 
   // Get it from the QVTKWidget parent
   virtual vtkRenderWindow* GetVtkRenderWindow()
-  {  return GetRenderWindow();} 
+  {  return GetRenderWindow();}
 
   virtual vtkRenderWindowInteractor* GetVtkRenderWindowInteractor()
   {  return NULL;}
@@ -106,6 +109,12 @@ protected:
     // overloaded leave handler
     virtual void leaveEvent(QEvent*);
 
+    /// \brief Simply says we accept the event type.
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    /// \brief If the dropped type is application/x-mitk-datanodes we process the request by converting to mitk::DataNode pointers and emitting the NodesDropped signal.
+    virtual void dropEvent( QDropEvent * event );
+
 #ifndef QT_NO_WHEELEVENT
     // overload wheel mouse event
     virtual void wheelEvent(QWheelEvent*);
@@ -114,10 +123,10 @@ protected:
     void AdjustRenderWindowMenuVisibility( const QPoint& pos );
 
 signals:
-  
+
   void ResetView();
   // \brief int parameters are enum from QmitkStdMultiWidget
-  void ChangeCrosshairRotationMode(int); 
+  void ChangeCrosshairRotationMode(int);
 
   void SignalLayoutDesignChanged( int layoutDesignIndex );
 
@@ -125,7 +134,10 @@ signals:
 
   void resized();
 
-protected slots:  
+  /// \brief Emits a signal to say that this window has had the following nodes dropped on it.
+  void NodesDropped(QmitkRenderWindow *thisWindow, std::vector<mitk::DataNode*> nodes);
+
+protected slots:
 
   void OnChangeLayoutDesign(int layoutDesignIndex);
 
@@ -134,15 +146,15 @@ protected slots:
   void DeferredHideMenu();
 
 private:
-  
+
   bool                           m_ResendQtEvents;
 
   QmitkRenderWindowMenu*         m_MenuWidget;
 
   bool                           m_MenuWidgetActivated;
-  
+
   unsigned int                   m_LayoutIndex;
-  
+
 };
 
 #endif

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-15 18:09:46 +0200 (Fr, 15 Mai 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkVtkLineProfileWidget_H_
 #define QmitkVtkLineProfileWidget_H_
@@ -38,7 +37,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
 
-/** 
+/**
  * \brief Widget for displaying intensity profiles of images along a given
  * path
  */
@@ -47,7 +46,7 @@ class QmitkExt_EXPORT QmitkVtkLineProfileWidget : public QDialog
   Q_OBJECT
 
 public:
-  QmitkVtkLineProfileWidget( QWidget * /*parent = 0*/ );
+  QmitkVtkLineProfileWidget( QWidget * parent = 0 );
   virtual ~QmitkVtkLineProfileWidget();
 
   typedef itk::ParametricPath< 3 >::Superclass PathType;
@@ -71,7 +70,7 @@ public:
 
   /** \brief Set/Get mode which path to use */
   void SetPathMode(unsigned int pathMode);
-  
+
   /** \brief Set/Get mode which path to use */
   unsigned int GetPathMode();
 

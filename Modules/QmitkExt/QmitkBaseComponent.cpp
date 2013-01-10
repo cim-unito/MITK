@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 11256 $ 
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "QmitkBaseComponent.h"
 #include <itkCommand.h>
 #include <qgroupbox.h>
@@ -121,7 +120,7 @@ void QmitkBaseComponent::SetAvailability(bool available)
 
 /*************** ADD COMPONENT LISTENER ***************/
 void QmitkBaseComponent::AddComponentListener(QmitkBaseComponent* component)
-{  
+{
   if(component!=NULL)
   {
     m_AddedChildList.push_back(component);
@@ -130,18 +129,18 @@ void QmitkBaseComponent::AddComponentListener(QmitkBaseComponent* component)
 
 /************* REMOVE COMPONENT LISTENER **************/
 void QmitkBaseComponent::RemoveComponentListener(QmitkBaseComponent* component)
-{  
+{
   if(component!=NULL)
   {
-    std::vector<QmitkBaseComponent*>::iterator it = m_AddedChildList.begin();   
-    while (it != m_AddedChildList.end()) 
+    std::vector<QmitkBaseComponent*>::iterator it = m_AddedChildList.begin();
+    while (it != m_AddedChildList.end())
     {
-      if(*it == component) 
+      if(*it == component)
       {
         m_AddedChildList.erase(it);
         break;
       }
-      ++it; 
+      ++it;
     }
   }
 }

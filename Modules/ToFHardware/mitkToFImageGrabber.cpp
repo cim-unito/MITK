@@ -1,45 +1,46 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkToFImageGrabber.h"
-#include "mitkToFCameraPMDCamCubeDevice.h"
+//#include "mitkToFCameraPMDCamCubeDevice.h"
 
 #include "itkCommand.h"
 
 
 namespace mitk
 {
-  ToFImageGrabber::ToFImageGrabber():m_CaptureWidth(204),m_CaptureHeight(204),m_PixelNumber(41616),m_ImageSequence(0),
-    m_IntensityArray(NULL), m_DistanceArray(NULL), m_AmplitudeArray(NULL), m_SourceDataArray(NULL)
+  ToFImageGrabber::ToFImageGrabber():m_CaptureWidth(204),m_CaptureHeight(204),m_PixelNumber(41616),
+    m_ImageSequence(0), m_RGBImageWidth(0), m_RGBImageHeight(0), m_RGBPixelNumber(0),
+    m_IntensityArray(NULL), m_DistanceArray(NULL), m_AmplitudeArray(NULL), m_SourceDataArray(NULL), m_RgbDataArray(NULL)
   {
     // Create the output. We use static_cast<> here because we know the default
     // output must be of type TOutputImage
-    OutputImageType::Pointer output0 = static_cast<OutputImageType*>(this->MakeOutput(0).GetPointer()); 
-    OutputImageType::Pointer output1 = static_cast<OutputImageType*>(this->MakeOutput(1).GetPointer()); 
-    OutputImageType::Pointer output2 = static_cast<OutputImageType*>(this->MakeOutput(2).GetPointer()); 
+    OutputImageType::Pointer output0 = static_cast<OutputImageType*>(this->MakeOutput(0).GetPointer());
+    OutputImageType::Pointer output1 = static_cast<OutputImageType*>(this->MakeOutput(1).GetPointer());
+    OutputImageType::Pointer output2 = static_cast<OutputImageType*>(this->MakeOutput(2).GetPointer());
+    OutputImageType::Pointer output3 = static_cast<OutputImageType*>(this->MakeOutput(3).GetPointer());
     mitk::ImageSource::SetNumberOfRequiredOutputs(3);
     mitk::ImageSource::SetNthOutput(0, output0.GetPointer());
     mitk::ImageSource::SetNthOutput(1, output1.GetPointer());
     mitk::ImageSource::SetNthOutput(2, output2.GetPointer());
+    mitk::ImageSource::SetNthOutput(3, output3.GetPointer());
   }
 
   ToFImageGrabber::~ToFImageGrabber()
   {
-    if (m_IntensityArray||m_AmplitudeArray||m_DistanceArray)
+    if (m_IntensityArray||m_AmplitudeArray||m_DistanceArray||m_RgbDataArray)
     {
       if (m_ToFCameraDevice)
       {
@@ -59,38 +60,61 @@ namespace mitk
   {
     int requiredImageSequence = 0;
     int capturedImageSequence = 0;
+    unsigned int dimensions[3];
+    dimensions[0] = this->m_ToFCameraDevice->GetCaptureWidth();
+    dimensions[1] = this->m_ToFCameraDevice->GetCaptureHeight();
+    dimensions[2] = 1;
+    mitk::PixelType FloatType = MakeScalarPixelType<float>();
+    // acquire new image data
+    this->m_ToFCameraDevice->GetAllImages(this->m_DistanceArray, this->m_AmplitudeArray, this->m_IntensityArray, this->m_SourceDataArray,
+      requiredImageSequence, this->m_ImageSequence, this->m_RgbDataArray );
 
     mitk::Image::Pointer distanceImage = this->GetOutput(0);
-    mitk::Image::Pointer amplitudeImage = this->GetOutput(1);
-    mitk::Image::Pointer intensityImage = this->GetOutput(2);
-
     if (!distanceImage->IsInitialized())
     {
       distanceImage->ReleaseData();
-      amplitudeImage->ReleaseData();
-      intensityImage->ReleaseData();
-
-      unsigned int dimensions[3];
-      dimensions[0] = this->m_ToFCameraDevice->GetCaptureWidth();
-      dimensions[1] = this->m_ToFCameraDevice->GetCaptureHeight();
-      dimensions[2] = 1;
-      
-      mitk::PixelType FloatType = MakeScalarPixelType<float>();
-
       distanceImage->Initialize(FloatType, 3, dimensions, 1);
+    }
+    mitk::Image::Pointer amplitudeImage = this->GetOutput(1);
+    if (!amplitudeImage->IsInitialized())
+    {
+      amplitudeImage->ReleaseData();
       amplitudeImage->Initialize(FloatType, 3, dimensions, 1);
+    }
+    mitk::Image::Pointer intensityImage = this->GetOutput(2);
+    if (!intensityImage->IsInitialized())
+    {
+      intensityImage->ReleaseData();
       intensityImage->Initialize(FloatType, 3, dimensions, 1);
     }
 
-    if (m_DistanceArray&&m_AmplitudeArray&&m_IntensityArray)
+    unsigned int rgbDimension[3];
+    rgbDimension[0] = this->GetRGBImageWidth();
+    rgbDimension[1] = this->GetRGBImageHeight();
+    rgbDimension[2] = 1 ;
+    mitk::Image::Pointer rgbImage = this->GetOutput(3);
+    if (!rgbImage->IsInitialized())
     {
-      this->m_ToFCameraDevice->GetAllImages(this->m_DistanceArray, this->m_AmplitudeArray, this->m_IntensityArray, this->m_SourceDataArray,
-        requiredImageSequence, this->m_ImageSequence );
+      rgbImage->ReleaseData();
+      rgbImage->Initialize(mitk::PixelType(MakePixelType<unsigned char, itk::RGBPixel<unsigned char>, 3>()), 3, rgbDimension,1);
+    }
 
-      capturedImageSequence = this->m_ImageSequence;
+    capturedImageSequence = this->m_ImageSequence;
+    if (m_DistanceArray)
+    {
       distanceImage->SetSlice(this->m_DistanceArray, 0, 0, 0);
+    }
+    if (m_AmplitudeArray)
+    {
       amplitudeImage->SetSlice(this->m_AmplitudeArray, 0, 0, 0);
+    }
+    if (m_IntensityArray)
+    {
       intensityImage->SetSlice(this->m_IntensityArray, 0, 0, 0);
+    }
+    if (m_RgbDataArray)
+    {
+      rgbImage->SetSlice(this->m_RgbDataArray, 0, 0, 0);
     }
   }
 
@@ -99,11 +123,16 @@ namespace mitk
     bool ok = m_ToFCameraDevice->ConnectCamera();
     if (ok)
     {
-      m_CaptureWidth = m_ToFCameraDevice->GetCaptureWidth();
-      m_CaptureHeight = m_ToFCameraDevice->GetCaptureHeight();
-      m_PixelNumber = m_CaptureWidth * m_CaptureHeight;
-      m_SourceDataSize = m_ToFCameraDevice->GetSourceDataSize();
-      AllocateImageArrays();
+      this->m_CaptureWidth = this->m_ToFCameraDevice->GetCaptureWidth();
+      this->m_CaptureHeight = this->m_ToFCameraDevice->GetCaptureHeight();
+      this->m_PixelNumber = this->m_CaptureWidth * this->m_CaptureHeight;
+
+      this->m_RGBImageWidth = this->m_ToFCameraDevice->GetRGBCaptureWidth();
+      this->m_RGBImageHeight = this->m_ToFCameraDevice->GetRGBCaptureHeight();
+      this->m_RGBPixelNumber = this->m_RGBImageWidth * this->m_RGBImageHeight;
+
+      this->m_SourceDataSize = m_ToFCameraDevice->GetSourceDataSize();
+      this->AllocateImageArrays();
     }
     return ok;
   }
@@ -128,6 +157,10 @@ namespace mitk
   bool ToFImageGrabber::IsCameraActive()
   {
     return m_ToFCameraDevice->IsCameraActive();
+  }
+  bool ToFImageGrabber::IsCameraConnected()
+  {
+    return m_ToFCameraDevice->IsCameraConnected();
   }
 
   void ToFImageGrabber::SetCameraDevice(ToFCameraDevice* aToFCameraDevice)
@@ -159,10 +192,26 @@ namespace mitk
     return m_PixelNumber;
   }
 
+  int ToFImageGrabber::GetRGBImageWidth()
+  {
+    return m_RGBImageWidth;
+  }
+
+  int ToFImageGrabber::GetRGBImageHeight()
+  {
+    return m_RGBImageHeight;
+  }
+
+  int ToFImageGrabber::GetRGBPixelNumber()
+  {
+    return m_RGBPixelNumber;
+  }
+
   int ToFImageGrabber::SetModulationFrequency(int modulationFrequency)
   {
     this->m_ToFCameraDevice->SetProperty("ModulationFrequency",mitk::IntProperty::New(modulationFrequency));
     this->Modified();
+    modulationFrequency = this->GetModulationFrequency(); // return the new valid modulation frequency from the camera
     return modulationFrequency;
   }
 
@@ -170,22 +219,21 @@ namespace mitk
   {
     this->m_ToFCameraDevice->SetProperty("IntegrationTime",mitk::IntProperty::New(integrationTime));
     this->Modified();
+    integrationTime = this->GetIntegrationTime(); // return the new valid integration time from the camera
     return integrationTime;
   }
 
   int ToFImageGrabber::GetIntegrationTime()
   {
     int integrationTime = 0;
-    BaseProperty* property = this->m_ToFCameraDevice->GetProperty("IntegrationTime");
-    this->m_ToFCameraDevice->GetIntProperty(property,integrationTime);
+    this->m_ToFCameraDevice->GetIntProperty("IntegrationTime",integrationTime);
     return integrationTime;
   }
 
   int ToFImageGrabber::GetModulationFrequency()
   {
     int modulationFrequency = 0;
-    BaseProperty* property = this->m_ToFCameraDevice->GetProperty("ModulationFrequency");
-    this->m_ToFCameraDevice->GetIntProperty(property,modulationFrequency);
+    this->m_ToFCameraDevice->GetIntProperty("ModulationFrequency",modulationFrequency);
     return modulationFrequency;
   }
   void ToFImageGrabber::SetBoolProperty( const char* propertyKey, bool boolValue )
@@ -211,6 +259,36 @@ namespace mitk
   void ToFImageGrabber::SetProperty( const char *propertyKey, BaseProperty* propertyValue )
   {
     this->m_ToFCameraDevice->SetProperty(propertyKey, propertyValue);
+  }
+
+  bool ToFImageGrabber::GetBoolProperty( const char* propertyKey)
+  {
+    mitk::BoolProperty::Pointer boolProp = dynamic_cast<mitk::BoolProperty*>(GetProperty(propertyKey));
+    if(!boolProp) return false;
+    return boolProp->GetValue();
+  }
+
+  int ToFImageGrabber::GetIntProperty( const char* propertyKey)
+  {
+    mitk::IntProperty::Pointer intProp = dynamic_cast<mitk::IntProperty*>(GetProperty(propertyKey));
+    return intProp->GetValue();
+  }
+
+  float ToFImageGrabber::GetFloatProperty( const char* propertyKey)
+  {
+    mitk::FloatProperty::Pointer floatProp = dynamic_cast<mitk::FloatProperty*>(GetProperty(propertyKey));
+    return floatProp->GetValue();
+  }
+
+  const char* ToFImageGrabber::GetStringProperty( const char* propertyKey)
+  {
+    mitk::StringProperty::Pointer stringProp = dynamic_cast<mitk::StringProperty*>(GetProperty(propertyKey));
+    return stringProp->GetValue();
+  }
+
+  BaseProperty* ToFImageGrabber::GetProperty( const char *propertyKey)
+  {
+    return this->m_ToFCameraDevice->GetProperty(propertyKey);
   }
 
   void ToFImageGrabber::OnToFCameraDeviceModified()
@@ -241,6 +319,11 @@ namespace mitk
       delete [] m_SourceDataArray;
       m_SourceDataArray = NULL;
     }
+    if (m_RgbDataArray)
+    {
+      delete [] m_RgbDataArray;
+      m_RgbDataArray = NULL;
+    }
   }
 
   void ToFImageGrabber::AllocateImageArrays()
@@ -252,5 +335,6 @@ namespace mitk
     m_DistanceArray = new float[m_PixelNumber];
     m_AmplitudeArray = new float[m_PixelNumber];
     m_SourceDataArray = new char[m_SourceDataSize];
+    m_RgbDataArray = new unsigned char[m_RGBPixelNumber*3];
   }
 }

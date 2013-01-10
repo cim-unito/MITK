@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Thu, 14 Jan 2010) $
-Version:   $Revision: 21047 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkScalarBarOverlay.h"
 
@@ -26,7 +25,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QLayout>
 
 
-QmitkScalarBarOverlay::QmitkScalarBarOverlay( const char* id ) 
+QmitkScalarBarOverlay::QmitkScalarBarOverlay( const char* id )
 :QmitkOverlay(id)
 , m_ScalarBar( NULL )
 , m_ObserverTag(0)
@@ -38,6 +37,7 @@ QmitkScalarBarOverlay::QmitkScalarBarOverlay( const char* id )
 QmitkScalarBarOverlay::~QmitkScalarBarOverlay()
 {
   m_PropertyList->GetProperty( m_Id )->RemoveObserver(m_ObserverTag);
+  m_PropertyList = NULL;
 }
 
 void QmitkScalarBarOverlay::GenerateData( mitk::PropertyList::Pointer pl )
@@ -45,7 +45,7 @@ void QmitkScalarBarOverlay::GenerateData( mitk::PropertyList::Pointer pl )
   if ( pl.IsNull() )
     return;
 
-  m_PropertyList = pl;
+  m_PropertyList = pl->Clone();
 
   if ( m_PropertyList.IsNotNull() )
   {
@@ -68,7 +68,11 @@ void QmitkScalarBarOverlay::SetScaleFactor()
   {
     MITK_DEBUG << "Property " << m_Id << " could not be found";
   }
-  m_ScalarBar->SetScaleFactor( scale );
+
+  if ( m_ScalarBar != NULL )
+  {
+    m_ScalarBar->SetScaleFactor( scale );
+  }
 }
 
 
@@ -84,7 +88,7 @@ void QmitkScalarBarOverlay::GetProperties( mitk::PropertyList::Pointer pl )
   QPalette palette = QPalette();
 
   // get the desired color of the textOverlays
-  mitk::ColorProperty::Pointer colorProp = 
+  mitk::ColorProperty::Pointer colorProp =
     dynamic_cast<mitk::ColorProperty*>( propertyList->GetProperty( "overlay.color" ) );
 
   if ( colorProp.IsNull() )
@@ -104,13 +108,24 @@ void QmitkScalarBarOverlay::GetProperties( mitk::PropertyList::Pointer pl )
 
 void QmitkScalarBarOverlay::SetupCallback( mitk::BaseProperty::Pointer prop )
 {
-  if ( prop.IsNotNull() )
+
+  if ( m_ObservedProperty != prop && m_ObserverTag == 0 )
   {
-    typedef itk::SimpleMemberCommand< QmitkScalarBarOverlay > MemberCommandType;
-    MemberCommandType::Pointer propModifiedCommand;
-    propModifiedCommand = MemberCommandType::New();
-    propModifiedCommand->SetCallbackFunction( this, &QmitkScalarBarOverlay::SetScaleFactor );
-    m_ObserverTag = prop->AddObserver( itk::ModifiedEvent(), propModifiedCommand );
+    if ( prop.IsNotNull() )
+    {
+      if ( m_ObservedProperty.IsNotNull() )
+      {
+        m_ObservedProperty->RemoveObserver( m_ObserverTag );
+      }
+
+      typedef itk::SimpleMemberCommand< QmitkScalarBarOverlay > MemberCommandType;
+      MemberCommandType::Pointer propModifiedCommand;
+      propModifiedCommand = MemberCommandType::New();
+      propModifiedCommand->SetCallbackFunction( this, &QmitkScalarBarOverlay::SetScaleFactor );
+      m_ObserverTag = prop->AddObserver( itk::ModifiedEvent(), propModifiedCommand );
+    }
+
+    m_ObservedProperty = prop;
   }
   else
   {
@@ -118,3 +133,7 @@ void QmitkScalarBarOverlay::SetupCallback( mitk::BaseProperty::Pointer prop )
   }
 }
 
+QSize QmitkScalarBarOverlay::GetNeededSize()
+{
+  return m_Widget->size();
+}

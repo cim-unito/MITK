@@ -1,32 +1,37 @@
-/*=========================================================================
+/*===================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile$
-  Language:  C++
-  Date:      $Date$
-  Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 #ifndef _itkMITKScalarImageToHistogramGenerator_txx
 #define _itkMITKScalarImageToHistogramGenerator_txx
 
 #include "itkMITKScalarImageToHistogramGenerator.h"
 
 
-namespace itk { 
+namespace itk {
 namespace Statistics {
 
 
 template < class TImage, class TMeasurementType >
 MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
-::MITKScalarImageToHistogramGenerator() 
+::MITKScalarImageToHistogramGenerator()
 {
   m_ImageToListAdaptor = AdaptorType::New();
   m_HistogramGenerator = GeneratorType::New();
@@ -38,7 +43,7 @@ MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
 template < class TImage, class TMeasurementType >
 void
 MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
-::SetInput( const ImageType * image ) 
+::SetInput( const ImageType * image )
 {
   m_ImageToListAdaptor->SetImage( image );
 }
@@ -57,7 +62,7 @@ MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
 template < class TImage, class TMeasurementType >
 void
 MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
-::Compute() 
+::Compute()
 {
   m_HistogramGenerator->Update();
 }
@@ -67,7 +72,7 @@ MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
 template < class TImage, class TMeasurementType >
 void
 MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
-::SetNumberOfBins( unsigned int numberOfBins ) 
+::SetNumberOfBins( unsigned int numberOfBins )
 {
   typename HistogramType::SizeType size;
   size.Fill( numberOfBins );
@@ -99,7 +104,7 @@ MITKScalarImageToHistogramGenerator< TImage, TMeasurementType >
 
 
 
-} // end of namespace Statistics 
+} // end of namespace Statistics
 } // end of namespace itk
 
 #endif

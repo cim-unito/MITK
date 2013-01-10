@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkStateMachine.h"
 #include "mitkStateTransitionOperation.h"
@@ -38,18 +37,18 @@ PURPOSE.  See the above copyright notices for more information.
 mitk::StateMachine::StateMachine(const char * type)
 : m_UndoController(NULL), m_Type("")
 {
-  if(type!=NULL) //no need to throw a warning here, because the statemachine yet here doesn't have to be set up. 
+  if(type!=NULL) //no need to throw a warning here, because the statemachine yet here doesn't have to be set up.
   {
     m_Type = type;
-    
+
     //the statemachine doesn't know yet anything about the number of timesteps of the data. So we initialize it with one element.
     this->InitializeStartStates(1);
   }
-  
+
   if (!m_UndoController)
   {
     m_UndoController = new UndoController(UndoController::VERBOSE_LIMITEDLINEARUNDO);//switch to LLU or add LLU
-    
+
     /**
     * here the Undo mechanism is enabled / disabled for all interactors.
     **/
@@ -90,7 +89,7 @@ void mitk::StateMachine::ResetStatemachineToStartState(unsigned int timeStep)
 
   if ( m_UndoEnabled )  //write to UndoMechanism if Undo is enabled
   {
-    //UNDO for this statechange; 
+    //UNDO for this statechange;
     StateTransitionOperation* doOp = new StateTransitionOperation(OpSTATECHANGE, startState, timeStep);
     StateTransitionOperation* undoOp = new StateTransitionOperation(OpSTATECHANGE, m_CurrentStateVector[timeStep], timeStep);
     OperationEvent *operationEvent = new OperationEvent(((mitk::OperationActor*)(this)), doOp, undoOp);
@@ -99,6 +98,11 @@ void mitk::StateMachine::ResetStatemachineToStartState(unsigned int timeStep)
   //can be done without calling this->ExecuteOperation()
   m_CurrentStateVector[timeStep] = startState;
 
+}
+
+float mitk::StateMachine::CanHandleEvent(const StateEvent* /*stateEvent*/) const
+{
+  return 0.5;
 }
 
 bool mitk::StateMachine::HandleEvent(StateEvent const* stateEvent)
@@ -163,7 +167,7 @@ bool mitk::StateMachine::HandleEvent(StateEvent const* stateEvent)
   mitk::Transition::ActionVectorConstIterator actionIdIteratorEnd = tempTransition->GetActionEndIterator();
   bool ok = true;
 
-  while ( actionIdIterator != actionIdIteratorEnd ) 
+  while ( actionIdIterator != actionIdIteratorEnd )
   {
     if ( !ExecuteAction(*actionIdIterator, stateEvent) )
     {
@@ -247,7 +251,7 @@ void mitk::StateMachine::ExecuteOperation(Operation* operation)
   case OpUNDELETE:
     {
       //now the m_CurrentState has to be set on a special State
-      //that way a delete of a StateMachine can be undone 
+      //that way a delete of a StateMachine can be undone
       //IMPORTANT: The type has to be the same!!!Done by a higher instance, that creates this!
       mitk::StateTransitionOperation* stateTransOp = dynamic_cast<mitk::StateTransitionOperation *>(operation);
       if (stateTransOp != NULL)
@@ -287,12 +291,12 @@ void mitk::StateMachine::InitializeStartStates(unsigned int timeSteps)
 // specified time step.
 void mitk::StateMachine::ExpandStartStateVector(unsigned int timeSteps)
 {
-  unsigned int oldSize = m_CurrentStateVector.size();
+  size_t oldSize = m_CurrentStateVector.size();
 
   if ( timeSteps > oldSize )
   {
     State::Pointer startState = mitk::GlobalInteraction::GetInstance()->GetStartState(m_Type.c_str());
-    for ( unsigned int i = oldSize; i < timeSteps; ++i )
+    for ( size_t i = oldSize; i < timeSteps; ++i )
       m_CurrentStateVector.insert(m_CurrentStateVector.end(), startState);
   }
 }
@@ -303,7 +307,7 @@ void mitk::StateMachine::UpdateTimeStep(unsigned int timeStep)
   if (timeStep == m_TimeStep)
     return;
 
-  //create an operation that changes the time and send it to undocontroller 
+  //create an operation that changes the time and send it to undocontroller
   StateTransitionOperation* doOp = new StateTransitionOperation(OpTIMECHANGE, NULL, timeStep);
   if ( m_UndoEnabled )  //write to UndoMechanism if Undo is enabled
   {

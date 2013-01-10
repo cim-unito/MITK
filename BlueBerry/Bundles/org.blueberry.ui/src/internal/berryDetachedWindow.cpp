@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryDetachedWindow.h"
 
@@ -137,7 +136,7 @@ void DetachedWindow::Create()
   //folder->SetBounds(Tweaklets::Get(GuiWidgetsTweaklet::KEY)->GetClientArea(windowShell->GetControl()));
 }
 
-void DetachedWindow::Add(StackablePart::Pointer part)
+void DetachedWindow::Add(LayoutPart::Pointer part)
 {
 
   Shell::Pointer shell = this->GetShell();
@@ -208,7 +207,7 @@ IDropTarget::Pointer DetachedWindow::Drag(void* /*currentControl*/,
   return target;
 }
 
-IStackableContainer::ChildrenType DetachedWindow::GetChildren() const
+ILayoutContainer::ChildrenType DetachedWindow::GetChildren() const
 {
   return folder->GetChildren();
 }
@@ -415,7 +414,7 @@ void DetachedWindow::UpdateMinimumSize()
 }
 
 IWorkbenchPartReference::Pointer DetachedWindow::GetPartReference(
-    StackablePart::Pointer pane)
+    LayoutPart::Pointer pane)
 {
 
   if (pane == 0 || pane.Cast<PartPane> () == 0)
@@ -529,12 +528,12 @@ bool DetachedWindow::HandleSaves(std::list<PartPane::Pointer> views)
 }
 
 void DetachedWindow::CollectViewPanes(std::list<PartPane::Pointer>& result,
-    const std::list<StackablePart::Pointer>& parts)
+    const std::list<LayoutPart::Pointer>& parts)
 {
-  for (std::list<StackablePart::Pointer>::const_iterator iter = parts.begin(); iter
+  for (std::list<LayoutPart::Pointer>::const_iterator iter = parts.begin(); iter
       != parts.end(); ++iter)
   {
-    StackablePart::Pointer part = *iter;
+    LayoutPart::Pointer part = *iter;
     if (part.Cast<PartPane> () != 0)
     {
       result.push_back(part.Cast<PartPane> ());

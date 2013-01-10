@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Do, 14 Jan 2010) $
-Version:   $Revision: 21047 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkImageToOpenCVImageFilter.h"
 
@@ -27,7 +26,7 @@ mitk::ImageToOpenCVImageFilter::ImageToOpenCVImageFilter()
 }
 
 mitk::ImageToOpenCVImageFilter::~ImageToOpenCVImageFilter()
-{  
+{
   m_OpenCVImage = 0;
 }
 
@@ -98,7 +97,9 @@ bool mitk::ImageToOpenCVImageFilter::CheckImage( mitk::Image* image )
 
 IplImage* mitk::ImageToOpenCVImageFilter::GetOpenCVImage()
 {
-  if(!m_OpenCVImage && this->CheckImage( m_Image ) == true )
+  if(!this->CheckImage( m_Image ))
+    return 0;
+  if(!m_OpenCVImage)
   {
     try
     {
@@ -110,6 +111,7 @@ IplImage* mitk::ImageToOpenCVImageFilter::GetOpenCVImage()
     }
     catch (const AccessByItkException& e) {
       std::cout << "Caught exception [from AccessFixedTypeByItk]: \n" << e.what() << "\n";
+      return 0;
     }
   }
   return m_OpenCVImage;
@@ -117,7 +119,7 @@ IplImage* mitk::ImageToOpenCVImageFilter::GetOpenCVImage()
 
 void mitk::ImageToOpenCVImageFilter::SetImage( mitk::Image* _Image )
 {
-  if(m_Image == _Image) return;
+//  if(m_Image == _Image) return;
   m_Image = _Image;
   m_OpenCVImage = 0;
 }

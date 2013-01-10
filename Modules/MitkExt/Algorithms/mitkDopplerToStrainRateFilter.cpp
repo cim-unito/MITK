@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkDopplerToStrainRateFilter.h"
@@ -56,7 +55,7 @@ void mitk::DopplerToStrainRateFilter::GenerateOutputInformation()
   //set the timebounds - after SetGeometry2D, so that the already created PlaneGeometry will also receive this timebounds.
   output->GetSlicedGeometry()->SetTimeBounds(input->GetSlicedGeometry()->GetTimeBounds());
 
-  output->SetPropertyList(input->GetPropertyList()->Clone());    
+  output->SetPropertyList(input->GetPropertyList()->Clone());
 
 
   delete [] tmpDimensions;
@@ -202,8 +201,8 @@ void mitk::DopplerToStrainRateFilter::GenerateData()
               dx = dx/spacing[0];
               dy = dy/spacing[1];
 
-              //#define WEIGTHED                        
-#ifdef WEIGTHED                        
+              //#define WEIGTHED
+#ifdef WEIGTHED
               weightX = dx - floor(dx);
               weightY = dy - floor(dy);
 
@@ -246,7 +245,7 @@ void mitk::DopplerToStrainRateFilter::GenerateData()
               //swap v1 and v2, otherwise StrainRate is calculate in false direction
               v1 = v2;
               v2 = ((mitkIpUInt1_t *)picDoppler->data)[z*slice_size + y1*xDim + x1];
-            }                  
+            }
 
             if (   (v1==0 ) || (v2==0)  ||  // wenn keine Geschwindigkeit vorhanden
               // oder wenn nur ganz kleine Geschwindigkeit vorhanden

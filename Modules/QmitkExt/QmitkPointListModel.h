@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITK_POINTLIST_MODEL_H_INCLUDED
 #define QMITK_POINTLIST_MODEL_H_INCLUDED
@@ -34,7 +33,7 @@ public:
   ~QmitkPointListModel();
 
   Qt::ItemFlags flags(const QModelIndex& /*index*/) const;
-  
+
   /// interface of QAbstractListModel
   int rowCount( const QModelIndex& parent = QModelIndex() ) const;
 
@@ -50,7 +49,7 @@ public:
 
   /// which point set to work on
   mitk::PointSet* GetPointSet() const;
-  
+
   // which point set to work on
   mitk::DataNode* GetPointSetNode() const;
 
@@ -69,13 +68,13 @@ public:
   /**
   * \brief get point and point ID that correspond to a given QModelIndex
   *
-  * The mitk::PointSet uses a map to store points in an ID<-->Point relation. 
+  * The mitk::PointSet uses a map to store points in an ID<-->Point relation.
   * The IDs are not neccesarily continuously numbered, therefore, we can not
-  * directly use the QModelIndex as point ID. This method returns the point and 
-  * the corresponding point id for a given QModelIndex. The point and the point ID 
-  * are returned in the outgoing parameters p and id. If a valid point and ID were 
+  * directly use the QModelIndex as point ID. This method returns the point and
+  * the corresponding point id for a given QModelIndex. The point and the point ID
+  * are returned in the outgoing parameters p and id. If a valid point and ID were
   * found, the method returns true, otherwise it returns false
-  * \param[in] QModelIndex &index the index for which a point is requested. 
+  * \param[in] QModelIndex &index the index for which a point is requested.
   The row() part of the index is used to find a corresponding point
   * \param[out] mitk::Point3D& p If a valid point is found, it will be stored in the p parameter
   * \param[out] mitk::PointSet::PointIdentifier& id If a valid point is found, the corresponding ID will be stored in id
@@ -86,7 +85,7 @@ public:
   /**Documentation
   * \brief returns a QModelIndex for a given point ID
   *
-  * The mitk::PointSet uses a map to store points in an ID<-->Point relation. 
+  * The mitk::PointSet uses a map to store points in an ID<-->Point relation.
   * The IDs are not neccesarily continuously numbered, therefore, we can not
   * directly use the point ID as a QModelIndex. This method returns a QModelIndex
   * for a given point ID in the outgoing parameter index.

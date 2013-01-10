@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-10-02 16:21:08 +0200 (Do, 02 Okt 2008) $
-Version:   $Revision: 13129 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkAffineInteractor3D.h"
@@ -44,7 +43,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace mitk
 {
-  
+
 //how precise must the user pick the point
 //default value
 AffineInteractor3D
@@ -101,7 +100,7 @@ float AffineInteractor3D
 ::CanHandleEvent(StateEvent const* stateEvent) const
 {
   float returnValue = 0.5;
-  
+
 
   // If it is a key event that can be handled in the current state,
   // then return 0.5
@@ -141,7 +140,7 @@ float AffineInteractor3D
 
   //if ( curveModel != NULL )
   //{
-  //  // Get the Geometry2D of the window the user interacts with (for 2D point 
+  //  // Get the Geometry2D of the window the user interacts with (for 2D point
   //  // projection)
   //  BaseRenderer *renderer = stateEvent->GetEvent()->GetSender();
   //  const Geometry2D *projectionPlane = renderer->GetCurrentWorldGeometry2D();
@@ -202,8 +201,8 @@ bool AffineInteractor3D
   }
 
   // Check if we have a DisplayPositionEvent
-  const DisplayPositionEvent *dpe = 
-    dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );     
+  const DisplayPositionEvent *dpe =
+    dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );
   if ( dpe != NULL )
   {
     m_CurrentPickedPoint = dpe->GetWorldPosition();
@@ -265,8 +264,8 @@ bool AffineInteractor3D
       }
 
       // Check if we have a DisplayPositionEvent
-      const DisplayPositionEvent *dpe = 
-        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );     
+      const DisplayPositionEvent *dpe =
+        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );
       if ( dpe == NULL )
       {
         ok = true;
@@ -298,7 +297,7 @@ bool AffineInteractor3D
       // Color object white
       m_DataNode->SetColor( 1.0, 1.0, 1.0 );
       RenderingManager::GetInstance()->RequestUpdateAll();
-  
+
       // Colorize surface / wireframe as inactive
       this->ColorizeSurface( polyData,
         m_CurrentPickedPoint, -1.0 );
@@ -317,7 +316,7 @@ bool AffineInteractor3D
       this->ColorizeSurface( polyData,
         m_CurrentPickedPoint, 0.0 );
 
-      ok = true;  
+      ok = true;
       break;
     }
 
@@ -330,8 +329,8 @@ bool AffineInteractor3D
       }
 
       // Check if we have a DisplayPositionEvent
-      const DisplayPositionEvent *dpe = 
-        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );     
+      const DisplayPositionEvent *dpe =
+        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );
       if ( dpe == NULL )
       {
         ok = true;
@@ -339,7 +338,7 @@ bool AffineInteractor3D
       }
 
       //DataNode *pickedNode = dpe->GetPickedObjectNode();
-      
+
       m_InitialPickedPoint = m_CurrentPickedPoint;
       m_InitialPickedDisplayPoint = m_CurrentPickedDisplayPoint;
 
@@ -356,7 +355,7 @@ bool AffineInteractor3D
 
       // Make deep copy of current Geometry3D of the plane
       data->UpdateOutputInformation(); // make sure that the Geometry is up-to-date
-      m_OriginalGeometry = static_cast< Geometry3D * >( 
+      m_OriginalGeometry = static_cast< Geometry3D * >(
         data->GetGeometry( timeStep )->Clone().GetPointer() );
 
       ok = true;
@@ -366,8 +365,8 @@ bool AffineInteractor3D
   case AcMOVE:
     {
       // Check if we have a DisplayPositionEvent
-      const DisplayPositionEvent *dpe = 
-        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );     
+      const DisplayPositionEvent *dpe =
+        dynamic_cast< const DisplayPositionEvent * >( stateEvent->GetEvent() );
       if ( dpe == NULL )
       {
         ok = true;
@@ -413,7 +412,7 @@ bool AffineInteractor3D
           viewPlaneNormal[1] = vpn[1];
           viewPlaneNormal[2] = vpn[2];
 
-          Vector3D rotationAxis = 
+          Vector3D rotationAxis =
             itk::CrossProduct( viewPlaneNormal, interactionMove );
           rotationAxis.Normalize();
 
@@ -432,7 +431,7 @@ bool AffineInteractor3D
           // Reset current Geometry3D to original state (pre-interaction) and
           // apply rotation
           RotationOperation op( OpROTATE, rotationCenter, rotationAxis, rotationAngle );
-          Geometry3D::Pointer newGeometry = static_cast< Geometry3D * >( 
+          Geometry3D::Pointer newGeometry = static_cast< Geometry3D * >(
             m_OriginalGeometry->Clone().GetPointer() );
           newGeometry->ExecuteOperation( &op );
           mitk::TimeSlicedGeometry::Pointer timeSlicedGeometry = data->GetTimeSlicedGeometry();
@@ -457,7 +456,7 @@ bool AffineInteractor3D
   return ok;
 }
 
-bool AffineInteractor3D::ColorizeSurface( vtkPolyData *polyData, 
+bool AffineInteractor3D::ColorizeSurface( vtkPolyData *polyData,
   const Point3D & /*pickedPoint*/, double scalar )
 {
   if ( polyData == NULL )

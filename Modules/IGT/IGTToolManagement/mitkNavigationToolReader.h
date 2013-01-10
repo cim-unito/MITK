@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-08-11 15:15:02 +0200 (Di, 11 Aug 2009) $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef NAVIGATIONTOOLREADER_H_INCLUDED
 #define NAVIGATIONTOOLREADER_H_INCLUDED
@@ -35,7 +34,7 @@ namespace mitk {
   *        to be loadable.
   *
   * \ingroup IGT
-  */  
+  */
   class MitkIGT_EXPORT NavigationToolReader : public itk::Object
   {
   friend class mitk::NavigationToolStorageDeserializer;
@@ -51,7 +50,7 @@ namespace mitk {
      *                 from the method GetErrorMessage().
      */
     mitk::NavigationTool::Pointer DoRead(std::string filename);
-    
+
     itkGetMacro(ErrorMessage,std::string);
 
   protected:
@@ -64,6 +63,10 @@ namespace mitk {
 
     //################### protected help methods ########################
     std::string GetFileWithoutPath(std::string FileWithPath);
+    mitk::PointSet::Pointer ConvertStringToPointSet(std::string string);
+    mitk::Point3D ConvertStringToPoint(std::string string);
+    mitk::Quaternion ConvertStringToQuaternion(std::string string);
+    void split(std::string& text, std::string& separators, std::vector<std::string>& words);
 
   };
 } // namespace mitk

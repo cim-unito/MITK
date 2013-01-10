@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkSceneIO_h_included
 #define mitkSceneIO_h_included
@@ -46,15 +45,15 @@ class SceneSerialization_EXPORT SceneIO : public itk::Object
      * \brief Load a scene of objects from file
      * \return DataStorage with all scene objects and their relations. If loading failed, query GetFailedNodes() and GetFailedProperties() for more detail.
      *
-     * Attempts to read the provided file and create objects with 
+     * Attempts to read the provided file and create objects with
      * parent/child relations into a DataStorage.
-     * 
+     *
      * \param filename full filename of the scene file
      * \param storage If given, this DataStorage is used instead of a newly created one
      * \param clearStorageFirst If set, the provided DataStorage will be cleared before populating it with the loaded objects
      */
-    virtual DataStorage::Pointer LoadScene( const std::string& filename, 
-                                            DataStorage* storage = NULL, 
+    virtual DataStorage::Pointer LoadScene( const std::string& filename,
+                                            DataStorage* storage = NULL,
                                             bool clearStorageFirst = false );
 
     /**
@@ -72,7 +71,7 @@ class SceneSerialization_EXPORT SceneIO : public itk::Object
     virtual bool SaveScene( DataStorage::SetOfObjects::ConstPointer sceneNodes, const DataStorage* storage,
                             const std::string& filename);
 
-    /** 
+    /**
      * \brief Get a list of nodes (BaseData containers) that failed to be read/written.
      *
      * FailedBaseDataListType hold all those nodes that contain BaseData objects
@@ -80,7 +79,7 @@ class SceneSerialization_EXPORT SceneIO : public itk::Object
      */
     const FailedBaseDataListType*   GetFailedNodes();
 
-    /** 
+    /**
      * \brief Get a list of properties that failed to be read/written.
      *
      * Each entry corresponds to a property which could not
@@ -94,7 +93,7 @@ class SceneSerialization_EXPORT SceneIO : public itk::Object
     const PropertyList* GetFailedProperties();
 
   protected:
-    
+
     SceneIO();
     virtual ~SceneIO();
 

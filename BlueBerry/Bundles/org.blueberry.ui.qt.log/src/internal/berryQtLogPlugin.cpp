@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryQtLogPlugin.h"
 
@@ -30,7 +29,7 @@ QtLogPlugin::QtLogPlugin()
   instance = this;
 }
 
-void 
+void
 QtLogPlugin::start(ctkPluginContext* context)
 {
   BERRY_REGISTER_EXTENSION_CLASS(berry::LogView, context)
@@ -38,19 +37,19 @@ QtLogPlugin::start(ctkPluginContext* context)
   m_LogModel = new QtPlatformLogModel();
 }
 
-void 
+void
 QtLogPlugin::stop(ctkPluginContext* /*context*/)
 {
   delete m_LogModel;
 }
-  
+
 QtLogPlugin*
 QtLogPlugin::GetInstance()
 {
   return instance;
 }
 
-QtPlatformLogModel* 
+QtPlatformLogModel*
 QtLogPlugin::GetLogModel()
 {
   return m_LogModel;

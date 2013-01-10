@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "QmitkCreatePolygonModelAction.h"
 
 // MITK
@@ -31,7 +46,7 @@ void QmitkCreatePolygonModelAction::Run(const QList<DataNode::Pointer> &selected
 {
   DataNode::Pointer selectedNode = selectedNodes[0];
   Image::Pointer image = dynamic_cast<mitk::Image *>(selectedNode->GetData());
-  
+
   if (image.IsNull())
     return;
 
@@ -100,12 +115,12 @@ void QmitkCreatePolygonModelAction::Run(const QList<DataNode::Pointer> &selected
       float smoothing = (float)segPref->GetDouble("smoothing value", 1.0);
       float decimation = (float)segPref->GetDouble("decimation rate", 0.5);
       float closing = (float)segPref->GetDouble("closing ratio", 0.0);
-      
+
       if (smoothingHint)
       {
         smoothing = 0.0;
         Vector3D spacing = image->GetGeometry()->GetSpacing();
-        
+
         for (Vector3D::Iterator iter = spacing.Begin(); iter != spacing.End(); ++iter)
           smoothing = max(smoothing, *iter);
       }
@@ -117,7 +132,12 @@ void QmitkCreatePolygonModelAction::Run(const QList<DataNode::Pointer> &selected
       ProgressBar::GetInstance()->AddStepsToDo(8);
       StatusBar::GetInstance()->DisplayText("Smoothed surface creation started in background...");
 
-      surfaceFilter->StartAlgorithm();
+      try {
+        surfaceFilter->StartAlgorithm();
+      } catch (...)
+      {
+        MITK_ERROR<<"Error creating smoothed polygon model: Not enough memory!";
+      }
     }
   }
   catch(...)

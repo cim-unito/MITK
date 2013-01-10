@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryPartStack.h"
 
@@ -278,7 +277,7 @@ bool PartStack::CanMoveFolder()
   return !perspective->IsFixedLayout();
 }
 
-void PartStack::DerefPart(StackablePart::Pointer toDeref)
+void PartStack::DerefPart(LayoutPart::Pointer toDeref)
 {
   if (appearance == PresentationFactoryUtil::ROLE_EDITOR)
     EditorAreaHelper::DerefPart(toDeref);
@@ -346,7 +345,7 @@ void PartStack::TestInvariants()
 
   for (ChildVector::iterator iter = children.begin(); iter != children.end(); ++iter)
   {
-    StackablePart::Pointer child = *iter;
+    LayoutPart::Pointer child = *iter;
 
     // No 0 children allowed
     poco_assert(child != 0)
@@ -360,7 +359,7 @@ void PartStack::TestInvariants()
     }
 
     // Ensure that the child's backpointer points to this stack
-    IStackableContainer::Pointer childContainer = child->GetContainer();
+    ILayoutContainer::Pointer childContainer = child->GetContainer();
 
     // Disable tests for placeholders -- PartPlaceholder backpointers don't
     // obey the usual rules -- they sometimes point to a container placeholder
@@ -436,7 +435,7 @@ void PartStack::DescribeLayout(std::string& buf) const
   for (ChildVector::iterator iter = children.begin(); iter != children.end(); ++iter)
   {
 
-    StackablePart::Pointer next = *iter;
+    LayoutPart::Pointer next = *iter;
     if (!next->IsPlaceHolder())
     {
       if (iter != children.begin())
@@ -458,25 +457,25 @@ void PartStack::DescribeLayout(std::string& buf) const
   buf.append(")"); //$NON-NLS-1$
 }
 
-void PartStack::Add(StackablePart::Pointer child)
+void PartStack::Add(LayoutPart::Pointer child)
 {
   this->Add(child, Object::Pointer(0));
 }
 
-void PartStack::Add(StackablePart::Pointer newChild, Object::Pointer cookie)
+void PartStack::Add(LayoutPart::Pointer newChild, Object::Pointer cookie)
 {
   children.push_back(newChild);
 
   // Fix for bug 78470:
   if(newChild->GetContainer().Cast<ContainerPlaceholder>() == 0)
   {
-    newChild->SetContainer(IStackableContainer::Pointer(this));
+    newChild->SetContainer(ILayoutContainer::Pointer(this));
   }
 
   this->ShowPart(newChild, cookie);
 }
 
-bool PartStack::AllowsAdd(StackablePart::Pointer  /*toAdd*/)
+bool PartStack::AllowsAdd(LayoutPart::Pointer  /*toAdd*/)
 {
   return !this->IsStandalone();
 }
@@ -605,7 +604,7 @@ void PartStack::SetActive(bool isActive)
   // Add all visible children to the presentation
   for(ChildVector::iterator iter = children.begin(); iter != children.end(); ++iter)
   {
-    (*iter)->SetContainer(isActive ? IStackableContainer::Pointer(this) : IStackableContainer::Pointer(0));
+    (*iter)->SetContainer(isActive ? ILayoutContainer::Pointer(this) : ILayoutContainer::Pointer(0));
   }
 
   for (PresentableVector::iterator iter = presentableParts.begin();
@@ -711,7 +710,7 @@ void PartStack::Dispose()
   this->FireInternalPropertyChange(PROP_SELECTION);
 }
 
-void PartStack::FindSashes(PartPane::Sashes& sashes)
+void PartStack::FindSashes(LayoutPart::Pointer /*toFind*/, PartPane::Sashes& sashes)
 {
   ILayoutContainer::Pointer container = this->GetContainer();
 
@@ -730,7 +729,7 @@ Rectangle PartStack::GetBounds()
   return Tweaklets::Get(GuiWidgetsTweaklet::KEY)->GetBounds(this->GetPresentation()->GetControl());
 }
 
-std::list<StackablePart::Pointer> PartStack::GetChildren() const
+std::list<LayoutPart::Pointer> PartStack::GetChildren() const
 {
   return children;
 }
@@ -779,7 +778,7 @@ PartStack::PresentableVector PartStack::GetPresentableParts()
   return presentableParts;
 }
 
-PresentablePart::Pointer PartStack::GetPresentablePart(StackablePart::Pointer pane)
+PresentablePart::Pointer PartStack::GetPresentablePart(LayoutPart::Pointer pane)
 {
   for (PresentableVector::iterator iter = presentableParts.begin(); iter != presentableParts.end(); ++iter)
   {
@@ -799,9 +798,13 @@ StackPresentation::Pointer PartStack::GetPresentation()
   return presentationSite->GetPresentation();
 }
 
-StackablePart::Pointer PartStack::GetSelection()
+PartPane::Pointer PartStack::GetSelection()
 {
-  return current;
+  if (PartPane::Pointer partPane = current.Cast<PartPane>())
+  {
+    return partPane;
+  }
+  return PartPane::Pointer(0);
 }
 
 void PartStack::PresentationSelectionChanged(IPresentablePart::Pointer newSelection)
@@ -830,7 +833,7 @@ void PartStack::PresentationSelectionChanged(IPresentablePart::Pointer newSelect
 
 }
 
-void PartStack::Remove(StackablePart::Pointer child)
+void PartStack::Remove(LayoutPart::Pointer child)
 {
   IPresentablePart::Pointer presentablePart = this->GetPresentablePart(child);
 
@@ -852,7 +855,7 @@ void PartStack::Remove(StackablePart::Pointer child)
 
   if (this->GetPresentation() != 0)
   {
-    child->SetContainer(IStackableContainer::Pointer(0));
+    child->SetContainer(ILayoutContainer::Pointer(0));
   }
 
   if (child == requestedCurrent)
@@ -881,7 +884,7 @@ void PartStack::Reparent(void* newParent)
   }
 }
 
-void PartStack::Replace(StackablePart::Pointer oldChild, StackablePart::Pointer newChild)
+void PartStack::Replace(LayoutPart::Pointer oldChild, LayoutPart::Pointer newChild)
 {
   ChildVector::iterator loc = std::find(children.begin(), children.end(), oldChild);
   int idx = 0;
@@ -943,8 +946,8 @@ bool PartStack::RestoreState(IMemento::Pointer memento)
     std::string partID; childMem->GetString(WorkbenchConstants::TAG_CONTENT, partID);
 
     // Create the part.
-    StackablePart::Pointer part(new PartPlaceholder(partID));
-    part->SetContainer(IStackableContainer::Pointer(this));
+    LayoutPart::Pointer part(new PartPlaceholder(partID));
+    part->SetContainer(ILayoutContainer::Pointer(this));
     this->Add(part);
     //1FUN70C: ITPUI:WIN - Shouldn't set Container when not active
     //part.setContainer(this);
@@ -1069,8 +1072,7 @@ bool PartStack::SaveState(IMemento::Pointer memento)
     // Save the active tab.
     if (requestedCurrent)
     {
-      memento->PutString(WorkbenchConstants::TAG_ACTIVE_PAGE_ID, requestedCurrent
-          ->GetCompoundId());
+      memento->PutString(WorkbenchConstants::TAG_ACTIVE_PAGE_ID, requestedCurrent->GetID());
     }
 
     // Write out the presentable parts (in order)
@@ -1095,7 +1097,7 @@ bool PartStack::SaveState(IMemento::Pointer memento)
     for (ChildVector::iterator iter = children.begin();
         iter != children.end(); ++iter)
     {
-      StackablePart::Pointer next = *iter;
+      LayoutPart::Pointer next = *iter;
 
       PartPane::Pointer part;
       if (part = next.Cast<PartPane>())
@@ -1114,7 +1116,7 @@ bool PartStack::SaveState(IMemento::Pointer memento)
         tabText = part->GetPartReference()->GetPartName();
       }
       childMem->PutString(WorkbenchConstants::TAG_LABEL, tabText);
-      childMem->PutString(WorkbenchConstants::TAG_CONTENT, next->GetId());
+      childMem->PutString(WorkbenchConstants::TAG_CONTENT, next->GetID());
     }
   }
 
@@ -1190,7 +1192,7 @@ int PartStack::GetActive() const
   return presentationSite->GetActive();
 }
 
-void PartStack::SetSelection(StackablePart::Pointer part)
+void PartStack::SetSelection(LayoutPart::Pointer part)
 {
   if (part == requestedCurrent)
   {
@@ -1349,7 +1351,7 @@ void PartStack::SetState(const int newState)
   //  }
 }
 
-void PartStack::ShowPart(StackablePart::Pointer part, Object::Pointer cookie)
+void PartStack::ShowPart(LayoutPart::Pointer part, Object::Pointer cookie)
 {
 
   if (this->GetPresentation() == 0)
@@ -1359,13 +1361,13 @@ void PartStack::ShowPart(StackablePart::Pointer part, Object::Pointer cookie)
 
   if (part->IsPlaceHolder())
   {
-    part->SetContainer(IStackableContainer::Pointer(this));
+    part->SetContainer(ILayoutContainer::Pointer(this));
     return;
   }
 
   if (part.Cast<PartPane>() == 0)
   {
-    WorkbenchPlugin::Log("Incorrect part " + part->GetId() + "contained in a part stack");
+    WorkbenchPlugin::Log("Incorrect part " + part->GetID() + "contained in a part stack");
     return;
   }
 
@@ -1376,7 +1378,7 @@ void PartStack::ShowPart(StackablePart::Pointer part, Object::Pointer cookie)
 
   if (isActive)
   {
-    part->SetContainer(IStackableContainer::Pointer(this));
+    part->SetContainer(ILayoutContainer::Pointer(this));
 
     // The active part should always be enabled
     if (part->GetControl() != 0)
@@ -1402,7 +1404,7 @@ void PartStack::UpdateContainerVisibleTab()
 
   if (parts.size() < 1)
   {
-    this->SetSelection(StackablePart::Pointer(0));
+    this->SetSelection(LayoutPart::Pointer(0));
     return;
   }
 
@@ -1460,7 +1462,7 @@ void PartStack::ShowPartList()
   this->GetPresentation()->ShowPartList();
 }
 
-std::vector<void*> PartStack::GetTabList(StackablePart::Pointer part)
+std::vector<void*> PartStack::GetTabList(LayoutPart::Pointer part)
 {
   if (part != 0)
   {
@@ -1600,7 +1602,7 @@ void PartStack::CopyAppearanceProperties(PartStack::Pointer copyTo)
   }
 }
 
-void PartStack::ResizeChild(StackablePart::Pointer  /*childThatChanged*/)
+void PartStack::ResizeChild(LayoutPart::Pointer  /*childThatChanged*/)
 {
 
 }

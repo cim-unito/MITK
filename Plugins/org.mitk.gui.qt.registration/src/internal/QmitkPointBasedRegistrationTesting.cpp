@@ -1,25 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 11450 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // #include "QmitkPointBasedRegistrationView.h" // includes mitkConfig, where BUILD_TESTING is defined
 // #include "ui_QmitkPointBasedRegistrationViewControls.h"
-// 
+//
 // #ifdef BUILD_TESTING // only if we build a test driver
-// 
+//
 // #include "QmitkStdMultiWidget.h"
 // #include "QmitkSelectableGLWidget.h"
 // #include "QmitkUserInputSimulation.h"
@@ -36,23 +35,23 @@ PURPOSE.  See the above copyright notices for more information.
 // #include <qapplication.h>
 // #include "QmitkMessageBoxHelper.h"
 // #include "QmitkPointListWidget.h"
-// 
+//
 // #include <mitkInteractionConst.h>
 // #include <mitkPositionEvent.h>
-// 
+//
 // #include <ctime>
-// 
-// 
+//
+//
 // int QmitkPointBasedRegistration::TestYourself()
 // {
 //   m_MessageBox = false;
-// 
+//
 //   std::cout << std::endl;
 //   time_t randomInit = std::time(0);
 //   //randomInit = 1200058324;
 //   std::cout << "Initializing random number generator with " << randomInit << std::endl;
 //   std::srand(randomInit);
-// 
+//
 //   if (m_Controls->m_FixedSelector->GetSelectedNode() == NULL)
 //   {
 //     std::cout << "No Fixed Image available! Won't apply test (l. " << __LINE__ << ")" << std::endl;
@@ -63,16 +62,16 @@ PURPOSE.  See the above copyright notices for more information.
 //   {
 //     node = mitk::DataNode::New();
 //     //Create Image out of nowhere
-// 	  mitk::Image::Pointer image;
+//     mitk::Image::Pointer image;
 //     m_Controls->m_FixedSelector->GetSelectedNode()->GetData();
-// 	  mitk::PixelType pt(typeid(int));
+//     mitk::PixelType pt(typeid(int));
 //     unsigned int dim[]={100,100,20};
-// 
+//
 //     std::cout << "Creating image: ";
-// 	  image = mitk::Image::New();
-// 	  image->Initialize(mitk::PixelType(typeid(int)), 3, dim);
+//     image = mitk::Image::New();
+//     image->Initialize(mitk::PixelType(typeid(int)), 3, dim);
 //     int *p = (int*)image->GetData();
-// 
+//
 //     int size = dim[0]*dim[1]*dim[2];
 //     int i;
 //     for(i=0; i<size; ++i, ++p)
@@ -92,19 +91,19 @@ PURPOSE.  See the above copyright notices for more information.
 //     it->Add(node);
 //     std::cout<<"[PASSED]"<<std::endl;
 //   }
-// 
+//
 //   if (m_Controls->m_MovingSelector->GetSelectedNode() == NULL)
 //   {
 //     std::cerr << "No Moving Image available! Won't apply test (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-// 
+//
 //   // test Show Images Red/Green
 //   std::cout << "Test show images red/green:" << std::endl;
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_ShowRedGreenValues, Qt::LeftButton );
 //   m_Controls->m_ShowRedGreenValues->setChecked(true);
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 //   // test for Select model
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_FixedPointListWidget->m_SetPoints, Qt::LeftButton );
 //   if (!m_Controls->m_FixedPointListWidget->m_SetPoints->isOn())
@@ -117,7 +116,7 @@ PURPOSE.  See the above copyright notices for more information.
 //     std::cerr << "Select Moving Image was toggled (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-//   
+//
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
 //   if (!m_Controls->m_MovingPointListWidget->m_SetPoints->isOn())
 //   {
@@ -129,7 +128,7 @@ PURPOSE.  See the above copyright notices for more information.
 //     std::cerr << "Select Fixed Image was toggled (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-//   
+//
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
 //   if (m_Controls->m_MovingPointListWidget->m_SetPoints->isOn())
 //   {
@@ -141,36 +140,36 @@ PURPOSE.  See the above copyright notices for more information.
 //     std::cerr << "Select Fixed Image was toggled (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-// 
+//
 //   // test for undobutton at start
 //   if (m_Controls->m_UndoTransformation->isEnabled())
 //   {
 //     std::cerr << "Undo Transformation was enabled but there was no transformation before (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-// 
+//
 //   // test for redobutton at start
 //   if (m_Controls->m_RedoTransformation->isEnabled())
 //   {
 //     std::cerr << "Redo Transformation was enabled but there was no transformation before (l. " << __LINE__ << ")" << std::endl;
 //     return EXIT_FAILURE;
 //   }
-// 
+//
 //   // test reinit buttons
 //   std::cout << "Test reinit buttons:" << std::endl;
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_ReinitFixedButton, Qt::LeftButton );
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_ReinitMovingButton, Qt::LeftButton );
 //   m_Controls->globalReinitClicked();
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 //   // test opacity slider
 //   std::cout << "Test opacity slider:" << std::endl;
 //   m_Controls->m_OpacitySlider->setValue(m_Controls->m_OpacitySlider->minValue());
 //   m_Controls->m_OpacitySlider->setValue(m_Controls->m_OpacitySlider->maxValue());
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 //   bool testOK = this->TestAllTools();
-// 
+//
 //   // clean up
 //   if (m_FixedPointSetNode.IsNotNull())
 //   {
@@ -183,10 +182,10 @@ PURPOSE.  See the above copyright notices for more information.
 //     this->GetDefaultDataStorage()->Remove(m_MovingPointSetNode);
 //     m_MovingPointSetNode = NULL;
 //   }
-//   
+//
 //   // recenter all remaining datatreenodes
 //   m_Controls->globalReinitClicked();
-//   
+//
 //   if (testOK)
 //   {
 //     std::cout << "Whole functionality testing [PASSED]" << std::endl;
@@ -198,15 +197,15 @@ PURPOSE.  See the above copyright notices for more information.
 //     return EXIT_FAILURE;
 //   }
 // }
-// 
+//
 // bool QmitkPointBasedRegistration::TestAllTools()
 // {
 //   QWidget* sliceWidget;
 //   m_MultiWidget->changeLayoutToDefault();
-//   
+//
 //   std::cout << "Creating landmarks:" << std::endl;
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_FixedPointListWidget->m_SetPoints, Qt::LeftButton );
-// 
+//
 //   for (unsigned int window = 1; window < 4; ++window)
 //   {
 //     switch (window)
@@ -229,17 +228,17 @@ PURPOSE.  See the above copyright notices for more information.
 //       double r;
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float x = r * w;
-// 
+//
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float y = r * h;
-//       
+//
 //       QmitkUserInputSimulation::MouseDown( sliceWidget, (int)x+5, (int)y+5, Qt::LeftButton, Qt::ShiftButton );
 //       QmitkUserInputSimulation::MouseRelease( sliceWidget, (int)x+5, (int)y+5, Qt::LeftButton, Qt::ShiftButton );
 //     }
 //   }
-// 
+//
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
-// 
+//
 //   for (unsigned int window = 1; window < 4; ++window)
 //   {
 //     switch (window)
@@ -262,7 +261,7 @@ PURPOSE.  See the above copyright notices for more information.
 //       double r;
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float x = r * w;
-// 
+//
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float y = r * h;
 //       QmitkUserInputSimulation::MouseDown( sliceWidget, (int)x, (int)y, Qt::LeftButton, Qt::ShiftButton );
@@ -271,7 +270,7 @@ PURPOSE.  See the above copyright notices for more information.
 //   }
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 // /////// test for deleting points from fixed point list
 //   std::cout << "Delete Landmarks out of order:" << std::endl;
 //   m_Controls->m_FixedPointListWidget->InteractivePointList->setSelected(4, true);
@@ -320,12 +319,12 @@ PURPOSE.  See the above copyright notices for more information.
 //     QmitkUserInputSimulation::KeyboardTypeKey( sliceWidget, Qt::Key_Delete );
 //   }
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 // ////// create new points
 //   std::cout << "Create new landmarks:" << std::endl;
 //   std::cout << "Creating landmarks:" << std::endl;
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_FixedPointListWidget->m_SetPoints, Qt::LeftButton );
-// 
+//
 //   for (unsigned int window = 1; window < 4; ++window)
 //   {
 //     switch (window)
@@ -348,17 +347,17 @@ PURPOSE.  See the above copyright notices for more information.
 //       double r;
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float x = r * w;
-// 
+//
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float y = r * h;
-//       
+//
 //       QmitkUserInputSimulation::MouseDown( sliceWidget, (int)x+5, (int)y+5, Qt::LeftButton, Qt::ShiftButton );
 //       QmitkUserInputSimulation::MouseRelease( sliceWidget, (int)x+5, (int)y+5, Qt::LeftButton, Qt::ShiftButton );
 //     }
 //   }
-// 
+//
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
-// 
+//
 //   for (unsigned int window = 1; window < 4; ++window)
 //   {
 //     switch (window)
@@ -381,7 +380,7 @@ PURPOSE.  See the above copyright notices for more information.
 //       double r;
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float x = r * w;
-// 
+//
 //       r = ( (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
 //       float y = r * h;
 //       QmitkUserInputSimulation::MouseDown( sliceWidget, (int)x, (int)y, Qt::LeftButton, Qt::ShiftButton );
@@ -390,7 +389,7 @@ PURPOSE.  See the above copyright notices for more information.
 //   }
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_SetPoints, Qt::LeftButton );
 //   std::cout << " [PASSED]" << std::endl;
-// 
+//
 // //// Rigid with ICP
 //   // a helper object to close popping up message boxes
 //   QmitkMessageBoxHelper* helper1 = new QmitkMessageBoxHelper(m_Controls);
@@ -457,8 +456,8 @@ PURPOSE.  See the above copyright notices for more information.
 //     }
 //   }
 //   m_MessageBox = false;
-// 
-// 
+//
+//
 // //// Similarity with ICP
 //   QmitkMessageBoxHelper* helper2 = new QmitkMessageBoxHelper(m_Controls);
 //   connect( helper2, SIGNAL(DialogFound(QWidget*)), this, SLOT(RegistrationErrorDialogFound(QWidget*)) );
@@ -511,8 +510,8 @@ PURPOSE.  See the above copyright notices for more information.
 //     }
 //   }
 //   m_MessageBox = false;
-// 
-// 
+//
+//
 // //// Affine with ICP
 //   QmitkMessageBoxHelper* helper3 = new QmitkMessageBoxHelper(m_Controls);
 //   connect( helper3, SIGNAL(DialogFound(QWidget*)), this, SLOT(RegistrationErrorDialogFound(QWidget*)) );
@@ -565,9 +564,9 @@ PURPOSE.  See the above copyright notices for more information.
 //     }
 //   }
 //   m_MessageBox = false;
-// 
+//
 // //// Rigid without ICP
-//   m_Controls->m_SelectedTransformationClass->setFocus();  
+//   m_Controls->m_SelectedTransformationClass->setFocus();
 //   QmitkUserInputSimulation::KeyboardTypeKey( m_Controls->m_SelectedTransformationClass, Qt::Key_Down );
 //   // a helper object to close popping up message boxes
 //   QmitkMessageBoxHelper* helper4 = new QmitkMessageBoxHelper(m_Controls);
@@ -619,7 +618,7 @@ PURPOSE.  See the above copyright notices for more information.
 //     }
 //   }
 //   m_MessageBox = false;
-// 
+//
 // //// Similarity without ICP
 //   m_Controls->m_SelectedTransformationClass->setFocus();
 //   QmitkUserInputSimulation::KeyboardTypeKey( m_Controls->m_SelectedTransformationClass, Qt::Key_Down );
@@ -673,7 +672,7 @@ PURPOSE.  See the above copyright notices for more information.
 //     }
 //   }
 //   m_MessageBox = false;
-// 
+//
 // //// Affine without ICP
 //   m_Controls->m_SelectedTransformationClass->setFocus();
 //   QmitkUserInputSimulation::KeyboardTypeKey( m_Controls->m_SelectedTransformationClass, Qt::Key_Down );
@@ -730,7 +729,7 @@ PURPOSE.  See the above copyright notices for more information.
 // /*
 // //// LandmarkWarping
 //   if (dynamic_cast<mitk::Image*>(m_Controls->m_FixedSelector->GetSelectedNode()->GetData()) != NULL &&
-//       (dynamic_cast<mitk::Image*>(m_Controls->m_FixedSelector->GetSelectedNode()->GetData())->GetDimension() == 2 || 
+//       (dynamic_cast<mitk::Image*>(m_Controls->m_FixedSelector->GetSelectedNode()->GetData())->GetDimension() == 2 ||
 //       dynamic_cast<mitk::Image*>(m_Controls->m_FixedSelector->GetSelectedNode()->GetData())->GetDimension() == 3))
 //   {
 //     m_Controls->m_SelectedTransformationClass->setFocus();
@@ -764,19 +763,19 @@ PURPOSE.  See the above copyright notices for more information.
 //       std::cout << "Redo [PASSED]" << std::endl;
 //     }
 //   }*/
-// 
+//
 // //// end registrationmethods test
-// 
+//
 //   QmitkMessageBoxHelper* helper7 = new QmitkMessageBoxHelper(m_Controls);
 //   connect( helper7, SIGNAL(DialogFound(QWidget*)), this, SLOT(ClearPointSetDialogFound(QWidget*)) );
 //   helper7->WaitForDialogAndCallback( "QMessageBox" );
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_FixedPointListWidget->m_ClearPointSet, Qt::LeftButton );
-// 
+//
 //   QmitkMessageBoxHelper* helper8 = new QmitkMessageBoxHelper(m_Controls);
 //   connect( helper8, SIGNAL(DialogFound(QWidget*)), this, SLOT(ClearPointSetDialogFound(QWidget*)) );
 //   helper8->WaitForDialogAndCallback( "QMessageBox" );
 //   QmitkUserInputSimulation::MouseClick( m_Controls->m_MovingPointListWidget->m_ClearPointSet, Qt::LeftButton );
-// 
+//
 //   if(this->m_FixedLandmarks->GetSize() > 0)
 //   {
 //     std::cout << "Not all fixed points are deleted! [FAILED]" << std::endl;
@@ -787,24 +786,24 @@ PURPOSE.  See the above copyright notices for more information.
 //     std::cout << "Not all moving points are deleted! [FAILED]" << std::endl;
 //     return false;
 //   }
-// 
+//
 //   return true;
 // }
-// 
+//
 // void QmitkPointBasedRegistration::RegistrationErrorDialogFound( QWidget* widget )
 // {
 //   if (!widget) return;
-// 
+//
 //   // close message box
 //   widget->close();
 //   std::cout<<"Message box closed!"<<std::endl;
 //   m_MessageBox = true;
 // }
-// 
+//
 // void QmitkPointBasedRegistration::ClearPointSetDialogFound( QWidget* widget )
 // {
 //   if (!widget) return;
-// 
+//
 //   // close message box
 //   QmitkUserInputSimulation::KeyboardTypeKey( widget, Qt::Key_Return );
 //   std::cout<<"Message box closed!"<<std::endl;

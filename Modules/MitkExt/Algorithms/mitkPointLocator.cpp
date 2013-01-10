@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkPointLocator.h"
 #include <vtkPointSet.h>
@@ -46,7 +45,7 @@ void mitk::PointLocator::SetPoints( vtkPointSet* pointSet )
 {
   if ( pointSet == NULL )
   {
-     itkWarningMacro("Points are NULL!");  
+     itkWarningMacro("Points are NULL!");
      return;
   }
   vtkPoints* points = pointSet->GetPoints();
@@ -83,7 +82,7 @@ void mitk::PointLocator::SetPoints( mitk::PointSet* points )
 {
   if ( points == NULL )
   {
-     itkWarningMacro("Points are NULL!");  
+     itkWarningMacro("Points are NULL!");
      return;
   }
 
@@ -104,7 +103,7 @@ void mitk::PointLocator::SetPoints( mitk::PointSet* points )
   m_IndexToPointIdContainer.resize( size );
   size_t counter = 0;
   mitk::PointSet::PointsContainer* pointsContainer = points->GetPointSet()->GetPoints();
-  mitk::PointSet::PointsContainer::Iterator it;    
+  mitk::PointSet::PointsContainer::Iterator it;
   mitk::PointSet::PointType currentPoint;
   mitk::PointSet::PointsContainer::ElementIdentifier currentId;
   for( it = pointsContainer->Begin(); it != pointsContainer->End(); ++it, ++counter )
@@ -124,7 +123,7 @@ void mitk::PointLocator::SetPoints( ITKPointSet* pointSet )
 {
   if ( pointSet == NULL )
   {
-    itkWarningMacro("Points are NULL!");  
+    itkWarningMacro("Points are NULL!");
     return;
   }
 
@@ -145,7 +144,7 @@ void mitk::PointLocator::SetPoints( ITKPointSet* pointSet )
   m_IndexToPointIdContainer.resize( size );
   size_t counter = 0;
   ITKPointSet::PointsContainerConstPointer pointsContainer = pointSet->GetPoints();
-  ITKPointSet::PointsContainer::ConstIterator it;    
+  ITKPointSet::PointsContainer::ConstIterator it;
   ITKPointSet::PointType currentPoint;
   ITKPointSet::PointsContainer::ElementIdentifier currentId;
   for( it = pointsContainer->Begin(); it != pointsContainer->End(); ++it, ++counter )
@@ -198,7 +197,7 @@ mitk::PointLocator::IdType mitk::PointLocator::FindClosestPoint( const ANNpoint&
   return m_IndexToPointIdContainer[m_ANNPointIndexes[0]];
 }
 
-mitk::PointLocator::DistanceType mitk::PointLocator::GetMinimalDistance( mitk::PointSet::PointType point ) 
+mitk::PointLocator::DistanceType mitk::PointLocator::GetMinimalDistance( mitk::PointSet::PointType point )
 {
   m_ANNQueryPoint[0] = point[0];
   m_ANNQueryPoint[1] = point[1];
@@ -219,12 +218,12 @@ void mitk::PointLocator::InitANN()
 {
   if ( m_SearchTreeInitialized )
     DestroyANN();
-  
+
   m_ANNQueryPoint = annAllocPt( m_ANNDimension );
   m_ANNPointIndexes = new ANNidx[m_ANNK];
   m_ANNDistances = new ANNdist[m_ANNK];
   m_ANNTree = new ANNkd_tree( m_ANNDataPoints, m_IndexToPointIdContainer.size(), m_ANNDimension );
-  
+
   m_SearchTreeInitialized = true;
 }
 

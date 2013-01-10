@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "QmitkFunctionalityUtil.h"
@@ -47,9 +46,9 @@ void QmitkFunctionalitySelectionProvider::RemoveSelectionChangedListener( berry:
   m_SelectionEvents.RemoveListener(listener);
 }
 
-void QmitkFunctionalitySelectionProvider::SetSelection( berry::ISelection::Pointer selection )
+void QmitkFunctionalitySelectionProvider::SetSelection( berry::ISelection::ConstPointer selection )
 {
-  m_CurrentSelection = selection.Cast<mitk::DataNodeSelection>();
+  m_CurrentSelection = selection.Cast<const mitk::DataNodeSelection>();
 }
 
 void QmitkFunctionalitySelectionProvider::FireNodesSelected( std::vector<mitk::DataNode::Pointer> nodes )

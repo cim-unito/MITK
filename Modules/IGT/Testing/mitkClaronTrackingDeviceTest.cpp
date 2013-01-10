@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-25 17:27:17 +0100 (Mo, 25 Feb 2008) $
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkClaronTrackingDevice.h"
 #include "mitkClaronTool.h"
@@ -104,7 +103,7 @@ public:
 
     //test getTool
     mitk::TrackingTool* myTool = myClaronTrackingDevice->GetTool(2);
-    MITK_TEST_CONDITION((std::string(myTool->GetToolName()) == "Tool3"), "Testing method GetTool().\n");  
+    MITK_TEST_CONDITION((std::string(myTool->GetToolName()) == "Tool3"), "Testing method GetTool().\n");
 
     //StartTracking
     MITK_TEST_CONDITION( (!myClaronTrackingDevice->StartTracking()), "Testing behavior of method StartTracking().\n");
@@ -118,9 +117,9 @@ public:
 };
 
 /**
-* This function is testing methods of the class ClaronTrackingDevice which are independent from the hardware. For more tests we would need 
-* the MicronTracker hardware, so only a few simple tests, which can run without the hardware are tested here. More tests can be found in the 
-* class ClaronTrackingDeviceHardwareTests which tests the interaction with the hardware. 
+* This function is testing methods of the class ClaronTrackingDevice which are independent from the hardware. For more tests we would need
+* the MicronTracker hardware, so only a few simple tests, which can run without the hardware are tested here. More tests can be found in the
+* class ClaronTrackingDeviceHardwareTests which tests the interaction with the hardware.
 */
 int mitkClaronTrackingDeviceTest(int /* argc */, char* /*argv*/[])
 {

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-04-18 20:20:25 +0200 (Sa, 18 Apr 2009) $
-Version:   $Revision: 13129 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKAFFINEINTERACTOR3D_H_HEADER_INCLUDED
@@ -72,7 +71,7 @@ protected:
     *
     * if no n is set, then the number of points is unlimited*
     */
-  AffineInteractor3D(const char *type, 
+  AffineInteractor3D(const char *type,
     DataNode *dataNode, int n = -1);
 
   /**
@@ -80,7 +79,7 @@ protected:
     **/
   virtual ~AffineInteractor3D();
 
-  virtual bool ExecuteAction( Action* action, 
+  virtual bool ExecuteAction( Action* action,
     mitk::StateEvent const* stateEvent );
 
   bool ColorizeSurface( vtkPolyData *polyData, const Point3D &pickedPoint,

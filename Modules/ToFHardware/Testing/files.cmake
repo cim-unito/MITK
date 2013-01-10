@@ -1,30 +1,28 @@
-SET(MODULE_TESTS
-  mitkThreadedToFRawDataReconstructionTest.cpp
-  mitkToFCameraMITKPlayerControllerTest.cpp
-  mitkToFCameraMITKPlayerDeviceTest.cpp
-  mitkToFCameraPMDCamBoardControllerTest.cpp
-  mitkToFCameraPMDCamBoardDeviceTest.cpp
-  #mitkToFCameraPMDRawDataCamBoardDeviceTest.cpp
-  mitkToFCameraPMDCamCubeControllerTest.cpp
-  mitkToFCameraPMDCamCubeDeviceTest.cpp
-  #mitkToFCameraPMDRawDataCamCubeDeviceTest.cpp
-  mitkToFCameraPMDControllerTest.cpp
-  mitkToFCameraPMDDeviceTest.cpp
-  mitkToFCameraPMDRawDataDeviceTest.cpp
-  mitkToFCameraPMDMITKPlayerControllerTest.cpp
-  mitkToFCameraPMDMITKPlayerDeviceTest.cpp
-  mitkToFCameraPMDO3ControllerTest.cpp
-  mitkToFCameraPMDO3DeviceTest.cpp
-  mitkToFCameraPMDPlayerControllerTest.cpp
-  mitkToFCameraPMDPlayerDeviceTest.cpp
+set(MODULE_TESTS
+  #mitkThreadedToFRawDataReconstructionTest.cpp
+#  mitkKinectControllerTest.cpp
+#  mitkKinectDeviceTest.cpp
+#  mitkToFCameraPMDCamBoardControllerTest.cpp
+#  mitkToFCameraPMDCamBoardDeviceTest.cpp
+# mitkToFCameraPMDRawDataCamBoardDeviceTest.cpp
+# mitkToFCameraPMDRawDataCamCubeDeviceTest.cpp
+#  mitkToFCameraPMDCamCubeControllerTest.cpp
+#  mitkToFCameraPMDCamCubeDeviceTest.cpp
+# mitkToFCameraPMDPlayerControllerTest.cpp
+# mitkToFCameraPMDPlayerDeviceTest.cpp
+#  mitkToFCameraPMDControllerTest.cpp
+#  mitkToFCameraPMDDeviceTest.cpp
+#  mitkToFCameraPMDRawDataDeviceTest.cpp
+  #mitkToFCameraPMDMITKPlayerControllerTest.cpp
+  #mitkToFCameraPMDMITKPlayerDeviceTest.cpp
+#  mitkToFCameraPMDO3ControllerTest.cpp
+#  mitkToFCameraPMDO3DeviceTest.cpp
   mitkToFImageCsvWriterTest.cpp
   mitkToFImageGrabberTest.cpp
-  mitkToFImageGrabberCreatorTest.cpp
-  mitkToFImageRecorderTest.cpp
-  mitkToFImageRecorderFilterTest.cpp
+  #mitkToFImageRecorderTest.cpp
+  #mitkToFImageRecorderFilterTest.cpp
   mitkToFImageWriterTest.cpp
   mitkToFNrrdImageWriterTest.cpp
-  mitkToFPicImageWriterTest.cpp
   mitkToFOpenCVImageGrabberTest.cpp
 )
 

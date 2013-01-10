@@ -28,12 +28,12 @@ public:
     m_SingletonOneReg = context->RegisterService<SingletonOneService>(m_SingletonOne);
   }
   //![0]
-  
+
   //![1]
   void Unload(ModuleContext* /*context*/)
   {
     // Services are automatically unregistered during unloading of
-    // the shared library after the call to Unload(mitk::ModuleContext*)
+    // the shared library after the call to Unload(ModuleContext*)
     // has returned.
 
     // Since SingletonOneService needs a non-null SingletonTwoService

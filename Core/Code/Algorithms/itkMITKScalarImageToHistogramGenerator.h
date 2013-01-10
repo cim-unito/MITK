@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __itkMITKScalarImageToHistogramGenerator_h
 #define __itkMITKScalarImageToHistogramGenerator_h
@@ -27,7 +26,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace itk {
 namespace Statistics {
 
-template< class TImageType, class TMeasurementType = 
+template< class TImageType, class TMeasurementType =
            ITK_TYPENAME TImageType::PixelType>
 class MITKScalarImageToHistogramGenerator : public Object
 {
@@ -45,14 +44,14 @@ public:
   itkNewMacro(Self);
 
   typedef TImageType                                      ImageType;
-  typedef itk::Statistics::ScalarImageToListAdaptor< 
-                                              ImageType 
+  typedef itk::Statistics::ScalarImageToListAdaptor<
+                                              ImageType
                                                       >   AdaptorType;
   typedef typename AdaptorType::Pointer                   AdaptorPointer;
   typedef typename ImageType::PixelType                   PixelType;
 
-  typedef itk::Statistics::ListSampleToHistogramGenerator< 
-                                                AdaptorType, 
+  typedef itk::Statistics::ListSampleToHistogramGenerator<
+                                                AdaptorType,
                                                 TMeasurementType
                                                           > GeneratorType;
 
@@ -69,15 +68,15 @@ public:
 
   /** Connects the input image for which the histogram is going to be computed */
   void SetInput( const ImageType * );
-  
+
   /** Return the histogram. o
-   \warning This output is only valid after the Compute() method has been invoked 
+   \warning This output is only valid after the Compute() method has been invoked
    \sa Compute */
   const HistogramType * GetOutput() const;
-  
+
   /** Set number of histogram bins */
   void SetNumberOfBins( unsigned int numberOfBins );
- 
+
   /** Set marginal scale value to be passed to the histogram generator */
   void SetMarginalScale( double marginalScale );
 
@@ -97,8 +96,8 @@ private:
 };
 
 
-} // end of namespace Statistics 
-} // end of namespace itk 
+} // end of namespace Statistics
+} // end of namespace itk
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #include "itkMITKScalarImageToHistogramGenerator.txx"

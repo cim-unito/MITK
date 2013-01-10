@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryEditorSashContainer.h"
 
@@ -119,7 +118,7 @@ PartStack::Pointer EditorSashContainer::CreateStack()
 }
 
 void EditorSashContainer::SetVisiblePart(
-    IStackableContainer::Pointer container, PartPane::Pointer visiblePart)
+    ILayoutContainer::Pointer container, PartPane::Pointer visiblePart)
 {
   PartStack::Pointer stack = container.Cast<PartStack>();
   if (stack == 0) return;
@@ -129,8 +128,8 @@ void EditorSashContainer::SetVisiblePart(
   stack->SetSelection(visiblePart);
 }
 
-StackablePart::Pointer EditorSashContainer::GetVisiblePart(
-    IStackableContainer::Pointer container)
+LayoutPart::Pointer EditorSashContainer::GetVisiblePart(
+    ILayoutContainer::Pointer container)
 {
   PartStack::Pointer refPart = container.Cast<PartStack>();
 
@@ -270,8 +269,8 @@ void EditorSashContainer::RemoveAllEditors()
        iter != workbooks.end(); ++iter)
   {
     PartStack::Pointer workbook = *iter;
-    std::list<StackablePart::Pointer> children = workbook->GetChildren();
-    for (std::list<StackablePart::Pointer>::iterator childIter = children.begin();
+    std::list<LayoutPart::Pointer> children = workbook->GetChildren();
+    for (std::list<LayoutPart::Pointer>::iterator childIter = children.begin();
          childIter != children.end(); ++childIter)
     {
       workbook->Remove(*childIter);
@@ -560,7 +559,7 @@ bool EditorSashContainer::IsCompressible()
   return true;
 }
 
-bool EditorSashContainer::IsStackType(IStackableContainer::Pointer toTest)
+bool EditorSashContainer::IsStackType(ILayoutContainer::Pointer toTest)
 {
   if (toTest.Cast<PartStack>() == 0)
     return false;
@@ -569,7 +568,7 @@ bool EditorSashContainer::IsStackType(IStackableContainer::Pointer toTest)
       == PresentationFactoryUtil::ROLE_EDITOR);
 }
 
-bool EditorSashContainer::IsPaneType(StackablePart::Pointer toTest)
+bool EditorSashContainer::IsPaneType(LayoutPart::Pointer toTest)
 {
   if (toTest.Cast<PartPane>() == 0)
     return false;

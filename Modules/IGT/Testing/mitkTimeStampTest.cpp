@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-02-25 18:43:22 +0100 (Mi, 25 Feb 2009) $
-Version:   $Revision: 16010 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTimeStamp.h"
 #include "mitkRealTimeClock.h"
@@ -23,6 +22,10 @@ PURPOSE.  See the above copyright notices for more information.
 
 //#include <time.h>
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 
 
 /**
@@ -31,7 +34,7 @@ PURPOSE.  See the above copyright notices for more information.
 int mitkTimeStampTest(int /* argc */, char* /*argv*/[])
 {
   MITK_TEST_BEGIN("TimeStamp")
- 
+
   //create testing objects
   itk::Object::Pointer tester = itk::Object::New();
   itk::Object::Pointer tester2 = itk::Object::New();

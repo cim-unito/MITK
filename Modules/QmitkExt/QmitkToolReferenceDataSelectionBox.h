@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-09-12 15:46:48 +0200 (Fr, 12 Sep 2008) $
-Version:   $Revision: 15236 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkToolReferenceDataSelectionBox_h_Included
 #define QmitkToolReferenceDataSelectionBox_h_Included
@@ -67,7 +66,7 @@ public:
 
   mitk::DataStorage* GetDataStorage();
   void SetDataStorage(mitk::DataStorage& storage);
- 
+
   /// initialization with a data storage object
   void Initialize(mitk::DataStorage*);
 
@@ -90,7 +89,7 @@ public:
 
   /**
   * \brief How the list contents is determined.
-  * 
+  *
   * See also documentation of DisplayMode.
   *
   * \sa DisplayMode
@@ -111,7 +110,7 @@ protected slots:
 protected:
 
   mitk::DataStorage::SetOfObjects::ConstPointer GetAllPossibleReferenceImages();
-  
+
   mitk::NodePredicateBase::ConstPointer GetAllPossibleReferenceImagesPredicate();
 
   mitk::ToolManager::Pointer m_ToolManager;

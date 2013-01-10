@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 5308 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_UNSTRUCTURED_GRID_DATA_SOURCE_H_HEADER_
@@ -26,7 +25,7 @@ namespace mitk {
 class UnstructuredGrid;
 //##Documentation
 //## @brief Superclass of all classes generating unstructured grids (instances of class
-//## UnstructuredGrid) as output. 
+//## UnstructuredGrid) as output.
 //##
 //## In itk and vtk the generated result of a ProcessObject is only guaranteed
 //## to be up-to-date, when Update() of the ProcessObject or the generated
@@ -39,7 +38,7 @@ class MitkExt_EXPORT UnstructuredGridSource : public BaseProcess
 public:
   mitkClassMacro(UnstructuredGridSource, BaseProcess);
 
-  itkNewMacro(Self);  
+  itkNewMacro(Self);
 
   typedef itk::DataObject::Pointer DataObjectPointer;
 

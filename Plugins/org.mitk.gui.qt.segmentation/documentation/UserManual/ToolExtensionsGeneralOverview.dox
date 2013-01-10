@@ -1,6 +1,6 @@
 /**
 
-\page toolextensions How to extend the Segmentation bundle with external tools
+\page toolextensions How to extend the Segmentation view with external tools
 
 <ul>
 <li> \ref ToolExtensionsGeneralOverview2 </li>
@@ -17,7 +17,7 @@
 
 \section ToolExtensionsGeneralOverview2 Introduction
 
-The application for manual segmentation in MITK (Segmentation bundle) comes
+The application for manual segmentation in MITK (Segmentation view) comes
 with a tool class framework that is extensible with new tools (description at
 \ref QmitkSegmentationTechnicalPage). The usual way
 to create new tools (since it is mostly used inside DKFZ) is to just add new
@@ -103,28 +103,28 @@ will use CMake for this purpose (I assume you either know or are willing to lear
 A CMake file for the above example would look like this:
 
 \code
-PROJECT ( ExternalTool )
+project( ExternalTool )
 
-FIND_PACKAGE(ITK)
-FIND_PACKAGE(MITK)
-FIND_PACKAGE(Qt3)
+find_package(ITK)
+find_package(MITK)
+find_package(Qt3)
 
-ADD_DEFINITIONS(${QT_DEFINITIONS})
+add_definitions(${QT_DEFINITIONS})
 
-SET( TOOL_QT3GUI_FILES
+set( TOOL_QT3GUI_FILES
      QmitkExternalToolGUI.cpp
    )
 
-SET( TOOL_FILES
+set( TOOL_FILES
      mitkExternalTool.cpp
    )
 
-SET( TOOL_ADDITIONAL_CPPS
+set( TOOL_ADDITIONAL_CPPS
      externalalgorithm.cpp
      externalalgorithmsolver.cpp
    )
 
-SET( TOOL_ADDITIONAL_MOC_H
+set( TOOL_ADDITIONAL_MOC_H
 )
 
 MITK_GENERATE_TOOLS_LIBRARY(mitkExternalTools)

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-11-06 14:14:29 +0100 (Fri, 06 Nov 2009) $
-Version:   $Revision: 18029 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkProperties.h"
 
@@ -91,7 +90,7 @@ void mitk::PlanarRectangle::GeneratePolyLine()
   // TODO: start polygon at specified initalize point...
 
   ClearPolyLines();
- 
+
   for ( unsigned int i = 0; i < this->GetNumberOfControlPoints(); ++i )
   {
     AppendPointToPolyLine( 0, PolyLineElement( GetControlPoint(i), i ) );
@@ -110,7 +109,7 @@ void mitk::PlanarRectangle::EvaluateFeaturesInternal()
   unsigned int i;
   for ( i = 0; i < this->GetNumberOfControlPoints(); ++i )
   {
-    circumference += this->GetWorldControlPoint( i ).EuclideanDistanceTo( 
+    circumference += this->GetWorldControlPoint( i ).EuclideanDistanceTo(
       this->GetWorldControlPoint( (i + 1) % this->GetNumberOfControlPoints() ) );
   }
 
@@ -130,7 +129,7 @@ void mitk::PlanarRectangle::EvaluateFeaturesInternal()
     }
     area /= 2.0;
   }
-  
+
   this->SetQuantity( FEATURE_ID_AREA, abs(area) );
 
 }

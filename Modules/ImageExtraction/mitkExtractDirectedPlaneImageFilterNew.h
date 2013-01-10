@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-12-02 14:54:03 +0100 (Do, 2 Dec 2010) $
-Version:   $Revision: 21147 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkExtractDirectedPlaneImageFilterNew_h_Included
 #define mitkExtractDirectedPlaneImageFilterNew_h_Included
@@ -26,6 +25,9 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
 /**
+  \deprecated This class is deprecated. Use mitk::ExtractSliceFilter instead.
+  \sa ExtractSliceFilter
+
   \brief A filter that can extract a 2D slice from a 3D or 4D image especially if the image`s axes are rotated
 
   \sa ContourTool
@@ -33,7 +35,7 @@ namespace mitk {
   \sa ExtractImageFilter
   \sa OverwriteSliceImageFilter
   \sa OverwriteDirectedPlaneImageFilter
-  
+
   \ingroup Process
   \ingroup Reliver
 
@@ -58,19 +60,19 @@ public:
     itkNewMacro(Self);
 
     /**
-      \brief Set macro for the current worldgeometry 
-      
-      \a Parameter The current wordgeometry that describes the position (rotation, translation) 
-         of the plane (and therefore the slice to be extracted) in our 3D(+t) image 
+      \brief Set macro for the current worldgeometry
+
+      \a Parameter The current wordgeometry that describes the position (rotation, translation)
+         of the plane (and therefore the slice to be extracted) in our 3D(+t) image
     */
     itkSetMacro(CurrentWorldGeometry2D, Geometry3D* );
 
     itkSetMacro(ImageGeometry, Geometry3D* );
 
     /**
-      \brief Set macro for the current timestep 
-      
-      \a Parameter The timestep of the image from which the slice shall be extracted 
+      \brief Set macro for the current timestep
+
+      \a Parameter The timestep of the image from which the slice shall be extracted
     */
     itkSetMacro(ActualInputTimestep, int);
 

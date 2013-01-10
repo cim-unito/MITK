@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:56:03 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 17179 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPartialVolumeAnalysisClusteringCalculator.h"
@@ -256,12 +255,20 @@ namespace mitk
 
     mitk::Image::Pointer outImage = mitk::Image::New();
 
-    AccessFixedDimensionByItk_2(
-        rgbChannels->r.GetPointer(),
-        InternalGenerateRGB,
-        3,
-        rgbChannels,
-        outImage);
+    switch(rgbChannels->r->GetDimension())
+    {
+    case 2:
+        InternalGenerateRGB<2>(rgbChannels, outImage);
+        break;
+    case 3:
+        InternalGenerateRGB<3>(rgbChannels, outImage);
+        break;
+    case 4:
+        InternalGenerateRGB<4>(rgbChannels, outImage);
+        break;
+    default:
+        InternalGenerateRGB<3>(rgbChannels, outImage);
+    }
 
     HelperStructPerformRGBClusteringRetval *retval
         = new HelperStructPerformRGBClusteringRetval();
@@ -278,10 +285,8 @@ namespace mitk
 
   }
 
-  template < typename TPixel, unsigned int VImageDimension >
-      void PartialVolumeAnalysisClusteringCalculator::InternalGenerateRGB(
-          const itk::Image< TPixel, VImageDimension > *image,
-          HelperStructRGBChannels *rgbin, mitk::Image::Pointer retval ) const
+  template < unsigned int VImageDimension >
+  void PartialVolumeAnalysisClusteringCalculator::InternalGenerateRGB( HelperStructRGBChannels *rgbin, mitk::Image::Pointer retval ) const
   {
     typedef itk::Image< float, VImageDimension > ProbImageType;
     typedef itk::Image< typename itk::RGBAPixel<unsigned char>, VImageDimension > RGBImageType;
@@ -290,6 +295,7 @@ namespace mitk
     typename CastFilterType::Pointer castFilter = CastFilterType::New();
     castFilter->SetInput( rgbin->r );
     castFilter->Update();
+
     typename ProbImageType::Pointer r = castFilter->GetOutput();
 
     castFilter = CastFilterType::New();
@@ -609,7 +615,7 @@ namespace mitk
   template < typename TPixel, unsigned int VImageDimension >
       void PartialVolumeAnalysisClusteringCalculator::InternalQuantify(
           const itk::Image< TPixel, VImageDimension > *image,
-          mitk::Image::ConstPointer clusteredImage, double* retval, mitk::Image::Pointer mask ) const
+          mitk::Image::Pointer clusteredImage, double* retval, mitk::Image::Pointer mask ) const
   {
     typedef itk::Image< TPixel, VImageDimension > ImageType;
     typedef itk::Image< float, VImageDimension > ProbImageType;
@@ -857,12 +863,20 @@ namespace mitk
 
     mitk::Image::Pointer outImage = mitk::Image::New();
 
-    AccessFixedDimensionByItk_2(
-        rgbChannels->r.GetPointer(),
-        InternalGenerateRGB,
-        3,
-        rgbChannels,
-        outImage);
+    switch(rgbChannels->r->GetDimension())
+    {
+    case 2:
+        InternalGenerateRGB<2>(rgbChannels, outImage);
+        break;
+    case 3:
+        InternalGenerateRGB<3>(rgbChannels, outImage);
+        break;
+    case 4:
+        InternalGenerateRGB<4>(rgbChannels, outImage);
+        break;
+    default:
+        InternalGenerateRGB<3>(rgbChannels, outImage);
+    }
 
     HelperStructPerformRGBClusteringRetval *retval
         = new HelperStructPerformRGBClusteringRetval();

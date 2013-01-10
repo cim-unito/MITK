@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef MITKCOLORSEQUENCE_H_URTESEINDEUTIGEKENNUNG_01
 #define MITKCOLORSEQUENCE_H_URTESEINDEUTIGEKENNUNG_01
 
@@ -26,7 +25,7 @@ namespace mitk
 /*!
   \brief Inferface for creating a sequence of nice/matching/appropriate/... colors.
 
-  See derived classes for implemented sequences. 
+  See derived classes for implemented sequences.
 */
 class MitkExt_EXPORT ColorSequence
 {
@@ -34,14 +33,14 @@ public:
   ColorSequence();
   virtual ~ColorSequence();
 
-  /*!  
+  /*!
   \brief Return another color
-  */ 
-  virtual Color GetNextColor() = 0; 
+  */
+  virtual Color GetNextColor() = 0;
 
-  /*!  
+  /*!
   \brief Set the color-index to begin again
-  */ 
+  */
   virtual void GoToBegin() = 0;
 
 };

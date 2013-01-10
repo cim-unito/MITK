@@ -1,5 +1,6 @@
+
 # tests with no extra command line parameter
-SET(MODULE_TESTS
+set(MODULE_TESTS
   mitkAccessByItkTest.cpp
   mitkCoreObjectFactoryTest.cpp
   mitkMaterialTest.cpp
@@ -56,10 +57,15 @@ SET(MODULE_TESTS
   mitkVectorTest.cpp
   mitkClippedSurfaceBoundsCalculatorTest.cpp
   #QmitkRenderingTestHelper.cpp
+  mitkExceptionTest.cpp
+  mitkExtractSliceFilterTest.cpp
+  mitkLogTest.cpp
+  mitkImageDimensionConverterTest.cpp
+  mitkLoggingAdapterTest.cpp
 )
 
 # test with image filename as an extra command line parameter
-SET(MODULE_IMAGE_TESTS
+set(MODULE_IMAGE_TESTS
   mitkPlanePositionManagerTest.cpp
   mitkSurfaceVtkWriterTest.cpp
   #mitkImageSliceSelectorTest.cpp
@@ -67,10 +73,11 @@ SET(MODULE_IMAGE_TESTS
   # mitkVtkPropRendererTest.cpp
   mitkDataNodeFactoryTest.cpp
   #mitkSTLFileReaderTest.cpp
+  mitkImageAccessorTest.cpp
 )
 
 # list of images for which the tests are run
-SET(MODULE_TESTIMAGES
+set(MODULE_TESTIMAGES
  # Pic-Factory no more available in Core, test images now in .nrrd format
   US4DCyl.nrrd
   Pic3D.nrrd
@@ -80,7 +87,7 @@ SET(MODULE_TESTIMAGES
   ball.stl
 )
 
-SET(MODULE_CUSTOM_TESTS
+set(MODULE_CUSTOM_TESTS
     #mitkLabeledImageToSurfaceFilterTest.cpp
     #mitkExternalToolsTest.cpp
     mitkDataStorageTest.cpp
@@ -94,6 +101,11 @@ SET(MODULE_CUSTOM_TESTS
     mitkImageTest.cpp
     mitkImageWriterTest.cpp
     mitkImageVtkMapper2DTest.cpp
+    mitkImageVtkMapper2DLevelWindowTest.cpp
+    mitkImageVtkMapper2DOpacityTest.cpp
+    mitkImageVtkMapper2DColorTest.cpp
+    mitkImageVtkMapper2DSwivelTest.cpp
+    mitkIOUtilTest.cpp
 )
 
 # Create an artificial module initializing class for
@@ -104,6 +116,5 @@ usFunctionGenerateModuleInit(testdriver_init_file
                              VERSION "0.1.0"
                              EXECUTABLE
                             )
-                            
-SET(TEST_CPP_FILES ${testdriver_init_file} mitkRenderingTestHelper.cpp)
 
+set(TEST_CPP_FILES ${testdriver_init_file} mitkRenderingTestHelper.cpp)

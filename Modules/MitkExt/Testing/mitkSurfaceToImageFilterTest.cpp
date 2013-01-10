@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkSurfaceToImageFilter.h"
@@ -30,15 +29,15 @@ int mitkSurfaceToImageFilterTest(int argc, char* argv[])
   mitk::SurfaceToImageFilter::Pointer s2iFilter;
   std::cout << "Testing mitk::Surface::New(): " << std::flush;
   s2iFilter = mitk::SurfaceToImageFilter::New();
-  if (s2iFilter.IsNull()) 
+  if (s2iFilter.IsNull())
   {
     std::cout<<"[FAILED]"<<std::endl;
     return EXIT_FAILURE;
   }
-  else 
+  else
   {
     std::cout<<"[PASSED]"<<std::endl;
-  } 
+  }
 
   std::cout << "Loading file: " << std::flush;
   if(argc==0)

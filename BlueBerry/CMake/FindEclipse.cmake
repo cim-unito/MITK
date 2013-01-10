@@ -1,10 +1,10 @@
 # - Find Eclipse
-# The following variables are set if Eclipse is found. 
+# The following variables are set if Eclipse is found.
 #
 #  Eclipse_DIR      - the path to the Eclipse base directory.
 
-IF(WIN32)
-  SET(_eclipse_dir_search
+if(WIN32)
+  set(_eclipse_dir_search
     "C:/Eclipse"
     "D:/Eclipse"
     "C:/Program Files/Eclipse"
@@ -12,12 +12,12 @@ IF(WIN32)
     "D:/Program Files/Eclipse"
     "D:/Programme/Eclipse"
   )
-ENDIF(WIN32)
+endif(WIN32)
 
 #
 # Look for an installation.
 #
-FIND_PATH(Eclipse_DIR eclipse PATHS
+find_path(Eclipse_DIR eclipse PATHS
 
   # Look in other places.
   ${_eclipse_dir_search}

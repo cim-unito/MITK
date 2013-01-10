@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTestingMacros.h"
 #include "mitkTrackingTool.h"
@@ -35,6 +34,7 @@ public:
 
   virtual void GetPosition(mitk::Point3D & /*position*/) const {};
   virtual void GetOrientation(mitk::Quaternion&  /*orientation*/) const {};
+  virtual void SetToolTip(mitk::Point3D toolTipPosition, mitk::Quaternion orientation) {};
   virtual bool Enable() {return true;}
   virtual bool Disable() {return true;}
   virtual bool IsEnabled() const {return true;}

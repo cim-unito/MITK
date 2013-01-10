@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _BERRY_IJOBMANAGER_H
 #define _BERRY_IJOBMANAGER_H
@@ -50,15 +49,15 @@ namespace berry
  * <li>Provide feedback to a client that is waiting for a given job or family of jobs
  * to complete.</li>
  * </ul>
- * 
+ *
  * @see Job
  * @see ILock
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  */
 struct BERRY_JOBS IJobManager: public Object
 {
-  
+
   berryInterfaceMacro(IJobManager, berry)
 
   /**

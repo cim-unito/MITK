@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-07-30 13:49:05 +0200 (Mi, 30 Jul 2008) $
-Version:   $Revision: 14840 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _CommonFunctionality__h_
@@ -61,8 +60,9 @@ namespace mitk
 }
 
 /**
- * This class provides some data handling methods, like loading data or adding different 
+ * This class provides some data handling methods, like loading data or adding different
  * types to the data tree...
+ * \deprecatedSince{2012_12} CommonFunctionality is deprecated. Please use mitkIOUtil.h or QmitkIOUtil.h instead.
  */
 namespace CommonFunctionality
 {
@@ -129,12 +129,12 @@ namespace CommonFunctionality
   QmitkExt_EXPORT std::string SaveImage(mitk::Image* image, const char* aFileName = NULL, bool askForDifferentFilename = false);
 
   QmitkExt_EXPORT std::string SaveSurface(mitk::Surface* surface, const char* fileName = NULL);
-  
+
   /**
    * Saves a screenshot of the given renderer in a file.
    * @param renderWindow the render window to generate a screenshot from. If renderWindow
    *                     is NULL, the function returns an empty string.
-   * @param filename     the filename, under which the file should be saved. If 
+   * @param filename     the filename, under which the file should be saved. If
    *                     filename is NULL, a file selector pops up and asks for a
    *                     file name. The file type is determined via the extension
    *                     of the screen shot
@@ -145,7 +145,7 @@ namespace CommonFunctionality
   QmitkExt_EXPORT void SaveToFileWriter( mitk::FileWriterWithInformation::Pointer fileWriter, mitk::BaseData::Pointer data, const char* aFileName, const char* propFileName);
 
   // internal vessel graph save code removed ...
-  
+
   QmitkExt_EXPORT void SaveBaseData( mitk::BaseData* data, const char* name = NULL );
 
   /** @brief Opens a dialog to define a save filename which starts in the same directory like last time. */

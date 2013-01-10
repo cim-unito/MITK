@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKREGISTRATIONBASE_H
 #define MITKREGISTRATIONBASE_H
@@ -24,7 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
   /*!
-  \brief This class handles the images for the registration as well as taking care of the progress bar during the registration process. 
+  \brief This class handles the images for the registration as well as taking care of the progress bar during the registration process.
   It is the base class for the registration classes.
 
   \ingroup DeformableRegistration
@@ -36,42 +35,42 @@ namespace mitk {
   {
   public:
     mitkClassMacro(RegistrationBase, ImageToImageFilter);
-  
+
     /*!
-    * \brief Method for creation through the object factory. 
+    * \brief Method for creation through the object factory.
     */
     itkNewMacro(Self);
 
-    /*!  
-    * \brief Sets the reference image (fixed image) for the registration. 
+    /*!
+    * \brief Sets the reference image (fixed image) for the registration.
     */
     virtual void SetReferenceImage( Image::Pointer fixedImage);
 
   protected:
 
-    /*!  
+    /*!
     * \brief Default constructor
-    */  
+    */
     RegistrationBase();
 
-    /*!  
+    /*!
     * \brief Default destructor
-    */  
+    */
     virtual ~RegistrationBase();
 
-    /*!  
+    /*!
     * \brief Adds steps to the progress bar, which will be done with AddStepsToDo(int steps) and SetRemainingProgress(int steps)
-    */  
+    */
     virtual void AddStepsToDo(int steps);
 
-    /*!  
+    /*!
     * \brief Sets one step of progress to the progress bar
-    */  
+    */
     virtual void SetProgress(const itk::EventObject&);
 
-    /*!  
+    /*!
     * \brief Sets the remaining progress to the progress bar
-    */  
+    */
     virtual void SetRemainingProgress(int steps);
 
     Image::Pointer m_ReferenceImage;

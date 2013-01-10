@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKEnhancedPointSetVtkMapper3D_H_HEADER_INCLUDED_C1907273
@@ -48,7 +47,7 @@ namespace mitk {
   * Instead of assembling one vtkPolyData object containing all points,
   * a list of VTK source objects (spheres, cubes, cones, ...) is maintained.
   * Therefore, the application can change the appearance and/or type of a
-  * specific point at runtime, without having to rebuild the 
+  * specific point at runtime, without having to rebuild the
   *
   * You should use this class instead of the standard mapper if you
   *
@@ -62,7 +61,7 @@ namespace mitk {
   * extended so that point representations are stored in a lookup table,
   * which is indexed by point data from the rendered PointSet.
   *
-  * \warn This mapper requires the PointData container to be the same size 
+  * \warn This mapper requires the PointData container to be the same size
   *       as the point container.
   *
   * \sa PointSetVtkMapper3D
@@ -80,7 +79,7 @@ namespace mitk {
 
     virtual void UpdateVtkTransform(mitk::BaseRenderer *renderer);
 
-    static void SetDefaultProperties(mitk::DataNode* node, 
+    static void SetDefaultProperties(mitk::DataNode* node,
       mitk::BaseRenderer* renderer = NULL, bool overwrite = false);
 
     void ReleaseGraphicsResources(vtkWindow *renWin);
@@ -94,11 +93,11 @@ namespace mitk {
     void DeleteVtkObject(vtkObject* o);  // functor for stl_each in destructor
 
     // update all vtk sources, mappers, actors with current data and properties
-    void UpdateVtkObjects();  
+    void UpdateVtkObjects();
 
     virtual void GenerateData();
     virtual void GenerateDataForRenderer(mitk::BaseRenderer* renderer);
-    virtual void ApplyProperties(mitk::BaseRenderer* renderer);    
+    virtual void ApplyProperties(mitk::BaseRenderer* renderer);
 
     typedef mitk::PointSet::PointIdentifier PointIdentifier;
     typedef std::map<PointIdentifier, vtkSphereSource*> SphereSourceMap;

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   MITK
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkDataStorageListModel.h"
 
@@ -28,7 +27,7 @@
 QmitkDataStorageListModel::QmitkDataStorageListModel(mitk::DataStorage::Pointer dataStorage
                                                      , mitk::NodePredicateBase* pred, QObject* parent)
  : QAbstractListModel(parent), m_NodePredicate(0), m_DataStorage(0), m_BlockEvents(false)
-{  
+{
   this->SetPredicate(pred);
   this->SetDataStorage(dataStorage);
 }
@@ -146,13 +145,13 @@ mitk::NodePredicateBase* QmitkDataStorageListModel::GetPredicate() const
 void QmitkDataStorageListModel::reset()
 {
   if(m_DataStorage != 0)
-  {    
+  {
     mitk::DataStorage::SetOfObjects::ConstPointer setOfObjects;
 
     if (m_NodePredicate)
       setOfObjects = m_DataStorage->GetSubset(m_NodePredicate);
     else
-      setOfObjects = m_DataStorage->GetAll();   
+      setOfObjects = m_DataStorage->GetAll();
 
     // remove all observes
     unsigned int i = 0;
@@ -160,7 +159,7 @@ void QmitkDataStorageListModel::reset()
       ; it!=m_DataNodes.end()
       ; ++it, ++i)
     {
-      (*it)->RemoveObserver(m_DataNodesModifiedObserversTags[i]);     
+      (*it)->RemoveObserver(m_DataNodesModifiedObserversTags[i]);
     }
 
     // clear vector with nodes
@@ -215,7 +214,7 @@ void QmitkDataStorageListModel::NodeRemoved( const mitk::DataNode* node )
     m_BlockEvents = true;
 
     int row = -1;
-    //bool removeNode = false;    
+    //bool removeNode = false;
     // check if node is contained in current list, if yes: reset model
     for (std::vector<mitk::DataNode*>::const_iterator nodeIt = m_DataNodes.begin()
       ; nodeIt != m_DataNodes.end(); nodeIt++)  // for each node

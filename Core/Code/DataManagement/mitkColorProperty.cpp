@@ -1,25 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include <sstream>
 #include "mitkColorProperty.h"
 
-mitk::ColorProperty::ColorProperty() 
+mitk::ColorProperty::ColorProperty()
 : m_Color()
 {
 
@@ -80,7 +79,7 @@ std::string mitk::ColorProperty::GetValueAsString() const {
   std::stringstream myStr;
   myStr.imbue(std::locale::classic());
   myStr << GetValue() ;
-  return myStr.str(); 
+  return myStr.str();
 }
 const mitk::Color & mitk::ColorProperty::GetValue() const
 {

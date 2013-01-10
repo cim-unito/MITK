@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef QMITKRIGIDREGISTRATION_H
@@ -176,6 +175,18 @@ class REGISTRATION_EXPORT QmitkRigidRegistrationView : public QmitkFunctionality
     void ShowRedGreen(bool show);
 
     /*!
+    * \brief Draws the contour of the fixed image according to a threshold
+    * @param show if true, then images will be shown in red and green
+    */
+    void ShowContour();
+
+    /*!
+    * \brief Stores whether the contour of the fixed image will be shhown
+    * @param show if true, the contour of the fixed image is shown
+    */
+    void EnableContour(bool show);
+
+    /*!
     * \brief Changes the visibility of the manual registration methods accordingly to the checkbox "Manual Registration" in GUI
     * @param show if true, then manual registration methods will be shown
     */
@@ -273,6 +284,14 @@ class REGISTRATION_EXPORT QmitkRigidRegistrationView : public QmitkFunctionality
     mitk::DataNode::Pointer m_MovingMaskNode;
     mitk::DataNode::Pointer m_FixedNode;
     mitk::DataNode::Pointer m_FixedMaskNode;
+
+
+
+    // A node to store the contour of the fixed image in
+    mitk::DataNode::Pointer m_ContourHelperNode;
+
+
+
     std::list<mitk::Geometry3D::Pointer> m_UndoGeometryList;
     std::list<std::map<mitk::DataNode::Pointer, mitk::Geometry3D*> > m_UndoChildGeometryList;
     std::list<mitk::Geometry3D::Pointer> m_RedoGeometryList;

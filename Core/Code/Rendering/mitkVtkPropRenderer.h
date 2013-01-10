@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-09-22 12:01:41 +0200 (Sa, 22 Sep 2007) $
-Version:   $Revision: 12241 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKVtkPropRenderer_H_HEADER_INCLUDED_C1C29F6D
@@ -40,7 +39,7 @@ class vtkTextProperty;
 class vtkAssemblyPath;
 
 
-namespace mitk 
+namespace mitk
 {
 
 class Mapper;
@@ -68,7 +67,7 @@ public:
 
   mitkClassMacro(VtkPropRenderer,BaseRenderer);
   mitkNewMacro3Param(VtkPropRenderer, const char*, vtkRenderWindow *, mitk::RenderingManager* );
-  
+
   typedef std::map<int,Mapper*> MappersMapType;
 
   // Render - called by vtkMitkRenderProp, returns the number of props rendered
@@ -101,7 +100,7 @@ public:
   virtual mitk::DataNode *PickObject( const Point2D &displayPosition, Point3D &worldPosition ) const;
 
   // Simple text rendering method
-  int WriteSimpleText(std::string text, double posX, double posY, double color1 = 0.0, double color2 = 1.0, double color3 = 0.0);
+  int WriteSimpleText(std::string text, double posX, double posY, double color1 = 0.0, double color2 = 1.0, double color3 = 0.0, float opacity = 1.0);
   vtkTextProperty * GetTextLabelProperty(int text_id);
 
   // Initialization / geometry handling

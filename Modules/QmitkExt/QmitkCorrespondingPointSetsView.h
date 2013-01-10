@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITK_POINTLIST_VIEW_H_INCLUDED
 #define QMITK_POINTLIST_VIEW_H_INCLUDED
@@ -31,7 +30,7 @@ class QmitkStdMultiWidget;
 /*!
 * \brief GUI widget for handling mitk::PointSet
 *
-* Displays all the points in a mitk::PointSet graphically. 
+* Displays all the points in a mitk::PointSet graphically.
 * Reacts automatically to changes in the PointSet's selection status.
 * Updates PointSet's selection status when this list's selection changes.
 *
@@ -74,13 +73,13 @@ signals:
   void SignalAddPointsModeChanged(bool);
 
 public slots:
-    
+
   void AddPointSet();
 
   void RemoveSelectedPoint();
 
   void MoveSelectedPointDown();
-  
+
   void MoveSelectedPointUp();
 
   void AddPointsMode(bool checked);

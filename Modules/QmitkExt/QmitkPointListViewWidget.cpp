@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-11-27 13:05:38 +0100 (Fr, 27 Nov 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkPointListViewWidget.h"
 
@@ -32,19 +31,19 @@ QmitkPointListViewWidget::QmitkPointListViewWidget( QWidget* parent )
  m_TimeStep( 0 ),
  m_SelfCall( false ),
  m_MultiWidget( NULL)
-{  
+{
   QListWidget::setAlternatingRowColors( true );
   // logic
 
   QListWidget::setSelectionBehavior( QAbstractItemView::SelectRows );
   QListWidget::setSelectionMode( QAbstractItemView::SingleSelection );
-  
+
   connect( this, SIGNAL(itemDoubleClicked ( QListWidgetItem * )),
            this, SLOT(OnItemDoubleClicked( QListWidgetItem *)) );
 
   connect( this, SIGNAL( currentRowChanged( int ) ),
            this, SLOT( OnCurrentRowChanged( int ) ) );
-  
+
 }
 
 QmitkPointListViewWidget::~QmitkPointListViewWidget()
@@ -83,7 +82,7 @@ const mitk::PointSet* QmitkPointListViewWidget::GetPointSet() const
 {
   return m_PointSet;
 }
-     
+
 void QmitkPointListViewWidget::SetTimeStep(int t)
 {
   m_TimeStep = t;
@@ -133,7 +132,7 @@ void QmitkPointListViewWidget::OnCurrentRowChanged( int /*currentRow*/ )
 /*
 void QmitkPointListViewWidget::OnPointSetSelectionChanged()
 {
-  if (m_SelfCall) 
+  if (m_SelfCall)
     return;
 
 
@@ -161,7 +160,7 @@ void QmitkPointListViewWidget::OnPointSetSelectionChanged()
   bool modelIndexOkay = m_PointListModel->GetModelIndexForPointID(selectedIndex, index);
   if (modelIndexOkay == true)
     QListWidget::selectionModel()->select( m_PointListModel->index( selectedIndex ), QItemSelectionModel::SelectCurrent );
- 
+
   emit PointSelectionChanged();
   m_SelfCall = false;
 }
@@ -169,7 +168,7 @@ void QmitkPointListViewWidget::OnPointSetSelectionChanged()
 
 void QmitkPointListViewWidget::OnListViewSelectionChanged(const QItemSelection& selected, const QItemSelection&  *deselected*)
 {
-  if (m_SelfCall || m_PointSet.IsNull()) 
+  if (m_SelfCall || m_PointSet.IsNull())
     return;
 
   // (take care that this widget doesn't react to self-induced changes by setting m_SelfCall)
@@ -187,8 +186,8 @@ void QmitkPointListViewWidget::OnListViewSelectionChanged(const QItemSelection& 
     {
       m_PointSet->SetSelectInfo(it->Index(), true, m_PointListModel->GetTimeStep());
       if ( m_MultiWidget != NULL)
-        m_MultiWidget->MoveCrossToPosition(m_PointSet->GetPoint(it->Index(), m_PointListModel->GetTimeStep()));        
-     
+        m_MultiWidget->MoveCrossToPosition(m_PointSet->GetPoint(it->Index(), m_PointListModel->GetTimeStep()));
+
     }
     else
       pointSet->SetSelectInfo(it->Index(), false, m_PointListModel->GetTimeStep());
@@ -226,8 +225,8 @@ void QmitkPointListViewWidget::MoveSelectedPointUp()
 {
   if (m_PointSet == NULL)
     return;
-  
-  mitk::PointSet::PointIdentifier selectedID;   
+
+  mitk::PointSet::PointIdentifier selectedID;
   selectedID = m_PointSet->SearchSelectedPoint(m_TimeStep);
   mitk::PointOperation* doOp = new mitk::PointOperation(mitk::OpMOVEPOINTUP, m_PointSet->GetPoint(selectedID, m_TimeStep), selectedID, true);
   m_PointSet->ExecuteOperation(doOp);
@@ -240,7 +239,7 @@ void QmitkPointListViewWidget::MoveSelectedPointDown()
   if (m_PointSet == NULL)
     return;
 
-  mitk::PointSet::PointIdentifier selectedID; 
+  mitk::PointSet::PointIdentifier selectedID;
   selectedID = m_PointSet->SearchSelectedPoint(m_TimeStep);
   mitk::PointOperation* doOp = new mitk::PointOperation(mitk::OpMOVEPOINTDOWN, m_PointSet->GetPoint(selectedID, m_TimeStep), selectedID, true);
   m_PointSet->ExecuteOperation(doOp);
@@ -253,7 +252,7 @@ void QmitkPointListViewWidget::RemoveSelectedPoint()
   if (m_PointSet == NULL)
     return;
 
-  mitk::PointSet::PointIdentifier selectedID; 
+  mitk::PointSet::PointIdentifier selectedID;
   selectedID = m_PointSet->SearchSelectedPoint(m_TimeStep);
   mitk::PointOperation* doOp = new mitk::PointOperation(mitk::OpREMOVE, m_PointSet->GetPoint(selectedID, m_TimeStep), selectedID, true);
   m_PointSet->ExecuteOperation(doOp);
@@ -274,7 +273,7 @@ void QmitkPointListViewWidget::Update(bool currentRowChanged)
   m_SelfCall = true;
   QString text;
   int i = 0;
-  
+
   mitk::PointSet::DataType::Pointer pointset = m_PointSet->GetPointSet(m_TimeStep);
   for (mitk::PointSet::PointsContainer::Iterator it = pointset->GetPoints()->Begin(); it != pointset->GetPoints()->End(); ++it)
   {
@@ -289,7 +288,7 @@ void QmitkPointListViewWidget::Update(bool currentRowChanged)
       this->addItem(text); // insert text
     else
       this->item(i)->setText(text); // update text
-    
+
     if(currentRowChanged)
     {
       if(i == this->currentRow())

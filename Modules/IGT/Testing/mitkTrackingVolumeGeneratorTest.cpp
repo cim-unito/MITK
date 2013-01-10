@@ -1,13 +1,18 @@
-/*====================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkTrackingVolumeGenerator.h>
 #include <mitkClaronTrackingDevice.h>
@@ -90,7 +95,7 @@ public:
         myTVGenerator->SetTrackingDeviceType(mitk::TrackingSystemInvalid); //MicroBird not implemented yet, so using as test dummy
         MITK_TEST_CONDITION((myTVGenerator->GetTrackingDeviceType() == mitk::TrackingSystemInvalid),"testing device type");
         myTVGenerator->Update();
-        MITK_TEST_CONDITION(myTVGenerator->GetOutput()->GetVtkPolyData()->GetNumberOfVerts()==0,"testing (invalid) output");   
+        MITK_TEST_CONDITION(myTVGenerator->GetOutput()->GetVtkPolyData()->GetNumberOfVerts()==0,"testing (invalid) output");
     }
 
     static void TestSetTrackingDevice()
@@ -100,7 +105,29 @@ public:
       mitk::TrackingVolumeGenerator::Pointer myTVGenerator = mitk::TrackingVolumeGenerator::New ();
       myTVGenerator->SetTrackingDevice(dynamic_cast<mitk::TrackingDevice*>(testTrackingDevice.GetPointer()));
       MITK_TEST_CONDITION((myTVGenerator->GetTrackingDeviceType() == mitk::ClaronMicron),"testing SetTrackingDevice()");
-    
+
+    }
+
+    static void TestSetTrackingDeviceData()
+    {
+      MITK_TEST_OUTPUT(<< "---- Testing method SetTrackingDeviceData() ----");
+      mitk::TrackingVolumeGenerator::Pointer myTVGenerator = mitk::TrackingVolumeGenerator::New ();
+      myTVGenerator->SetTrackingDeviceData(mitk::DeviceDataAuroraPlanarCube);
+      MITK_TEST_CONDITION((myTVGenerator->GetTrackingDeviceType() == mitk::NDIAurora),"testing if data was set correctly");
+    }
+
+    static void TestGetTrackingDeviceData()
+    {
+      MITK_TEST_OUTPUT(<< "---- Testing method GetTrackingDeviceData() ----");
+      mitk::TrackingVolumeGenerator::Pointer myTVGenerator = mitk::TrackingVolumeGenerator::New ();
+      myTVGenerator->SetTrackingDeviceData(mitk::DeviceDataInvalid);
+      MITK_TEST_CONDITION((myTVGenerator->GetTrackingDeviceType() == mitk::TrackingSystemInvalid),"setting device to invalid");
+      myTVGenerator->SetTrackingDeviceData(mitk::DeviceDataMicronTrackerH40);
+      mitk::TrackingDeviceData testData = myTVGenerator->GetTrackingDeviceData();
+      MITK_TEST_CONDITION(( (testData.Line == mitk::DeviceDataMicronTrackerH40.Line) &&
+                            (testData.Model == mitk::DeviceDataMicronTrackerH40.Model) &&
+                            (testData.VolumeModelLocation == mitk::DeviceDataMicronTrackerH40.VolumeModelLocation)
+                          ),"changing device and testing getter");
     }
 
 
@@ -133,6 +160,8 @@ int mitkTrackingVolumeGeneratorTest(int /* argc */, char* /*argv*/[])
     mitkTrackingVolumeGeneratorTestClass::TestIntuitiveDaVinciTrackingVolume();
     mitkTrackingVolumeGeneratorTestClass::TestInvalidInputBehaviour();
     mitkTrackingVolumeGeneratorTestClass::TestSetTrackingDevice();
+    mitkTrackingVolumeGeneratorTestClass::TestSetTrackingDeviceData();
+    mitkTrackingVolumeGeneratorTestClass::TestGetTrackingDeviceData();
     //mitkTrackingVolumeTestClass::TestIsInside(); Activate this code when method isInside() is implemented!
 
     MITK_TEST_END() ;

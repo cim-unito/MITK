@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "tweaklets/berryGuiWidgetsTweaklet.h"
 
@@ -276,7 +275,7 @@ void Perspective::HideEditorAreaLocal()
 
   // Replace the editor area with a placeholder so we
   // know where to put it back on show editor area request.
-  editorHolder = new ContainerPlaceholder(editorArea->GetID());
+  editorHolder = new PartPlaceholder(editorArea->GetID());
   presentation->GetLayout()->Replace(editorArea, editorHolder);
 }
 
@@ -913,20 +912,19 @@ bool Perspective::RestoreState()
       WorkbenchPlugin::Log("Could not find view: " + key);
       continue;
     }
-    bool willPartBeVisible = pres->WillPartBeVisible(ref->GetId(),
-        secondaryId);
+    bool willPartBeVisible = pres->WillPartBeVisible(ref->GetId(), secondaryId);
     if (willPartBeVisible)
     {
       IViewPart::Pointer view = ref->GetPart(true).Cast<IViewPart>();
       if (view)
       {
         ViewSite::Pointer site = view->GetSite().Cast<ViewSite>();
-        pres->ReplacePlaceholderWithPart(site->GetPane().Cast<StackablePart>());
+        pres->ReplacePlaceholderWithPart(site->GetPane().Cast<LayoutPart>());
       }
     }
     else
     {
-      pres->ReplacePlaceholderWithPart(ref->GetPane().Cast<StackablePart>());
+      pres->ReplacePlaceholderWithPart(ref->GetPane());
     }
   }
 

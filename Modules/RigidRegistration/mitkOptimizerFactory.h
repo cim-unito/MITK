@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKOPTIMIZERFACTORY_H
 #define MITKOPTIMIZERFACTORY_H
@@ -25,16 +24,16 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
   /*!
-  \brief This class creates an optimizer for a rigid registration process.  
+  \brief This class creates an optimizer for a rigid registration process.
 
-  This class will e.g. be instantiated by mitkImageRegistrationMethod and an 
-  optimizer corresponding to the integer value stored in mitkOptimizerParameters 
+  This class will e.g. be instantiated by mitkImageRegistrationMethod and an
+  optimizer corresponding to the integer value stored in mitkOptimizerParameters
   will be created. Therefore SetOptimizerParameters() has to be called with an instance
   of mitkOptimizerParameters, which holds all parameter informations for the new
   optimizer.
 
   GetOptimizer() returns the optimizer which then can be used in combination with a
-  transform, a metric and an interpolator within a registration pipeline. 
+  transform, a metric and an interpolator within a registration pipeline.
 
 
   \ingroup RigidRegistration
@@ -52,7 +51,7 @@ namespace mitk {
     typedef itk::SingleValuedNonLinearOptimizer OptimizerType;
 
     /**
-    \brief Returns the optimizer which then can be used in combination with a transform, a metric 
+    \brief Returns the optimizer which then can be used in combination with a transform, a metric
     and an interpolator within a registration pipeline.
     */
     OptimizerType::Pointer GetOptimizer();

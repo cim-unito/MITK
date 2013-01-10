@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNODEPREDICATENOT_H_HEADER_INCLUDED_
@@ -28,7 +27,7 @@ namespace mitk {
   //## Changed: NodePredicateNot now derives from NodePredicateCompositeBase though it really holds
   //## only one subpredicate at any time. But logically any Predicate that has one or more subpredicate
   //## is a CompositePredicate.
-  //## 
+  //##
   //## @ingroup DataStorage
   class MITK_CORE_EXPORT NodePredicateNot : public mitk::NodePredicateCompositeBase
   {

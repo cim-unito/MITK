@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkPreferencesDialog.h"
 
@@ -190,14 +189,14 @@ void QmitkPreferencesDialog::SetSelectedPage(const std::string& id)
 }
 
 void QmitkPreferencesDialog::OnImportButtonClicked()
-{  
+{
   int answer = QMessageBox::question(this, "Importing Preferences"
     , "All existing preferences will be overwritten!\nAre you sure that you want to import other preferences?", QMessageBox::Yes | QMessageBox::No );
   if(answer == QMessageBox::No)
     return;
 
   try
-  { 
+  {
     berry::IPreferencesService::Pointer prefService = d->m_PreferencesService.Lock();
     if(prefService.IsNotNull())
     {
@@ -237,7 +236,7 @@ void QmitkPreferencesDialog::OnImportButtonClicked()
 void QmitkPreferencesDialog::OnExportButtonClicked()
 {
   try
-  { 
+  {
     berry::IPreferencesService::Pointer prefService = d->m_PreferencesService.Lock();
     if(prefService.IsNotNull())
     {
@@ -301,7 +300,7 @@ void QmitkPreferencesDialog::SavePreferences()
 }
 
 void QmitkPreferencesDialog::OnDialogAccepted()
-{  
+{
   this->SavePreferences();
 }
 
@@ -369,7 +368,7 @@ void QmitkPreferencesDialog::OnPreferencesTreeItemSelectionChanged()
           d->m_PreferencesPanel->addWidget(it->prefPage->GetQtControl());
         }
         d->m_PreferencesPanel->setCurrentWidget(it->prefPage->GetQtControl());
-        
+
         break;
       }
     }

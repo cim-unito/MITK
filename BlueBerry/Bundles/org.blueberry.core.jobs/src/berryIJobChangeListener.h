@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYIJOBCHANGELISTENER_H_
 #define BERRYIJOBCHANGELISTENER_H_
@@ -32,8 +31,8 @@ namespace berry
  * receive duplicate notifications).
  * </p><p>
  * Clients should not rely on the result of the <code>Job#GetState()</code>
- * method on jobs for which notification is occurring. Listeners are notified of 
- * all job state changes, but whether the state change occurs before, during, or 
+ * method on jobs for which notification is occurring. Listeners are notified of
+ * all job state changes, but whether the state change occurs before, during, or
  * after listeners are notified is unspecified.
  * </p><p>
  * Clients may implement this interface.

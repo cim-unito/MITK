@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-01-14 14:20:26 +0100 (Thu, 14 Jan 2010) $
-Version:   $Revision: 21047 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkDisplayVectorInteractorLevelWindow.h"
@@ -36,12 +35,12 @@ void mitk::DisplayVectorInteractorLevelWindow::ExecuteOperation(Operation* itkNo
 bool mitk::DisplayVectorInteractorLevelWindow::ExecuteAction(Action* action, mitk::StateEvent const* stateEvent)
 {
   bool ok=false;
-  
+
   const DisplayPositionEvent* posEvent=dynamic_cast<const DisplayPositionEvent*>(stateEvent->GetEvent());
   if(posEvent==NULL) return false;
 
   int actionId = action->GetActionId();
-  
+
   switch(actionId)
   {
   case AcINITMOVE:
@@ -56,9 +55,12 @@ bool mitk::DisplayVectorInteractorLevelWindow::ExecuteAction(Action* action, mit
     }
   case AcLEVELWINDOW:
     {
+
+      this->InvokeEvent( StartInteractionEvent() );
+
       m_LastDisplayCoordinate=m_CurrentDisplayCoordinate;
       m_CurrentDisplayCoordinate=posEvent->GetDisplayPosition();
-  
+
       mitk::DataStorage::Pointer storage =  m_Sender->GetDataStorage();
       mitk::DataNode::Pointer node = NULL;
 
@@ -70,7 +72,7 @@ bool mitk::DisplayVectorInteractorLevelWindow::ExecuteAction(Action* action, mit
         bool propFound = allImageNodes->at( i )->GetBoolProperty( "imageForLevelWindow", isActiveImage );
 
         if ( propFound && isActiveImage )
-        { 
+        {
           node = allImageNodes->at( i );
           continue;
         }
@@ -88,11 +90,11 @@ bool mitk::DisplayVectorInteractorLevelWindow::ExecuteAction(Action* action, mit
 
       mitk::LevelWindow lv = mitk::LevelWindow();
       node->GetLevelWindow(lv);
-      int level = lv.GetLevel();
-      int window = lv.GetWindow();
+      ScalarType level = lv.GetLevel();
+      ScalarType window = lv.GetWindow();
 
-      level += ( m_CurrentDisplayCoordinate[0] - m_LastDisplayCoordinate[0] )*2;
-      window += ( m_CurrentDisplayCoordinate[1] - m_LastDisplayCoordinate[1] )*2;
+      level += ( m_CurrentDisplayCoordinate[0] - m_LastDisplayCoordinate[0] )*static_cast<ScalarType>(2);
+      window += ( m_CurrentDisplayCoordinate[1] - m_LastDisplayCoordinate[1] )*static_cast<ScalarType>(2);
 
       lv.SetLevelWindow( level, window );
       dynamic_cast<mitk::LevelWindowProperty*>(node->GetProperty("levelwindow"))->SetLevelWindow( lv );
@@ -106,6 +108,8 @@ bool mitk::DisplayVectorInteractorLevelWindow::ExecuteAction(Action* action, mit
     // MITK_INFO << "AcFINISHMOVE";
     {
       ok = true;
+      this->InvokeEvent( EndInteractionEvent() );
+
       break;
     }
   default:

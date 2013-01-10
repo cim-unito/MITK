@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkImageToImageFilter.h"
@@ -34,7 +33,7 @@ mitk::ImageToImageFilter::~ImageToImageFilter()
 void mitk::ImageToImageFilter::SetInput(const mitk::ImageToImageFilter::InputImageType *input)
 {
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(0, 
+  this->ProcessObject::SetNthInput(0,
     const_cast< mitk::ImageToImageFilter::InputImageType * >( input ) );
 }
 
@@ -42,14 +41,14 @@ void mitk::ImageToImageFilter::SetInput(const mitk::ImageToImageFilter::InputIma
 /**
 * Connect one of the operands for pixel-wise addition
 */
-void mitk::ImageToImageFilter::SetInput( unsigned int index, const mitk::ImageToImageFilter::InputImageType * image ) 
+void mitk::ImageToImageFilter::SetInput( unsigned int index, const mitk::ImageToImageFilter::InputImageType * image )
 {
   if( index+1 > this->GetNumberOfInputs() )
   {
     this->SetNumberOfRequiredInputs( index + 1 );
   }
   // Process object is not const-correct so the const_cast is required here
-  this->ProcessObject::SetNthInput(index, 
+  this->ProcessObject::SetNthInput(index,
     const_cast< mitk::ImageToImageFilter::InputImageType *>( image ) );
 }
 
@@ -58,7 +57,7 @@ void mitk::ImageToImageFilter::SetInput( unsigned int index, const mitk::ImageTo
 /**
 *
 */
-const mitk::ImageToImageFilter::InputImageType *mitk::ImageToImageFilter::GetInput(void) 
+const mitk::ImageToImageFilter::InputImageType *mitk::ImageToImageFilter::GetInput(void)
 {
   if (this->GetNumberOfInputs() < 1)
   {
@@ -103,7 +102,7 @@ void mitk::ImageToImageFilter::GenerateInputRequestedRegion()
       //      input->SetRequestedRegion( inputRegion ); @FIXME ??
       input->SetRequestedRegion( this->GetOutput() ); // ersatz. @FIXME ??
     }
-  }  
+  }
 }
 
 void mitk::ImageToImageFilter::PrintSelf(std::ostream& os, itk::Indent indent) const

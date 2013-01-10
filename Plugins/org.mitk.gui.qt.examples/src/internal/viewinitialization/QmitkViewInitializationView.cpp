@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkViewInitializationView.h"
 
@@ -92,22 +91,22 @@ void QmitkViewInitializationView::Deactivated()
 
 void QmitkViewInitializationView::OnApply()
 {
-  mitk::SliceNavigationController::ViewDirection viewDirection( mitk::SliceNavigationController::Transversal );
-  if( m_Controls->rbTransversal->isChecked() )
-    viewDirection = mitk::SliceNavigationController::Transversal;
-    
+  mitk::SliceNavigationController::ViewDirection viewDirection( mitk::SliceNavigationController::Axial );
+  if( m_Controls->rbAxial->isChecked() )
+    viewDirection = mitk::SliceNavigationController::Axial;
+
   else if( m_Controls->rbFrontal->isChecked())
     viewDirection = mitk::SliceNavigationController::Frontal;
-    
+
   else if( m_Controls->rbSagittal->isChecked() )
     viewDirection = mitk::SliceNavigationController::Sagittal;
-  
+
   vtkRenderWindow* renderwindow = this->GetSelectedRenderWindow();
   if(renderwindow != NULL)
   {
-    mitk::BaseRenderer::GetInstance(renderwindow)->GetSliceNavigationController()->Update(viewDirection, 
-      m_Controls->cbTop->isChecked(), 
-      m_Controls->cbFrontSide->isChecked(), 
+    mitk::BaseRenderer::GetInstance(renderwindow)->GetSliceNavigationController()->Update(viewDirection,
+      m_Controls->cbTop->isChecked(),
+      m_Controls->cbFrontSide->isChecked(),
       m_Controls->cbRotated->isChecked()
       );
     mitk::BaseRenderer::GetInstance(renderwindow)->GetDisplayGeometry()->Fit();
@@ -128,8 +127,8 @@ vtkRenderWindow* QmitkViewInitializationView::GetSelectedRenderWindow()
   int itemNumber = 0;
 
   mitk::BaseRenderer::BaseRendererMapType::iterator mapit;
-  for(mapit = mitk::BaseRenderer::baseRendererMap.begin(); 
-    mapit != mitk::BaseRenderer::baseRendererMap.end(); 
+  for(mapit = mitk::BaseRenderer::baseRendererMap.begin();
+    mapit != mitk::BaseRenderer::baseRendererMap.end();
     mapit++, itemNumber++)
   {
     if(itemNumber==selectedItem)
@@ -144,7 +143,7 @@ vtkRenderWindow* QmitkViewInitializationView::GetSelectedRenderWindow()
 
 void QmitkViewInitializationView::InitRenderWindowSelector()
 {
-  itk::SimpleMemberCommand<QmitkViewInitializationView>::Pointer updateRendererListCommand = 
+  itk::SimpleMemberCommand<QmitkViewInitializationView>::Pointer updateRendererListCommand =
     itk::SimpleMemberCommand<QmitkViewInitializationView>::New();
   updateRendererListCommand->SetCallbackFunction( this, &QmitkViewInitializationView::UpdateRendererList );
 
@@ -161,7 +160,7 @@ void QmitkViewInitializationView::UpdateRendererList()
   mitk::FocusManager* fm = mitk::GlobalInteraction::GetInstance()->GetFocusManager();
 
   mitk::BaseRenderer::ConstPointer br = fm->GetFocused();
-  
+
   if (br.IsNotNull())
   {
     focusedRenderWindow = br->GetRenderWindow();
@@ -172,7 +171,7 @@ void QmitkViewInitializationView::UpdateRendererList()
   m_Controls->m_lbRenderWindows->clear();
 
 
-  for(mitk::BaseRenderer::BaseRendererMapType::iterator mapit = mitk::BaseRenderer::baseRendererMap.begin(); 
+  for(mitk::BaseRenderer::BaseRendererMapType::iterator mapit = mitk::BaseRenderer::baseRendererMap.begin();
     mapit != mitk::BaseRenderer::baseRendererMap.end(); mapit++, itemNumber++)
   {
     if( (*mapit).second->GetName())

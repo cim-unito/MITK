@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkStandardFileLocations.h>
 
@@ -45,7 +44,7 @@ mitk::StandardFileLocations* mitk::StandardFileLocations::GetInstance()
 void mitk::StandardFileLocations::AddDirectoryForSearch(const char * dir, bool insertInFrontOfSearchList)
 {
   std::string directory = dir;
-    
+
   // Do nothing if directory is already included into search list (TODO more clever: search only once!)
   FileSearchVectorType::iterator iter;
   if(m_SearchDirectories.size() > 0)
@@ -82,18 +81,18 @@ void mitk::StandardFileLocations::RemoveDirectoryForSearch(const char * dir)
 std::string mitk::StandardFileLocations::SearchDirectoriesForFile(const char * filename)
 {
   FileSearchVectorType::iterator it;
- 
+
   for(it = m_SearchDirectories.begin(); it != m_SearchDirectories.end(); it++)
   {
     std::string currDir = (*it);
-    
+
     // Perhaps append "/" before appending filename
     if(currDir.find_last_of("\\")+1 != currDir.size() || currDir.find_last_of("/")+1 != currDir.size())
      currDir += "/";
-    
+
     // Append filename
     currDir += filename;
-    
+
     // Perhaps remove "/" after filename
     if(currDir.find_last_of("\\")+1 == currDir.size() || currDir.find_last_of("/")+1 == currDir.size())
      currDir.erase(currDir.size()-1,currDir.size());
@@ -107,12 +106,12 @@ std::string mitk::StandardFileLocations::SearchDirectoriesForFile(const char * f
       currDir.erase(currDir.size()-1,currDir.size());
     if(currDir.find_last_of("\"") == 0)
       currDir.erase(0,1);
-    
-    // Return first found path   
-    if(itksys::SystemTools::FileExists(currDir.c_str())) 
+
+    // Return first found path
+    if(itksys::SystemTools::FileExists(currDir.c_str()))
       return currDir;
   }
-  return std::string(""); 
+  return std::string("");
 }
 
 std::string mitk::StandardFileLocations::FindFile(const char* filename, const char* pathInSourceDir)
@@ -120,7 +119,7 @@ std::string mitk::StandardFileLocations::FindFile(const char* filename, const ch
   std::string directoryPath;
 
   // 1. look for MITKCONF environment variable
-  const char* mitkConf = itksys::SystemTools::GetEnv("MITKCONF");  
+  const char* mitkConf = itksys::SystemTools::GetEnv("MITKCONF");
   if (mitkConf!=NULL)
     AddDirectoryForSearch(mitkConf, false);
 
@@ -128,7 +127,7 @@ std::string mitk::StandardFileLocations::FindFile(const char* filename, const ch
 #if defined(_WIN32) && !defined(__CYGWIN__)
   const char* homeDrive = itksys::SystemTools::GetEnv("HOMEDRIVE");
   const char* homePath = itksys::SystemTools::GetEnv("HOMEPATH");
-  
+
   if((homeDrive!=NULL) || (homePath!=NULL))
   {
     directoryPath = homeDrive;
@@ -136,7 +135,7 @@ std::string mitk::StandardFileLocations::FindFile(const char* filename, const ch
     directoryPath += "/.mitk/";
     AddDirectoryForSearch(directoryPath.c_str(), false);
   }
- 
+
 #else
   const char* homeDirectory = itksys::SystemTools::GetEnv("HOME");
   if(homeDirectory != NULL)
@@ -147,15 +146,15 @@ std::string mitk::StandardFileLocations::FindFile(const char* filename, const ch
   }
 
 #endif // defined(_WIN32) && !defined(__CYGWIN__)
- 
+
   // 3. look in the current working directory
   directoryPath = "";
   AddDirectoryForSearch(directoryPath.c_str());
-  
+
   directoryPath = itksys::SystemTools::GetCurrentWorkingDirectory();
   AddDirectoryForSearch(directoryPath.c_str(), false);
 
-  std::string directoryBinPath = directoryPath + "/bin"; 
+  std::string directoryBinPath = directoryPath + "/bin";
   AddDirectoryForSearch(directoryBinPath.c_str(), false);
   // 4. use a source tree location from compile time
   directoryPath = MITK_ROOT;
@@ -165,7 +164,7 @@ std::string mitk::StandardFileLocations::FindFile(const char* filename, const ch
   }
   directoryPath += '/';
   AddDirectoryForSearch(directoryPath.c_str(), false);
-  
+
   return SearchDirectoriesForFile(filename);
 }
 
@@ -200,7 +199,7 @@ std::string mitk::StandardFileLocations::GetOptionDirectory()
     }
     if(itksys::SystemTools::FileExists(homeDirectory.c_str())==false)
     {
-      itkGenericOutputMacro( << "Could not find home directory at " << homeDirectory << 
+      itkGenericOutputMacro( << "Could not find home directory at " << homeDirectory <<
         ". Using current working directory as home directory: " << itksys::SystemTools::GetCurrentWorkingDirectory());
       homeDirectory = itksys::SystemTools::GetCurrentWorkingDirectory();
     }
@@ -216,12 +215,12 @@ std::string mitk::StandardFileLocations::GetOptionDirectory()
       homeDirectory = home;
     if(itksys::SystemTools::FileExists(homeDirectory.c_str())==false)
     {
-      itkGenericOutputMacro( << "Could not find home directory at " << homeDirectory << 
+      itkGenericOutputMacro( << "Could not find home directory at " << homeDirectory <<
         ". Using current working directory as home directory: " << itksys::SystemTools::GetCurrentWorkingDirectory());
       homeDirectory = itksys::SystemTools::GetCurrentWorkingDirectory();
     }
 #endif // defined(_WIN32) && !defined(__CYGWIN__)
-   
+
     optionsDirectory = homeDirectory;
     optionsDirectory += "/.mitk";
   }

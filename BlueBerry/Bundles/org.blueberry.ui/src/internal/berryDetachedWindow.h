@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYDETACHEDWINDOW_H_
 #define BERRYDETACHEDWINDOW_H_
@@ -113,7 +112,7 @@ public:
    * Adds a visual part to this window.
    * Supports reparenting.
    */
-  void Add(StackablePart::Pointer part);
+  void Add(LayoutPart::Pointer part);
 
   bool BelongsToWorkbenchPage(IWorkbenchPage::Pointer workbenchPage);
 
@@ -126,7 +125,7 @@ public:
       Object::Pointer draggedObject, const Point& position,
       const Rectangle& dragRectangle);
 
-  IStackableContainer::ChildrenType GetChildren() const;
+  ILayoutContainer::ChildrenType GetChildren() const;
 
   WorkbenchPage::Pointer GetWorkbenchPage();
 
@@ -172,7 +171,7 @@ private:
   void UpdateMinimumSize();
 
   static IWorkbenchPartReference::Pointer GetPartReference(
-      StackablePart::Pointer pane);
+      LayoutPart::Pointer pane);
 
   /**
    * Closes this window and disposes its shell.
@@ -190,7 +189,7 @@ private:
    * Answer a list of the view panes.
    */
   void CollectViewPanes(std::list<PartPane::Pointer>& result,
-      const std::list<StackablePart::Pointer>& parts);
+      const std::list<LayoutPart::Pointer>& parts);
 
 };
 

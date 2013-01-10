@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKTOFRECORDERWIDGET_H_INCLUDED
 #define _QMITKTOFRECORDERWIDGET_H_INCLUDED
@@ -146,6 +144,7 @@ class mitkTOFUI_EXPORT QmitkToFRecorderWidget :public QWidget
                                    bool& distanceImageSelected,
                                    bool& amplitudeImageSelected,
                                    bool& intensityImageSelected,
+                                   bool& rgbImageSelected,
                                    bool& rawDataSelected,
                                    QWidget *parent = 0,
                                    const QString &caption = QString(),
@@ -165,12 +164,12 @@ class mitkTOFUI_EXPORT QmitkToFRecorderWidget :public QWidget
     \param imageType type of image (DistanceImage, IntensityImage, AmplitudeImage)
     \return dir+"/"+baseFilename+"_MF"+modulationFreq+"_IT"+integrationTime+"_"+numOfFrames+"Images"+imageType+extension
     */
-    std::string prepareFilename(std::string dir, 
-                                std::string baseFilename, 
-                                std::string modulationFreq, 
-                                std::string integrationTime, 
-                                std::string numOfFrames, 
-                                std::string extension, 
+    std::string prepareFilename(std::string dir,
+                                std::string baseFilename,
+                                std::string modulationFreq,
+                                std::string integrationTime,
+                                std::string numOfFrames,
+                                std::string extension,
                                 std::string imageType);
 
     Ui::QmitkToFRecorderWidgetControls* m_Controls; ///< member holding the UI elements of this widget
@@ -179,7 +178,7 @@ class mitkTOFUI_EXPORT QmitkToFRecorderWidget :public QWidget
     mitk::ToFImageRecorder::Pointer m_ToFImageRecorder; ///< member holding the recorder for ToF images
 
     mitk::ToFImageRecorder::RecordMode m_RecordMode; ///< member holding the RecordMode of the recorder (PerFrame / Infinite)
-    
+
     typedef itk::SimpleMemberCommand<QmitkToFRecorderWidget> CommandType;
     CommandType::Pointer m_StopRecordingCommand; ///< itkCommand for abort of recording
 

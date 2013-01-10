@@ -23,12 +23,13 @@
 #define USMODULEPRIVATE_H
 
 #include <map>
+#include <list>
 
 #include "usModuleRegistry.h"
 #include "usModuleVersion.h"
 #include "usModuleInfo.h"
 
-#include "usAtomicInt.h"
+#include "usAtomicInt_p.h"
 
 US_BEGIN_NAMESPACE
 
@@ -51,6 +52,10 @@ public:
   virtual ~ModulePrivate();
 
   void RemoveModuleResources();
+
+  void StartStaticModules();
+
+  void StopStaticModules();
 
   CoreModuleContext* const coreCtx;
 
@@ -77,6 +82,8 @@ public:
   Module* const q;
 
 private:
+
+  std::list<ModuleInfo::ModuleActivatorHook> staticActivators;
 
   static AtomicInt idCounter;
 

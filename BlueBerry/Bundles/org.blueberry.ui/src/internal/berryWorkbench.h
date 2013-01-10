@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef BERRYWORKBENCH_H_
 #define BERRYWORKBENCH_H_
@@ -34,7 +33,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "intro/berryIntroDescriptor.h"
 #include "intro/berryWorkbenchIntroManager.h"
 
-#include "berryIStackableContainer.h"
+#include "berryILayoutContainer.h"
 
 #include "berryServiceLocator.h"
 
@@ -428,7 +427,7 @@ private:
    * The testable object facade.
    */
   static WorkbenchTestable::Pointer testableObject;
-  
+
   static const unsigned int VERSION_STRING_COUNT; // = 1;
   static const std::string VERSION_STRING[1];
 

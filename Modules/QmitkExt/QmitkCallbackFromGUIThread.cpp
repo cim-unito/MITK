@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkCallbackFromGUIThread.h"
 
@@ -69,14 +68,14 @@ void QmitkCallbackFromGUIThread::CallThisFromGUIThread(itk::Command* cmd, itk::E
   QApplication::instance()->postEvent( this, new QmitkCallbackEvent(cmd, e) );
 }
 
-bool QmitkCallbackFromGUIThread::event( QEvent* e ) 
+bool QmitkCallbackFromGUIThread::event( QEvent* e )
 {
   QmitkCallbackEvent* event( dynamic_cast<QmitkCallbackEvent*>(e) );
 
   if (!event) return false;
 
   itk::Command* cmd( event->command() );
-  
+
 
 
   if (cmd)
@@ -93,7 +92,7 @@ bool QmitkCallbackFromGUIThread::event( QEvent* e )
                     dummyEvent );
     }
   }
-  
+
   return true;
 }
 

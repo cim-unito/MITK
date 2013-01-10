@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-25 17:27:17 +0100 (Mo, 25 Feb 2008) $
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkClaronTool.h"
 #include "mitkTestingMacros.h"
@@ -21,7 +20,7 @@ PURPOSE.  See the above copyright notices for more information.
 /**Documentation
 * ClaronTool has a protected constructor and a protected itkNewMacro
 * so that only it's friend class ClaronTrackingDevice is able to instantiate
-* tool objects. Therefore, we derive from ClaronTool and add a 
+* tool objects. Therefore, we derive from ClaronTool and add a
 * public itkNewMacro, so that we can instantiate and test the class
 */
 class ClaronToolTestClass : public mitk::ClaronTool
@@ -33,7 +32,7 @@ public:
   */
   itkNewMacro(Self);
 protected:
-  ClaronToolTestClass() : mitk::ClaronTool()  
+  ClaronToolTestClass() : mitk::ClaronTool()
   {
   }
 };
@@ -46,14 +45,14 @@ int mitkClaronToolTest(int /* argc */, char* /*argv*/[])
   // always start with this!
   MITK_TEST_BEGIN("ClaronTool")
   {
-    // let's create an object of our class  
+    // let's create an object of our class
     mitk::ClaronTool::Pointer myClaronTool = ClaronToolTestClass::New().GetPointer();
 
     // first test: did this work?
     // using MITK_TEST_CONDITION_REQUIRED makes the test stop after failure, since
     // it makes no sense to continue without an object.
-    MITK_TEST_CONDITION_REQUIRED(myClaronTool.IsNotNull(),"Testing instantiation:") 
-  
+    MITK_TEST_CONDITION_REQUIRED(myClaronTool.IsNotNull(),"Testing instantiation:")
+
       mitk::Point3D pos;
     pos[0] = 10;
     pos[1] = 20;

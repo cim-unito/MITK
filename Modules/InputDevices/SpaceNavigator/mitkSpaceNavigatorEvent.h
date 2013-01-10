@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef SPACENAVIGATOREVENT_H_
@@ -47,7 +46,7 @@ namespace mitk {
     * <code>mitk::SpaceNavigatorAddOn</code>.
     *
     * @param buttonState information from the Event
-    * 
+    *
     */
     SpaceNavigatorEvent(int buttonState, const Vector3D& translation, const Vector3D& rotation, const ScalarType& angle);
 
@@ -57,9 +56,9 @@ namespace mitk {
       return m_Translation;
     }
 
-    void SetTranslation(const Vector3D& translation) 
-    { 
-      m_Translation = translation; 
+    void SetTranslation(const Vector3D& translation)
+    {
+      m_Translation = translation;
     }
 
     const Vector3D& GetRotation() const
@@ -67,9 +66,9 @@ namespace mitk {
       return m_Rotation;
     }
 
-    void SetRotation(const Vector3D& rotation) 
+    void SetRotation(const Vector3D& rotation)
     {
-      m_Rotation = rotation; 
+      m_Rotation = rotation;
     }
 
     const ScalarType& GetAngle() const
@@ -77,9 +76,9 @@ namespace mitk {
       return m_Angle;
     }
 
-    void SetAngle(const ScalarType& angle) 
-    { 
-      m_Angle = angle; 
+    void SetAngle(const ScalarType& angle)
+    {
+      m_Angle = angle;
     }
 
 

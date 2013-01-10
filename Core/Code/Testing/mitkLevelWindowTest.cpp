@@ -1,22 +1,38 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkLevelWindow.h"
 #include <mitkImage.h>
+
+
+/*
+ * Reseting the Levelwindow to default values:
+ * i.e. Range = -1000..1000, Level = 0 and Window = 500
+ */
+void resetLevelWindow(mitk::LevelWindow &lw)
+{
+  //Default window bounds
+  lw.SetRangeMinMax(-10000,10000);
+  lw.SetLevelWindow(0,500,false);
+  if (lw.GetRangeMin() != -10000 || lw.GetRangeMax() != 10000 ||
+      lw.GetLevel() != 0 || lw.GetWindow() != 500)
+  {
+    std::cout << "[Failed] To reset Levelwindow"<<std::endl;
+  }
+}
 
 int mitkLevelWindowTest(int, char* [])
 {
@@ -25,7 +41,7 @@ int mitkLevelWindowTest(int, char* [])
   std::cout << "Testing mitk::LevelWindow constructor with Level and Window ";
   mitk::LevelWindow* levWin = new mitk::LevelWindow(256, 500);
   std::cout<<"[PASSED]"<<std::endl;
-  
+
   std::cout << "Testing mitk::LevelWindow GetDefaultWindow ";
   mitk::ScalarType defaultWindow = levWin->GetDefaultWindow();
   if (!(defaultWindow == 500))
@@ -77,7 +93,7 @@ int mitkLevelWindowTest(int, char* [])
     return EXIT_FAILURE;
   }
   std::cout<<"[PASSED]"<<std::endl;
-  
+
   std::cout << "Testing mitk::LevelWindow GetWindow : GetDefaultWindow ";
   if (!(defaultWindow == window))
   {
@@ -344,11 +360,35 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  //minmax > maxrange, minmax < minrange, min<maxrange & max >maxrange, min < minrange & max > minrange
+
+  // minmax > maxrange, minmax < minrange, min<maxrange & max >maxrange, min < minrange & max > minrange
   // max < minrange & min > minrange, min > maxrange & max < maxrange, min < minrange & max > maxrange
-  // min > maxrange & max < minrange 
-  std::cout << "Testing mitk::LevelWindow max > min > maxrange ";
+  // min > maxrange & max < minrange
+  std::cout << "Testing mitk::LevelWindow max > min > maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(11000, 12000, false);
+  if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
+  {
+    std::cout<<"[FAILED]"<<levWin->GetLowerWindowBound()<<","<<levWin->GetUpperWindowBound()<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow max > min > maxrange autoexpand = TRUE";
   levWin->SetWindowBounds(11000, 12000);
+  if (!((levWin->GetLowerWindowBound() == 11000) && (levWin->GetUpperWindowBound() == 12000)))
+  {
+    std::cout<<"[FAILED]"<<levWin->GetLowerWindowBound()<<","<<levWin->GetUpperWindowBound()<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  //Reset default window
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min > max > maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(12000, 11000, false);
   if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -357,9 +397,9 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min > max > maxrange ";
+  std::cout << "Testing mitk::LevelWindow min > max > maxrange autoexpand = TRUE";
   levWin->SetWindowBounds(12000, 11000);
-  if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
+  if (!((levWin->GetLowerWindowBound() == 11000) && (levWin->GetUpperWindowBound() == 12000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
     return EXIT_FAILURE;
@@ -367,8 +407,32 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min < max < minrange ";
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min < max < minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-12000, -11000, false);
+  if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow min < max < minrange autoexpand = TRUE";
   levWin->SetWindowBounds(-12000, -11000);
+  if (!((levWin->GetLowerWindowBound() == -12000) && (levWin->GetUpperWindowBound() == -11000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow max < min < minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-11000, -12000, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -377,9 +441,9 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow max < min < minrange ";
+  std::cout << "Testing mitk::LevelWindow max < min < minrange autoexpand = TRUE";
   levWin->SetWindowBounds(-11000, -12000);
-  if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
+  if (!((levWin->GetLowerWindowBound() == -12000) && (levWin->GetUpperWindowBound() == -11000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
     return EXIT_FAILURE;
@@ -387,8 +451,10 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min < maxrang & max > maxrange ";
-  levWin->SetWindowBounds(9999, 12000);
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min < maxrang & max > maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(9999, 12000, false);
   if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -397,8 +463,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min < minrange & max > minrange ";
-  levWin->SetWindowBounds(-11000, -9999);
+  std::cout << "Testing mitk::LevelWindow min < maxrang & max > maxrange autoexpand = TRUE";
+  levWin->SetWindowBounds(9999, 12000);
+  if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 12000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min < minrange & max > minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-11000, -9999, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -407,8 +485,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min < minrange & max > maxrange ";
-  levWin->SetWindowBounds(-11000, 11000);
+  std::cout << "Testing mitk::LevelWindow min < minrange & max > minrange autoexpand = TRUE";
+  levWin->SetWindowBounds(-11000, -9999);
+  if (!((levWin->GetLowerWindowBound() == -11000) && (levWin->GetUpperWindowBound() == -9999)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min < minrange & max > maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-11000, 11000, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == 10000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -417,7 +507,29 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow maxrange > min = max > minrange ";
+  std::cout << "Testing mitk::LevelWindow min < minrange & max > maxrange autoexpand = TRUE";
+  levWin->SetWindowBounds(-11000, 11000);
+  if (!((levWin->GetLowerWindowBound() == -11000) && (levWin->GetUpperWindowBound() == 11000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow maxrange > min = max > minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(5000, 5000, false);
+  if (!((levWin->GetLowerWindowBound() == 4999) && (levWin->GetUpperWindowBound() == 5000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow maxrange > min = max > minrange autoexpand = TRUE";
   levWin->SetWindowBounds(5000, 5000);
   if (!((levWin->GetLowerWindowBound() == 4999) && (levWin->GetUpperWindowBound() == 5000)))
   {
@@ -427,7 +539,19 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min = max = minrange ";
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min = max = minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-10000, -10000, false);
+  if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow min = max = minrange autoexpand = TRUE";
   levWin->SetWindowBounds(-10000, -10000);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
   {
@@ -437,7 +561,19 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min = max = maxrange ";
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min = max = maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(10000, 10000, false);
+  if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow min = max = maxrange autoexpand = TRUE";
   levWin->SetWindowBounds(10000, 10000);
   if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
   {
@@ -447,8 +583,10 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min = max > maxrange ";
-  levWin->SetWindowBounds(11000, 11000);
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min = max > maxrange autoexpand = FALSE";
+  levWin->SetWindowBounds(11000, 11000, false);
   if (!((levWin->GetLowerWindowBound() == 9999) && (levWin->GetUpperWindowBound() == 10000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -457,8 +595,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min = max < minrange ";
-  levWin->SetWindowBounds(-11000, -11000);
+  std::cout << "Testing mitk::LevelWindow min = max > maxrange autoexpand = TRUE";
+  levWin->SetWindowBounds(11000, 11000);
+  if (!((levWin->GetLowerWindowBound() == 10999) && (levWin->GetUpperWindowBound() == 11000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min = max < minrange autoexpand = FALSE";
+  levWin->SetWindowBounds(-11000, -11000, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9999)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -467,8 +617,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow maxrange > min > minrange > max ";
-  levWin->SetWindowBounds(-9000, -11000);
+  std::cout << "Testing mitk::LevelWindow min = max < minrange autoexpand = TRUE";
+  levWin->SetWindowBounds(-11000, -11000);
+  if (!((levWin->GetLowerWindowBound() == -11000) && (levWin->GetUpperWindowBound() == -10999)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow maxrange > min > minrange > max autoexpand = FALSE";
+  levWin->SetWindowBounds(-9000, -11000, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == -9000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -477,8 +639,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow min > maxrange > minrange > max ";
-  levWin->SetWindowBounds(11000, -11000);
+  std::cout << "Testing mitk::LevelWindow maxrange > min > minrange > max autoexpand = TRUE";
+  levWin->SetWindowBounds(-9000, -11000, true);
+  if (!((levWin->GetLowerWindowBound() == -11000) && (levWin->GetUpperWindowBound() == -9000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow min > maxrange > minrange > max autoexpand = FALSE";
+  levWin->SetWindowBounds(11000, -11000, false);
   if (!((levWin->GetLowerWindowBound() == -10000) && (levWin->GetUpperWindowBound() == 10000)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -487,7 +661,19 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with maxrange < min < max ";
+  std::cout << "Testing mitk::LevelWindow min > maxrange > minrange > max autoexpand = TRUE";
+  levWin->SetWindowBounds(11000, -11000);
+  if (!((levWin->GetLowerWindowBound() == -11000) && (levWin->GetUpperWindowBound() == 11000)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with maxrange < min < max autoexpand = FALSE";
   levWin->SetRangeMinMax(-20000, -15000);
   if (!((levWin->GetLowerWindowBound() == -15001) && (levWin->GetUpperWindowBound() == -15000)))
   {
@@ -510,9 +696,9 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with minrange < min < maxrange < max ";
+  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with minrange < min < maxrange < max autoexpand = FALSE";
   levWin->SetRangeMinMax(-80, 1000);
-  levWin->SetWindowBounds(-1000,110);
+  levWin->SetWindowBounds(-1000,110, false);
   if (!((levWin->GetLowerWindowBound() == -80) && (levWin->GetUpperWindowBound() == 110)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -522,9 +708,23 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
 
-  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with maxrange < minrange & minrange < min < maxrange < max ";
-  levWin->SetRangeMinMax(1000,-80);
+  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with minrange < min < maxrange < max autoexpand = TRUE";
+  levWin->SetRangeMinMax(-80, 1000);
   levWin->SetWindowBounds(-1000,110);
+  if (!((levWin->GetLowerWindowBound() == -1000) && (levWin->GetUpperWindowBound() == 110)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultRangeMinMax();
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
+
+  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with maxrange < minrange & minrange < min < maxrange < max autoexpand = FALSE";
+  levWin->SetRangeMinMax(1000,-80);
+  levWin->SetWindowBounds(-1000,110, false );
   if (!((levWin->GetLowerWindowBound() == -80) && (levWin->GetUpperWindowBound() == 110)))
   {
     std::cout<<"[FAILED]"<<std::endl;
@@ -533,6 +733,20 @@ int mitkLevelWindowTest(int, char* [])
   levWin->ResetDefaultRangeMinMax();
   levWin->ResetDefaultLevelWindow();
   std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing mitk::LevelWindow SetRangeMinMax with maxrange < minrange & minrange < min < maxrange < max autoexpand = TRUE";
+  levWin->SetRangeMinMax(1000,-80);
+  levWin->SetWindowBounds(-1000,110 );
+  if (!((levWin->GetLowerWindowBound() == -1000) && (levWin->GetUpperWindowBound() == 110)))
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  levWin->ResetDefaultRangeMinMax();
+  levWin->ResetDefaultLevelWindow();
+  std::cout<<"[PASSED]"<<std::endl;
+
+  resetLevelWindow(*levWin);
 
   std::cout << "Testing mitk::LevelWindow SetRangeMinMax with min < minrange < maxrange <max ";
   levWin->SetRangeMinMax(20, 110);
@@ -635,10 +849,111 @@ int mitkLevelWindowTest(int, char* [])
     return EXIT_FAILURE;
   }
   std::cout<<"[PASSED]"<<std::endl;
-  
+
   std::cout << "Testing mitk::LevelWindow destructor ";
   delete levWin;
   delete lw;
+
+  std::cout<<"[PASSED]"<<std::endl;
+
+  mitk::LevelWindow levelWindow(50,100);
+  levelWindow.SetRangeMinMax(0,100);
+  // test range restriction/adaption for SetLevelWindow and SetWindowBounds
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetWindowBounds() autoexpand = FALSE";
+  mitk::ScalarType initialUpperBound = levelWindow.GetUpperWindowBound();
+  mitk::ScalarType initialLowerBound = levelWindow.GetLowerWindowBound();
+  levelWindow.SetWindowBounds( -10, 110, false );
+  if ( levelWindow.GetUpperWindowBound() != initialUpperBound ||
+       levelWindow.GetLowerWindowBound() != initialLowerBound )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetWindowBounds() autoexpand = TRUE";
+  levelWindow.SetWindowBounds( -10, 110 );
+  if ( levelWindow.GetUpperWindowBound() != 110 ||
+       levelWindow.GetLowerWindowBound() != -10 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  levelWindow.SetRangeMinMax(0,100);
+  levelWindow.SetLevelWindow(50,100);
+
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetLevelWindow() autoexpand = FALSE";
+  levelWindow.SetLevelWindow( 60, 100, false );
+  if ( levelWindow.GetUpperWindowBound() != initialUpperBound )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetLevelWindow() autoexpand = TRUE";
+  levelWindow.SetLevelWindow( 60, 100 );
+  if ( levelWindow.GetUpperWindowBound() != initialUpperBound+10 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  levelWindow.SetRangeMinMax(0,100);
+  levelWindow.SetLevelWindow(50,100);
+
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetLevelWindow() autoexpand = FALSE";
+  levelWindow.SetLevelWindow( 40, 100, false );
+  if ( levelWindow.GetLowerWindowBound() != initialLowerBound )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range restriction of mitk::LevelWindow::SetLevelWindow() autoexpand = TRUE";
+  levelWindow.SetLevelWindow( 40, 100 );
+  if ( levelWindow.GetLowerWindowBound() != initialLowerBound-10 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range adaption of mitk::LevelWindow::SetWindowBounds()";
+  levelWindow.SetWindowBounds(-10,90,true); // ture == force
+  if ( levelWindow.GetUpperWindowBound() != 90.0 ||
+       levelWindow.GetLowerWindowBound() != -10.0 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range adaption of mitk::LevelWindow::SetWindowBounds()";
+  levelWindow.SetWindowBounds(-20,110,true); // ture == force
+  if ( levelWindow.GetUpperWindowBound() != 110.0 ||
+       levelWindow.GetLowerWindowBound() != -20.0 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+  std::cout << "Testing range adaption of mitk::LevelWindow::SetLevelWindow()";
+  levelWindow.SetLevelWindow(50,140,true); // ture == force
+  if ( levelWindow.GetUpperWindowBound() != 120.0 ||
+       levelWindow.GetLowerWindowBound() != -20.0 )
+  {
+    std::cout<<"[FAILED]"<<std::endl;
+    return EXIT_FAILURE;
+  }
+  std::cout<<"[PASSED]"<<std::endl;
+
+
   std::cout<<"[PASSED]"<<std::endl;
   std::cout<<"[TEST DONE]"<<std::endl;
   return EXIT_SUCCESS;

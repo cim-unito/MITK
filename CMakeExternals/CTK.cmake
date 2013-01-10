@@ -2,31 +2,42 @@
 # CTK
 #-----------------------------------------------------------------------------
 
-IF(MITK_USE_CTK)
+if(MITK_USE_CTK)
 
   # Sanity checks
-  IF(DEFINED CTK_DIR AND NOT EXISTS ${CTK_DIR})
-    MESSAGE(FATAL_ERROR "CTK_DIR variable is defined but corresponds to non-existing directory")
-  ENDIF()
+  if(DEFINED CTK_DIR AND NOT EXISTS ${CTK_DIR})
+    message(FATAL_ERROR "CTK_DIR variable is defined but corresponds to non-existing directory")
+  endif()
 
-  SET(proj CTK)
-  SET(proj_DEPENDENCIES )
-  SET(CTK_DEPENDS ${proj})
+  set(proj CTK)
+  set(proj_DEPENDENCIES )
+  set(CTK_DEPENDS ${proj})
 
-  IF(NOT DEFINED CTK_DIR)
+  if(NOT DEFINED CTK_DIR)
     
-#    SET(revision_tag de466419)
-    SET(revision_tag origin/cim)
+    set(revision_tag b3a8d0d3dc)
     #IF(${proj}_REVISION_TAG)
     #  SET(revision_tag ${${proj}_REVISION_TAG})
     #ENDIF()
-    
-    SET(ctk_optional_cache_args )
-    IF(MITK_USE_Python)
-      LIST(APPEND ctk_optional_cache_args
+
+    set(ctk_optional_cache_args )
+    if(MITK_USE_Python)
+      list(APPEND ctk_optional_cache_args
            -DCTK_LIB_Scripting/Python/Widgets:BOOL=ON
       )
-    ENDIF()
+    endif()
+
+    if(MITK_USE_DCMTK)
+      list(APPEND ctk_optional_cache_args
+           -DDCMTK_DIR:PATH=${DCMTK_DIR}
+          )
+      list(APPEND proj_DEPENDENCIES DCMTK)
+    else()
+      list(APPEND ctk_optional_cache_args
+           -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
+          )
+    endif()
+
     FOREACH(type RUNTIME ARCHIVE LIBRARY)
       IF(DEFINED CTK_PLUGIN_${type}_OUTPUT_DIRECTORY)
         LIST(APPEND mitk_optional_cache_args -DCTK_PLUGIN_${type}_OUTPUT_DIRECTORY:PATH=${CTK_PLUGIN_${type}_OUTPUT_DIRECTORY})
@@ -40,8 +51,8 @@ IF(MITK_USE_CTK)
 #      GIT_REPOSITORY http://github.com/commontk/CTK.git
       GIT_REPOSITORY git://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
-      URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
-      URL_MD5 29d075daa07dbc5618158e4f81d5f431
+#      URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
+#      URL_MD5 70fadbc62ec5c7d83a6e672fd5be36b1
       UPDATE_COMMAND ""
       INSTALL_COMMAND ""
       CMAKE_GENERATOR ${gen}
@@ -52,6 +63,8 @@ IF(MITK_USE_CTK)
         -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
         -DGit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
         -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
+        -DCTK_LIB_CommandLineModules/Backend/LocalProcess:BOOL=ON
+        -DCTK_LIB_CommandLineModules/Frontend/QtGui:BOOL=ON
         -DCTK_LIB_PluginFramework:BOOL=ON
         -DCTK_LIB_DICOM/Widgets:BOOL=ON
         -DCTK_PLUGIN_org.commontk.eventadmin:BOOL=ON
@@ -60,12 +73,12 @@ IF(MITK_USE_CTK)
         -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
       DEPENDS ${proj_DEPENDENCIES}
      )
-  SET(CTK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
-  
-  ELSE()
+  set(CTK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
+
+  else()
 
     mitkMacroEmptyExternalProject(${proj} "${proj_DEPENDENCIES}")
-    
-  ENDIF()
-  
-ENDIF()
+
+  endif()
+
+endif()

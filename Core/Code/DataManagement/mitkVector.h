@@ -1,23 +1,26 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKVECTOR_H_HEADER_INCLUDED_C1EBD0AD
 #define MITKVECTOR_H_HEADER_INCLUDED_C1EBD0AD
+
+// this is needed for memcopy in ITK
+// can be removed when fixed in ITK
+#include <cstring>
 
 #include <itkPoint.h>
 #include <float.h>
@@ -60,7 +63,7 @@ enum PointSpecificationType
   PTUNDEFINED = 0,
   PTSTART,
   PTCORNER,
-  PTEDGE, 
+  PTEDGE,
   PTEND
 };
 
@@ -197,7 +200,7 @@ template <class Tin, class Tout>
   inline void vnl2vtk(const vnl_vector<Tin>& in, Tout *out)
 {
   unsigned int i;
-  for(i=0; i<in.size();++i)     
+  for(i=0; i<in.size();++i)
     out[i]=(Tout) (in[i]);
 }
 
@@ -237,7 +240,7 @@ template <class T, unsigned int NVectorDimension>
   itk::Vector<T, NVectorDimension> operator+(const itk::Vector<T, NVectorDimension> &vector, const itk::Point<T, NVectorDimension> &point)
 {
   itk::Vector<T, NVectorDimension> sub;
-  for( unsigned int i=0; i<NVectorDimension; i++) 
+  for( unsigned int i=0; i<NVectorDimension; i++)
   {
     sub[i] = vector[i]+point[i];
   }
@@ -247,7 +250,7 @@ template <class T, unsigned int NVectorDimension>
 template <class T, unsigned int NVectorDimension>
   inline itk::Vector<T, NVectorDimension>& operator+=(itk::Vector<T, NVectorDimension> &vector, const itk::Point<T, NVectorDimension> &point)
 {
-  for( unsigned int i=0; i<NVectorDimension; i++) 
+  for( unsigned int i=0; i<NVectorDimension; i++)
   {
     vector[i] += point[i];
   }
@@ -258,7 +261,7 @@ template <class T, unsigned int NVectorDimension>
   itk::Vector<T, NVectorDimension> operator-(const itk::Vector<T, NVectorDimension> &vector, const itk::Point<T, NVectorDimension> &point)
 {
   itk::Vector<T, NVectorDimension> sub;
-  for( unsigned int i=0; i<NVectorDimension; i++) 
+  for( unsigned int i=0; i<NVectorDimension; i++)
   {
     sub[i] = vector[i]-point[i];
   }
@@ -268,7 +271,7 @@ template <class T, unsigned int NVectorDimension>
 template <class T, unsigned int NVectorDimension>
   inline itk::Vector<T, NVectorDimension>& operator-=(itk::Vector<T, NVectorDimension> &vector, const itk::Point<T, NVectorDimension> &point)
 {
-  for( unsigned int i=0; i<NVectorDimension; i++) 
+  for( unsigned int i=0; i<NVectorDimension; i++)
   {
     vector[i] -= point[i];
   }
@@ -282,7 +285,7 @@ template <class T, unsigned int NVectorDimension>
 \epsilon user defined accuracy bounds
 */
 template <typename TCoordRep, unsigned int NRows, unsigned int NCols>
-inline bool MatrixEqualRMS(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix1,const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps) 
+inline bool MatrixEqualRMS(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix1,const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps)
 {
   if ( (matrix1.rows() == matrix2.rows()) && (matrix1.cols() == matrix2.cols()) )
   {
@@ -296,7 +299,7 @@ inline bool MatrixEqualRMS(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix
       return false;
     }
   }
-  else 
+  else
   {
     return false;
   }
@@ -309,7 +312,7 @@ inline bool MatrixEqualRMS(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix
 \epsilon user defined accuracy bounds
 */
 template <typename TCoordRep, unsigned int NRows, unsigned int NCols>
-inline bool MatrixEqualRMS(const itk::Matrix<TCoordRep, NRows, NCols>& matrix1,const itk::Matrix<TCoordRep, NRows, NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps) 
+inline bool MatrixEqualRMS(const itk::Matrix<TCoordRep, NRows, NCols>& matrix1,const itk::Matrix<TCoordRep, NRows, NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps)
 {
   return mitk::MatrixEqualRMS(matrix1.GetVnlMatrix(),matrix2.GetVnlMatrix(),epsilon);
 }
@@ -321,7 +324,7 @@ inline bool MatrixEqualRMS(const itk::Matrix<TCoordRep, NRows, NCols>& matrix1,c
 \epsilon user defined accuracy bounds
 */
 template <typename TCoordRep, unsigned int NRows, unsigned int NCols>
-inline bool MatrixEqualElementWise(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix1,const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps) 
+inline bool MatrixEqualElementWise(const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix1,const vnl_matrix_fixed<TCoordRep,NRows,NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps)
 {
   if ( (matrix1.rows() == matrix2.rows()) && (matrix1.cols() == matrix2.cols()) )
   {
@@ -336,9 +339,9 @@ inline bool MatrixEqualElementWise(const vnl_matrix_fixed<TCoordRep,NRows,NCols>
         }
       }
     }
-    return true;   
+    return true;
   }
-  else 
+  else
   {
     return false;
   }
@@ -351,46 +354,55 @@ inline bool MatrixEqualElementWise(const vnl_matrix_fixed<TCoordRep,NRows,NCols>
 \epsilon user defined accuracy bounds
 */
 template <typename TCoordRep, unsigned int NRows, unsigned int NCols>
-inline bool MatrixEqualElementWise(const itk::Matrix<TCoordRep, NRows, NCols>& matrix1,const itk::Matrix<TCoordRep, NRows, NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps) 
+inline bool MatrixEqualElementWise(const itk::Matrix<TCoordRep, NRows, NCols>& matrix1,const itk::Matrix<TCoordRep, NRows, NCols>& matrix2,mitk::ScalarType epsilon=mitk::eps)
 {
   return mitk::MatrixEqualElementWise(matrix1.GetVnlMatrix(),matrix2.GetVnlMatrix(),epsilon);
 }
 
 template <typename TCoordRep, unsigned int NPointDimension>
-inline bool Equal(const itk::Vector<TCoordRep, NPointDimension>& vector1, const itk::Vector<TCoordRep, NPointDimension>& vector2) 
+inline bool Equal(const itk::Vector<TCoordRep, NPointDimension>& vector1, const itk::Vector<TCoordRep, NPointDimension>& vector2, TCoordRep eps=mitk::eps)
 {
   typename itk::Vector<TCoordRep, NPointDimension>::VectorType diff = vector1-vector2;
-  return diff.GetSquaredNorm() < mitk::eps; 
+  for (unsigned int i=0; i<NPointDimension; i++)
+      if (diff[i]>eps || diff[i]<-eps)
+      return false;
+  return true;
 }
 
 template <typename TCoordRep, unsigned int NPointDimension>
-  inline bool Equal(const itk::Point<TCoordRep, NPointDimension>& vector1, const itk::Point<TCoordRep, NPointDimension>& vector2) 
+  inline bool Equal(const itk::Point<TCoordRep, NPointDimension>& vector1, const itk::Point<TCoordRep, NPointDimension>& vector2, TCoordRep eps=mitk::eps)
 {
   typename itk::Point<TCoordRep, NPointDimension>::VectorType diff = vector1-vector2;
-  return diff.GetSquaredNorm() < mitk::eps; 
+  for (unsigned int i=0; i<NPointDimension; i++)
+    if (diff[i]>eps || diff[i]<-eps)
+      return false;
+  return true;
 }
 
-inline bool Equal(const mitk::VnlVector& vector1, const mitk::VnlVector& vector2) 
+inline bool Equal(const mitk::VnlVector& vector1, const mitk::VnlVector& vector2, ScalarType eps=mitk::eps)
 {
   mitk::VnlVector diff = vector1-vector2;
-  return diff.squared_magnitude() < mitk::eps; 
+  for (unsigned int i=0; i<diff.size(); i++)
+    if (diff[i]>eps || diff[i]<-eps)
+      return false;
+  return true;
 }
 
-inline bool Equal(double scalar1, double scalar2) 
+inline bool Equal(double scalar1, double scalar2, ScalarType eps=mitk::eps)
 {
-  return fabs(scalar1-scalar2) < mitk::eps;
+  return fabs(scalar1-scalar2) < eps;
 }
 
 template <typename TCoordRep, unsigned int NPointDimension>
-  inline bool Equal(const vnl_vector_fixed<TCoordRep, NPointDimension> & vector1, const vnl_vector_fixed<TCoordRep, NPointDimension>& vector2) 
+  inline bool Equal(const vnl_vector_fixed<TCoordRep, NPointDimension> & vector1, const vnl_vector_fixed<TCoordRep, NPointDimension>& vector2, TCoordRep eps=mitk::eps)
 {
   vnl_vector_fixed<TCoordRep, NPointDimension> diff = vector1-vector2;
-  return diff.squared_magnitude() < mitk::eps; 
+  return diff.squared_magnitude() < mitk::eps;
 }
 
-template <typename U, typename V, unsigned int NRows, unsigned int NColumns> 
+template <typename U, typename V, unsigned int NRows, unsigned int NColumns>
 inline void TransferMatrix(const itk::Matrix<U, NRows, NColumns>& in, itk::Matrix<V, NRows, NColumns>& out)
-{ 
+{
   for (unsigned int i = 0; i < in.RowDimensions; ++i)
     for (unsigned int j = 0; j < in.ColumnDimensions; ++j)
       out[i][j] = in[i][j];
@@ -405,7 +417,7 @@ inline void TransferMatrix(const itk::Matrix<U, NRows, NColumns>& in, itk::Matri
  * This part of the code has been shifted here to avoid compiler clashes
  * caused by including <itkAffineGeometryFrame.h> before the declaration of
  * the Equal() methods above. This problem occurs when using MSVC and is
- * probably related to a compiler bug. 
+ * probably related to a compiler bug.
  */
 
 #include <itkAffineGeometryFrame.h>

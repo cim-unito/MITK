@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkToFImageDownsamplingFilter.h"
 #include <itkResampleImageFilter.h>
@@ -42,20 +40,20 @@ void mitk::ToFImageDownsamplingFilter::GenerateData()
 {
   // set input image
 
-  mitk::Image::ConstPointer inputImage = this->GetInput(0) ; 
+  mitk::Image::ConstPointer inputImage = this->GetInput(0) ;
   if ( (inputImage->GetDimension() > 3) || (inputImage->GetDimension() < 2) )
   {
     MITK_ERROR << "mitk::TofImageDownsamplingFilter:GenerateData works only with 2D and 3D images, sorry." << std::endl;
     itkExceptionMacro("mitk::TofImageDownsamplingFilter:GenerateData works only with 2D and 3D images, sorry.");
     return;
-  }	
+  }
 
   if ( (inputImage->GetDimension(0)<m_ResampledX) || (inputImage->GetDimension(1)<m_ResampledY) || (inputImage->GetDimension(2)<m_ResampledZ) )
   {
     MITK_ERROR << "mitk::TofImageDownsamplingFilter:GenerateData only downsamples. Your requested dimensions exceed the original image dimensions." << std::endl;
     itkExceptionMacro("mitk::TofImageDownsamplingFilter:GenerateData only downsamples. Your requested dimensions exceed the original image dimensions.");
     return;
-  }	
+  }
 
   if ( (m_ResampledX < 1) || (m_ResampledY < 1)|| (m_ResampledZ < 1) )
   {
@@ -84,7 +82,7 @@ void mitk::ToFImageDownsamplingFilter::GenerateData()
 template<typename TPixel, unsigned int VImageDimension>
 void mitk::ToFImageDownsamplingFilter::ItkImageResampling( itk::Image<TPixel,VImageDimension>* itkImage )
 {
-  // declare typdef for itk image from input mitk image  
+  // declare typdef for itk image from input mitk image
  typedef itk::Image< TPixel, VImageDimension >   ItkImageType;
 
   //declare itk filter related typedefs (transform type, interpolater, and size type)
@@ -98,7 +96,7 @@ void mitk::ToFImageDownsamplingFilter::ItkImageResampling( itk::Image<TPixel,VIm
   typename TransformType::Pointer transform = TransformType::New();
   typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
 
-  // establish size for downsampled image ( the result of this filter) 
+  // establish size for downsampled image ( the result of this filter)
   typename ItkImageType::SizeType inputSize = itkImage->GetLargestPossibleRegion().GetSize();
   typename ItkImageType::SizeType size;
 
@@ -106,7 +104,7 @@ void mitk::ToFImageDownsamplingFilter::ItkImageResampling( itk::Image<TPixel,VIm
   size[1] = static_cast< SizeValueType >( m_ResampledY );
   size[2] = static_cast< SizeValueType >( m_ResampledZ );
 
-  //establish spacing for new downsampled image ( resulting image)                    
+  //establish spacing for new downsampled image ( resulting image)
   const typename ItkImageType::SpacingType& inputSpacing = itkImage->GetSpacing();
   typename ItkImageType::SpacingType spacing;
 
@@ -115,16 +113,16 @@ void mitk::ToFImageDownsamplingFilter::ItkImageResampling( itk::Image<TPixel,VIm
   spacing[2] = inputSpacing[2] * ( inputSize[2]/ m_ResampledZ );
 
   // set filter parameters and update
-  transform->SetIdentity(); 
-  resampler->SetTransform(transform); 
-  resampler->SetInterpolator(interpolator); 
-  resampler->SetOutputSpacing(spacing); 
-  resampler->SetOutputOrigin(itkImage->GetOrigin()); 
-  resampler->SetSize(size); 
-  resampler->SetInput(itkImage); 
+  transform->SetIdentity();
+  resampler->SetTransform(transform);
+  resampler->SetInterpolator(interpolator);
+  resampler->SetOutputSpacing(spacing);
+  resampler->SetOutputOrigin(itkImage->GetOrigin());
+  resampler->SetSize(size);
+  resampler->SetInput(itkImage);
   resampler->UpdateLargestPossibleRegion();
 
-  // Create mitk container for resulting image	 
+  // Create mitk container for resulting image
   mitk::Image::Pointer resultImage = ImageToImageFilter::GetOutput();
 
   // Cast itk image to mitk image

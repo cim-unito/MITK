@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-08-11 15:15:02 +0200 (Di, 11 Aug 2009) $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef NAVIGATIONTOOLSTORAGESERIALIZER_H_INCLUDED
 #define NAVIGATIONTOOLSTORAGESERIALIZER_H_INCLUDED
@@ -32,31 +31,37 @@ namespace mitk {
   *        to the harddisc.
   *
   * \ingroup IGT
-  */  
+  */
   class MitkIGT_EXPORT NavigationToolStorageSerializer : public itk::Object
   {
-
   public:
     mitkClassMacro(NavigationToolStorageSerializer,itk::Object);
     itkNewMacro(Self);
 
     /**
-     * @brief  Saves a mitk navigation tool storage to a file. 
-     * @return Returns true if the file was saved successfully. False if not.
+     * @brief  Saves a mitk navigation tool storage to a file.
+     * @return Returns true always true since error handling was converted to exception handling.
+     *         The return value is decrepated. Will be changed to void.
+     * @throw mitk::IGTIOException Throws an exception if the given filename cannot be opened for writing or
+     *                             if the temp directory is not accessible.
      */
     bool Serialize(std::string filename, mitk::NavigationToolStorage::Pointer storage);
-    
+
+    /**
+     * @brief This method is decrepated. Exceptions are used for error handling now!
+     * @return Returns always an empty string since error handling was converted to exception handling.
+     */
     itkGetMacro(ErrorMessage,std::string);
 
   protected:
     NavigationToolStorageSerializer();
     ~NavigationToolStorageSerializer();
 
-    std::string m_ErrorMessage;
+   std::string m_ErrorMessage;
 
-    std::string convertIntToString(int i);
+   std::string convertIntToString(int i);
 
-    std::string m_tempDirectory;
+   std::string m_tempDirectory;
 
   };
 } // namespace mitk

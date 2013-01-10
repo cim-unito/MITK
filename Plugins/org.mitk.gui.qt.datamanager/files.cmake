@@ -1,45 +1,54 @@
-SET(SRC_CPP_FILES
+set(SRC_CPP_FILES
   berrySingleNodeSelection.cpp
-  QmitkDataManagerView.cpp 
   QmitkNodeTreeView.cpp
+  QmitkDataManagerView.cpp
   QmitkDataManagerPreferencePage.cpp
   QmitkDataManagerHotkeysPrefPage.cpp
 )
 
-SET(INTERNAL_CPP_FILES
+set(INTERNAL_CPP_FILES
   mitkPluginActivator.cpp
+  QmitkLineEdit.cpp
   QmitkPropertyListView.cpp
-  QmitkNodeTableViewKeyFilter.cpp 
-  QmitkInfoDialog.cpp 
+  QmitkPropertyTreeItem.cpp
+  QmitkPropertyTreeFilterProxyModel.cpp
+  QmitkPropertyTreeModel.cpp
+  QmitkPropertyTreeView.cpp
+  QmitkNodeTableViewKeyFilter.cpp
+  QmitkInfoDialog.cpp
 )
 
-SET(MOC_H_FILES
+set(MOC_H_FILES
   src/QmitkDataManagerView.h
   src/QmitkNodeTreeView.h
   src/QmitkDataManagerPreferencePage.h
   src/QmitkDataManagerHotkeysPrefPage.h
+  src/internal/QmitkLineEdit.h
   src/internal/QmitkNodeTableViewKeyFilter.h
   src/internal/QmitkPropertyListView.h
+  src/internal/QmitkPropertyTreeFilterProxyModel.h
+  src/internal/QmitkPropertyTreeModel.h
+  src/internal/QmitkPropertyTreeView.h
   src/internal/QmitkInfoDialog.h
   src/internal/mitkPluginActivator.h
 )
 
-SET(CPP_FILES )
+set(CPP_FILES )
 
-SET(CACHED_RESOURCE_FILES
+set(CACHED_RESOURCE_FILES
   plugin.xml
   resources/DataManager_48.png
   resources/propertylist.png
 )
 
-SET(QRC_FILES
+set(QRC_FILES
   resources/datamanager.qrc
 )
 
 foreach(file ${SRC_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/${file})
+  set(CPP_FILES ${CPP_FILES} src/${file})
 endforeach(file ${SRC_CPP_FILES})
 
 foreach(file ${INTERNAL_CPP_FILES})
-  SET(CPP_FILES ${CPP_FILES} src/internal/${file})
+  set(CPP_FILES ${CPP_FILES} src/internal/${file})
 endforeach(file ${INTERNAL_CPP_FILES})

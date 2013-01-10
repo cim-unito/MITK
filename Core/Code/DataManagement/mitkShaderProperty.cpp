@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-12-11 14:46:19 +0100 (Di, 11 Dez 2007) $
-Version:   $Revision: 13129 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <vtkAbstractMapper.h>
 #include "mitkShaderProperty.h"
@@ -66,17 +65,17 @@ std::string mitk::ShaderProperty::GetShaderName()
 {
   return GetValueAsString();
 }
-  
+
 
 void mitk::ShaderProperty::AddShaderTypes()
-{  
+{
   AddEnum( "fixed" );
-  
+
   std::list<mitk::ShaderRepository::Shader::Pointer> *l
     = mitk::ShaderRepository::GetGlobalShaderRepository()->GetShaders();
-    
+
   std::list<mitk::ShaderRepository::Shader::Pointer>::const_iterator i = l->begin();
-  
+
   while( i != l->end() )
   {
     AddEnum( (*i)->name );
@@ -87,13 +86,13 @@ void mitk::ShaderProperty::AddShaderTypes()
 bool mitk::ShaderProperty::AddEnum( const std::string& name ,const IdType& /*id*/)
 {
   Element e;
-  
+
   e.name=name;
-  
-  bool success=Superclass::AddEnum( e.name, (IdType)shaderList.size() );  
-  
+
+  bool success=Superclass::AddEnum( e.name, (IdType)shaderList.size() );
+
   shaderList.push_back(e);
-  
+
   return success;
 }
 

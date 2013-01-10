@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _mitk_Image_Background2D_h_
 #define _mitk_Image_Background2D_h_
@@ -29,7 +28,7 @@ class vtkImageActor;
 class vtkImageImport;
 class vtkVideoSizeCallback;
 
-namespace mitk 
+namespace mitk
 {
 
   class RenderWindow;
@@ -37,8 +36,8 @@ namespace mitk
   /**
   * Displays a 2D image (currently unsigned char) in the background
   * of a vtkRenderWindow.
-  * Caution: As the data is not being copied, a user is responsible for a valid 
-  * pointer to the image. Also the image dimensions needs to be set correctly before enabling the 
+  * Caution: As the data is not being copied, a user is responsible for a valid
+  * pointer to the image. Also the image dimensions needs to be set correctly before enabling the
   * background.
   */
   class MitkExt_EXPORT ImageBackground2D : public itk::Object
@@ -67,10 +66,10 @@ namespace mitk
 
     void SetParallelScale(int scale);
     int  GetParallelScale();
-    
+
     void Update(char * dataPointer);
     void Update(char * dataPointer, int width, int height, int imageScalarComponents);
-    
+
     ////##Documentation
     ////## @brief visualizes the video. Requires image dimensions and an active mitkvideosource to be set.
     void Enable();
@@ -80,7 +79,7 @@ namespace mitk
     ////##Documentation
     ////## @brief Checks, if the Video background is currently enabled (visible).
     bool IsEnabled();
-     
+
   protected:
     ImageBackground2D();
     ~ImageBackground2D();
@@ -96,7 +95,7 @@ namespace mitk
      vtkVideoSizeCallback *     m_SizeCallback;
 
     unsigned char *             m_ImageData;
-     
+
     int m_ImageWidth, m_ImageHeight, m_ImageScalarComponents, m_ParallelScale;
   };
 } // namespace mitk

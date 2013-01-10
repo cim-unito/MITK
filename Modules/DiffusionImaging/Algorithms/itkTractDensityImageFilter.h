@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __itkTractDensityImageFilter_h__
 #define __itkTractDensityImageFilter_h__
 
@@ -8,6 +23,9 @@
 #include <mitkFiberBundleX.h>
 
 namespace itk{
+
+/**
+* \brief Generates tract density images from input fiberbundles (Calamante 2010).   */
 
 template< class OutputImageType >
 class TractDensityImageFilter : public ImageSource< OutputImageType >
@@ -21,27 +39,21 @@ public:
 
   typedef typename OutputImageType::PixelType OutPixelType;
 
-  itkNewMacro(Self);
-  itkTypeMacro( TractDensityImageFilter, ImageSource );
+  itkNewMacro(Self)
+  itkTypeMacro( TractDensityImageFilter, ImageSource )
 
-  /** Upsampling factor **/
-  itkSetMacro( UpsamplingFactor, unsigned int);
-  itkGetMacro( UpsamplingFactor, unsigned int);
-
-  /** Invert Image **/
-  itkSetMacro( InvertImage, bool);
-  itkGetMacro( InvertImage, bool);
-
-  /** Binary Output **/
-  itkSetMacro( BinaryOutput, bool);
-  itkGetMacro( BinaryOutput, bool);
-
-  /** Use input image geometry to initialize output image **/
-  itkSetMacro( UseImageGeometry, bool);
-  itkGetMacro( UseImageGeometry, bool);
-
-  itkSetMacro( FiberBundle, mitk::FiberBundleX::Pointer);
-  itkSetMacro( InputImage, typename OutputImageType::Pointer);
+  itkSetMacro( UpsamplingFactor, float)                         ///< use higher resolution for ouput image
+  itkGetMacro( UpsamplingFactor, float)                         ///< use higher resolution for ouput image
+  itkSetMacro( InvertImage, bool)                               ///< voxelvalue = 1-voxelvalue
+  itkGetMacro( InvertImage, bool)                               ///< voxelvalue = 1-voxelvalue
+  itkSetMacro( BinaryOutput, bool)                              ///< generate binary fiber envelope
+  itkGetMacro( BinaryOutput, bool)                              ///< generate binary fiber envelope
+  itkSetMacro( OutputAbsoluteValues, bool)                      ///< output absolute values of the number of fibers per voxel
+  itkGetMacro( OutputAbsoluteValues, bool)                      ///< output absolute values of the number of fibers per voxel
+  itkSetMacro( UseImageGeometry, bool)                          ///< use input image geometry to initialize output image
+  itkGetMacro( UseImageGeometry, bool)                          ///< use input image geometry to initialize output image
+  itkSetMacro( FiberBundle, mitk::FiberBundleX::Pointer)        ///< input fiber bundle
+  itkSetMacro( InputImage, typename OutputImageType::Pointer)   ///< use input image geometry to initialize output image
 
   void GenerateData();
 
@@ -52,12 +64,13 @@ protected:
   TractDensityImageFilter();
   virtual ~TractDensityImageFilter();
 
-  typename OutputImageType::Pointer m_InputImage;
-  mitk::FiberBundleX::Pointer m_FiberBundle;
-  unsigned int m_UpsamplingFactor;
-  bool m_InvertImage;
-  bool m_BinaryOutput;
-  bool m_UseImageGeometry;
+  typename OutputImageType::Pointer m_InputImage;           ///< use input image geometry to initialize output image
+  mitk::FiberBundleX::Pointer       m_FiberBundle;          ///< input fiber bundle
+  float                             m_UpsamplingFactor;     ///< use higher resolution for ouput image
+  bool                              m_InvertImage;          ///< voxelvalue = 1-voxelvalue
+  bool                              m_BinaryOutput;         ///< generate binary fiber envelope
+  bool                              m_UseImageGeometry;     ///< use input image geometry to initialize output image
+  bool                              m_OutputAbsoluteValues; ///< do not normalize image values to 0-1
 };
 
 }

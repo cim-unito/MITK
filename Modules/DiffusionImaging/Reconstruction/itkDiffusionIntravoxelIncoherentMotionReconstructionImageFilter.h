@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __itkDiffusionIntravoxelIncoherentMotionReconstructionImageFilter_h
 #define __itkDiffusionIntravoxelIncoherentMotionReconstructionImageFilter_h
 
@@ -285,9 +284,9 @@ namespace itk{
     typedef itk::Image<itk::Vector<double, 3>, 3> InitialFitImageType;
 
     /** set method to add gradient directions and its corresponding
-   * image. The image here is a VectorImage. The user is expected to pass the 
-   * gradient directions in a container. The ith element of the container 
-   * corresponds to the gradient direction of the ith component image the 
+   * image. The image here is a VectorImage. The user is expected to pass the
+   * gradient directions in a container. The ith element of the container
+   * corresponds to the gradient direction of the ith component image the
    * VectorImage.  For the baseline image, a vector of all zeros
    * should be set.*/
     void SetGradientDirections( GradientDirectionContainerType * );

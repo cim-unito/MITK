@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkThinPlateSplineCurvedGeometry.h"
@@ -72,7 +71,7 @@ void mitk::ThinPlateSplineCurvedGeometry::ComputeGeometry()
   projectedTargetLandmarks = m_LandmarkProjector->GetProjectedLandmarks();
 
   mitk::PointSet::DataType::PointsContainer::ConstIterator targetIt, projectedIt;
-  
+
   targetIt    = finalTargetLandmarks->Begin();
   projectedIt = projectedTargetLandmarks->Begin();
 
@@ -82,7 +81,7 @@ void mitk::ThinPlateSplineCurvedGeometry::ComputeGeometry()
   vtkIdType id;
   int size=finalTargetLandmarks->Size();
   for(id=0; id < size; ++id, ++targetIt, ++projectedIt)
-  { 
+  {
     const mitk::PointSet::PointType& target = targetIt->Value();
     m_VtkTargetLandmarks->InsertPoint(id, target[0], target[1], target[2]);
     const mitk::PointSet::PointType& projected = projectedIt->Value();

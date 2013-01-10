@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkGeometry2DDataToSurfaceFilter.h"
 
@@ -67,7 +66,7 @@ int testSurfaceBoundingBoxConsistency(mitk::Surface* surface, bool expectIdentit
 {
   int result;
   std::cout << "  Testing surface contents: ";
-  if ((surface ==  NULL ) 
+  if ((surface ==  NULL )
     || (surface->GetVtkPolyData() == NULL)
     || (surface->GetVtkPolyData()->GetNumberOfPoints() == 0 )) {
     std::cout<<"[FAILED]"<<std::endl;
@@ -168,7 +167,7 @@ int mitkGeometryDataToSurfaceFilterTest(int /*argc*/, char* /*argv*/[])
   }
   else {
     std::cout<<"[PASSED]"<<std::endl;
-  } 
+  }
 
   mitk::Point3D origin;
   mitk::PlaneGeometry::Pointer plane = mitk::PlaneGeometry::New();

@@ -1,19 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile: itkNonUniformBSpline.h,v $
-  Language:  C++
-  Date:      $Date: 2010/04/30 17:00:49 $
-  Version:   $Revision: 1.8 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 
 /*********************************
   This file was taken from ITK, CVS version 1.8 to circumvent a bug in ITK release 3.18 (see http://public.kitware.com/Bug/view.php?id=10633
@@ -35,21 +40,21 @@
 
 namespace itk {
 
-/** 
+/**
  * \class NonUniformBSpline
  * \brief BSpline with nonuniform knot spacing.
  *
- * This class is a bspline with nonuniform knot spacing. The 
- * use can specify a set of points and a set of knots and the 
- * spline will attempt to find the control points which will 
- * cause the spline to interpolate the points. 
+ * This class is a bspline with nonuniform knot spacing. The
+ * use can specify a set of points and a set of knots and the
+ * spline will attempt to find the control points which will
+ * cause the spline to interpolate the points.
  *
  * CAUTION: THIS CLASS IS STILL UNDER DEVELOPMENT.
  *
  */
 
 template < unsigned int TDimension = 3 >
-class NonUniformBSpline 
+class NonUniformBSpline
   : public Object
 {
 public:
@@ -126,7 +131,7 @@ public:
   const ControlPointListType & GetControlPoints() const;
 
   /**
-   * Evaluate the basis functions directly. 
+   * Evaluate the basis functions directly.
    * order - order of the basis function, i.e. 3 = cubic.
    * i - basis function number, zero based.
    * t - parameter of the spline.
@@ -152,7 +157,7 @@ protected:
    */
   virtual ~NonUniformBSpline();
 
-  /** 
+  /**
    * Method to print the object.
    */
   virtual void PrintSelf( std::ostream& os, Indent indent ) const;
@@ -160,7 +165,7 @@ protected:
   /**
    * Points that the spline attempts to intepolate.
    */
-  PointListType         m_Points;  
+  PointListType         m_Points;
 
   /**
    * The knots of spline.
@@ -175,7 +180,7 @@ protected:
   /**
    * The chord length computed from m_Points.
    */
-  ChordLengthListType   m_ChordLength;  
+  ChordLengthListType   m_ChordLength;
 
   /**
    * The cumulative chord length computed from m_Points
@@ -196,9 +201,9 @@ protected:
 
 } // end namespace itk
 
-#ifndef ITK_MANUAL_INSTANTIATION 
-#include "itkNonUniformBSpline.txx" 
-#endif 
+#ifndef ITK_MANUAL_INSTANTIATION
+#include "itkNonUniformBSpline.txx"
+#endif
 
 
 #endif // __itkNonUniformBSpline_h

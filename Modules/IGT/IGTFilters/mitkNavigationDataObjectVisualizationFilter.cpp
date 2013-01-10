@@ -1,26 +1,25 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-07-09 18:14:41 +0200 (Mo, 09 Jul 2007) $
-Version:   $Revision: 11185 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkNavigationDataObjectVisualizationFilter.h"
 
 #include "mitkDataStorage.h"
 
 
 mitk::NavigationDataObjectVisualizationFilter::NavigationDataObjectVisualizationFilter()
-: NavigationDataToNavigationDataFilter(), 
+: NavigationDataToNavigationDataFilter(),
 m_RepresentationList(), m_TransformPosition(), m_TransformOrientation()
 {
 }
@@ -36,8 +35,8 @@ const mitk::BaseData* mitk::NavigationDataObjectVisualizationFilter::GetRepresen
 {
   //if (idx >= this->GetNumberOfInputs())
   //  return NULL;
-  
-  //const NavigationData* nd = this->GetInput(idx);  
+
+  //const NavigationData* nd = this->GetInput(idx);
   //if (nd == NULL)
   //  return NULL;
 
@@ -61,8 +60,8 @@ void mitk::NavigationDataObjectVisualizationFilter::SetRepresentationObject(unsi
 
   m_RepresentationList[idx] = RepresentationPointer(data);
   //std::pair<RepresentationPointerMap::iterator, bool> returnEl; //pair for returning the result
-  //returnEl = m_RepresentationList.insert( RepresentationPointerMap::value_type(nd, data) ); //insert the given elements  
-  //return returnEl.second; // return if insert was successful 
+  //returnEl = m_RepresentationList.insert( RepresentationPointerMap::value_type(nd, data) ); //insert the given elements
+  //return returnEl.second; // return if insert was successful
 }
 
 
@@ -78,7 +77,7 @@ void mitk::NavigationDataObjectVisualizationFilter::GenerateData()
 
     mitk::NavigationData* output = this->GetOutput(index);
     assert(output);
-        
+
     //check if the data is valid
     if (!nd->IsDataValid())
     {
@@ -92,7 +91,7 @@ void mitk::NavigationDataObjectVisualizationFilter::GenerateData()
       itkWarningMacro("NavigationDataObjectVisualizationFilter: Wrong/No BaseData associated with input.");
       return;
     }
-    
+
     //get the transform from data
     mitk::AffineTransform3D::Pointer affineTransform = data->GetGeometry()->GetIndexToWorldTransform();
     if (affineTransform.IsNull())
@@ -124,7 +123,7 @@ void mitk::NavigationDataObjectVisualizationFilter::GenerateData()
       quatTransform->SetRotation(doubleQuaternion);
       quatTransform->Modified();
 
-      /* because of an itk bug, the transform can not be calculated with float data type. 
+      /* because of an itk bug, the transform can not be calculated with float data type.
       To use it in the mitk geometry classes, it has to be transfered to mitk::ScalarType which is float */
       static AffineTransform3D::MatrixType m;
       mitk::TransferMatrix(quatTransform->GetMatrix(), m);
@@ -135,11 +134,11 @@ void mitk::NavigationDataObjectVisualizationFilter::GenerateData()
       ///*set the offset by convert from itkPoint to itkVector and setting offset of transform*/
       mitk::Vector3D pos;
       pos.Set_vnl_vector(nd->GetPosition().Get_vnl_vector());
-      affineTransform->SetOffset(pos);    
+      affineTransform->SetOffset(pos);
     }
     affineTransform->Modified();
     //set the transform to data
-    data->GetGeometry()->SetIndexToWorldTransform(affineTransform);    
+    data->GetGeometry()->SetIndexToWorldTransform(affineTransform);
     //set the original spacing to keep scaling of the geometrical object
     data->GetGeometry()->SetSpacing(spacing);
     data->GetGeometry()->TransferItkToVtkTransform(); // update VTK Transform for rendering too

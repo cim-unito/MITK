@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkIGTLoggerWidget_H
 #define QmitkIGTLoggerWidget_H
@@ -32,7 +31,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 
  /** Documentation:
-  *   \brief GUI to access the IGT recorder. 
+  *   \brief GUI to access the IGT recorder.
   *   User can specify the file name where the output shall be stored and
   *   how long the recording shall be performed.
   *
@@ -45,7 +44,7 @@ class MitkIGTUI_EXPORT QmitkIGTLoggerWidget : public QWidget
   public:
     static const std::string VIEW_ID;
 
-    QmitkIGTLoggerWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);    
+    QmitkIGTLoggerWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
     ~QmitkIGTLoggerWidget();
 
     void SetDataStorage(mitk::DataStorage* dataStorage);
@@ -55,10 +54,10 @@ class MitkIGTUI_EXPORT QmitkIGTLoggerWidget : public QWidget
      void SignalRecordingStarted();
      void SignalRecordingStopped();
 
-  protected slots:    
+  protected slots:
     void OnChangePressed();
-    void OnStartRecording(bool recording);    
-    void OnRecording();    
+    void OnStartRecording(bool recording);
+    void OnRecording();
     void UpdateRecordingTime();
     void StopRecording();
     void UpdateOutputFileName();

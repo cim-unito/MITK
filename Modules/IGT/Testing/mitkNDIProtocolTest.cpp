@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNDIProtocol.h"
 
@@ -24,7 +23,7 @@ PURPOSE.  See the above copyright notices for more information.
 /**Documentation
 * NDIProtocol has a protected constructor and a protected itkNewMacro
 * so that only it's friend class NDITrackingDevice is able to instantiate
-* tool objects. Therefore, we derive from NDIPassiveTool and add a 
+* tool objects. Therefore, we derive from NDIPassiveTool and add a
 * public itkNewMacro, so that we can instantiate and test the class
 */
 class NDIProtocolTestClass : public mitk::NDIProtocol
@@ -36,7 +35,7 @@ public:
   */
   itkNewMacro(Self);
 protected:
-  NDIProtocolTestClass() : mitk::NDIProtocol()  
+  NDIProtocolTestClass() : mitk::NDIProtocol()
   {
   }
 };
@@ -49,9 +48,9 @@ int mitkNDIProtocolTest(int /* argc */, char* /*argv*/[])
   // always start with this!
   MITK_TEST_BEGIN("NDIProtocolTest");
 
-  // let's create an object of our class  
+  // let's create an object of our class
   mitk::NDIProtocol::Pointer myNDIProtocol = NDIProtocolTestClass::New().GetPointer();
-  
+
   // first test: did this work?
   // using MITK_TEST_CONDITION_REQUIRED makes the test stop after failure, since
   // it makes no sense to continue without an object.
@@ -66,8 +65,8 @@ int mitkNDIProtocolTest(int /* argc */, char* /*argv*/[])
   //All other methods
   //No testing possible, hardware required
 
-  
-  
+
+
   // always end with this!
   MITK_TEST_END();
 }

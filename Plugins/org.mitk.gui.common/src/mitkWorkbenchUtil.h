@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKWORKBENCHUTIL_H
@@ -26,15 +25,17 @@ PURPOSE.  See the above copyright notices for more information.
 #include <berryIWorkbenchPage.h>
 #include <berryIEditorDescriptor.h>
 
+class ctkPluginContext;
+
 namespace mitk {
 
 /**
  * @ingroup org_mitk_gui_common
  *
- * @brief Utility class for loading data and opening editors in a MITK Workbench.
+ * @brief Utility class for loading data, opening editors and other tasks in a MITK Workbench.
  *
  * @note Infering the content type is not yet supported (ignore the comments about it
- *       in the method documentation). 
+ *       in the method documentation).
  */
 struct MITK_GUI_COMMON_PLUGIN WorkbenchUtil
 {
@@ -49,10 +50,12 @@ struct MITK_GUI_COMMON_PLUGIN WorkbenchUtil
    *            A list of file names with absolute path.
    * @param wnd
    *            The Workbench window in which the data will be loaded.
+   * @param openEditor
+   *            Whether an Editor is to be opened on file loading (for cases there is none).
    *
    * @see mitk::IDataNodeReader
    */
-  static void LoadFiles(const QStringList& fileNames, berry::IWorkbenchWindow::Pointer wnd);
+  static void LoadFiles(const QStringList& fileNames, berry::IWorkbenchWindow::Pointer wnd, bool openEditor = true);
 
   /**
      * Opens an editor on the given object.
@@ -167,6 +170,17 @@ struct MITK_GUI_COMMON_PLUGIN WorkbenchUtil
      */
   static berry::IEditorDescriptor::Pointer GetDefaultEditor(const QString& file,
                                                             bool determineContentType);
+  /**
+   * Set the "DepartmentLogo" preference using a Qt resource path.
+   *
+   * This is a convenience method to set the preference for a "deparment" logo which is usually
+   * shown in render windows in the MITK workbench.
+   *
+   * @param logoResource A Qt resource path to the logo, e.g. ":/MyLogo.png".
+   * @param context The plugin context of the plug-in containing the logo resource.
+   * @return \c true if the preference was set successfully, \c false otherwise.
+   */
+  static bool SetDepartmentLogoPreference(const QString& logoResource, ctkPluginContext* context);
 
 };
 

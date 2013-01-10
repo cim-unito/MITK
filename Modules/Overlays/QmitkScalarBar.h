@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKSCALARBAR_H_HEADER_INCLUDED_C10DC4EB
@@ -32,7 +31,7 @@ class Overlays_EXPORT QmitkScalarBar : public QWidget
     Q_OBJECT
   public:
 
-    enum alignment 
+    enum alignment
     {
       vertical = 0,
       horizontal = 1
@@ -59,16 +58,16 @@ class Overlays_EXPORT QmitkScalarBar : public QWidget
     unsigned int GetNumberOfSubdivisions();
 
   protected:
-   
+
     void paintEvent(QPaintEvent* event);
 
     void SetupGeometry( alignment align );
-   
+
     void CleanUpLines();
     //void moveEvent(QMoveEvent*);
 
     alignment m_Alignment;
-    
+
     double m_ScaleFactor;
 
     QLine* m_MainLine;

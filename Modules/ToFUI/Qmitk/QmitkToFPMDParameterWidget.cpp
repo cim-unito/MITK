@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-20 13:35:09 +0200 (Mi, 20 Mai 2009) $
-Version:   $Revision: 17332 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 //#define _USE_MATH_DEFINES
 #include <QmitkToFPMDParameterWidget.h>
@@ -23,9 +21,6 @@ PURPOSE.  See the above copyright notices for more information.
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qcombobox.h>
-
-//mitk headers
-#include <mitkToFImageGrabberCreator.h>
 
 //itk headers
 #include <itksys/SystemTools.hxx>
@@ -98,8 +93,8 @@ void QmitkToFPMDParameterWidget::ActivateAllParameters()
     this->m_ToFImageGrabber->SetBoolProperty("SetExposureMode", boolValue);
 
     //reset the GUI elements
-    m_Controls->m_IntegrationTimeSpinBox->setValue(this->m_IntegrationTime);
-    m_Controls->m_ModulationFrequencySpinBox->setValue(this->m_ModulationFrequency);
+    m_Controls->m_IntegrationTimeSpinBox->setValue(this->m_ToFImageGrabber->GetIntegrationTime());
+    m_Controls->m_ModulationFrequencySpinBox->setValue(this->m_ToFImageGrabber->GetModulationFrequency());
 }
 
 void QmitkToFPMDParameterWidget::OnChangeIntegrationTimeSpinBox(int value)
@@ -113,7 +108,12 @@ void QmitkToFPMDParameterWidget::OnChangeIntegrationTimeSpinBox(int value)
       m_ToFImageGrabber->StopCamera();
     }
     this->m_IntegrationTime = m_Controls->m_IntegrationTimeSpinBox->value();
-    this->m_IntegrationTime = this->m_ToFImageGrabber->SetIntegrationTime(this->m_IntegrationTime);
+    int validIntegrationTime = this->m_ToFImageGrabber->SetIntegrationTime(this->m_IntegrationTime);
+    if(validIntegrationTime != m_IntegrationTime)
+    {
+      this->m_Controls->m_IntegrationTimeSpinBox->setValue(validIntegrationTime);
+      this->m_IntegrationTime = validIntegrationTime;
+    }
     if (active)
     {
       m_ToFImageGrabber->StartCamera();
@@ -132,7 +132,12 @@ void QmitkToFPMDParameterWidget::OnChangeModulationFrequencySpinBox(int value)
       m_ToFImageGrabber->StopCamera();
     }
     this->m_ModulationFrequency = m_Controls->m_ModulationFrequencySpinBox->value();
-    this->m_ModulationFrequency = this->m_ToFImageGrabber->SetModulationFrequency(this->m_ModulationFrequency);
+    int validMFrequency = this->m_ToFImageGrabber->SetModulationFrequency(this->m_ModulationFrequency);
+    if(validMFrequency != m_ModulationFrequency)
+    {
+      this->m_Controls->m_ModulationFrequencySpinBox->setValue(validMFrequency);
+      this->m_ModulationFrequency = validMFrequency;
+    }
     if (active)
     {
       m_ToFImageGrabber->StartCamera();

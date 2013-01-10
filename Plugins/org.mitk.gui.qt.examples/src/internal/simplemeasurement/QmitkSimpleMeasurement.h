@@ -1,22 +1,21 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-03-21 14:46:24 +0100 (Sat, 21 Mar 2009) $
-Version:   $Revision: 15412 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
 
-#if !defined(QMITK_MEASUREMENT_H__INCLUDED)
-#define QMITK_MEASUREMENT_H__INCLUDED
+===================================================================*/
+
+#ifndef MITKSIMPELEMEASUREMENT_H
+#define MITKSIMPELEMEASUREMENT_H
 
 //#include "QmitkFunctionality.h"
 
@@ -48,12 +47,12 @@ class QmitkSimpleMeasurement : public QmitkFunctionality
 
   public:
 
-	QmitkSimpleMeasurement() {}
-	QmitkSimpleMeasurement(const QmitkSimpleMeasurement& other)
-	{
-		Q_UNUSED(other)
-		throw std::runtime_error("Copy constructor not implemented");
-	}
+  QmitkSimpleMeasurement() {}
+  QmitkSimpleMeasurement(const QmitkSimpleMeasurement& other)
+  {
+    Q_UNUSED(other)
+    throw std::runtime_error("Copy constructor not implemented");
+  }
     virtual ~QmitkSimpleMeasurement();
     virtual void Activated();
     virtual void Deactivated();
@@ -77,7 +76,10 @@ class QmitkSimpleMeasurement : public QmitkFunctionality
 
     void AddPathSimpleMeasurement();
 
+    void Finished();
+
   protected:
+
     /*!
     * controls containing sliders for scrolling through the slices
     */
@@ -93,10 +95,17 @@ class QmitkSimpleMeasurement : public QmitkFunctionality
     */
     mitk::WeakPointer<mitk::DataNode> m_SelectedPointSetNode;
 
-    /*
-     * Node representing the PointSet last created. It is used to delete empty point sets.
+    /** @brief
+     *  Node representing the PointSets which were created by this application.
      */
-    std::vector<mitk::DataNode*> m_CreatedPointSetNodes;
+    std::vector<mitk::DataNode::Pointer> m_CreatedDistances;
+    std::vector<mitk::DataNode::Pointer> m_CreatedAngles;
+    std::vector<mitk::DataNode::Pointer> m_CreatedPaths;
+
+    void StartEditingMeasurement();
+    void EndEditingMeasurement();
+    void UpdateMeasurementList();
+
 };
 
 #endif // !defined(QMITK_MEASUREMENT_H__INCLUDED)

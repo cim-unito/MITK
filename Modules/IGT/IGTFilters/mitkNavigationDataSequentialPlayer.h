@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-02-10 18:08:54 +0100 (Di, 10 Feb 2009) $
-Version:   $Revision: 16228 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNavigationDataSequentialPlayer_H_HEADER_INCLUDED_
@@ -41,8 +40,9 @@ namespace mitk
     itkNewMacro(Self);
 
     /**
-    * \brief sets the file name and path (if XMLString is set, this is neglected)
-    */
+     * \brief sets the file name and path (if XMLString is set, this is neglected)
+     * @throw mitk::IGTIOException Throws an exception if the given file cannot be loaded.
+     */
     void SetFileName(const std::string& _FileName);
 
     /**
@@ -52,6 +52,7 @@ namespace mitk
 
     /**
     * \brief sets a xml string (by this, the xml string is not read from file)
+    * @throw mitk::IGTExcepton Throws an mitk::IGTExcepton if the string to set is not an XMLString
     */
     void SetXMLString(const std::string& _XMLString);
 
@@ -60,25 +61,29 @@ namespace mitk
     */
     itkGetStringMacro(XMLString);
 
-    ///
-    /// set to true if the data player should repeat the outputs
-    ///
+    /**
+     * @brief Set to true if the data player should repeat the outputs.
+     */
     itkSetMacro(Repeat, bool);
-    ///
-    /// set if the data player should repeat the outputs
-    ///
+
+    /**
+     * @return Returns if the data player should repeat the outputs.
+     */
     itkGetMacro(Repeat, bool);
-    ///
-    /// \return the number of navigation data snapshots available in the file
-    ///
+
+    /**
+     * @return Returns the number of navigation data snapshots available in the file
+     */
     itkGetMacro(NumberOfSnapshots, unsigned int);
 
-    ///
-    /// advance the output to the i-th snapshot
-    /// e.g. if you want to have the NavData of snapshot
-    /// 17 then you can call GoToSnapshot(17). index begins at 1!
-    /// you can then also go back to snapshot 1 with GoToSnapshot(1)
-    ///
+    /**
+    * advance the output to the i-th snapshot
+    * e.g. if you want to have the NavData of snapshot
+    * 17 then you can call GoToSnapshot(17). index begins at 1!
+    * you can then also go back to snapshot 1 with GoToSnapshot(1)
+    *
+    * @throw mitk::IGTException Throws an exception if cannot go back to particular snapshot.
+    */
     void GoToSnapshot(int i);
 
     /**
@@ -90,11 +95,17 @@ namespace mitk
   protected:
     NavigationDataSequentialPlayer();
     virtual ~NavigationDataSequentialPlayer();
+
+    /**
+     * @throw mitk::IGTException Throws an exception if data element is not found.
+     */
     void ReinitXML();
+
     mitk::NavigationData::Pointer ReadVersion1();
-    ///
-    /// do the work here
-    ///
+
+    /**
+     * @throw mitk::IGTException Throws an exception if cannot parse input file
+     */
     virtual void GenerateData();
 
     std::string m_FileName;

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   Medical Imaging & Interaction Toolkit
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
- Copyright () German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkMaterial.h"
 #include "mitkBaseProperty.h"
@@ -140,7 +139,7 @@ void testSetColor()
 
 void testSetColorCoefficient()
 {
-  
+
   vtkFloatingPointType colorCoefficient = 0;
   myMP = mitk::Material::New();
   myMP->SetColorCoefficient(colorCoefficient);
@@ -320,7 +319,7 @@ void testOperatorequality()
     myMP2->SetName(name2);
     MITK_TEST_CONDITION(!(*myMP == *myMP2), "testing equality Operator")
   }
- 
+
 
 }
 
@@ -328,7 +327,7 @@ void testAssignable()
 {
   mitk::Material::Pointer materialProp = mitk::Material::New();
   MITK_TEST_CONDITION(myMP->Assignable(*materialProp),"testing Assignable with Material" )
-} 
+}
 
 void testOperatorAssign()
 {
@@ -347,7 +346,7 @@ mitkMaterialTest(int /* argc */, char* /*argv*/[])
 {
   // always start with this!
   MITK_TEST_BEGIN("Material")
-      
+
       MaterialTest materialTest;
 
       materialTest.testConstructor();
@@ -369,7 +368,7 @@ mitkMaterialTest(int /* argc */, char* /*argv*/[])
       materialTest.testSetLineWidth();
       materialTest.testInitialize();
       materialTest.testOperatorequality();
-   
+
       // first test: did this work?
       // using MITK_TEST_CONDITION_REQUIRED makes the test stop after failure, since
       // it makes no sense to continue without an object.
@@ -378,7 +377,7 @@ mitkMaterialTest(int /* argc */, char* /*argv*/[])
       // do not write to std::cout and do not return from this function yourself!
 
       // always end with this!
-MITK_TEST_END    ()  
+MITK_TEST_END    ()
 }
 
 

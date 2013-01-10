@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryEditorAreaHelper.h"
 
@@ -72,11 +71,11 @@ void EditorAreaHelper::CloseEditor(IEditorPart::Pointer part)
   this->CloseEditor(pane);
 }
 
-void EditorAreaHelper::DerefPart(StackablePart::Pointer part)
+void EditorAreaHelper::DerefPart(LayoutPart::Pointer part)
 {
 
   // Get vital part stats before reparenting.
-  IStackableContainer::Pointer oldContainer = part->GetContainer();
+  ILayoutContainer::Pointer oldContainer = part->GetContainer();
 
   // Reparent the part back to the main window
   //part.reparent(editorArea.getParent());
@@ -86,7 +85,7 @@ void EditorAreaHelper::DerefPart(StackablePart::Pointer part)
     return;
   }
   oldContainer->Remove(part);
-  std::list<StackablePart::Pointer> children = oldContainer->GetChildren();
+  std::list<LayoutPart::Pointer> children = oldContainer->GetChildren();
   if (children.empty())
   {
     // There are no more children in this container, so get rid of it
@@ -241,12 +240,12 @@ std::list<IEditorReference::Pointer> EditorAreaHelper::GetEditors()
   {
     PartStack::Pointer stack = *iter;
 
-    std::list<StackablePart::Pointer> children = stack->GetChildren();
+    std::list<LayoutPart::Pointer> children = stack->GetChildren();
 
-    for (std::list<StackablePart::Pointer>::iterator childIter = children.begin();
+    for (std::list<LayoutPart::Pointer>::iterator childIter = children.begin();
         childIter != children.end(); ++childIter)
     {
-      StackablePart::Pointer part = *childIter;
+      LayoutPart::Pointer part = *childIter;
 
       result.push_back(part.Cast<PartPane>()->GetPartReference().Cast<IEditorReference>());
     }

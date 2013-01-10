@@ -1,20 +1,19 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
-                                                          
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
 
 #ifndef BASERENDERER_H_HEADER_INCLUDED_C1CCA0F4
 #define BASERENDERER_H_HEADER_INCLUDED_C1CCA0F4
@@ -40,7 +39,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <map>
 #include <set>
 
-namespace mitk 
+namespace mitk
 {
 
 class NavigationController;
@@ -398,7 +397,7 @@ public:
   //* \brief Setter for the RenderingManager that handles this instance of BaseRenderer
   //*/
   //void SetRenderingManager( mitk::RenderingManager* );
-  
+
   /**
   * \brief Getter for the RenderingManager that handles this instance of BaseRenderer
   */
@@ -560,7 +559,7 @@ protected:
 
   bool m_DepthPeelingEnabled;
 
-  int m_MaxNumberOfPeels; 
+  int m_MaxNumberOfPeels;
 
   typedef std::set< Mapper * > LODEnabledMappersType;
 
@@ -569,17 +568,17 @@ protected:
   unsigned int m_NumberOfVisibleLODEnabledMappers;
 
   // Local Storage Handling for mappers
- 
-  protected: 
-  
+
+  protected:
+
     std::list<mitk::BaseLocalStorageHandler*> m_RegisteredLocalStorageHandlers;
-  
+
   public:
-  
+
     void RemoveAllLocalStorages();
     void RegisterLocalStorageHandler( mitk::BaseLocalStorageHandler *lsh );
     void UnregisterLocalStorageHandler( mitk::BaseLocalStorageHandler *lsh );
-  
+
 };
 
 } // namespace mitk

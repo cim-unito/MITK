@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkNodeDescriptor_h
 #define QmitkNodeDescriptor_h
@@ -29,7 +28,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QIcon>
 #include <mitkNodePredicateBase.h>
 
-/// 
+///
 /// \class QmitkNodeQmitkNodeDescriptor
 /// \brief QmitkNodeQmitkNodeDescriptor is <i>Decorator</i> class for the mitk::DataNode
 /// which enhances certain mitk::DataNode by additional infos needed by the GUI (Icon, ...)
@@ -41,7 +40,7 @@ PURPOSE.  See the above copyright notices for more information.
 /// \sa QmitkDataNodeQmitkNodeDescriptorManager
 ///
 class QMITK_EXPORT QmitkNodeDescriptor : public QObject
-{  
+{
   Q_OBJECT
 public:
   ///
@@ -59,7 +58,7 @@ public:
   virtual QString GetClassName() const;
   ///
   /// Returns an Icon for this class of DataNodes
-  /// 
+  ///
   virtual QIcon GetIcon() const;
   ///
   /// Returns an Icon for this class of DataNodes

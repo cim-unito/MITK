@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKDISPLAYCOORDINATEOPERATION_H_HEADER_INCLUDED_C10E33D0
@@ -40,10 +39,10 @@ namespace mitk {
   class MITK_CORE_EXPORT DisplayCoordinateOperation : public Operation
   {
   public:
-    DisplayCoordinateOperation(mitk::OperationType operationType, 
+    DisplayCoordinateOperation(mitk::OperationType operationType,
       mitk::BaseRenderer* renderer,
-      const mitk::Point2D& startDisplayCoordinate, 
-      const mitk::Point2D& lastDisplayCoordinate, 
+      const mitk::Point2D& startDisplayCoordinate,
+      const mitk::Point2D& lastDisplayCoordinate,
       const mitk::Point2D& currentDisplayCoordinate
       );
 

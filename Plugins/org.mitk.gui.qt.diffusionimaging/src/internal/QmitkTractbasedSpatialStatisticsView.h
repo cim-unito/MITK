@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkTractbasedSpatialStatisticsView_h
 #define QmitkTractbasedSpatialStatisticsView_h
@@ -44,7 +43,7 @@ PURPOSE.  See the above copyright notices for more information.
 #include "QmitkTbssTableModel.h"
 #include "QmitkTbssMetaTableModel.h"
 
-
+#include <mitkFiberBundleX.h>
 
 
 typedef short DiffusionPixelType;
@@ -141,14 +140,20 @@ class QmitkTractbasedSpatialStatisticsView : public QmitkFunctionality
 
     void CopyToClipboard();
 
+    void Cut();
+
+    void PerformChange();
 
 
   protected:
+
 
     /// \brief called by QmitkFunctionality when DataManager's selection has changed
     virtual void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
 
     void Plot(mitk::TbssImage*, mitk::TbssRoiImage*);
+
+    void PlotFiberBundle(mitk::FiberBundleX* fib, mitk::Image* img, mitk::PlanarFigure* startRoi=NULL, mitk::PlanarFigure* endRoi=NULL);
 
     void InitPointsets();
 
@@ -227,8 +232,9 @@ class QmitkTractbasedSpatialStatisticsView : public QmitkFunctionality
 
     std::string ReadFile(std::string whatfile);
 
-
     std::vector< itk::Index<3> > m_Roi;
+
+    mitk::FiberBundleX* m_Fib;
 
     std::string m_CurrentStructure;
 
@@ -243,6 +249,13 @@ class QmitkTractbasedSpatialStatisticsView : public QmitkFunctionality
     mitk::TbssImage::Pointer m_CurrentTbssMetaImage;
 
     VectorImageType::Pointer ConvertToVectorImage(mitk::Image::Pointer mitkImg);
+
+
+    mitk::DataNode::Pointer m_CurrentFiberNode; // needed for the index property when interacting with the plot widget
+
+    mitk::DataNode::Pointer m_CurrentStartRoi; // needed when a plot should only show values between a start end end roi
+    mitk::DataNode::Pointer m_CurrentEndRoi; // idem dito
+
 
 };
 

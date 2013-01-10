@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkDataStorage.h"
 
@@ -213,7 +212,7 @@ void mitk::DataStorage::AddListeners( const mitk::DataNode* _Node )
   mitk::DataNode* NonConstNode = const_cast<mitk::DataNode*>(_Node);
   if(_Node && m_NodeModifiedObserverTags
     .find(NonConstNode) == m_NodeModifiedObserverTags.end())
-  {    
+  {
     itk::MemberCommand<mitk::DataStorage>::Pointer nodeModifiedCommand =
       itk::MemberCommand<mitk::DataStorage>::New();
     nodeModifiedCommand->SetCallbackFunction(this
@@ -374,7 +373,7 @@ mitk::TimeSlicedGeometry::Pointer mitk::DataStorage::ComputeBoundingGeometry3D( 
   {
     minTimeBounds[0] = minimalTime;
     minTimeBounds[1] = minimalTime + minimalIntervallSize;
-    numberOfTimeSteps = (maximalTime-minimalTime)/minimalIntervallSize;
+    numberOfTimeSteps = static_cast<unsigned int>((maximalTime-minimalTime)/minimalIntervallSize);
   }
 
   TimeSlicedGeometry::Pointer timeSlicedGeometry = NULL;

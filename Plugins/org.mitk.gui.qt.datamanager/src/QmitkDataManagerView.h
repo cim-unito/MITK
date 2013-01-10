@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKDATAMANAGERVIEW_H_
 #define QMITKDATAMANAGERVIEW_H_
@@ -23,6 +22,7 @@ PURPOSE.  See the above copyright notices for more information.
 
 /// Qmitk
 #include <QmitkAbstractView.h>
+#include <QmitkNodeDescriptorManager.h>
 
 /// Qt
 #include <QItemSelection>
@@ -158,15 +158,9 @@ public slots:
   ///
   void ContextMenuActionTriggered( bool );
 
-  ///
-  /// Invoked when the MITK workbench selection changed
-  ///
-  void OnSelectionChanged(berry::IWorkbenchPart::Pointer part,
-                          const QList<mitk::DataNode::Pointer>& selection);
-
   /// Invoked when the median action is invoked
   void OtsuFilter( bool checked = false );
-  
+
   /// When rows are inserted auto expand them
   void NodeTreeViewRowsInserted ( const QModelIndex & parent, int start, int end );
 
@@ -203,7 +197,7 @@ protected:
   ///
   QmitkDataStorageTreeModel* m_NodeTreeModel;
   ///
-  /// Holds the preferences for the datamanager. 
+  /// Holds the preferences for the datamanager.
   ///
   berry::IBerryPreferences::Pointer m_DataManagerPreferencesNode;
   ///
@@ -234,27 +228,18 @@ protected:
   QAction* m_RemoveAction;
   /// Reinit Action
   QAction* m_ReinitAction;
+
+  ///# A list of ALL actions for the Context Menu
+  std::vector< std::pair< QmitkNodeDescriptor*, QAction* > > m_DescriptorActionList;
+
   /// A Slider widget to change the opacity of a node
   QSlider* m_OpacitySlider;
-  /// Opacity action
-  QWidgetAction* m_OpacityAction;
   /// button to change the color of a node
   QPushButton* m_ColorButton;
-  /// Color action
-  QWidgetAction* m_ColorAction;
   /// TextureInterpolation action
   QAction* m_TextureInterpolation;
-  /// TextureInterpolation action
+  /// SurfaceRepresentation action
   QAction* m_SurfaceRepresentation;
-  /// Show only selected nodes
-  QAction* m_ShowOnlySelectedNodes;
-  /// Toggles visibility of selected nodes
-  QAction* m_ToggleSelectedVisibility;
-  /// Shows infos for selected nodes
-  QAction* m_ActionShowInfoDialog;
-  
-  /// Special filter action for images
-  QAction* m_OtsuFilterAction;
 
   /// Maps "Show in" actions to editor ids
   QSignalMapper* m_ShowInMapper;
@@ -270,7 +255,7 @@ private:
   QItemSelectionModel* GetDataNodeSelectionModel() const;
 
   /// Reopen multi widget editor if it has been closed
-  mitk::IRenderWindowPart *OpenRenderWindowPart();
+  mitk::IRenderWindowPart *OpenRenderWindowPart(bool activatedEditor = true);
 };
 
 #endif /*QMITKDATAMANAGERVIEW_H_*/

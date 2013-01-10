@@ -1,18 +1,18 @@
-/*=========================================================================
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-03-31 16:40:27 +0200 (Mi, 31 Mrz 2010) $
-Version:   $Revision: 21975 $
+/*===================================================================
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkGibbsTrackingView_h
 #define QmitkGibbsTrackingView_h
@@ -30,6 +30,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include <itkImage.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
+#include <itkDiffusionTensor3D.h>
+#include <mitkTensorImage.h>
 
 class QmitkGibbsTrackingView;
 
@@ -51,9 +53,7 @@ private:
 };
 
 /*!
-  \brief QmitkGibbsTrackingView
-
-  \warning  This application module is not yet documented. Use "svn blame/praise/annotate" and ask the author to provide basic documentation.
+  \brief View for global fiber tracking (Gibbs tracking)
 
   \sa QmitkFunctionality
   \ingroup Functionalities
@@ -62,7 +62,7 @@ typedef itk::Image< float, 3 >            FloatImageType;
 
 namespace itk
 {
-template<class X, class Y>
+template<class X>
 class GibbsTrackingFilter;
 }
 
@@ -74,12 +74,11 @@ class QmitkGibbsTrackingView : public QmitkFunctionality
 
 public:
 
-  typedef itk::Image<float,3> MaskImgType;
-
-  typedef itk::Vector<float, QBALL_ODFSIZE> OdfVectorType;
-  typedef itk::Image<OdfVectorType, 3> ItkQBallImgType;
-
-  typedef itk::GibbsTrackingFilter<ItkQBallImgType, MaskImgType> GibbsTrackingFilterType;
+  typedef itk::Image<float,3>                               ItkFloatImageType;
+  typedef itk::Vector<float, QBALL_ODFSIZE>                 OdfVectorType;
+  typedef itk::Image<OdfVectorType, 3>                      ItkQBallImgType;
+  typedef itk::Image< itk::DiffusionTensor3D<float>, 3 >    ItkTensorImage;
+  typedef itk::GibbsTrackingFilter< ItkQBallImgType >       GibbsTrackingFilterType;
 
   static const std::string VIEW_ID;
 
@@ -97,13 +96,15 @@ protected slots:
 
   void StartGibbsTracking();
   void StopGibbsTracking();
-  void AfterThread();
-  void BeforeThread();
+  void AfterThread();                       ///< update gui etc. after tracking has finished
+  void BeforeThread();                      ///< start timer etc.
   void TimerUpdate();
   void SetMask();
-  void AdvancedSettings();
-  void SaveTrackingParameters();
-  void LoadTrackingParameters();
+  void AdvancedSettings();                  ///< show/hide advanced tracking options
+  void SaveTrackingParameters();            ///< save tracking parameters to xml file
+  void LoadTrackingParameters();            ///< load tracking parameters from xml file
+
+  /** update labels if parameters have changed */
   void SetIterations(int value);
   void SetParticleWidth(int value);
   void SetParticleLength(int value);
@@ -113,54 +114,50 @@ protected slots:
   void SetStartTemp(int value);
   void SetEndTemp(int value);
   void SetCurvatureThreshold(int value);
+  void SetRandomSeed(int value);
   void SetOutputFile();
 
 private:
 
   // Visualization & GUI
-  void GenerateFiberBundle(bool smoothFibers);
-  void UpdateGUI();
-  void UpdateTrackingStatus();
+  void GenerateFiberBundle();   ///< generate fiber bundle from tracking output and add to datanode
+  void UpdateGUI();             ///< update button activity etc. dpending on current datamanager selection
+  void UpdateTrackingStatus();  ///< update textual status display of the tracking process
 
   /// \brief called by QmitkFunctionality when DataManager's selection has changed
   virtual void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
 
-  template<class InputImageType>
-  void CastToFloat(InputImageType* image, typename mitk::Image::Pointer outImage);
-
-  void UpdateIteraionsGUI(unsigned long iterations);
+  void UpdateIteraionsGUI(unsigned long iterations);    ///< update iterations label text
 
   Ui::QmitkGibbsTrackingViewControls* m_Controls;
   QmitkStdMultiWidget* m_MultiWidget;
 
-  // data objects
-  mitk::FiberBundleX::Pointer m_FiberBundle;
-  MaskImgType::Pointer        m_MaskImage;
-  mitk::QBallImage::Pointer   m_QBallImage;
-  ItkQBallImgType::Pointer    m_ItkQBallImage;
+  /** data objects */
+  mitk::FiberBundleX::Pointer   m_FiberBundle;      ///< tracking output
+  ItkFloatImageType::Pointer    m_MaskImage;        ///< used to reduce the algorithms search space. tracking only inside of the mask.
+  mitk::TensorImage::Pointer    m_TensorImage;      ///< actual image that is tracked
+  mitk::QBallImage::Pointer     m_QBallImage;       ///< actual image that is tracked
+  ItkQBallImgType::Pointer      m_ItkQBallImage;    ///< actual image that is tracked
+  ItkTensorImage::Pointer       m_ItkTensorImage;   ///< actual image that is tracked
 
-  // data nodes
-  mitk::DataNode::Pointer m_QBallImageNode;
+  /** data nodes */
+  mitk::DataNode::Pointer m_ImageNode;
   mitk::DataNode::Pointer m_MaskImageNode;
   mitk::DataNode::Pointer m_FiberBundleNode;
 
-  // flags etc.
+  /** flags etc. */
   bool            m_ThreadIsRunning;
   QTimer*         m_TrackingTimer;
   QTime           m_TrackingTime;
   unsigned long   m_ElapsedTime;
-  bool            m_QBallSelected;
-  bool            m_FibSelected;
   unsigned long   m_Iterations;
   int             m_LastStep;
   QString         m_OutputFileName;
-  int m_SaveCounter;
 
-  // global tracker and friends
+  /** global tracker and friends */
   itk::SmartPointer<GibbsTrackingFilterType> m_GlobalTracker;
   QmitkTrackingWorker m_TrackingWorker;
   QThread m_TrackingThread;
-
   friend class QmitkTrackingWorker;
 };
 

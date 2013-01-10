@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-18 21:46:13 +0200 (So, 18 Okt 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkVtkLineProfileWidget.h"
 
@@ -53,8 +52,8 @@ PURPOSE.  See the above copyright notices for more information.
 
 //#include <iostream>
 
-QmitkVtkLineProfileWidget::QmitkVtkLineProfileWidget( QWidget * /*parent*/ )
-: m_PathMode( PATH_MODE_DIRECT )
+QmitkVtkLineProfileWidget::QmitkVtkLineProfileWidget( QWidget * parent )
+  : QDialog(parent), m_PathMode( PATH_MODE_DIRECT )
 {
   m_ChartWidget = new vtkQtChartWidget( this );
 
@@ -86,7 +85,7 @@ QmitkVtkLineProfileWidget::QmitkVtkLineProfileWidget( QWidget * /*parent*/ )
   xAxis->getOptions()->setGridVisible(false);
   xAxis->getOptions()->setPrecision( 1 );
   xAxis->getOptions()->setNotation( vtkQtChartAxisOptions::Standard );
-  
+
   vtkQtChartAxis *yAxis = axisLayer->getAxis(vtkQtChartAxis::Left);
   yAxis->getOptions()->setPrecision( 0 );
   yAxis->getOptions()->setNotation( vtkQtChartAxisOptions::Standard );
@@ -105,7 +104,7 @@ QmitkVtkLineProfileWidget::QmitkVtkLineProfileWidget( QWidget * /*parent*/ )
 #endif
 
 #if ((VTK_MAJOR_VERSION>=5) && (VTK_MINOR_VERSION>=6) )
-  
+
   vtkQtChartBasicStyleManager *styleManager =
       qobject_cast<vtkQtChartBasicStyleManager *>(area->getStyleManager());
 
@@ -115,8 +114,8 @@ QmitkVtkLineProfileWidget::QmitkVtkLineProfileWidget( QWidget * /*parent*/ )
   styleManager->setGenerator("Pen",pen);
 
 #endif
-  
-  
+
+
 
   // Initialize parametric path object
   m_ParametricPath = ParametricPathType::New();
@@ -190,7 +189,7 @@ void QmitkVtkLineProfileWidget::UpdateItemModelFromPath()
   for ( i = 0, t = m_DerivedPath->StartOfInput(); ;++i )
   {
     const PathType::OutputType &continuousIndex = m_DerivedPath->Evaluate( t );
-    
+
     mitk::Point3D worldPoint;
     imageGeometry->IndexToWorld( continuousIndex, worldPoint );
 
@@ -229,11 +228,11 @@ void QmitkVtkLineProfileWidget::UpdateItemModelFromPath()
         tmp_LineChart->setModel( table );
 
         m_VectorLineCharts.push_back(tmp_LineChart);
-        
+
         tmp_ItemModel = new QStandardItemModel();
-        
+
         k = 0;
-        
+
         tmp_ItemModel->setVerticalHeaderItem( k, new QStandardItem() );
         tmp_ItemModel->verticalHeaderItem( k )->setData(
             QVariant( distance ), Qt::DisplayRole );
@@ -255,7 +254,7 @@ void QmitkVtkLineProfileWidget::UpdateItemModelFromPath()
   for(unsigned int j = 0; j < m_VectorLineCharts.size() ; j++)
   {
 /*    int styleIndex = styleManager->getStyleIndex(m_LineChart, m_LineChart->getSeriesOptions(0));
-  
+
     vtkQtChartStylePen *stylePen = qobject_cast<vtkQtChartStylePen *>(
       styleManager->getGenerator("Pen"));
     stylePen->getStylePen(styleIndex).setStyle(Qt::SolidLine);*/
@@ -289,7 +288,7 @@ void QmitkVtkLineProfileWidget::CreatePathFromPlanarFigure()
   }
 
   // Get 2D geometry frame of PlanarFigure
-  mitk::Geometry2D *planarFigureGeometry2D = 
+  mitk::Geometry2D *planarFigureGeometry2D =
     dynamic_cast< mitk::Geometry2D * >( m_PlanarFigure->GetGeometry( 0 ) );
   if ( planarFigureGeometry2D == NULL )
   {

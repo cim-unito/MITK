@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _BERRY_QUALIFIED_NAME_
 #define _BERRY_QUALIFIED_NAME_
@@ -27,9 +26,9 @@ namespace berry
 
 /**
  * Qualified names are two-part names: qualifier and local name.
- * The qualifier must be in URI form (see RFC2396).  
+ * The qualifier must be in URI form (see RFC2396).
  * Note however that the qualifier may be <code>null</code> if
- * the default name space is being used.  The empty string is not 
+ * the default name space is being used.  The empty string is not
  * a valid local name.
  * <p>
  * This class can be used without OSGi running.
@@ -93,7 +92,7 @@ struct BERRY_JOBS QualifiedName
    */
   std::string GetQualifier() const;
 
-  /* 
+  /*
    * Implements the method <code>Object.hashCode</code>.
    *
    * Returns the hash code for this qualified name.

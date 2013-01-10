@@ -1,19 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-  Program:   Insight Segmentation & Registration Toolkit
-  Module:    $RCSfile$
-  Language:  C++
-  Date:      $Date$
-  Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-  Copyright (c) Insight Software Consortium. All rights reserved.
-  See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even 
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-     PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 #ifndef _itkSmartPointerVectorContainer_txx
 #define _itkSmartPointerVectorContainer_txx
 #include "itkSmartPointerVectorContainer.h"
@@ -236,7 +241,7 @@ SmartPointerVectorContainer< TElementIdentifier , TElement >
 template <typename TElementIdentifier, typename TElement>
 typename SmartPointerVectorContainer< TElementIdentifier , TElement >::Iterator
 SmartPointerVectorContainer< TElementIdentifier , TElement >
-::Begin(void) 
+::Begin(void)
 {
   return Iterator(0, this, this->VectorType::begin());
 }
@@ -248,7 +253,7 @@ SmartPointerVectorContainer< TElementIdentifier , TElement >
 template <typename TElementIdentifier, typename TElement>
 typename SmartPointerVectorContainer< TElementIdentifier , TElement >::Iterator
 SmartPointerVectorContainer< TElementIdentifier , TElement >
-::End(void) 
+::End(void)
 {
   return Iterator(this->VectorType::size()-1, this, this->VectorType::end());
 }
@@ -270,9 +275,9 @@ SmartPointerVectorContainer< TElementIdentifier , TElement >
  * Clear the elements. The final size will be zero.
  */
 template <typename TElementIdentifier, typename TElement>
-void 
+void
 SmartPointerVectorContainer< TElementIdentifier , TElement >
-::Initialize(void) 
+::Initialize(void)
 {
   this->VectorType::clear();
 }

@@ -1,35 +1,39 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNavigationTool.h"
 #include "Poco/File.h"
 
-mitk::NavigationTool::NavigationTool()
+mitk::NavigationTool::NavigationTool() : m_Type(mitk::NavigationTool::Unknown),
+                                         m_Identifier("None"),
+                                         m_TrackingDeviceType(mitk::TrackingSystemNotSpecified),
+                                         m_CalibrationFile("none"),
+                                         m_SerialNumber(""),
+                                         m_ToolRegistrationLandmarks(mitk::PointSet::New()),
+                                         m_ToolCalibrationLandmarks(mitk::PointSet::New()),
+                                         m_ToolTipOrientation(mitk::Quaternion(0,0,0,1))
   {
-    m_Type = mitk::NavigationTool::Unknown;
-    m_Identifier = "None";
-    m_TrackingDeviceType = mitk::TrackingSystemNotSpecified;
-    m_CalibrationFile = "none";
-    m_SerialNumber = "";
+    m_ToolTipPosition[0] = 0;
+    m_ToolTipPosition[1] = 0;
+    m_ToolTipPosition[2] = 0;
   }
- 
+
 mitk::NavigationTool::~NavigationTool()
   {
-  
+
   }
 
 void mitk::NavigationTool::SetCalibrationFile(const std::string filename)
@@ -42,7 +46,7 @@ void mitk::NavigationTool::SetCalibrationFile(const std::string filename)
   else
     {
     Poco::File myFile(filename);
-    if (myFile.exists()) 
+    if (myFile.exists())
       m_CalibrationFile = filename;
     else
       m_CalibrationFile = "none";

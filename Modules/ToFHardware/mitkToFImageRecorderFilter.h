@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFImageRecorderFilter_h
 #define __mitkToFImageRecorderFilter_h
 
@@ -70,13 +68,13 @@ namespace mitk
 
     /*!
     \brief sets the input of this filter
-    \param distanceImage input is the distance image of e.g. a ToF camera
+    \param input is the distance image of e.g. a ToF camera
     */
     virtual void SetInput( Image* input);
     /*!
     \brief sets the input of this filter at idx
     \param idx number of the current input
-    \param distanceImage input is the distance image of e.g. a ToF camera
+    \param input is the distance image of e.g. a ToF camera
     */
     virtual void SetInput(unsigned int idx,  Image* input);
     /*!

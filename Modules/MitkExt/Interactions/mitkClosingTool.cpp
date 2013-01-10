@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 28959 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkClosingTool.h"
 #include "mitkImageCast.h"
 #include "mitkRenderingManager.h"
@@ -47,7 +46,7 @@ mitk::Image::Pointer mitk::ClosingTool::ApplyFilter(mitk::Image::Pointer image)
   SegmentationType::Pointer itkImage = SegmentationType::New();
   mitk::CastToItkImage(image, itkImage);
   mitk::Image::Pointer new_image = mitk::Image::New();
-  
+
   switch(m_StructElement)
   {
     case(BALL):
@@ -66,7 +65,7 @@ mitk::Image::Pointer mitk::ClosingTool::ApplyFilter(mitk::Image::Pointer image)
       break;
 
     case(CROSS):
-      
+
       m_Cross.SetRadius(m_Radius);
       m_Cross.CreateStructuringElement();
 
@@ -84,6 +83,6 @@ mitk::Image::Pointer mitk::ClosingTool::ApplyFilter(mitk::Image::Pointer image)
     default:
       break;
   }
-  
+
   return new_image;
 }

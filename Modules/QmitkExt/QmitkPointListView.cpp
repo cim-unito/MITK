@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkPointListView.h"
 
@@ -34,8 +33,11 @@ QmitkPointListView::QmitkPointListView( QWidget* parent )
   m_PointListModel( new QmitkPointListModel() ),
   m_SelfCall( false ),
   m_showFading(false),
-  m_MultiWidget( NULL)
-{  
+  m_MultiWidget( NULL),
+  m_Snc1(NULL),
+  m_Snc2(NULL),
+  m_Snc3(NULL)
+{
   QListView::setAlternatingRowColors( true );
 
   // logic
@@ -170,9 +172,18 @@ void QmitkPointListView::OnListViewSelectionChanged(const QItemSelection& select
       if (selectedIndexes.indexOf(index) != -1) // index is found in the selected indices list
       {
         pointSet->SetSelectInfo(it->Index(), true, m_PointListModel->GetTimeStep());
+
+        // Use Multiwidget or SliceNavigationControllers to set crosshair to selected point
         if ( m_MultiWidget != NULL)
         {
           m_MultiWidget->MoveCrossToPosition(pointSet->GetPoint(it->Index(), m_PointListModel->GetTimeStep()));
+        }
+        else if ( (m_Snc1 != NULL) && (m_Snc2 != NULL) && (m_Snc3 != NULL) )
+        {
+           mitk::Point3D p = pointSet->GetPoint(it->Index(), m_PointListModel->GetTimeStep());
+           m_Snc1->SelectSliceByPoint(p);
+           m_Snc2->SelectSliceByPoint(p);
+           m_Snc3->SelectSliceByPoint(p);
         }
       }
       else
@@ -414,4 +425,19 @@ void QmitkPointListView::ClearPointListTS()
   //        break;
   //     }
   //   // emit PointListChanged();
+}
+
+void QmitkPointListView::SetSnc1(mitk::SliceNavigationController* snc)
+{
+   m_Snc1 = snc;
+}
+
+void QmitkPointListView::SetSnc2(mitk::SliceNavigationController* snc)
+{
+   m_Snc2 = snc;
+}
+
+void QmitkPointListView::SetSnc3(mitk::SliceNavigationController* snc)
+{
+   m_Snc3 = snc;
 }

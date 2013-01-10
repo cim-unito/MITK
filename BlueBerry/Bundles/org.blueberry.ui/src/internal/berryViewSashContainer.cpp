@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryViewSashContainer.h"
 
@@ -84,8 +83,7 @@ bool ViewSashContainer::RestoreState(IMemento::Pointer memento)
   if (strFolder.empty())
   {
     // this is the editor area
-    ContainerPlaceholder::Pointer placeholder(new ContainerPlaceholder(partID));
-    part = placeholder;
+    part = new PartPlaceholder(partID);
   }
   else
   {
@@ -168,7 +166,7 @@ bool ViewSashContainer::SaveState(IMemento::Pointer memento)
     PartStack::Pointer folder(info.part.Cast<PartStack>());
     if (!folder && info.part.Cast<ContainerPlaceholder>())
     {
-      IStackableContainer::Pointer part = info.part.Cast<ContainerPlaceholder>()->GetRealContainer();
+      LayoutPart::Pointer part = info.part.Cast<ContainerPlaceholder>()->GetRealContainer();
       folder = part.Cast<PartStack>();
     }
 
@@ -185,7 +183,7 @@ bool ViewSashContainer::SaveState(IMemento::Pointer memento)
   return result;
 }
 
-bool ViewSashContainer::IsStackType(IStackableContainer::Pointer toTest)
+bool ViewSashContainer::IsStackType(ILayoutContainer::Pointer toTest)
 {
   if (toTest.Cast<PartStack> () == 0)
     return false;
@@ -194,7 +192,7 @@ bool ViewSashContainer::IsStackType(IStackableContainer::Pointer toTest)
       != PresentationFactoryUtil::ROLE_EDITOR);
 }
 
-bool ViewSashContainer::IsPaneType(StackablePart::Pointer toTest)
+bool ViewSashContainer::IsPaneType(LayoutPart::Pointer toTest)
 {
   if (toTest.Cast<PartPane> () == 0)
     return false;
@@ -207,26 +205,25 @@ bool ViewSashContainer::AllowsAdd(LayoutPart::Pointer layoutPart)
   return LayoutPart::AllowsAdd(layoutPart);
 }
 
-//    void ViewSashContainer::Replace(StackablePart::Pointer oldChild,
-//        StackablePart::Pointer newChild)
-//    {
-//      if (!this->IsChild(oldChild))
-//      {
-//        return;
-//      }
-//
-//      // Nasty hack: ensure that all views end up inside a tab folder.
-//      // Since the view title is provided by the tab folder, this ensures
-//      // that views don't get created without a title tab.
-//      if (newChild instanceof ViewPane)
-//      {
-//        ViewStack folder = new ViewStack(page);
-//        folder.add(newChild);
-//        newChild = folder;
-//      }
-//
-//      super.replace(oldChild, newChild);
-//    }
+void ViewSashContainer::Replace(LayoutPart::Pointer oldChild, LayoutPart::Pointer newChild)
+{
+  if (!this->IsChild(oldChild))
+  {
+    return;
+  }
+
+  // Nasty hack: ensure that all views end up inside a tab folder.
+  // Since the view title is provided by the tab folder, this ensures
+  // that views don't get created without a title tab.
+  if (newChild.Cast<PartPane>())
+  {
+    PartStack::Pointer folder(new PartStack(page));
+    folder->Add(newChild);
+    newChild = folder;
+  }
+
+  PartSashContainer::Replace(oldChild, newChild);
+}
 
 void* ViewSashContainer::CreateParent(void* parentWidget)
 {
@@ -239,7 +236,7 @@ void ViewSashContainer::DisposeParent()
 }
 
 float ViewSashContainer::GetDockingRatio(Object::Pointer dragged,
-    IStackableContainer::Pointer target)
+    ILayoutContainer::Pointer target)
 {
   if (this->IsStackType(target))
   {
@@ -257,7 +254,7 @@ PartStack::Pointer ViewSashContainer::CreateStack()
   return result;
 }
 
-void ViewSashContainer::SetVisiblePart(IStackableContainer::Pointer container,
+void ViewSashContainer::SetVisiblePart(ILayoutContainer::Pointer container,
     PartPane::Pointer visiblePart)
 {
   if (container.Cast<PartStack> () != 0)
@@ -268,13 +265,13 @@ void ViewSashContainer::SetVisiblePart(IStackableContainer::Pointer container,
   }
 }
 
-StackablePart::Pointer ViewSashContainer::GetVisiblePart(
-    IStackableContainer::Pointer container)
+LayoutPart::Pointer ViewSashContainer::GetVisiblePart(
+    ILayoutContainer::Pointer container)
 {
   return container.Cast<PartStack> ()->GetSelection();
 }
 
-void ViewSashContainer::DerefPart(StackablePart::Pointer sourcePart)
+void ViewSashContainer::DerefPart(LayoutPart::Pointer sourcePart)
 {
   page->GetActivePerspective()->GetPresentation()->DerefPart(sourcePart);
 }

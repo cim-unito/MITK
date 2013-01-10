@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_SURFACE_VTK_WRITER__H_
@@ -38,13 +37,13 @@ namespace mitk
 {
 
 /**
- * @brief VTK-based writer for mitk::Surface 
+ * @brief VTK-based writer for mitk::Surface
  *
  * The mitk::Surface is written using the VTK-writer-type provided as the
  * template argument. If the mitk::Surface contains multiple points of
  * time, multiple files are written. The life-span (time-bounds) of each
- * each point of time is included in the filename according to the 
- * following scheme: 
+ * each point of time is included in the filename according to the
+ * following scheme:
  * &lt;filename&gt;_S&lt;timebounds[0]&gt;E&lt;timebounds[1]&gt;_T&lt;framenumber&gt;
  * (S=start, E=end, T=time).
  * Writing of multiple files according to a given filename pattern is not
@@ -77,25 +76,25 @@ public:
 
     /**
      * \brief Explicitly set the extension to be added to the filename.
-     * @param _arg to be added to the filename, including a "." 
+     * @param _arg to be added to the filename, including a "."
      * (e.g., ".vtk").
-     * 
-     * Partial template specialization is used for some vtk-writer types 
+     *
+     * Partial template specialization is used for some vtk-writer types
      * to set a default extension.
      */
     itkSetStringMacro( Extension );
 
     /**
      * \brief Get the extension to be added to the filename.
-     * @returns the extension to be added to the filename (e.g., 
+     * @returns the extension to be added to the filename (e.g.,
      * ".vtk").
      */
     itkGetStringMacro( Extension );
 
     /**
      * \brief Set the extension to be added to the filename to the default
-     * 
-     * Partial template specialization is used for some vtk-writer types 
+     *
+     * Partial template specialization is used for some vtk-writer types
      * to define the default extension.
      */
     void SetDefaultExtension();
@@ -174,7 +173,7 @@ protected:
     virtual ~SurfaceVtkWriter();
 
     virtual void GenerateData();
-      
+
     void ExecuteWrite( VtkWriterType* vtkWriter );
 
     std::string m_FileName;
@@ -188,7 +187,7 @@ protected:
     std::string m_MimeType;
 
     vtkSmartPointer<VtkWriterType> m_VtkWriter;
-  
+
     bool m_WriterWriteHasReturnValue;
 };
 

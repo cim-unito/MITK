@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-03-21 19:27:37 +0100 (Sa, 21 Mrz 2009) $
-Version:   $Revision: 16719 $ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkMITKSurfaceMaterialEditorView.h"
 
@@ -58,7 +57,7 @@ PURPOSE.  See the above copyright notices for more information.
 const std::string QmitkMITKSurfaceMaterialEditorView::VIEW_ID = "org.mitk.views.mitksurfacematerialeditor";
 
 QmitkMITKSurfaceMaterialEditorView::QmitkMITKSurfaceMaterialEditorView()
-: QmitkFunctionality(), 
+: QmitkFunctionality(),
   m_Controls(NULL),
   m_MultiWidget(NULL)
 {
@@ -82,10 +81,10 @@ QmitkMITKSurfaceMaterialEditorView::QmitkMITKSurfaceMaterialEditorView()
   shaderProperties.push_back( "color" );
   shaderProperties.push_back( "opacity" );
   shaderProperties.push_back( "material.wireframeLineWidth" );
-  
+
   observerAllocated = false;
-  
-  
+
+
   mitk::ShaderRepository::GetGlobalShaderRepository();
 }
 
@@ -94,35 +93,35 @@ QmitkMITKSurfaceMaterialEditorView::~QmitkMITKSurfaceMaterialEditorView()
 }
 
 void QmitkMITKSurfaceMaterialEditorView::InitPreviewWindow()
-{ 
+{
   usedTimer=0;
-  
+
   vtkSphereSource* sphereSource = vtkSphereSource::New();
   sphereSource->SetThetaResolution(25);
   sphereSource->SetPhiResolution(25);
   sphereSource->Update();
-  
+
   vtkPolyData* sphere = sphereSource->GetOutput();
-  
+
   m_Surface = mitk::Surface::New();
   m_Surface->SetVtkPolyData( sphere );
-  
+
   m_DataNode = mitk::DataNode::New();
   m_DataNode->SetData( m_Surface );
-    
+
   m_DataTree = mitk::StandaloneDataStorage::New();
-  
+
   m_DataTree->Add( m_DataNode , (mitk::DataNode *)0 );
-  
+
   m_Controls->m_PreviewRenderWindow->GetRenderer()->SetDataStorage( m_DataTree );
   m_Controls->m_PreviewRenderWindow->GetRenderer()->SetMapperID( mitk::BaseRenderer::Standard3D );
-  
+
   sphereSource->Delete();
 }
 
 
 void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
-{ 
+{
   mitk::DataNode* SrcND = m_SelectedDataNode;
   mitk::DataNode* DstND = m_DataNode;
 
@@ -142,22 +141,22 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
   if(SrcND)
   {
     mitk::PropertyList* SrcPL = SrcND->GetPropertyList();
-    
+
     mitk::ShaderProperty::Pointer shaderEnum = dynamic_cast<mitk::ShaderProperty*>(SrcPL->GetProperty("shader"));
-    
+
     std::string shaderState = "fixed";
-    
+
     if(shaderEnum.IsNotNull())
     {
       shaderState = shaderEnum->GetValueAsString();
-      
+
       itk::MemberCommand<QmitkMITKSurfaceMaterialEditorView>::Pointer propertyModifiedCommand = itk::MemberCommand<QmitkMITKSurfaceMaterialEditorView>::New();
       propertyModifiedCommand->SetCallbackFunction(this, &QmitkMITKSurfaceMaterialEditorView::shaderEnumChange);
       observerIndex = shaderEnum->AddObserver(itk::ModifiedEvent(), propertyModifiedCommand);
       observedProperty = shaderEnum;
       observerAllocated=true;
-    } 
-    
+    }
+
     MITK_INFO << "PROPERTIES SCAN BEGIN";
 
     for(mitk::PropertyList::PropertyMap::const_iterator it=SrcPL->GetMap()->begin(); it!=SrcPL->GetMap()->end(); it++)
@@ -166,7 +165,7 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
       mitk::BaseProperty *p=it->second;
 
       // MITK_INFO << "property '" << name << "' found";
-      
+
       if(shaderState.compare("fixed")==0)
       {
         if(std::find(fixedProperties.begin(), fixedProperties.end(), name) != fixedProperties.end())
@@ -181,10 +180,10 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
           DstPL->SetProperty(name,p);
         }
       }
-    }      
-   
+    }
+
     MITK_INFO << "PROPERTIES SCAN END";
-  }      
+  }
 
   m_Controls->m_ShaderPropertyList->SetPropertyList( DstPL );
   //m_Controls->m_PreviewRenderWindow->GetRenderer()->GetVtkRenderer()->ResetCameraClippingRange();
@@ -197,7 +196,7 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
       itk::MemberCommand<QmitkPropertiesTableModel>::Pointer propertyModifiedCommand =
          itk::MemberCommand<QmitkPropertiesTableModel>::New();
       propertyModifiedCommand->SetCallbackFunction(this, &QmitkPropertiesTableModel::PropertyModified);
- 
+
        m_PropertyModifiedObserverTags[it->first] = it->second.first->AddObserver(itk::ModifiedEvent(), propertyModifiedCommand);
 
 
@@ -206,12 +205,12 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
 
         mitk::BaseProperty* visibilityProperty = (*it)->GetProperty("visible");
         if(visibilityProperty)
-          m_PropertyModifiedObserverTags[visibilityProperty] 
+          m_PropertyModifiedObserverTags[visibilityProperty]
         = visibilityProperty->AddObserver(itk::ModifiedEvent(), propertyModifiedCommand);
 
         mitk::BaseProperty* nameProperty = (*it)->GetProperty("name");
         if(nameProperty)
-          m_PropertyModifiedObserverTags[nameProperty] 
+          m_PropertyModifiedObserverTags[nameProperty]
         = nameProperty->AddObserver(itk::ModifiedEvent(), propertyModifiedCommand);
 
 
@@ -227,7 +226,7 @@ void QmitkMITKSurfaceMaterialEditorView::RefreshPropertiesList()
       itk::MemberCommand<QmitkPropertiesTableModel>::Pointer propertyModifiedCommand =
          itk::MemberCommand<QmitkPropertiesTableModel>::New();
       propertyModifiedCommand->SetCallbackFunction(this, &QmitkPropertiesTableModel::PropertyModified);
- 
+
        m_PropertyModifiedObserverTags[it->first] = it->second.first->AddObserver(itk::ModifiedEvent(), propertyModifiedCommand);*/
 
 
@@ -299,7 +298,7 @@ void QmitkMITKSurfaceMaterialEditorView::postRefresh()
 {
   if(usedTimer)
     return;
-    
+
   usedTimer=startTimer(0);
 }
 
@@ -315,6 +314,6 @@ void QmitkMITKSurfaceMaterialEditorView::timerEvent( QTimerEvent *e )
     killTimer(usedTimer);
     usedTimer=0;
   }
-  
+
   RefreshPropertiesList();
 }

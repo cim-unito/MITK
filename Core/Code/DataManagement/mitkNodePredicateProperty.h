@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNODEPREDICATEPROPERTY_H_HEADER_INCLUDED_
@@ -26,11 +25,11 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
     //##Documentation
-    //## @brief Predicate that evaluates if the given DataNode has a specific property. 
+    //## @brief Predicate that evaluates if the given DataNode has a specific property.
     //## If the second parameter is NULL, it will only be checked whether there is a property with the specified name.
-    //## 
-    //## 
-    //## 
+    //##
+    //##
+    //##
     //## @ingroup DataStorage
     class MITK_CORE_EXPORT NodePredicateProperty : public NodePredicateBase
     {

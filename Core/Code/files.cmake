@@ -1,4 +1,4 @@
-SET(H_FILES
+set(H_FILES
   Algorithms/itkImportMitkImageContainer.h
   Algorithms/itkImportMitkImageContainer.txx
   Algorithms/itkLocalVariationImageFilter.h
@@ -11,16 +11,8 @@ SET(H_FILES
   Algorithms/itkTotalVariationSingleIterationImageFilter.txx
   Algorithms/mitkBilateralFilter.h
   Algorithms/mitkBilateralFilter.cpp
-
-  Algorithms/mitkImageAccessByItk.h
-  Algorithms/mitkImageCast.h
-  Algorithms/mitkImageToItk.h
-  Algorithms/mitkImageToItk.txx
   Algorithms/mitkInstantiateAccessFunctions.h
-  Algorithms/mitkITKImageImport.h
-  Algorithms/mitkITKImageImport.txx
   Algorithms/mitkPixelTypeList.h
-
   # Preprocessor macros taken from Boost
   Algorithms/mitkPPArithmeticDec.h
   Algorithms/mitkPPArgCount.h
@@ -53,29 +45,38 @@ SET(H_FILES
   Algorithms/mitkPPTupleElem.h
   Algorithms/mitkPPTupleRem.h
   Algorithms/mitkClippedSurfaceBoundsCalculator.h
+  Algorithms/mitkExtractSliceFilter.h
+  Algorithms/mitkConvert2Dto3DImageFilter.h
+
+  Common/mitkExceptionMacro.h
+  Common/mitkServiceBaseObject.h
+  Common/mitkTestingMacros.h
+
+  DataManagement/mitkImageAccessByItk.h
+  DataManagement/mitkImageCast.h
+  DataManagement/mitkImagePixelAccessor.h
+  DataManagement/mitkImagePixelReadAccessor.h
+  DataManagement/mitkImagePixelWriteAccessor.h
+  DataManagement/mitkImageReadAccessor.h
+  DataManagement/mitkImageWriteAccessor.h
+  DataManagement/mitkITKImageImport.h
+  DataManagement/mitkITKImageImport.txx
+  DataManagement/mitkImageToItk.h
+  DataManagement/mitkImageToItk.txx
+
+  Interactions/mitkEventMapperAddOn.h
 
   Interfaces/mitkIDataNodeReader.h
 
   IO/mitkPixelTypeTraits.h
-
-  DataManagement/mitkCommon.h
-  Interactions/mitkEventMapperAddOn.h
 )
 
-SET(CPP_FILES
+set(CPP_FILES
   Algorithms/mitkBaseDataSource.cpp
   Algorithms/mitkBaseProcess.cpp
-  Algorithms/mitkCoreObjectFactoryBase.cpp
-  Algorithms/mitkCoreObjectFactory.cpp
-  Algorithms/mitkDataNodeFactory.cpp
   Algorithms/mitkDataNodeSource.cpp
   Algorithms/mitkGeometry2DDataToSurfaceFilter.cpp
   Algorithms/mitkHistogramGenerator.cpp
-  Algorithms/mitkImageCaster.cpp
-  Algorithms/mitkImageCastPart1.cpp
-  Algorithms/mitkImageCastPart2.cpp
-  Algorithms/mitkImageCastPart3.cpp
-  Algorithms/mitkImageCastPart4.cpp
   Algorithms/mitkImageChannelSelector.cpp
   Algorithms/mitkImageSliceSelector.cpp
   Algorithms/mitkImageSource.cpp
@@ -90,6 +91,8 @@ SET(CPP_FILES
   Algorithms/mitkUIDGenerator.cpp
   Algorithms/mitkVolumeCalculator.cpp
   Algorithms/mitkClippedSurfaceBoundsCalculator.cpp
+  Algorithms/mitkExtractSliceFilter.cpp
+  Algorithms/mitkConvert2Dto3DImageFilter.cpp
   Controllers/mitkBaseController.cpp
   Controllers/mitkCallbackFromGUIThread.cpp
   Controllers/mitkCameraController.cpp
@@ -123,6 +126,7 @@ SET(CPP_FILES
   DataManagement/mitkDataStorage.cpp
   #DataManagement/mitkDataTree.cpp
   DataManagement/mitkDataNode.cpp
+  DataManagement/mitkDataNodeFactory.cpp
   #DataManagement/mitkDataTreeStorage.cpp
   DataManagement/mitkDisplayGeometry.cpp
   DataManagement/mitkEnumerationProperty.cpp
@@ -132,8 +136,15 @@ SET(CPP_FILES
   DataManagement/mitkGeometryData.cpp
   DataManagement/mitkGroupTagProperty.cpp
   DataManagement/mitkImage.cpp
+  DataManagement/mitkImageAccessorBase.cpp
+  DataManagement/mitkImageCaster.cpp
+  DataManagement/mitkImageCastPart1.cpp
+  DataManagement/mitkImageCastPart2.cpp
+  DataManagement/mitkImageCastPart3.cpp
+  DataManagement/mitkImageCastPart4.cpp
   DataManagement/mitkImageDataItem.cpp
   DataManagement/mitkImageDescriptor.cpp
+  DataManagement/mitkImageVtkAccessor.cpp
   DataManagement/mitkImageStatisticsHolder.cpp
   DataManagement/mitkLandmarkBasedCurvedGeometry.cpp
   DataManagement/mitkLandmarkProjectorBasedCurvedGeometry.cpp
@@ -234,6 +245,7 @@ SET(CPP_FILES
   IO/mitkImageWriterFactory.cpp
   IO/mitkItkImageFileIOFactory.cpp
   IO/mitkItkImageFileReader.cpp
+  IO/mitkItkLoggingAdapter.cpp
   IO/mitkItkPictureWrite.cpp
   IO/mitkIOUtil.cpp
   IO/mitkLookupTableProperty.cpp
@@ -255,6 +267,7 @@ SET(CPP_FILES
   IO/mitkSTLFileReader.cpp
   IO/mitkSurfaceVtkWriter.cpp
   IO/mitkSurfaceVtkWriterFactory.cpp
+  IO/mitkVtkLoggingAdapter.cpp
   IO/mitkVtiFileIOFactory.cpp
   IO/mitkVtiFileReader.cpp
   IO/mitkVtkImageIOFactory.cpp
@@ -292,6 +305,11 @@ SET(CPP_FILES
   Rendering/mitkImageVtkMapper2D.cpp
   Rendering/vtkMitkThickSlicesFilter.cpp
   Rendering/vtkMitkApplyLevelWindowToRGBFilter.cpp
+
+  Common/mitkException.cpp
+  Common/mitkCommon.h
+  Common/mitkCoreObjectFactoryBase.cpp
+  Common/mitkCoreObjectFactory.cpp
 )
 
 list(APPEND CPP_FILES ${CppMicroServices_SOURCES})

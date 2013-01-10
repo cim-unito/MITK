@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-11-25 13:21:22 +0100 (Mi, 25 Nov 2009) $
-Version:   $Revision: 20524 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "QmitkNDIToolDelegate.h"
@@ -33,7 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
 Q_DECLARE_METATYPE(mitk::NDIPassiveTool*)
 
 
-QmitkNDIToolDelegate::QmitkNDIToolDelegate(QObject * parent) : QStyledItemDelegate(parent), 
+QmitkNDIToolDelegate::QmitkNDIToolDelegate(QObject * parent) : QStyledItemDelegate(parent),
 m_Types(), m_DataStorage(NULL), m_Predicate(NULL), m_TagProperty(NULL), m_TagPropertyName()
 {
 }
@@ -47,7 +46,7 @@ QWidget* QmitkNDIToolDelegate::createEditor(QWidget *parent, const QStyleOptionV
   switch (index.column())
   {
   case SROMCol:
-    {   
+    {
       return new QLabel("", parent);
     }
   case TypeCol:
@@ -91,7 +90,7 @@ void QmitkNDIToolDelegate::setEditorData(QWidget *editor, const QModelIndex &ind
   case TypeCol:
     {
       QString type = qVariantValue<QString>(index.data(/*mitk::TypeRole*/));
-      QComboBox* c = qobject_cast<QComboBox*>(editor);   
+      QComboBox* c = qobject_cast<QComboBox*>(editor);
       c->setCurrentIndex(c->findText(type));
       connect(c, SIGNAL(currentIndexChanged(int)), this, SLOT(ComboBoxCurrentIndexChanged(int)));
       return;
@@ -133,7 +132,7 @@ void QmitkNDIToolDelegate::setModelData(QWidget *editor, QAbstractItemModel* mod
     }
   case TypeCol:
     {
-      QComboBox* c = qobject_cast<QComboBox*>(editor);   
+      QComboBox* c = qobject_cast<QComboBox*>(editor);
       //model->setData(index, c->currentText(), mitk::TypeRole);
       model->setData(index, c->currentText(), Qt::DisplayRole);
       return;
@@ -144,7 +143,7 @@ void QmitkNDIToolDelegate::setModelData(QWidget *editor, QAbstractItemModel* mod
       if (dsc->GetSelectedNode().IsNotNull())
       {
         model->setData(index, qVariantFromValue(dsc->GetSelectedNode()), OrganNodeRole);
-        //model->setData(index, QString::fromStdString(dsc->GetSelectedNode()->GetName()), Qt::DisplayRole);  
+        //model->setData(index, QString::fromStdString(dsc->GetSelectedNode()->GetName()), Qt::DisplayRole);
         model->setData(index, QString::fromStdString(dsc->GetSelectedNode()->GetName()));
         if ((m_TagProperty.IsNotNull()) && (m_TagPropertyName.empty() == false))  // tag this node as selected
           dsc->GetSelectedNode()->SetProperty(m_TagPropertyName.c_str(), m_TagProperty);

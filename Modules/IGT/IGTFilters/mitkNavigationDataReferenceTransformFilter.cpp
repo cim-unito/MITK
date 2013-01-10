@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 16011 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNavigationDataReferenceTransformFilter.h"
 
@@ -66,7 +65,7 @@ void mitk::NavigationDataReferenceTransformFilter::SetSourceNavigationDatas(cons
 void mitk::NavigationDataReferenceTransformFilter::SetTargetNavigationDatas(const std::vector<mitk::NavigationData::Pointer>& targetNavigationDatas)
 {
   if(m_TargetLandmarksFromNavigationDatas.IsNotNull()) // check if target landmark container available and clear it
-    m_TargetLandmarksFromNavigationDatas->Clear(); 
+    m_TargetLandmarksFromNavigationDatas->Clear();
   else
     return;
 

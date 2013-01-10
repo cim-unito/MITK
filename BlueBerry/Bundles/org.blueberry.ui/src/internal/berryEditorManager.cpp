@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryEditorManager.h"
 
@@ -1036,9 +1035,9 @@ IEditorPart::Pointer EditorManager::CreatePart(EditorDescriptor::Pointer desc) c
         PartStack::Pointer workbook = *iter;
 
         // Use the list of editors found in EditorStack; fix for 24091
-        std::list<StackablePart::Pointer> editorPanes(workbook->GetChildren());
+        std::list<LayoutPart::Pointer> editorPanes(workbook->GetChildren());
 
-        for (std::list<StackablePart::Pointer>::iterator i = editorPanes.begin();
+        for (std::list<LayoutPart::Pointer>::iterator i = editorPanes.begin();
             i != editorPanes.end(); ++i)
         {
           // Save each open editor.

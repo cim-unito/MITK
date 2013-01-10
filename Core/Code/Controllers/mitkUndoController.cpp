@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkUndoController.h"
@@ -77,9 +76,9 @@ bool mitk::UndoController::Undo()
 bool mitk::UndoController::Undo(bool fine)
 {
   bool ret = m_CurUndoModel->Undo(fine);
-  
+
   mitk::RenderingManager::GetInstance()->RequestUpdateAll();
-  
+
   return ret;
 }
 
@@ -91,9 +90,9 @@ bool mitk::UndoController::Redo()
 bool mitk::UndoController::Redo(bool fine)
 {
   bool ret = m_CurUndoModel->Redo(fine);
-  
+
   mitk::RenderingManager::GetInstance()->RequestUpdateAll();
-  
+
   return ret;
 }
 
@@ -166,7 +165,7 @@ bool mitk::UndoController::AddUndoModel(UndoType undoType)
 
 //##Documentation
 //##Removes an UndoModel from the set of UndoModels
-//##If that UndoModel is currently selected, then the DefaultUndoModel(const) is set. 
+//##If that UndoModel is currently selected, then the DefaultUndoModel(const) is set.
 //##If the default is not in List, then the first UndoModel is set.
 //##UndoList may not be empty, so if the UndoType is the last, then return false;
 bool mitk::UndoController::RemoveUndoModel(UndoType undoType)
@@ -177,7 +176,7 @@ bool mitk::UndoController::RemoveUndoModel(UndoType undoType)
   }
   //try deleting Element
   int ok = m_UndoModelList.erase(undoType);
-  if (ok == 0) 
+  if (ok == 0)
   {//delete unsucessful; Element of undoType not found
     return false;
   }

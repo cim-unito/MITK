@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef VtiFileReader_H_HEADER_INCLUDED
@@ -31,10 +30,10 @@ class MITK_CORE_EXPORT VtiFileReader : public ImageSource, public FileReader
 {
 public:
   mitkClassMacro(VtiFileReader, FileReader);
-  
+
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
-  
+
   itkSetStringMacro(FileName);
   itkGetStringMacro(FileName);
 
@@ -45,24 +44,24 @@ public:
   itkGetStringMacro(FilePattern);
 
   static bool CanReadFile(const std::string filename, const std::string filePrefix, const std::string filePattern);
-  
+
 protected:
 
    VtiFileReader();
-  
+
   ~VtiFileReader();
 
   virtual void GenerateData();
-  
-  //##Description 
+
+  //##Description
   //## @brief Time when Header was last read
   //itk::TimeStamp m_ReadHeaderTime;
 
 protected:
   std::string m_FileName;
-  
+
   std::string m_FilePrefix;
-  
+
   std::string m_FilePattern;
 };
 

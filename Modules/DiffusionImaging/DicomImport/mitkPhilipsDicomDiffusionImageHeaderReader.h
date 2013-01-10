@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-02-08 13:23:19 +0100 (Fr, 08 Feb 2008) $
-Version:   $Revision: 13561 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef __mitkPhilipsDicomDiffusionImageHeaderReader_h__
@@ -25,7 +24,7 @@ namespace mitk
 {
   /**
     @brief The PhilipsDicomDiffusionImageHeaderReader class reads in the image header information for the Philips DICOM Format */
-  class PhilipsDicomDiffusionImageHeaderReader : public DicomDiffusionImageHeaderReader 
+  class PhilipsDicomDiffusionImageHeaderReader : public DicomDiffusionImageHeaderReader
   {
   public:
 

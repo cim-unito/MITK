@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 10894 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include <vector>
 #include <algorithm>
 
@@ -50,7 +49,7 @@ vtkPointSetSlicer::vtkPointSetSlicer(vtkPlane *cf)
 
   this->Cutter = vtkCutter::New();
   this->Cutter->GenerateValues( 1, 0, 1 );
-  
+
 }
 
 vtkPointSetSlicer::~vtkPointSetSlicer()
@@ -67,7 +66,7 @@ vtkPointSetSlicer::~vtkPointSetSlicer()
 
 void vtkPointSetSlicer::SetSlicePlane(vtkPlane* plane)
 {
-  if ( this->SlicePlane == plane ) 
+  if ( this->SlicePlane == plane )
   {
     return;
   }
@@ -137,7 +136,7 @@ int vtkPointSetSlicer::RequestData(
 
   if (input->GetDataObjectType() == VTK_STRUCTURED_POINTS ||
       input->GetDataObjectType() == VTK_IMAGE_DATA)
-    {    
+    {
     if ( input->GetCell(0) && input->GetCell(0)->GetCellDimension() >= 3 )
       {
       //this->StructuredPointsCutter(input, output, request, inputVector, outputVector);
@@ -159,15 +158,15 @@ int vtkPointSetSlicer::RequestData(
     }
   if (input->GetDataObjectType() == VTK_RECTILINEAR_GRID)
     {
-    
+
       //this->RectilinearGridCutter(input, output);
       return 1;
-      
+
     }
 
   if (input->GetDataObjectType() == VTK_UNSTRUCTURED_GRID)
-    { 
-    vtkDebugMacro(<< "Executing Unstructured Grid Cutter");   
+    {
+    vtkDebugMacro(<< "Executing Unstructured Grid Cutter");
     this->UnstructuredGridCutter(input, output);
     }
   else
@@ -192,34 +191,6 @@ int vtkPointSetSlicer::FillInputPortInformation(int, vtkInformation *info)
   info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkDataSet");
   return 1;
 }
-
-void vtkPointSetSlicer::GetCellTypeDimensions(unsigned char* cellTypeDimensions)
-{
-  // Assume most cells will be 3d.
-  memset(cellTypeDimensions, 3, VTK_NUMBER_OF_CELL_TYPES);
-  cellTypeDimensions[VTK_EMPTY_CELL] = 0;
-  cellTypeDimensions[VTK_VERTEX] = 0;
-  cellTypeDimensions[VTK_POLY_VERTEX] = 0;
-  cellTypeDimensions[VTK_LINE] = 1;
-  cellTypeDimensions[VTK_POLY_LINE] = 1;
-  cellTypeDimensions[VTK_QUADRATIC_EDGE] = 1;
-  cellTypeDimensions[VTK_PARAMETRIC_CURVE] = 1;
-  cellTypeDimensions[VTK_TRIANGLE] = 2;
-  cellTypeDimensions[VTK_TRIANGLE_STRIP] = 2;
-  cellTypeDimensions[VTK_POLYGON] = 2;
-  cellTypeDimensions[VTK_PIXEL] = 2;
-  cellTypeDimensions[VTK_QUAD] = 2;
-  cellTypeDimensions[VTK_QUADRATIC_TRIANGLE] = 2;
-  cellTypeDimensions[VTK_QUADRATIC_QUAD] = 2;
-  cellTypeDimensions[VTK_PARAMETRIC_SURFACE] = 2;
-  cellTypeDimensions[VTK_PARAMETRIC_TRI_SURFACE] = 2;
-  cellTypeDimensions[VTK_PARAMETRIC_QUAD_SURFACE] = 2;
-  cellTypeDimensions[VTK_HIGHER_ORDER_EDGE] = 1;
-  cellTypeDimensions[VTK_HIGHER_ORDER_TRIANGLE] = 2;
-  cellTypeDimensions[VTK_HIGHER_ORDER_QUAD] = 2;
-  cellTypeDimensions[VTK_HIGHER_ORDER_POLYGON] = 2;
-}
-
 
 void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *output)
 {
@@ -267,7 +238,7 @@ void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *o
     inPD->ShallowCopy(input->GetPointData());//copies original attributes
     inPD->SetScalars(cutScalars);
   }
-  else 
+  else
   {
     inPD = input->GetPointData();
   }
@@ -304,7 +275,6 @@ void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *o
   cellScalars->SetNumberOfComponents(cutScalars->GetNumberOfComponents());
   cellScalars->Allocate(VTK_CELL_SIZE*cutScalars->GetNumberOfComponents());
 
-
   // Three passes over the cells to process lower dimensional cells first.
   // For poly data output cells need to be added in the order:
   // verts, lines and then polys, or cell data gets mixed up.
@@ -312,15 +282,15 @@ void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *o
   // I create a table that maps cell type to cell dimensionality,
   // because I need a fast way to get cell dimensionality.
   // This assumes GetCell is slow and GetCellType is fast.
-  // I do not like hard coding a list of cell types here, 
+  // I do not like hard coding a list of cell types here,
   // but I do not want to add GetCellDimension(vtkIdType cellId)
   // to the vtkDataSet API.  Since I anticipate that the output
-  // will change to vtkUnstructuredGrid.  This temporary solution 
+  // will change to vtkUnstructuredGrid.  This temporary solution
   // is acceptable.
   //
   int cellType;
   unsigned char cellTypeDimensions[VTK_NUMBER_OF_CELL_TYPES];
-  this->GetCellTypeDimensions(cellTypeDimensions);
+  vtkCutter::GetCellTypeDimensions(cellTypeDimensions);
   int dimensionality;
   // We skip 0d cells (points), because they cannot be cut (generate no data).
   for (dimensionality = 1; dimensionality <= 3; ++dimensionality)
@@ -367,12 +337,12 @@ void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *o
       } // for all points in this cell
 
       int needCell = 0;
-      if (0 >= range[0] && 0 <= range[1]) 
+      if (0.0 >= range[0] && 0.0 <= range[1])
       {
         needCell = 1;
       }
 
-      if (needCell) 
+      if (needCell)
       {
         vtkCell *cell = input->GetCell(cellId);
         cellIds = cell->GetPointIds();
@@ -381,19 +351,19 @@ void vtkPointSetSlicer::UnstructuredGridCutter(vtkDataSet *input, vtkPolyData *o
         if (dimensionality == 3 && !(++cut % progressInterval) )
         {
           vtkDebugMacro(<<"Cutting #" << cut);
-          this->UpdateProgress ((double)cut/numCuts);
+          this->UpdateProgress (static_cast<double>(cut)/numCuts);
           abortExecute = this->GetAbortExecute();
         }
 
-        this->ContourUnstructuredGridCell(cell, cellScalars, this->Locator, 
-            newVerts, newLines, newPolys, inPD, outPD,
-            inCD, cellId, outCD);
+        this->ContourUnstructuredGridCell(cell, cellScalars, this->Locator,
+                                          newVerts, newLines, newPolys, inPD, outPD,
+                                          inCD, cellId, outCD);
       } // if need cell
     } // for all cells
   } // for all dimensions (1,2,3).
 
   // Update ourselves.  Because we don't know upfront how many verts, lines,
-  // polys we've created, take care to reclaim memory. 
+  // polys we've created, take care to reclaim memory.
   //
   cellScalars->Delete();
   cutScalars->Delete();
@@ -470,7 +440,7 @@ void vtkPointSetSlicer::ContourUnstructuredGridCell(vtkCell* cell,
       vert = edges[edge[i]];
 
       // calculate a preferred interpolation direction
-      deltaScalar = (cellScalars->GetComponent(vert[1],0) 
+      deltaScalar = (cellScalars->GetComponent(vert[1],0)
           - cellScalars->GetComponent(vert[0],0));
       if (deltaScalar > 0)
       {
@@ -494,7 +464,7 @@ void vtkPointSetSlicer::ContourUnstructuredGridCell(vtkCell* cell,
       }
       if ( locator->InsertUniquePoint(x, pts[i]) )
       {
-        if ( outPd ) 
+        if ( outPd )
         {
           vtkIdType p1 = cell->GetPointIds()->GetId(v1);
           vtkIdType p2 = cell->GetPointIds()->GetId(v2);
@@ -532,11 +502,11 @@ void vtkPointSetSlicer::ContourUnstructuredGridCell(vtkCell* cell,
   }
 }
 
-// Specify a spatial locator for merging points. By default, 
+// Specify a spatial locator for merging points. By default,
 // an instance of vtkMergePoints is used.
 void vtkPointSetSlicer::SetLocator(vtkPointLocator *locator)
 {
-  if ( this->Locator == locator ) 
+  if ( this->Locator == locator )
     {
     return;
     }
@@ -579,7 +549,7 @@ void vtkPointSetSlicer::PrintSelf(std::ostream& os, vtkIndent indent)
     os << indent << "Locator: (none)\n";
     }
 
-  os << indent << "Generate Cut Scalars: " 
+  os << indent << "Generate Cut Scalars: "
      << (this->GenerateCutScalars ? "On\n" : "Off\n");
 }
 

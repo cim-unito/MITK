@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKNAVIGATIONTOOLMANAGEMENTWIDGET_H
 #define QMITKNAVIGATIONTOOLMANAGEMENTWIDGET_H
@@ -30,9 +29,9 @@ PURPOSE.  See the above copyright notices for more information.
 #include "ui_QmitkNavigationToolManagementWidgetControls.h"
 
  /** Documentation:
-  *   \brief An object of this class offers an UI to manage NavigationTools and 
-  *			 NavigationToolStorages. This means a user may create, save and load 
-  *  		 single NavigationTools and/or NavigationToolStorages with this widget.
+  *   \brief An object of this class offers an UI to manage NavigationTools and
+  *       NavigationToolStorages. This means a user may create, save and load
+  *       single NavigationTools and/or NavigationToolStorages with this widget.
   *
   *      Be sure to call the Initialize-methode before you start the widget
   *      otherwise some errors might occure.
@@ -57,6 +56,8 @@ class MitkIGTUI_EXPORT QmitkNavigationToolManagementWidget : public QWidget
     void OnAddTool();
     void OnDeleteTool();
     void OnEditTool();
+    void OnLoadTool();
+    void OnSaveTool();
     void OnLoadStorage();
     void OnSaveStorage();
 
@@ -73,7 +74,7 @@ class MitkIGTUI_EXPORT QmitkNavigationToolManagementWidget : public QWidget
     virtual void CreateConnections();
 
     virtual void CreateQtPartControl(QWidget *parent);
-    
+
     Ui::QmitkNavigationToolManagementWidgetControls* m_Controls;
 
     /** @brief holds the DataStorage */
@@ -81,7 +82,7 @@ class MitkIGTUI_EXPORT QmitkNavigationToolManagementWidget : public QWidget
 
     /** @brief holds the NavigationToolStorage we are working with. */
     mitk::NavigationToolStorage::Pointer m_NavigationToolStorage;
-    
+
     /** @brief shows if we are in edit mode, if not we create new navigation tool objects. */
     bool m_edit;
 

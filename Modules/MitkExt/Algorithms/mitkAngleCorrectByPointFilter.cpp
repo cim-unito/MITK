@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkAngleCorrectByPointFilter.h"
@@ -65,7 +64,7 @@ void mitk::AngleCorrectByPointFilter::GenerateOutputInformation()
 
   output->GetTimeSlicedGeometry()->InitializeEvenlyTimed(output->GetSlicedGeometry(), output->GetTimeSlicedGeometry()->GetTimeSteps());
 
-  output->SetPropertyList(input->GetPropertyList()->Clone());    
+  output->SetPropertyList(input->GetPropertyList()->Clone());
 
 
   delete [] tmpDimensions;
@@ -98,7 +97,7 @@ void mitk::AngleCorrectByPointFilter::GenerateData()
 
   const Vector3D & spacing = input->GetSlicedGeometry()->GetSpacing();
   //  MITK_INFO << "   in: xres=" << spacing[0] << " yres=" << spacing[1] << " zres=" << spacing[2] << std::endl;
-  
+
   if((spacing[0]!=spacing[1]) || (spacing[0]!=spacing[2]))
   {
     itkExceptionMacro("filter does not work for uninsotropic data: spacing: ("<< spacing[0] << "," << spacing[1] << "," << spacing[2] << ")");
@@ -167,11 +166,11 @@ void mitk::AngleCorrectByPointFilter::GenerateData()
       in  = (InputImagePixelType *)timeSelector->GetOutput()->GetData();
       out = (OutputImagePixelType*)pic_out->data;
 
-      for (z=0 ; z<zDim ; ++z) 
+      for (z=0 ; z<zDim ; ++z)
       {
-        for (y=0; y<yDim; ++y) 
+        for (y=0; y<yDim; ++y)
         {
-          for (x=0; x<xDim; ++x, ++in, ++out) 
+          for (x=0; x<xDim; ++x, ++in, ++out)
           {
             tx_direction = tx_position-p;
             tx_direction.Normalize();

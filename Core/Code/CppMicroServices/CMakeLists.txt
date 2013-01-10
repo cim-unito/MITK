@@ -1,5 +1,10 @@
 project(CppMicroServices)
 
+set(${PROJECT_NAME}_MAJOR_VERSION 0)
+set(${PROJECT_NAME}_MINOR_VERSION 99)
+set(${PROJECT_NAME}_PATCH_VERSION 0)
+set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_VERSION})
+
 cmake_minimum_required(VERSION 2.8)
 
 #-----------------------------------------------------------------------------
@@ -12,7 +17,7 @@ set(CMAKE_MODULE_PATH
   )
 
 #-----------------------------------------------------------------------------
-# CMake Function(s) and Macro(s)
+# CMake function(s) and macro(s)
 #-----------------------------------------------------------------------------
 
 include(MacroParseArguments)
@@ -85,13 +90,14 @@ if(NOT DEFINED US_IS_EMBEDDED)
   endif()
 endif()
 
+us_cache_var(US_ENABLE_AUTOLOADING_SUPPORT OFF BOOL "Enable module auto-loading support")
 us_cache_var(US_ENABLE_SERVICE_FACTORY_SUPPORT ON BOOL "Enable Service Factory support" ADVANCED)
 us_cache_var(US_ENABLE_THREADING_SUPPORT OFF BOOL "Enable threading support")
 us_cache_var(US_BUILD_SHARED_LIBS ON BOOL "Build shared libraries")
 us_cache_var(US_BUILD_TESTING OFF BOOL "Build tests")
 
-if(MSVC10)
-  # Visual Studio 2010 has support for C++11 enabled by default
+if(MSVC10 OR MSVC11)
+  # Visual Studio 2010 and newer have support for C++11 enabled by default
   set(US_USE_C++11 1)
 else()
   us_cache_var(US_USE_C++11 OFF BOOL "Enable the use of C++11 features" ADVANCED)
@@ -127,7 +133,7 @@ if(US_ENABLE_SERVICE_FACTORY_SUPPORT OR US_BUILD_TESTING)
     # Try to get the include dirs
     foreach(_suffix DIRECTORIES DIRS DIRECTORY DIR)
       if(${US_BASECLASS_PACKAGE}_INCLUDE_${_suffix} AND NOT US_BASECLASS_INCLUDE_DIRS)
-        us_cache_var(US_BASECLASS_INCLUDE_DIRS ${${US_BASECLASS_PACKAGE}_INCLUDE_${_suffix}} STRING "${bc_inc_d_doc}" FORCE)
+        us_cache_var(US_BASECLASS_INCLUDE_DIRS "${${US_BASECLASS_PACKAGE}_INCLUDE_${_suffix}}" STRING "${bc_inc_d_doc}" FORCE)
         break()
       endif()
     endforeach()
@@ -135,7 +141,7 @@ if(US_ENABLE_SERVICE_FACTORY_SUPPORT OR US_BUILD_TESTING)
     # Try to get the library dirs
     foreach(_suffix DIRECTORIES DIRS DIRECTORY DIR)
       if(${US_BASECLASS_PACKAGE}_LIBRARY_${_suffix} AND NOT US_BASECLASS_LIBRARY_DIRS)
-        us_cache_var(US_BASECLASS_LIBRARY_DIRS ${${US_BASECLASS_PACKAGE}_LIBRARY_${_suffix}} STRING "${bc_lib_d_doc}" FORCE)
+        us_cache_var(US_BASECLASS_LIBRARY_DIRS "${${US_BASECLASS_PACKAGE}_LIBRARY_${_suffix}}" STRING "${bc_lib_d_doc}" FORCE)
         break()
       endif()
     endforeach()
@@ -143,7 +149,7 @@ if(US_ENABLE_SERVICE_FACTORY_SUPPORT OR US_BUILD_TESTING)
     # Try to get the libraries
     foreach(_suffix LIBRARIES LIBS LIBRARY LIB)
       if(${US_BASECLASS_PACKAGE}_${_suffix} AND NOT US_BASECLASS_LIBRARIES)
-        us_cache_var(US_BASECLASS_LIBRARIES ${${US_BASECLASS_PACKAGE}_${_suffix}} STRING "${bc_lib_doc}" FORCE)
+        us_cache_var(US_BASECLASS_LIBRARIES "${${US_BASECLASS_PACKAGE}_${_suffix}}" STRING "${bc_lib_doc}" FORCE)
         break()
       endif()
     endforeach()
@@ -201,23 +207,27 @@ set(US_CXX_FLAGS "${COVERAGE_CXX_FLAGS} ${ADDITIONAL_CXX_FLAGS}")
 # This is used as a preprocessor define
 set(US_USE_CXX11 ${US_USE_C++11})
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-  set(cflags "-Wall -Wextra -Wpointer-arith -Winvalid-pch -Wcast-align -Wwrite-strings -D_FORTIFY_SOURCE=2")
-
-  usFunctionCheckCompilerFlags("-fdiagnostics-show-option" cflags)
-  usFunctionCheckCompilerFlags("-Wl,--no-undefined" cflags)
+# Set C++ compiler flags
+if(NOT MSVC)
+  foreach(_cxxflag  -Werror -Wall -Wextra -Wpointer-arith -Winvalid-pch -Wcast-align
+                    -Wwrite-strings -Woverloaded-virtual -Wnon-virtual-dtor -Wold-style-cast
+                    -Wstrict-null-sentinel -Wsign-promo -fdiagnostics-show-option -D_FORTIFY_SOURCE=2)
+    usFunctionCheckCompilerFlags(${_cxxflag} US_CXX_FLAGS)
+  endforeach()
 
   if(US_USE_C++11)
     usFunctionCheckCompilerFlags("-std=c++0x" US_CXX_FLAGS)
   endif()
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX)
 
   usFunctionGetGccVersion(${CMAKE_CXX_COMPILER} GCC_VERSION)
 
-  # With older version of gcc supporting the flag -fstack-protector-all, an extra dependency to libssp.so
-  # is introduced. If gcc is smaller than 4.4.0 and the build type is Release let's not include the flag.
-  # Doing so should allow to build package made for distribution using older linux distro.
+  # With older versions of gcc the flag -fstack-protector-all requires an extra dependency to libssp.so.
+  # If the gcc version is lower than 4.4.0 and the build type is Release let's not include the flag.
   if(${GCC_VERSION} VERSION_GREATER "4.4.0" OR (CMAKE_BUILD_TYPE STREQUAL "Debug" AND ${GCC_VERSION} VERSION_LESS "4.4.0"))
-    usFunctionCheckCompilerFlags("-fstack-protector-all" cflags)
+    usFunctionCheckCompilerFlags("-fstack-protector-all" US_CXX_FLAGS)
   endif()
 
   if(MINGW)
@@ -232,15 +242,28 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     endif()
   endif()
 
-  set(US_C_FLAGS "${cflags} ${US_C_FLAGS}")
-  set(US_CXX_FLAGS "${cflags} -Woverloaded-virtual -Wold-style-cast -Wstrict-null-sentinel -Wsign-promo ${US_CXX_FLAGS}")
-elseif(MSVC90 OR MSVC10)
+elseif(MSVC90 OR MSVC10 OR MSVC11)
   set(US_CXX_FLAGS "/MP ${US_CXX_FLAGS}")
 endif()
 
 if(NOT US_IS_EMBEDDED)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${US_CXX_FLAGS}")
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${US_C_FLAGS}")
+endif()
+
+#-----------------------------------------------------------------------------
+# US Link Flags
+#-----------------------------------------------------------------------------
+
+set(US_LINK_FLAGS )
+if(NOT MSVC)
+  foreach(_linkflag -Wl,--no-undefined)
+    set(_add_flag)
+    usFunctionCheckCompilerFlags("${_linkflag}" _add_flag)
+    if(_add_flag)
+      set(US_LINK_FLAGS "${US_LINK_FLAGS} ${_linkflag}")
+    endif()
+  endforeach()
 endif()
 
 #-----------------------------------------------------------------------------
@@ -259,7 +282,7 @@ set(US_INTERNAL_INCLUDE_DIRS
 )
 
 if(US_ENABLE_SERVICE_FACTORY_SUPPORT)
-  list(APPEND _us_internal_include_dirs ${US_BASECLASS_INCLUDE_DIRS})
+  list(APPEND US_INTERNAL_INCLUDE_DIRS ${US_BASECLASS_INCLUDE_DIRS})
 endif()
 
 # link libraries for third party libs
@@ -289,6 +312,9 @@ endif()
 # Source directory
 #-----------------------------------------------------------------------------
 
+set(us_config_h_file "${PROJECT_BINARY_DIR}/include/usConfig.h")
+configure_file(usConfig.h.in ${us_config_h_file})
+
 add_subdirectory(src)
 
 #-----------------------------------------------------------------------------
@@ -309,8 +335,6 @@ add_subdirectory(documentation)
 #-----------------------------------------------------------------------------
 # Last configuration steps
 #-----------------------------------------------------------------------------
-
-configure_file(usConfig.h.in ${PROJECT_BINARY_DIR}/include/usConfig.h)
 
 configure_file(${PROJECT_NAME}Config.cmake.in ${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake @ONLY)
 

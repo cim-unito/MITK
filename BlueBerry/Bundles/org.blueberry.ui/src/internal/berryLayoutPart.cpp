@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryLayoutPart.h"
 
@@ -66,6 +65,11 @@ Rectangle LayoutPart::GetBounds()
 ILayoutContainer::Pointer LayoutPart::GetContainer()
 {
   return container;
+}
+
+bool LayoutPart::IsPlaceHolder() const
+{
+  return false;
 }
 
 std::string LayoutPart::GetID() const
@@ -246,7 +250,11 @@ void LayoutPart::SetContainer(ILayoutContainer::Pointer container)
 //  if (container != 0)
 //  {
 //    setZoomed(container.childIsZoomed(this));
-//  }
+  //  }
+}
+
+void LayoutPart::SetFocus()
+{
 }
 
 void LayoutPart::SetID(const std::string& str)

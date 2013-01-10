@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTransformFactory.h"
 #include "mitkTransformParameters.h"
@@ -45,7 +44,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
   template < class TPixelType, unsigned int VImageDimension >
-  TransformFactory< TPixelType, VImageDimension >::TransformFactory() : 
+  TransformFactory< TPixelType, VImageDimension >::TransformFactory() :
     m_TransformParameters(NULL),
     m_FixedImage(NULL),
     m_MovingImage(NULL),
@@ -56,7 +55,7 @@ namespace mitk {
   {
 
   }
-  
+
   template < class TPixelType, unsigned int VImageDimension >
   void TransformFactory< TPixelType, VImageDimension >::SetFixedImage(FixedImageType* fixed)
   {
@@ -71,7 +70,7 @@ namespace mitk {
       m_FixedImage = fixed;
     }
   }
-  
+
   template < class TPixelType, unsigned int VImageDimension >
   void TransformFactory< TPixelType, VImageDimension >::SetMovingImage(MovingImageType* moving)
   {
@@ -88,7 +87,7 @@ namespace mitk {
   }
 
   /*template < class TPixelType, unsigned int VImageDimension >
-  typename ::itk::Transform< double, VImageDimension, VImageDimension >::Pointer 
+  typename ::itk::Transform< double, VImageDimension, VImageDimension >::Pointer
   MakeRigidTransform();
 
   template <class TPixelType>
@@ -108,7 +107,7 @@ namespace mitk {
   }*/
 
   /*template < unsigned int VImageDimension >
-  typename ::itk::Transform< double, VImageDimension, VImageDimension >::Pointer 
+  typename ::itk::Transform< double, VImageDimension, VImageDimension >::Pointer
   MakeRigidTransform();
 
   template <>
@@ -132,7 +131,7 @@ namespace mitk {
 //template<class T> class X<int, T*, 10>
 //  { void f() { cout << "Partial specialization 3" << endl;
 //  } };
-// 
+//
 //
 //template < class TPixelType > class TransformFactory<TPixelType, 3>
 //{
@@ -186,7 +185,7 @@ namespace mitk {
     }
     else if (transform == TransformParameters::AFFINETRANSFORM)
     {
-      typename itk::AffineTransform< double, VImageDimension>::Pointer transformPointer = itk::AffineTransform< double, VImageDimension>::New();    
+      typename itk::AffineTransform< double, VImageDimension>::Pointer transformPointer = itk::AffineTransform< double, VImageDimension>::New();
       transformPointer->SetIdentity();
       if (m_TransformParameters->GetTransformInitializerOn())
       {
@@ -204,7 +203,7 @@ namespace mitk {
         {
           transformInitializer->GeometryOn();
         }
-        transformInitializer->InitializeTransform();        
+        transformInitializer->InitializeTransform();
       }
       m_TransformParameters->SetTransformCenterX(transformPointer->GetCenter()[0]);
       m_TransformParameters->SetTransformCenterY(transformPointer->GetCenter()[1]);
@@ -235,7 +234,7 @@ namespace mitk {
         m_TransformParameters->SetTransformCenterX(transformPointer->GetCenter()[0]);
         m_TransformParameters->SetTransformCenterY(transformPointer->GetCenter()[1]);
         m_TransformParameters->SetTransformCenterZ(transformPointer->GetCenter()[2]);
-        transformInitializer->InitializeTransform();        
+        transformInitializer->InitializeTransform();
       }
       return transformPointer.GetPointer();
     }
@@ -329,7 +328,7 @@ namespace mitk {
 
         VersorType     rotation;
         VectorType     axis;
-  
+
         axis[0] = 0.0;
         axis[1] = 0.0;
         axis[2] = 1.0;
@@ -457,7 +456,7 @@ namespace mitk {
           {
             transformInitializer->GeometryOn();
           }
-          transformInitializer->InitializeTransform();        
+          transformInitializer->InitializeTransform();
         }
         transformPointer->SetScale( m_TransformParameters->GetScale() );
         transformPointer->SetAngle( m_TransformParameters->GetAngle() );

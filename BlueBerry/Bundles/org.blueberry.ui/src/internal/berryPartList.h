@@ -1,8 +1,23 @@
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef BERRYPARTLIST_H_
 #define BERRYPARTLIST_H_
 
 #include "berryWorkbenchPartReference.h"
-#include "berryIStackableContainer.h"
+#include "berryILayoutContainer.h"
 
 #include "berryIEditorReference.h"
 #include "berryIViewReference.h"
@@ -73,7 +88,7 @@ private:
    * -1 if the given container does not appear in the activation list.
    */
   //std::deque<IWorkbenchPartReference::Pointer>::iterator
-  //  LastIndexOfContainer(IStackableContainer::Pointer container);
+  //  LastIndexOfContainer(ILayoutContainer::Pointer container);
 
   void PartInputChanged(WorkbenchPartReference::Pointer ref);
 

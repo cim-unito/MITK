@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPropertyListSerializer.h"
@@ -46,13 +45,13 @@ std::string mitk::PropertyListSerializer::Serialize()
 
   // tmpname
   static unsigned long count = 1;
-	unsigned long n = count++;
+  unsigned long n = count++;
   std::ostringstream name;
   for (int i = 0; i < 6; ++i)
-	{
-		name << char('a' + (n % 26));
-		n /= 26;
-	}
+  {
+    name << char('a' + (n % 26));
+    n /= 26;
+  }
   std::string filename;
   filename.append(name.str());
 
@@ -94,7 +93,7 @@ std::string mitk::PropertyListSerializer::Serialize()
       m_FailedProperties->ReplaceProperty( key, const_cast<BaseProperty*>(property) );
     }
   }
- 
+
   // save XML file
   if ( !document.SaveFile( fullname ) )
   {
@@ -110,11 +109,11 @@ TiXmlElement* mitk::PropertyListSerializer::SerializeOneProperty( const std::str
   TiXmlElement* keyelement = new TiXmlElement("property");
   keyelement->SetAttribute("key", key);
   keyelement->SetAttribute("type", property->GetNameOfClass());
-  
+
   // construct name of serializer class
   std::string serializername(property->GetNameOfClass());
   serializername += "Serializer";
-  
+
   std::list<itk::LightObject::Pointer> allSerializers = itk::ObjectFactoryBase::CreateAllInstance(serializername.c_str());
   if (allSerializers.size() < 1)
   {

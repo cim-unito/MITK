@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-29 11:59:05 +0100 (Do, 29 Okt 2009) $
-Version:   $Revision: 17258 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_PLANAR_FOURPOINTANGLE_H_
@@ -23,14 +22,14 @@ PURPOSE.  See the above copyright notices for more information.
 #include "PlanarFigureExports.h"
 
 
-namespace mitk 
+namespace mitk
 {
 
 class Geometry2D;
 
 /**
  * \brief Implementation of PlanarFigure representing a four point
- * angle, which is defined by two non-intersecting lines in 2D. Each of those lines 
+ * angle, which is defined by two non-intersecting lines in 2D. Each of those lines
  * is defined by two control points.
  */
 class PlanarFigure_EXPORT PlanarFourPointAngle : public PlanarFigure
@@ -50,7 +49,7 @@ public:
    */
   //virtual void Initialize();
 
-  
+
   /** \brief Four point angle has 4 control points per definition. */
   unsigned int GetMinimumNumberOfControlPoints() const
   {

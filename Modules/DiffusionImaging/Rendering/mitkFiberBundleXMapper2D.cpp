@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 /*
  *  mitkFiberBundleMapper2D.cpp
  *  mitk-all
@@ -65,7 +80,7 @@ void mitk::FiberBundleXMapper2D::Update(mitk::BaseRenderer * renderer)
         return;
     }
 
-
+ MITK_DEBUG << "MapperFBX 2D  update: ";
     // Calculate time step of the input data for the specified renderer (integer value)
     // this method is implemented in mitkMapper
     this->CalculateTimeStep( renderer );
@@ -182,7 +197,7 @@ void mitk::FiberBundleXMapper2D::GenerateDataForRenderer(mitk::BaseRenderer *ren
     if (fbx->GetCurrentColorCoding() != NULL){
 //        localStorage->m_PointMapper->SelectColorArray("");
         localStorage->m_PointMapper->SelectColorArray(fbx->GetCurrentColorCoding());
-        MITK_INFO << "MapperFBX 2D: " << fbx->GetCurrentColorCoding();
+        MITK_DEBUG << "MapperFBX 2D: " << fbx->GetCurrentColorCoding();
 
         if(fbx->GetCurrentColorCoding() == fbx->COLORCODING_CUSTOM){
             float temprgb[3];

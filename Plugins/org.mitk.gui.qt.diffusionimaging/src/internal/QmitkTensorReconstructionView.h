@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Do, 28 Mai 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _QMITKTENSORRECONSTRUCTIONVIEW_H_INCLUDED
 #define _QMITKTENSORRECONSTRUCTIONVIEW_H_INCLUDED
@@ -27,10 +25,6 @@ PURPOSE.  See the above copyright notices for more information.
 
 #include <mitkDiffusionImage.h>
 #include <mitkTensorImage.h>
-
-#include <berryIPartListener.h>
-#include <berryISelectionListener.h>
-#include <berryIStructuredSelection.h>
 
 typedef short DiffusionPixelType;
 
@@ -81,21 +75,16 @@ protected slots:
   void TensorsToQbi();
   void TensorsToDWI();
   void DoTensorsToDWI(mitk::DataStorage::SetOfObjects::Pointer inImages);
-  void TeemCheckboxClicked();
   void Advanced1CheckboxClicked();
-  void Advanced2CheckboxClicked();
-  void ManualThresholdClicked();
-  void MethodChoosen(int method);
-  void Reconstruct(int method);
-  void TeemReconstruction();
-  void ItkReconstruction();
-  void ItkTensorReconstruction
-    (mitk::DataStorage::SetOfObjects::Pointer inImages);
-  void TeemTensorReconstruction
-    (mitk::DataStorage::SetOfObjects::Pointer inImages);
-
+  void Reconstruct();
+  void ResidualCalculation();
+  void ResidualClicked(int slice, int volume);
 
 protected:
+
+  void ItkTensorReconstruction(mitk::DataStorage::SetOfObjects::Pointer inImages);
+  void TeemTensorReconstruction(mitk::DataStorage::SetOfObjects::Pointer inImages);
+  void TensorReconstructionWithCorr(mitk::DataStorage::SetOfObjects::Pointer inImages);
 
   void OnSelectionChanged( std::vector<mitk::DataNode*> nodes );
 
@@ -103,8 +92,7 @@ protected:
 
   QmitkStdMultiWidget* m_MultiWidget;
 
-  template<int ndirs>
-  std::vector<itk::Vector<double,3> > MakeGradientList() ;
+  template<int ndirs> std::vector<itk::Vector<double,3> > MakeGradientList();
 
   template<int L>
   void TemplatedAnalyticalTensorReconstruction(mitk::DiffusionImage<DiffusionPixelType>* vols,
@@ -112,8 +100,10 @@ protected:
 
   void SetDefaultNodeProperties(mitk::DataNode::Pointer node, std::string name);
 
-  berry::ISelectionListener::Pointer m_SelListener;
-  berry::IStructuredSelection::ConstPointer m_CurrentSelection;
+  mitk::DataNode::Pointer m_DiffusionImage;
+  mitk::DataNode::Pointer m_TensorImage;
+  mitk::DataStorage::SetOfObjects::Pointer m_DiffusionImages;
+  mitk::DataStorage::SetOfObjects::Pointer m_TensorImages;
 };
 
 

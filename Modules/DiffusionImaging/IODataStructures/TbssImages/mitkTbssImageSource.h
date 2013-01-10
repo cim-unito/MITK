@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-13 18:06:46 +0200 (Mi, 13 Mai 2009) $
-Version:   $Revision: 5308 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef _MITK_TBSS_IMAGE_DATA_SOURCE_H_HEADER_
@@ -33,8 +32,8 @@ namespace mitk {
 
 
 //##Documentation
-//## @brief Superclass of all classes generating diffusion volumes (instances 
-//## of class DiffusionImage) as output. 
+//## @brief Superclass of all classes generating diffusion volumes (instances
+//## of class DiffusionImage) as output.
 //##
 //## @ingroup Process
 
@@ -56,7 +55,7 @@ public:
   //OutputType* GetOutput()
   //{return Superclass::GetOutput();}
 
-  //OutputType* GetOutput(unsigned int idx);
+  OutputType* GetOutput(unsigned int idx);
 
   //virtual void GraftOutput(OutputType* graft);
 

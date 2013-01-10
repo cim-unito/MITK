@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2010-02-21 19:30:44 +0100 (So, 21 Feb 2010) $
-Version:   $Revision: 7837 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkVirtualTrackingDevice.h"
 
@@ -28,7 +27,7 @@ int mitkVirtualTrackingDeviceTest(int /* argc */, char* /*argv*/[])
   // always start with this!
   MITK_TEST_BEGIN("VirtualTrackingDevice");
 
-  // let's create an object of our class  
+  // let's create an object of our class
   mitk::VirtualTrackingDevice::Pointer tracker = mitk::VirtualTrackingDevice::New();
   tracker->SetRefreshRate(10);
 
@@ -56,7 +55,7 @@ int mitkVirtualTrackingDeviceTest(int /* argc */, char* /*argv*/[])
 
   mitk::TrackingTool::Pointer tool = tracker->GetTool(0);
   MITK_TEST_CONDITION_REQUIRED( tool.IsNotNull(), "Testing GetTool() for tool 0.");
-  
+
   MITK_TEST_CONDITION( tracker->GetToolByName("Tool0") == tool.GetPointer(), "Testing GetTool() equals GetToolByName() for tool 0.");
 
   mitk::ScalarType bounds[6] = {0.0, 10.0, 1.0, 20.0, 3.0, 30.0};
@@ -77,7 +76,7 @@ int mitkVirtualTrackingDeviceTest(int /* argc */, char* /*argv*/[])
 
   mitk::ScalarType lengthBefore = tracker->GetSplineChordLength(0); // no exception expected
   MITK_TEST_FOR_EXCEPTION(std::invalid_argument, tracker->GetSplineChordLength(2));  // exception expected
-  
+
 
   MITK_TEST_CONDITION( tracker->OpenConnection() == true, "Testing OpenConnection().");
   MITK_TEST_CONDITION( tracker->GetSplineChordLength(0)  == lengthBefore, "Testing GetSplineChordLength() after initalization");
@@ -97,7 +96,7 @@ int mitkVirtualTrackingDeviceTest(int /* argc */, char* /*argv*/[])
 
   MITK_TEST_CONDITION( tracker->StartTracking() == true, "Testing behavior of method StartTracking().");
   itksys::SystemTools::Delay(500); // wait for tracking thread to start generating positions
-  
+
   tool->GetPosition(posAfter0);
   if(tracker->GetToolByName("Tool0")->GetMTime() == tmpMTimeBefore0) //tool not modified yet
   {
@@ -107,7 +106,7 @@ int mitkVirtualTrackingDeviceTest(int /* argc */, char* /*argv*/[])
   {
     MITK_TEST_CONDITION( mitk::Equal(posBefore0, posAfter0) == false, "Testing if tracking is producing new position values in tool 0.");
   }
-  
+
   mitk::Point3D posAfter1;
   tracker->GetToolByName("Tool1")->GetPosition(posAfter1);
   if(tracker->GetToolByName("Tool1")->GetMTime() == tmpMTimeBefore1) //tool not modified yet

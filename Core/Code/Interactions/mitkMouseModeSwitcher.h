@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-28 17:19:30 +0200 (Thu, 28 May 2009) $
-Version:   $Revision: 17495 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKMouseModeSwitcher_H_HEADER_INCLUDED_C10DC4EB
@@ -28,38 +27,38 @@ namespace mitk {
 
 /***********************************************************************
 *
-* \brief Class that offers a convenient way to switch between different 
+* \brief Class that offers a convenient way to switch between different
 * interaction schemes
-* 
-* This class offers the possibility to swtch between the two different 
+*
+* This class offers the possibility to swtch between the two different
 * interaction schemes that are available:
-* - MITK : The original interaction scheme 
+* - MITK : The original interaction scheme
 *   - left mouse button   : setting the cross position in the MPR view
 *   - middle mouse button : panning
 *   - right mouse button  : zooming
-* 
-* 
+*
+*
 * - PACS : an alternative interaction scheme that behaves more like a
 *          PACS workstation
 *   - left mouse button   : behaviour depends on current MouseMode
-*   - middle mouse button : fast scrolling 
+*   - middle mouse button : fast scrolling
 *   - right mouse button  : level-window
 *   - ctrl + right button : zooming
 *   - shift+ right button : panning
-*   
+*
 *   There are 5 different MouseModes that are available in the PACS scheme.
-*   Each MouseMode defines the interaction that is performed on a left 
+*   Each MouseMode defines the interaction that is performed on a left
 *   mouse button click:
 *   - Pointer : sets the cross position for the MPR
 *   - Scroll
 *   - Level-Window
 *   - Zoom
 *   - Pan
-* 
+*
 * When the interaction scheme or the MouseMode is changed, this class
-* manages the adding and removing of the relevant listeners offering 
+* manages the adding and removing of the relevant listeners offering
 * a convenient way to modify the interaction behaviour.
-* 
+*
 ***********************************************************************/
   class MITK_CORE_EXPORT MouseModeSwitcher : public itk::Object
   {
@@ -96,12 +95,12 @@ namespace mitk {
     * \brief Setter for interaction scheme
     */
     void SetInteractionScheme( InteractionScheme );
-    
+
     /**
     * \brief Setter for mouse mode
     */
     void SelectMouseMode( MouseMode mode );
-    
+
     /**
     * \brief Returns the current mouse mode
     */
@@ -113,7 +112,7 @@ namespace mitk {
     * \brief Constructor takes GlobalInteraction, MUST NOT be NULL.
     **/
     MouseModeSwitcher( GlobalInteraction* );
-    
+
     virtual ~MouseModeSwitcher();
 
 
@@ -121,12 +120,12 @@ namespace mitk {
 
     /**
     * \brief Initializes the listeners for the different interaction schemes
-    * 
-    * This method creates all listeners that are required for the different 
+    *
+    * This method creates all listeners that are required for the different
     * interaction schemes. These are stored in two lists.
     */
     void InitializeListeners();
-   
+
     GlobalInteraction::Pointer m_GlobalInteraction;
 
     InteractionScheme m_ActiveInteractionScheme;

@@ -5,7 +5,7 @@ list(APPEND CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 #
 # Automatically determined properties
 #
-set(MY_OPERATING_SYSTEM "${CMAKE_HOST_SYSTEM}") # Windows 7, Linux-2.6.32, Darwin... 
+set(MY_OPERATING_SYSTEM "${CMAKE_HOST_SYSTEM}") # Windows 7, Linux-2.6.32, Darwin...
 site_name(CTEST_SITE)
 
 if(QT_BINARY_DIR)
@@ -46,7 +46,7 @@ set(ENV{PATH} "${CTEST_PATH}")
 set(SUPERBUILD_TARGETS "")
 
 # If the dashscript doesn't define a GIT_REPOSITORY variable, let's define it here.
-if (NOT DEFINED GIT_REPOSITORY OR GIT_REPOSITORY STREQUAL "")
+if(NOT DEFINED GIT_REPOSITORY OR GIT_REPOSITORY STREQUAL "")
   set(GIT_REPOSITORY "http://git.mitk.org/MITK.git")
 endif()
 
@@ -81,11 +81,27 @@ if(NOT DEFINED MITK_USE_OpenCV)
   set(MITK_USE_OpenCV 1)
 endif()
 
+if(NOT DEFINED MITK_BUILD_ALL_APPS)
+  set(MITK_BUILD_ALL_APPS TRUE)
+endif()
+
+if(NOT DEFINED BLUEBERRY_BUILD_ALL_PLUGINS)
+  set(BLUEBERRY_BUILD_ALL_PLUGINS TRUE)
+endif()
+
+if(NOT DEFINED MITK_BUILD_ALL_PLUGINS)
+  set(MITK_BUILD_ALL_PLUGINS TRUE)
+endif()
+
+if(NOT DEFINED MITK_BUILD_EXAMPLES)
+  set(MITK_BUILD_EXAMPLES TRUE)
+endif()
+
 set(INITIAL_CMAKECACHE_OPTIONS "
-BLUEBERRY_BUILD_TESTING:BOOL=TRUE
-BLUEBERRY_BUILD_ALL_PLUGINS:BOOL=TRUE
-MITK_BUILD_ALL_PLUGINS:BOOL=TRUE
-MITK_BUILD_ALL_APPS:BOOL=TRUE
+BLUEBERRY_BUILD_ALL_PLUGINS:BOOL=${MITK_BUILD_ALL_PLUGINS}
+MITK_BUILD_ALL_PLUGINS:BOOL=${MITK_BUILD_ALL_PLUGINS}
+MITK_BUILD_ALL_APPS:BOOL=${MITK_BUILD_ALL_APPS}
+MITK_BUILD_EXAMPLES:BOOL=${MITK_BUILD_EXAMPLES}
 SUPERBUILD_EXCLUDE_MITKBUILD_TARGET:BOOL=TRUE
 MITK_USE_Boost:BOOL=${MITK_USE_Boost}
 MITK_USE_OpenCV:BOOL=${MITK_USE_OpenCV}
@@ -105,13 +121,8 @@ endif()
 
 
 #
-# Download and include dashboard driver script 
+# Download and include dashboard driver script
 #
-if(NOT DEFINED GIT_BRANCH OR GIT_BRANCH STREQUAL "")
-  set(hb "HEAD")
-else()
-  set(hb "refs/heads/${GIT_BRANCH}")
-endif()
 set(url "http://mitk.org/git/?p=MITK.git;a=blob_plain;f=CMake/MITKDashboardDriverScript.cmake;hb=${hb}")
 set(dest ${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}.driver)
 downloadFile("${url}" "${dest}")

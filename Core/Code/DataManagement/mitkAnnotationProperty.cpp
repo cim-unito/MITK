@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-04-14 19:45:53 +0200 (Mo, 14 Apr 2008) $
-Version:   $Revision: 14081 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkAnnotationProperty.h"
@@ -23,8 +22,8 @@ mitk::AnnotationProperty::AnnotationProperty()
 }
 
 
-mitk::AnnotationProperty::AnnotationProperty( 
-  const char *label, const Point3D &position ) 
+mitk::AnnotationProperty::AnnotationProperty(
+  const char *label, const Point3D &position )
 : m_Label( "" ),
   m_Position( position )
 {
@@ -35,7 +34,7 @@ mitk::AnnotationProperty::AnnotationProperty(
 }
 
 
-mitk::AnnotationProperty::AnnotationProperty( 
+mitk::AnnotationProperty::AnnotationProperty(
   const std::string &label, const Point3D &position )
 : m_Label( label ),
   m_Position( position )
@@ -43,8 +42,8 @@ mitk::AnnotationProperty::AnnotationProperty(
 }
 
 
-mitk::AnnotationProperty::AnnotationProperty( 
-  const char *label, ScalarType x, ScalarType y, ScalarType z ) 
+mitk::AnnotationProperty::AnnotationProperty(
+  const char *label, ScalarType x, ScalarType y, ScalarType z )
 : m_Label( "" )
 {
   if ( label != NULL )
@@ -58,7 +57,7 @@ mitk::AnnotationProperty::AnnotationProperty(
 }
 
 
-mitk::AnnotationProperty::AnnotationProperty( 
+mitk::AnnotationProperty::AnnotationProperty(
   const std::string &label, ScalarType x, ScalarType y, ScalarType z )
 : m_Label( label )
 {
@@ -85,7 +84,7 @@ void mitk::AnnotationProperty::SetPosition( const mitk::Point3D &position )
 
 
 bool mitk::AnnotationProperty::IsEqual( const BaseProperty &property ) const
-{  
+{
   return ( (this->m_Label == static_cast<const Self&>(property).m_Label )
            && (this->m_Position == static_cast<const Self&>(property).m_Position ) );
 }
@@ -98,10 +97,10 @@ bool mitk::AnnotationProperty::Assign( const BaseProperty &property )
 }
 
 
-std::string mitk::AnnotationProperty::GetValueAsString() const 
+std::string mitk::AnnotationProperty::GetValueAsString() const
 {
   std::stringstream myStr;
 
   myStr << this->GetLabel() << this->GetPosition();
-  return myStr.str(); 
+  return myStr.str();
 }

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkWorkbenchWindowAdvisor.h"
 #include "QmitkActionBarAdvisor.h"
@@ -81,12 +80,12 @@ void QmitkWorkbenchWindowAdvisor::PostWindowCreate()
   {
     if ((*iter)->GetId() == "org.blueberry.ui.internal.introview")
       continue;
-    std::pair<std::string, berry::IViewDescriptor::Pointer> p((*iter)->GetLabel(), (*iter)); 
+    std::pair<std::string, berry::IViewDescriptor::Pointer> p((*iter)->GetLabel(), (*iter));
     VDMap.insert(p);
   }
 
   QToolBar* qToolbar = new QToolBar;
-  
+
   std::map<std::string, berry::IViewDescriptor::Pointer>::const_iterator MapIter;
   for (MapIter = VDMap.begin(); MapIter != VDMap.end(); ++MapIter)
   {
@@ -95,7 +94,7 @@ void QmitkWorkbenchWindowAdvisor::PostWindowCreate()
     viewMenu->addAction(viewAction);
     qToolbar->addAction(viewAction);
   }
-  
+
   mainWindow->addToolBar(qToolbar);
 
   QStatusBar* qStatusBar = new QStatusBar();

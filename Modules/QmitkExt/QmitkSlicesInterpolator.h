@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-09-12 15:46:48 +0200 (Fr, 12 Sep 2008) $
-Version:   $Revision: 15236 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkSlicesInterpolator_h_Included
 #define QmitkSlicesInterpolator_h_Included
@@ -53,7 +52,7 @@ class QmitkStdMultiWidget;
 class QPushButton;
 //Enhancement for 3D Interpolation
 //class QRadioButton;
-//class QGroupBox; 
+//class QGroupBox;
 //class QCheckBox;
 
 
@@ -65,11 +64,11 @@ class QPushButton;
 
   \sa QmitkInteractiveSegmentation
   \sa mitk::SegmentationInterpolation
-  
+
   There is a separate page describing the general design of QmitkInteractiveSegmentation: \ref QmitkInteractiveSegmentationTechnicalPage
 
-  While mitk::SegmentationInterpolation does the bookkeeping of interpolation 
-  (keeping track of which slices contain how much segmentation) and the algorithmic work, 
+  While mitk::SegmentationInterpolation does the bookkeeping of interpolation
+  (keeping track of which slices contain how much segmentation) and the algorithmic work,
   QmitkSlicesInterpolator is responsible to watch the GUI, to notice, which slice is currently
   visible. It triggers generation of interpolation suggestions and also triggers acception of
   suggestions.
@@ -83,7 +82,7 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
   Q_OBJECT
 
   public:
-    
+
     QmitkSlicesInterpolator(QWidget* parent = 0, const char* name = 0);
 
     /**
@@ -109,7 +108,12 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
     /**
       Just public because it is called by itk::Commands. You should not need to call this.
     */
-    void OnTransversalTimeChanged(itk::Object* sender, const itk::EventObject&);
+    void OnAxialTimeChanged(itk::Object* sender, const itk::EventObject&);
+
+    /**
+      Just public because it is called by itk::Commands. You should not need to call this.
+    */
+    DEPRECATED(void OnTransversalTimeChanged(itk::Object* sender, const itk::EventObject&));
 
     /**
       Just public because it is called by itk::Commands. You should not need to call this.
@@ -120,11 +124,16 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
       Just public because it is called by itk::Commands. You should not need to call this.
     */
     void OnFrontalTimeChanged(itk::Object* sender, const itk::EventObject&);
- 
+
     /**
       Just public because it is called by itk::Commands. You should not need to call this.
     */
-    void OnTransversalSliceChanged(const itk::EventObject&);
+    void OnAxialSliceChanged(const itk::EventObject&);
+
+    /**
+      Just public because it is called by itk::Commands. You should not need to call this.
+    */
+    DEPRECATED(void OnTransversalSliceChanged(const itk::EventObject&));
 
     /**
       Just public because it is called by itk::Commands. You should not need to call this.
@@ -135,7 +144,7 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
       Just public because it is called by itk::Commands. You should not need to call this.
     */
     void OnFrontalSliceChanged(const itk::EventObject&);
-    
+
     /**
       Just public because it is called by itk::Commands. You should not need to call this.
     */
@@ -150,7 +159,6 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
 
     void SignalRememberContourPositions(bool);
     void SignalShowMarkerNodes(bool);
-    void Signal3DInterpolationEnabled(bool);
 
   public slots:
 
@@ -187,7 +195,7 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
      * Will trigger interpolation for all slices in given orientation (called from popup menu of OnAcceptAllInterpolationsClicked)
      */
     void OnAcceptAllPopupActivated(QAction* action);
-    
+
     /**
       Called on activation/deactivation
     */
@@ -205,7 +213,7 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
 
     void Run3DInterpolation();
 
-    void SurfaceInterpolationFinished();
+    void OnSurfaceInterpolationFinished();
 
     void StartUpdateInterpolationTimer();
 
@@ -219,16 +227,16 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
     const std::map<QAction*, unsigned int> ACTION_TO_SLICEDIMENSION;
 
     void AcceptAllInterpolations(unsigned int windowID);
-        
+
     /**
       Retrieves the currently selected PlaneGeometry from a SlicedGeometry3D that is generated by a SliceNavigationController
       and calls Interpolate to further process this PlaneGeometry into an interpolation.
 
       \param e is a actually a mitk::SliceNavigationController::GeometrySliceEvent, sent by a SliceNavigationController
-      \param windowID is 2 for transversal, 1 for frontal, 0 for sagittal (similar to sliceDimension in other methods)
+      \param windowID is 2 for axial, 1 for frontal, 0 for sagittal (similar to sliceDimension in other methods)
           */
     bool TranslateAndInterpolateChangedSlice(const itk::EventObject& e, unsigned int windowID);
-    
+
     /**
       Given a PlaneGeometry, this method figures out which slice of the first working image (of the associated ToolManager)
       should be interpolated. The actual work is then done by our SegmentationInterpolation object.
@@ -236,18 +244,22 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
     void Interpolate( mitk::PlaneGeometry* plane, unsigned int timeStep );
 
     //void InterpolateSurface();
-    
+
     /**
       Called internally to update the interpolation suggestion. Finds out about the focused render window and requests an interpolation.
      */
     void UpdateVisibleSuggestion();
-    
+
     /**
      * Tries to figure out the slice position and orientation for a given render window.
-     * \param windowID is 2 for transversal, 1 for frontal, 0 for sagittal (similar to sliceDimension in other methods)
+     * \param windowID is 2 for axial, 1 for frontal, 0 for sagittal (similar to sliceDimension in other methods)
      * \return false if orientation could not be determined
      */
     bool GetSliceForWindowsID(unsigned windowID, int& sliceDimension, int& sliceIndex);
+
+    void SetCurrentContourListID();
+
+    void Show3DInterpolationResult(bool);
 
     mitk::SegmentationInterpolationController::Pointer m_Interpolator;
     mitk::SurfaceInterpolationController::Pointer m_SurfaceInterpolator;
@@ -283,7 +295,7 @@ class QmitkExt_EXPORT QmitkSlicesInterpolator : public QWidget
     mitk::Image* m_Segmentation;
     unsigned int m_LastSliceDimension;
     unsigned int m_LastSliceIndex;
-    
+
     std::vector<unsigned int> m_TimeStep; // current time step of the render windows
 
     bool m_2DInterpolationEnabled;

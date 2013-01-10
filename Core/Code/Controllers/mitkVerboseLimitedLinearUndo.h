@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef VERBOSELIMITEDLINEARUNDO_H_HEADER_INCLUDED_C16E96
@@ -31,7 +30,7 @@ PURPOSE.  See the above copyright notices for more information.
 namespace mitk {
 
 class UndoStackItem;
-  
+
 /**
 * @brief A limited linear undo model providing GUI elements with stack status information.
 *
@@ -44,7 +43,7 @@ public:
   mitkClassMacro(VerboseLimitedLinearUndo, LimitedLinearUndo);
   itkNewMacro(Self);
 
-  typedef std::pair<int,std::string> StackDescriptionItem; 
+  typedef std::pair<int,std::string> StackDescriptionItem;
   typedef std::vector<StackDescriptionItem> StackDescription; /// a list of pairs (int,string), representing a stack with ObjectEventIDs and descriptions
 
   virtual bool SetOperationEvent(UndoStackItem* undoStackItem);

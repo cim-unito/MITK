@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 // .NAME vtkMitkOpenGLVolumeTextureMapper3D - concrete implementation of 3D volume texture mapping
 
@@ -33,7 +32,7 @@ PURPOSE.  See the above copyright notices for more information.
 #ifndef VTK_IMPLEMENT_MESA_CXX
 # include "vtkOpenGL.h" // GLfloat type is used in some method signatures.
 #endif
- 
+
 
 class vtkRenderWindow;
 class vtkVolumeProperty;
@@ -53,8 +52,8 @@ public:
   // more than one independent component, or if the hardware does
   // not support the required extensions
   // int IsRenderSupported(vtkVolumeProperty *);
-	int IsRenderSupported(vtkRenderer *ren,vtkVolumeProperty *);
-  
+  int IsRenderSupported(vtkRenderer *ren,vtkVolumeProperty *);
+
 //BTX
 
   // Description:
@@ -68,22 +67,22 @@ public:
   // Desciption:
   // Initialize when we go to render, or go to answer the
   // IsRenderSupported question. Don't call unless we have
-  // a valid OpenGL context! 
+  // a valid OpenGL context!
   vtkGetMacro( Initialized, int );
-  
+
   // Description:
   // Release any graphics resources that are being consumed by this texture.
   // The parameter window could be used to determine which graphic
   // resources to release.
   void ReleaseGraphicsResources(vtkWindow *);
-  
+
 protected:
   vtkMitkOpenGLVolumeTextureMapper3D();
   ~vtkMitkOpenGLVolumeTextureMapper3D();
-  
+
   bool RenderPossible;
 
-//BTX  
+//BTX
 
   void GetLightInformation(vtkRenderer *ren,
                            vtkVolume *vol,
@@ -91,26 +90,26 @@ protected:
                            GLfloat lightDiffuseColor[2][4],
                            GLfloat lightSpecularColor[2][4],
                            GLfloat halfwayVector[2][4],
-                           GLfloat *ambient );  
+                           GLfloat *ambient );
 //ETX
-    
+
   int              Initialized;
   GLuint           Volume1Index;
   GLuint           Volume2Index;
   GLuint           Volume3Index;
   GLuint           ColorLookupIndex;
   GLuint           AlphaLookupIndex;
-  
+
   GLuint prgOneComponentShade;
   GLuint prgRGBAShade;
 
   vtkRenderWindow *RenderWindow;
-  
+
   bool SupportsCompressedTexture;
-  
+
   //void Initialize();
-	void Initialize(vtkRenderer *r);
-	
+  void Initialize(vtkRenderer *r);
+
   virtual void RenderFP(vtkRenderer *ren, vtkVolume *vol);
 
   void SetupOneIndependentTextures( vtkRenderer *ren, vtkVolume *vol );
@@ -121,13 +120,13 @@ protected:
 
   void DeleteTextureIndex( GLuint *index );
   void CreateTextureIndex( GLuint *index );
-  
+
   void RenderPolygons( vtkRenderer *ren, vtkVolume *vol, int stages[4] );
 
   void SetupProgramLocalsForShadingFP( vtkRenderer *ren, vtkVolume *vol );
-  
+
   void Setup3DTextureParameters( bool linear );
-  
+
   void ComputeVolumeDimensions();
 
   bool UpdateVolumes( vtkVolume * );

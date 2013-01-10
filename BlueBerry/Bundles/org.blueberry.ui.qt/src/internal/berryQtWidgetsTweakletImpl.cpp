@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryLog.h"
 
@@ -152,7 +151,7 @@ Rectangle QtWidgetsTweakletImpl::GetAvailableScreenSize(int i)
   return (Rectangle(screenGeometry.x(), screenGeometry.y()
     , screenGeometry.width(), screenGeometry.height()));
 }
- 
+
 int QtWidgetsTweakletImpl::GetClosestScreenNumber(const Rectangle& r)
 {
   QDesktopWidget *desktop = QApplication::desktop();
@@ -318,7 +317,11 @@ void QtWidgetsTweakletImpl::Dispose(QWidget* widget)
 
 Shell::Pointer QtWidgetsTweakletImpl::CreateShell(Shell::Pointer parent, int style)
 {
+#ifdef __APPLE__
+  Qt::WindowFlags qtFlags(0);
+#else
   Qt::WindowFlags qtFlags(Qt::CustomizeWindowHint);
+#endif
 
   if (style & Constants::MAX)
     qtFlags |= Qt::WindowMaximizeButtonHint;

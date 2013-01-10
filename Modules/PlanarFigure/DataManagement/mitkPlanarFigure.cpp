@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-08 11:04:08 +0200 (Mi, 08 Jul 2009) $
-Version:   $Revision: 18029 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPlanarFigure.h"
@@ -100,7 +99,9 @@ bool mitk::PlanarFigure::AddControlPoint( const mitk::Point2D& point, int positi
     {
       if ( m_ControlPoints.size() > this->GetMaximumNumberOfControlPoints()-1 )
       {
-        m_ControlPoints.resize( this->GetMaximumNumberOfControlPoints()-1 );
+        // get rid of deprecated control points in the list. This is necessary
+        // as ::ResetNumberOfControlPoints() only sets the member, does not resize the list!
+        m_ControlPoints.resize( this->GetNumberOfControlPoints() );
       }
 
       m_ControlPoints.push_back( this->ApplyControlPointConstraints( m_NumberOfControlPoints, point ) );
@@ -258,7 +259,7 @@ const mitk::PlanarFigure::PolyLineType
 mitk::PlanarFigure::GetPolyLine(unsigned int index)
 {
   mitk::PlanarFigure::PolyLineType polyLine;
-  if ( m_PolyLines.size() > index || !m_PolyLineUpToDate )
+  if ( index > m_PolyLines.size() || !m_PolyLineUpToDate )
     {
       this->GeneratePolyLine();
       m_PolyLineUpToDate = true;
@@ -447,6 +448,7 @@ void mitk::PlanarFigure::SetRequestedRegion( itk::DataObject * /*data*/ )
 
 void mitk::PlanarFigure::ResetNumberOfControlPoints( int numberOfControlPoints )
 {
+  // DO NOT resize the list here, will cause crash!!
   m_NumberOfControlPoints = numberOfControlPoints;
 }
 
@@ -678,6 +680,7 @@ void mitk::PlanarFigure::AppendPointToPolyLine( unsigned int index, PolyLineElem
   if ( index < m_PolyLines.size() )
   {
     m_PolyLines.at( index ).push_back( element );
+    m_PolyLineUpToDate = false;
   }
   else
   {
@@ -690,6 +693,7 @@ void mitk::PlanarFigure::AppendPointToHelperPolyLine( unsigned int index, PolyLi
   if ( index < m_HelperPolyLines.size() )
   {
     m_HelperPolyLines.at( index ).push_back( element );
+    m_HelperLinesUpToDate = false;
   }
   else
   {

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-04-18 20:20:25 +0200 (Sa, 18 Apr 2009) $
-Version:   $Revision: 13129 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKSURFACEDEFORMATIONINTERACTOR3D_H_HEADER_INCLUDED
@@ -65,7 +64,7 @@ protected:
     *
     * if no n is set, then the number of points is unlimited*
     */
-  SurfaceDeformationInteractor3D(const char *type, 
+  SurfaceDeformationInteractor3D(const char *type,
     DataNode *dataNode, int n = -1);
 
   /**
@@ -73,7 +72,7 @@ protected:
     **/
   virtual ~SurfaceDeformationInteractor3D();
 
-  virtual bool ExecuteAction( Action* action, 
+  virtual bool ExecuteAction( Action* action,
     mitk::StateEvent const* stateEvent );
 
   enum
@@ -81,7 +80,7 @@ protected:
     COLORIZATION_GAUSS,
     COLORIZATION_CONSTANT
   };
-  
+
   bool ColorizeSurface( vtkPolyData *polyData, const Point3D &pickedPoint,
     int mode, double scalar = 0.0 );
 
@@ -102,7 +101,7 @@ private:
   Point3D m_SurfaceColorizationCenter;
 
   Vector3D m_ObjectNormal;
-  
+
   Geometry3D::Pointer m_Geometry;
 
   Surface *m_Surface;

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QMITKSLIDERNAVIGATORWIDGET_H_
 #define QMITKSLIDERNAVIGATORWIDGET_H_
@@ -29,9 +28,9 @@ PURPOSE.  See the above copyright notices for more information.
 class QmitkExt_EXPORT QmitkSliderNavigatorWidget : public QWidget, public Ui::QmitkSliderNavigator
 {
   Q_OBJECT
-  
+
 public:
-  
+
   QmitkSliderNavigatorWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
 
   QString GetLabelUnit();
@@ -39,7 +38,7 @@ public:
   /**
    * \brief Converts the passed value to a QString representation.
    *
-   * If the value exceeds a certain maximum, "INF" (for "infinity") is displayed 
+   * If the value exceeds a certain maximum, "INF" (for "infinity") is displayed
    * instead.
    */
   QString ClippedValueToString( float value );
@@ -52,7 +51,7 @@ public:
   QString GetMaxValueLabel();
 
   int GetPos();
-  
+
 public slots:
 
   /**
@@ -64,23 +63,23 @@ public slots:
   void Refetch();
 
   void SetStepper( mitk::Stepper * stepper);
-  
+
   void ShowLabels( bool show );
 
-  /** 
+  /**
    * \brief En-/disables displaying of the unit label (range will be displayed
    * without unit if enabled).
    */
   void ShowLabelUnit( bool show );
-  
+
   void SetPos(int val);
 
   void SetInverseDirection (bool inverseDirection);
-    
+
 protected slots:
 
   void slider_valueChanged( int );
-  
+
   /**
    * \brief Set range minimum and maximum (displayed as labels left and right
    * of slider if enabled)
@@ -94,17 +93,17 @@ protected slots:
    * labels if enabled.
    */
   void SetLabelUnit( const char *unit );
-  
+
   /**
    * \brief Configure slider with labels according to range and unit settings
    */
   void SetLabels();
 
   void spinBox_valueChanged( int );
-  
-  
+
+
 protected:
-  
+
   bool m_HasLabelUnit;
   bool m_MaxValueValid;
   bool m_MinValueValid;
@@ -116,7 +115,7 @@ protected:
   float m_MaxValue;
 
   bool m_InverseDirection;
-  
+
 };
 
 #endif /*QMITKSLIDERNAVIGATORWIDGET_H_*/

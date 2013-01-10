@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-04-14 19:45:53 +0200 (Mo, 14 Apr 2008) $
-Version:   $Revision: 14081 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkClippingProperty.h"
@@ -28,7 +27,7 @@ ClippingProperty::ClippingProperty()
 }
 
 
-ClippingProperty::ClippingProperty( 
+ClippingProperty::ClippingProperty(
   const Point3D &origin, const Vector3D &normal )
 : m_ClippingEnabled( true ),
   m_Origin( origin ),
@@ -86,7 +85,7 @@ void ClippingProperty::SetNormal( const Vector3D &normal )
 
 
 bool ClippingProperty::IsEqual( const BaseProperty &property ) const
-{  
+{
   return ((this->m_ClippingEnabled == static_cast<const Self&>(property).m_ClippingEnabled) &&
           (this->m_Origin == static_cast<const Self&>(property).m_Origin ) &&
           (this->m_Normal == static_cast<const Self&>(property).m_Normal ) );
@@ -101,12 +100,12 @@ bool ClippingProperty::Assign( const BaseProperty &property )
 }
 
 
-std::string ClippingProperty::GetValueAsString() const 
+std::string ClippingProperty::GetValueAsString() const
 {
   std::stringstream myStr;
 
   myStr << this->GetClippingEnabled() << this->GetOrigin() << this->GetNormal();
-  return myStr.str(); 
+  return myStr.str();
 }
 } // namespace
 

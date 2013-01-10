@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkExtWorkbenchWindowAdvisor.h"
 #include "QmitkExtActionBarAdvisor.h"
@@ -52,10 +51,15 @@ PURPOSE.  See the above copyright notices for more information.
 #include <QmitkProgressBar.h>
 #include <QmitkMemoryUsageIndicatorView.h>
 #include <QmitkPreferencesDialog.h>
+#include <QmitkOpenDicomEditorAction.h>
 
 #include <itkConfigure.h>
 #include <vtkConfigure.h>
 #include <mitkVersion.h>
+#include <mitkIDataStorageService.h>
+#include <mitkIDataStorageReference.h>
+#include <mitkDataStorageEditorInput.h>
+#include <mitkWorkbenchUtil.h>
 
 // UGLYYY
 #include "internal/QmitkExtWorkbenchWindowAdvisorHack.h"
@@ -230,6 +234,11 @@ public:
       i.next()->setEnabled(true);
      }
 
+         //GetViewRegistry()->Find("org.mitk.views.imagenavigator");
+     if(windowAdvisor->GetWindowConfigurer()->GetWindow()->GetWorkbench()->GetEditorRegistry()->FindEditor("org.mitk.editors.dicomeditor"))
+     {
+        windowAdvisor->openDicomEditorAction->setEnabled(true);
+     }
      windowAdvisor->fileSaveProjectAction->setEnabled(true);
      windowAdvisor->closeProjectAction->setEnabled(true);
      windowAdvisor->undoAction->setEnabled(true);
@@ -239,7 +248,7 @@ public:
      if( windowAdvisor->GetShowClosePerspectiveMenuItem() )
      {
        windowAdvisor->closePerspAction->setEnabled(true);
-     }   
+     }
     }
 
     perspectivesClosed = false;
@@ -266,6 +275,10 @@ public:
       i.next()->setEnabled(false);
      }
 
+     if(windowAdvisor->GetWindowConfigurer()->GetWindow()->GetWorkbench()->GetEditorRegistry()->FindEditor("org.mitk.editors.dicomeditor"))
+     {
+        windowAdvisor->openDicomEditorAction->setEnabled(false);
+     }
      windowAdvisor->fileSaveProjectAction->setEnabled(false);
      windowAdvisor->closeProjectAction->setEnabled(false);
      windowAdvisor->undoAction->setEnabled(false);
@@ -275,7 +288,7 @@ public:
      if( windowAdvisor->GetShowClosePerspectiveMenuItem() )
      {
        windowAdvisor->closePerspAction->setEnabled(false);
-     }     
+     }
     }
    }
 
@@ -334,11 +347,11 @@ showPerspectiveToolbar(false),
 showVersionInfo(true),
 showMitkVersionInfo(true),
 showViewMenuItem(true),
-showNewWindowMenuItem(true),
+showNewWindowMenuItem(false),
 showClosePerspectiveMenuItem(true),
 dropTargetListener(new QmitkDefaultDropTargetListener)
 {
- productName = berry::Platform::GetConfiguration().getString("application.baseName");
+ productName = QCoreApplication::applicationName().toStdString();
 }
 
 berry::ActionBarAdvisor::Pointer QmitkExtWorkbenchWindowAdvisor::CreateActionBarAdvisor(
@@ -452,6 +465,11 @@ void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
  fileExitAction->setObjectName("QmitkFileExitAction");
  fileMenu->addAction(fileExitAction);
 
+if(this->GetWindowConfigurer()->GetWindow()->GetWorkbench()->GetEditorRegistry()->FindEditor("org.mitk.editors.dicomeditor"))
+{
+ openDicomEditorAction = new QmitkOpenDicomEditorAction(QIcon(":/org.mitk.gui.qt.ext/dcm-icon.png"),window);
+}
+
  berry::IViewRegistry* viewRegistry =
   berry::PlatformUI::GetWorkbench()->GetViewRegistry();
  const std::vector<berry::IViewDescriptor::Pointer>& viewDescriptors =
@@ -506,6 +524,10 @@ void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
  mainActionsToolBar->addAction(closeProjectAction);
  mainActionsToolBar->addAction(undoAction);
  mainActionsToolBar->addAction(redoAction);
+if(this->GetWindowConfigurer()->GetWindow()->GetWorkbench()->GetEditorRegistry()->FindEditor("org.mitk.editors.dicomeditor"))
+{
+ mainActionsToolBar->addAction(openDicomEditorAction);
+}
  if (imageNavigatorViewFound)
  {
    mainActionsToolBar->addAction(imageNavigatorAction);
@@ -663,10 +685,10 @@ void QmitkExtWorkbenchWindowAdvisor::PostWindowCreate()
  // ====================================================
 
  // ===== Help menu ====================================
- QMenu* helpMenu = menuBar->addMenu("Help");
+ QMenu* helpMenu = menuBar->addMenu("&Help");
  helpMenu->addAction("&Welcome",this, SLOT(onIntro()));
- helpMenu->addAction("&Contents", this, SLOT(onHelpContents()));
-  helpMenu->addAction("Context &Help",this, SLOT(onHelp()),  QKeySequence("F1"));
+ helpMenu->addAction("&Open Help Perspective", this, SLOT(onHelpOpenHelpPerspective()));
+  helpMenu->addAction("&Context Help",this, SLOT(onHelp()),  QKeySequence("F1"));
  helpMenu->addAction("&About",this, SLOT(onAbout()));
  // =====================================================
 
@@ -719,6 +741,26 @@ void QmitkExtWorkbenchWindowAdvisor::PreWindowOpen()
 
  configurer->AddEditorAreaTransfer(QStringList("text/uri-list"));
  configurer->ConfigureEditorAreaDropListener(dropTargetListener);
+
+}
+
+void QmitkExtWorkbenchWindowAdvisor::PostWindowOpen()
+{
+  // Force Rendering Window Creation on startup.
+  berry::IWorkbenchWindowConfigurer::Pointer configurer = GetWindowConfigurer();
+
+  ctkPluginContext* context = QmitkCommonExtPlugin::getContext();
+  ctkServiceReference serviceRef = context->getServiceReference<mitk::IDataStorageService>();
+  if (serviceRef)
+  {
+    mitk::IDataStorageService *dsService = context->getService<mitk::IDataStorageService>(serviceRef);
+    if (dsService)
+    {
+      mitk::IDataStorageReference::Pointer dsRef = dsService->GetDataStorage();
+      mitk::DataStorageEditorInput::Pointer dsInput(new mitk::DataStorageEditorInput(dsRef));
+      mitk::WorkbenchUtil::OpenEditor(configurer->GetWindow()->GetActivePage(),dsInput);
+    }
+  }
 }
 
 void QmitkExtWorkbenchWindowAdvisor::onIntro()
@@ -731,9 +773,9 @@ void QmitkExtWorkbenchWindowAdvisor::onHelp()
   QmitkExtWorkbenchWindowAdvisorHack::undohack->onHelp();
 }
 
-void QmitkExtWorkbenchWindowAdvisor::onHelpContents()
+void QmitkExtWorkbenchWindowAdvisor::onHelpOpenHelpPerspective()
 {
-  QmitkExtWorkbenchWindowAdvisorHack::undohack->onHelpContents();
+  QmitkExtWorkbenchWindowAdvisorHack::undohack->onHelpOpenHelpPerspective();
 }
 
 void QmitkExtWorkbenchWindowAdvisor::onAbout()
@@ -928,7 +970,7 @@ void QmitkExtWorkbenchWindowAdvisorHack::onHelp()
   }
 }
 
-void QmitkExtWorkbenchWindowAdvisorHack::onHelpContents()
+void QmitkExtWorkbenchWindowAdvisorHack::onHelpOpenHelpPerspective()
 {
   berry::PlatformUI::GetWorkbench()->ShowPerspective("org.blueberry.perspectives.help",
                                                      berry::PlatformUI::GetWorkbench()->GetActiveWorkbenchWindow());

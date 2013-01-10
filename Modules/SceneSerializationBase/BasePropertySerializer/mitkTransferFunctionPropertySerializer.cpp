@@ -1,29 +1,28 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkTransferFunctionPropertySerializer.h"
 
 namespace mitk {
-  
-mitk::TransferFunctionPropertySerializer::TransferFunctionPropertySerializer() 
+
+mitk::TransferFunctionPropertySerializer::TransferFunctionPropertySerializer()
 {
 }
 
-mitk::TransferFunctionPropertySerializer::~TransferFunctionPropertySerializer() 
+mitk::TransferFunctionPropertySerializer::~TransferFunctionPropertySerializer()
 {
 }
 
@@ -32,7 +31,7 @@ TiXmlElement* mitk::TransferFunctionPropertySerializer::Serialize()
   if (const TransferFunctionProperty* prop = dynamic_cast<const TransferFunctionProperty*>(mitk::BasePropertySerializer::m_Property.GetPointer()))
   {
     TransferFunction* transferfunction = prop->GetValue();
-    if (!transferfunction) 
+    if (!transferfunction)
       return NULL;
 
     TiXmlElement* element = new TiXmlElement("TransferFunction");
@@ -94,13 +93,13 @@ bool mitk::TransferFunctionPropertySerializer::SerializeTransferFunction( const 
   TransferFunctionPropertySerializer::Pointer tfps=TransferFunctionPropertySerializer::New();
   tfps->SetProperty( TransferFunctionProperty::New( tf ) );
   TiXmlElement* s=tfps->Serialize();
-   
+
   if(!s)
   {
     MITK_ERROR << "cant serialize transfer function";
     return false;
   }
-   
+
   TiXmlDocument document;
   TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "UTF-8", "" ); // TODO what to write here? encoding? standalone would mean that we provide a DTD somewhere...
   document.LinkEndChild( decl );
@@ -110,7 +109,7 @@ bool mitk::TransferFunctionPropertySerializer::SerializeTransferFunction( const 
 
   document.LinkEndChild(version);
   document.LinkEndChild(s);
-  
+
   if ( !document.SaveFile( filename ) )
   {
     MITK_ERROR << "Could not write scene to " << filename << "\nTinyXML reports '" << document.ErrorDesc() << "'";
@@ -121,18 +120,18 @@ bool mitk::TransferFunctionPropertySerializer::SerializeTransferFunction( const 
 
 BaseProperty::Pointer mitk::TransferFunctionPropertySerializer::Deserialize(TiXmlElement* element)
 {
-  if (!element) 
+  if (!element)
     return NULL;
-  
+
   TransferFunction::Pointer tf = TransferFunction::New();
 
   // deserialize scalar opacity function
   TiXmlElement* scalarOpacityPointlist = element->FirstChildElement("ScalarOpacity");
   if (scalarOpacityPointlist == NULL)
     return NULL;
-    
-  tf->ClearScalarOpacityPoints();  
-    
+
+  tf->ClearScalarOpacityPoints();
+
   for( TiXmlElement* pointElement = scalarOpacityPointlist->FirstChildElement("point"); pointElement != NULL; pointElement = pointElement->NextSiblingElement("point"))
   {
     double x;
@@ -147,9 +146,9 @@ BaseProperty::Pointer mitk::TransferFunctionPropertySerializer::Deserialize(TiXm
   TiXmlElement* gradientOpacityPointlist = element->FirstChildElement("GradientOpacity");
   if (gradientOpacityPointlist == NULL)
     return NULL;
-  
+
   tf->ClearGradientOpacityPoints();
-  
+
   for( TiXmlElement* pointElement = gradientOpacityPointlist->FirstChildElement("point"); pointElement != NULL; pointElement = pointElement->NextSiblingElement("point"))
   {
     double x;
@@ -167,9 +166,9 @@ BaseProperty::Pointer mitk::TransferFunctionPropertySerializer::Deserialize(TiXm
   vtkColorTransferFunction* ctf = tf->GetColorTransferFunction();
   if (ctf == NULL)
     return NULL;
-  
+
   ctf->RemoveAllPoints();
-  
+
   for( TiXmlElement* pointElement = rgbPointlist->FirstChildElement("point"); pointElement != NULL; pointElement = pointElement->NextSiblingElement("point"))
   {
     double x;
@@ -194,13 +193,13 @@ BaseProperty::Pointer mitk::TransferFunctionPropertySerializer::Deserialize(TiXm
 mitk::TransferFunction::Pointer mitk::TransferFunctionPropertySerializer::DeserializeTransferFunction( const char *filePath )
 {
   TiXmlDocument document( filePath );
-  
+
   if (!document.LoadFile())
   {
     MITK_ERROR << "Could not open/read/parse " << filePath << "\nTinyXML reports: " << document.ErrorDesc() << std::endl;
     return NULL;
   }
-      
+
   // find version node --> note version in some variable
   int fileVersion = 1;
   TiXmlElement* versionObject = document.FirstChildElement("Version");
@@ -211,19 +210,19 @@ mitk::TransferFunction::Pointer mitk::TransferFunctionPropertySerializer::Deseri
       MITK_WARN << "Transferfunction file " << filePath << " does not contain version information! Trying version 1 format.";
     }
   }
-  
+
   TiXmlElement* input =  document.FirstChildElement("TransferFunction");
-  
+
   TransferFunctionPropertySerializer::Pointer tfpd = TransferFunctionPropertySerializer::New();
   BaseProperty::Pointer bp = tfpd->Deserialize(input);
   TransferFunctionProperty::Pointer tfp = dynamic_cast<TransferFunctionProperty*>(bp.GetPointer());
-  
+
   if(tfp.IsNotNull())
   {
     TransferFunction::Pointer tf = tfp->GetValue();
     return tf;
   }
-  MITK_WARN << "Can't deserialize transferfunction"; 
+  MITK_WARN << "Can't deserialize transferfunction";
   return NULL;
 }
 

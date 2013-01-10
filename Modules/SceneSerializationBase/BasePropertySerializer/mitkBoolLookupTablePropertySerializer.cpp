@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-08 17:10:12 +0200 (Do, 08. Okt 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef mitkBoolLookupTablePropertySerializer_h_included
 #define mitkBoolLookupTablePropertySerializer_h_included
@@ -30,7 +29,7 @@ namespace mitk
 class SceneSerializationBase_EXPORT BoolLookupTablePropertySerializer : public BasePropertySerializer
 {
   public:
-    
+
     mitkClassMacro( BoolLookupTablePropertySerializer, BasePropertySerializer );
     itkNewMacro(Self);
 
@@ -40,7 +39,7 @@ class SceneSerializationBase_EXPORT BoolLookupTablePropertySerializer : public B
       if (prop == NULL)
         return NULL;
       BoolLookupTable lut = prop->GetValue();
-      //if (lut.IsNull()) 
+      //if (lut.IsNull())
       //  return NULL; // really?
       const BoolLookupTable::LookupTableType& map = lut.GetLookupTable();
 
@@ -60,7 +59,7 @@ class SceneSerializationBase_EXPORT BoolLookupTablePropertySerializer : public B
 
     virtual BaseProperty::Pointer Deserialize(TiXmlElement* element)
     {
-      if (!element) 
+      if (!element)
         return NULL;
 
       BoolLookupTable lut;

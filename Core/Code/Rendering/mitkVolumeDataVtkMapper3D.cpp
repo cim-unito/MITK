@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkVolumeDataVtkMapper3D.h"
 
@@ -269,7 +268,7 @@ void mitk::VolumeDataVtkMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *r
         if(vrp)
         {
           int renderingValue = vrp->GetValueAsId();
-          
+
           switch(renderingValue)
           {
               case  VTK_VOLUME_RAY_CAST_MIP_FUNCTION:
@@ -280,7 +279,7 @@ void mitk::VolumeDataVtkMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *r
                   MITK_INFO <<"in switch" <<std::endl;
                   break;
               }
-              
+
               case VTK_RAY_CAST_COMPOSITE_FUNCTION:
               {
                   vtkVolumeRayCastCompositeFunction* compositeFunction = vtkVolumeRayCastCompositeFunction::New();
@@ -310,7 +309,7 @@ void mitk::VolumeDataVtkMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *r
     m_VolumeLOD->SetSelectedLODID( m_HiResID );
     break;
   }
-*/  
+*/
   m_VolumeLOD->SetSelectedLODID( m_HiResID );
 
   assert(input->GetTimeSlicedGeometry());
@@ -345,7 +344,7 @@ void mitk::VolumeDataVtkMapper3D::GenerateDataForRenderer( mitk::BaseRenderer *r
   this->UpdateTransferFunctions( renderer );
 
   vtkRenderWindowInteractor *interactor = renderWindow->GetInteractor();
-  
+
   float frameRate;
   if( this->GetDataNode()->GetFloatProperty( "framerate", frameRate ) && frameRate > 0 && frameRate <= 60)
   {
@@ -577,7 +576,7 @@ void mitk::VolumeDataVtkMapper3D::SetDefaultProperties(mitk::DataNode* node, mit
   node->AddProperty( "volumerendering", mitk::BoolProperty::New( false ), renderer, overwrite );
   node->AddProperty( "volumerendering configuration", mitk::VtkVolumeRenderingProperty::New( 1 ), renderer, overwrite );
   node->AddProperty( "binary", mitk::BoolProperty::New( false ), renderer, overwrite );
- 
+
   mitk::Image::Pointer image = dynamic_cast<mitk::Image*>(node->GetData());
   if(image.IsNotNull() && image->IsInitialized())
   {
@@ -618,7 +617,7 @@ void mitk::VolumeDataVtkMapper3D::SetDefaultProperties(mitk::DataNode* node, mit
 bool mitk::VolumeDataVtkMapper3D::IsLODEnabled( mitk::BaseRenderer * /*renderer*/ ) const
 {
   return false;
-  
+
 
   // Volume mapper is LOD enabled if volumerendering is enabled
   /*
@@ -690,7 +689,8 @@ bool mitk::VolumeDataVtkMapper3D::SetMask(const mitk::Image* mask)
 {
   if (this->m_Mask)
   {
-    if (mask->GetPixelType().GetPixelTypeId() == typeid(unsigned char))
+    if ( (mask->GetPixelType().GetTypeId() == typeid(unsigned char))
+         &&(mask->GetPixelType().GetPixelTypeId() == itk::ImageIOBase::SCALAR ))
     {
       Image *img = const_cast<Image*>(mask);
 

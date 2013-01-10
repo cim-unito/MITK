@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-02-10 18:08:54 +0100 (Di, 10 Feb 2009) $
-Version:   $Revision: 16228 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKNavigationDataToPointSetPlayer_H_HEADER_INCLUDED_
@@ -92,7 +91,7 @@ namespace mitk
 
 
     /**
-    * \brief This method starts the player. 
+    * \brief This method starts the player.
     *
     * Before the stream has to be set. Either with a PlayingMode (SetStream(PlayerMode)) and FileName. Or
     * with an own inputstream (SetStream(istream*)).
@@ -110,20 +109,20 @@ namespace mitk
 
     /**
     * \brief This method pauses the player. If you want to play again call Resume()
-    * 
+    *
     *\warning This method is not tested yet. It is not save to use!
     */
     void Pause();
 
     /**
-    * \brief This method resumes the player when it was paused. 
-    * 
+    * \brief This method resumes the player when it was paused.
+    *
     *\warning This method is not tested yet. It is not save to use!
     */
     void Resume();
 
 
-   
+
 
 
 

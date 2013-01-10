@@ -1,19 +1,18 @@
-/*=========================================================================
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+/*===================================================================
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkToFDistanceImageToSurfaceFilter.h>
 #include <mitkInstantiateAccessFunctions.h>
@@ -38,8 +37,10 @@ mitk::ToFDistanceImageToSurfaceFilter::ToFDistanceImageToSurfaceFilter() :
   m_InterPixelDistance.Fill(0.045);
   m_CameraIntrinsics = mitk::CameraIntrinsics::New();
   m_CameraIntrinsics->SetFocalLength(295.78960196187319,296.1255427948447);
-  m_CameraIntrinsics->SetPrincipalPoint(113.29063841714108,97.243216122015184);
+  m_CameraIntrinsics->SetFocalLength(5.9421434211923247e+02,5.9104053696870778e+02);
+  m_CameraIntrinsics->SetPrincipalPoint(3.3930780975300314e+02,2.4273913761751615e+02);
   m_CameraIntrinsics->SetDistorsionCoeffs(-0.36874385358645773f,-0.14339503290129013,0.0033210108720361795,-0.004277703352074105);
+  m_ReconstructionMode = true;
 }
 
 mitk::ToFDistanceImageToSurfaceFilter::~ToFDistanceImageToSurfaceFilter()
@@ -106,13 +107,13 @@ void mitk::ToFDistanceImageToSurfaceFilter::GenerateData()
   vtkSmartPointer<vtkFloatArray> textureCoords = vtkSmartPointer<vtkFloatArray>::New();
   textureCoords->SetNumberOfComponents(2);
 
-  float textureScaleCorrection1 = 0.0;
-  float textureScaleCorrection2 = 0.0;
-  if (this->m_TextureImageHeight > 0.0 && this->m_TextureImageWidth > 0.0)
-  {
-    textureScaleCorrection1 = float(this->m_TextureImageHeight) / float(this->m_TextureImageWidth);
-    textureScaleCorrection2 = ((float(this->m_TextureImageWidth) - float(this->m_TextureImageHeight))/2) / float(this->m_TextureImageWidth);
-  }
+//  float textureScaleCorrection1 = 0.0;
+//  float textureScaleCorrection2 = 0.0;
+//  if (this->m_TextureImageHeight > 0.0 && this->m_TextureImageWidth > 0.0)
+//  {
+//    textureScaleCorrection1 = float(this->m_TextureImageHeight) / float(this->m_TextureImageWidth);
+//    textureScaleCorrection2 = ((float(this->m_TextureImageWidth) - float(this->m_TextureImageHeight))/2) / float(this->m_TextureImageWidth);
+//  }
 
   float* scalarFloatData = NULL;
 
@@ -127,7 +128,15 @@ void mitk::ToFDistanceImageToSurfaceFilter::GenerateData()
 
   float* inputFloatData = (float*)(input->GetSliceData(0, 0, 0)->GetData());
   //calculate world coordinates
-  mitk::ToFProcessingCommon::ToFScalarType focalLength = (m_CameraIntrinsics->GetFocalLengthX()*m_InterPixelDistance[0]+m_CameraIntrinsics->GetFocalLengthY()*m_InterPixelDistance[1])/2.0;
+  mitk::ToFProcessingCommon::ToFPoint2D focalLengthInPixelUnits;
+  mitk::ToFProcessingCommon::ToFScalarType focalLengthInMm;
+  if (m_ReconstructionMode)
+  {
+    focalLengthInPixelUnits[0] = m_CameraIntrinsics->GetFocalLengthX();
+    focalLengthInPixelUnits[1] = m_CameraIntrinsics->GetFocalLengthY();
+  }
+  else
+    focalLengthInMm = (m_CameraIntrinsics->GetFocalLengthX()*m_InterPixelDistance[0]+m_CameraIntrinsics->GetFocalLengthY()*m_InterPixelDistance[1])/2.0;
   mitk::ToFProcessingCommon::ToFPoint2D principalPoint;
   principalPoint[0] = m_CameraIntrinsics->GetPrincipalPointX();
   principalPoint[1] = m_CameraIntrinsics->GetPrincipalPointY();
@@ -146,8 +155,11 @@ void mitk::ToFDistanceImageToSurfaceFilter::GenerateData()
 
       mitk::ToFProcessingCommon::ToFScalarType distance = (double)inputFloatData[pixelID];
 
-      mitk::ToFProcessingCommon::ToFPoint3D cartesianCoordinates =
-          mitk::ToFProcessingCommon::IndexToCartesianCoordinates(i,j,distance,focalLength,m_InterPixelDistance,principalPoint);
+      mitk::ToFProcessingCommon::ToFPoint3D cartesianCoordinates;
+      if (m_ReconstructionMode)
+        cartesianCoordinates = mitk::ToFProcessingCommon::IndexToCartesianCoordinates(i,j,distance,focalLengthInPixelUnits,principalPoint);
+      else
+        cartesianCoordinates = mitk::ToFProcessingCommon::IndexToCartesianCoordinatesWithInterpixdist(i,j,distance,focalLengthInMm,m_InterPixelDistance,principalPoint);
 
       //TODO: why epsilon here and what value should it have?
 //      if (cartesianCoordinates[2] == 0)
@@ -158,7 +170,6 @@ void mitk::ToFDistanceImageToSurfaceFilter::GenerateData()
       else
       {
         isPointValid[pointCount] = true;
-      
         points->InsertPoint(pixelID, cartesianCoordinates.GetDataPointer());
 
         if((i >= 1) && (j >= 1))
@@ -183,15 +194,15 @@ void mitk::ToFDistanceImageToSurfaceFilter::GenerateData()
         }
 
         if (scalarFloatData)
-        {          
+        {
           scalarArray->InsertTuple1(pixelID, scalarFloatData[pixel[0]+pixel[1]*xDimension]);
           //scalarArray->InsertTuple1(pixelID, scalarFloatData[pixelID]);
         }
         if (this->m_TextureImageHeight > 0.0 && this->m_TextureImageWidth > 0.0)
         {
 
-          float xNorm = (((float)pixel[0])/xDimension)*textureScaleCorrection1 + textureScaleCorrection2 ; // correct video texture scale 640 * 480!! 
-          float yNorm = 1.0 - ((float)pixel[1])/yDimension; //flip y-axis
+          float xNorm = (((float)pixel[0])/xDimension)/**textureScaleCorrection1 + textureScaleCorrection2 */; // correct video texture scale 640 * 480!!
+          float yNorm = ((float)pixel[1])/yDimension; //don't flip. we don't need to flip.
           textureCoords->InsertTuple2(pixelID, xNorm, yNorm);
         }
       }
@@ -250,4 +261,14 @@ void mitk::ToFDistanceImageToSurfaceFilter::SetTextureImageWidth(int width)
 void mitk::ToFDistanceImageToSurfaceFilter::SetTextureImageHeight(int height)
 {
   this->m_TextureImageHeight = height;
+}
+
+void mitk::ToFDistanceImageToSurfaceFilter::SetReconstructionMode(bool withoutInterpixdist)
+{
+  this->m_ReconstructionMode = withoutInterpixdist;
+}
+
+bool mitk::ToFDistanceImageToSurfaceFilter::GetReconstructionMode()
+{
+  return (this->m_ReconstructionMode);
 }

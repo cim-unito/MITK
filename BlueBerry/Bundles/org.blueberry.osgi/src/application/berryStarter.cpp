@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
+BlueBerry Platform
 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
- =========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryLog.h"
 
@@ -55,6 +54,37 @@ int Starter::Run(int& argc, char** argv,
   platform->Launch();
 
   bool consoleLog = platform->ConsoleLog();
+
+  // Add search paths for Qt plugins
+  foreach(QString qtPluginPath, QString::fromStdString(Platform::GetProperty(Platform::PROP_QTPLUGIN_PATH)).split(';', QString::SkipEmptyParts))
+  {
+    if (QFile::exists(qtPluginPath))
+    {
+      QCoreApplication::addLibraryPath(qtPluginPath);
+    }
+    else if (consoleLog)
+    {
+      BERRY_WARN << "Qt plugin path does not exist: " << qtPluginPath.toStdString();
+    }
+  }
+
+  // Add a default search path. It is assumed that installed applications
+  // provide their Qt plugins in that path.
+  static const QString defaultQtPluginPath = QCoreApplication::applicationDirPath() + "/plugins";
+  if (QFile::exists(defaultQtPluginPath))
+  {
+    QCoreApplication::addLibraryPath(defaultQtPluginPath);
+  }
+
+  if (consoleLog)
+  {
+    std::string pathList;
+    foreach(QString libPath, QCoreApplication::libraryPaths())
+    {
+      pathList += (pathList.empty() ? "" : ", ") + libPath.toStdString();
+    }
+    BERRY_INFO << "Qt library search paths: " << pathList;
+  }
 
   // run the application
   IExtensionPointService::Pointer service =

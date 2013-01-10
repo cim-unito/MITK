@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-12 19:14:45 +0200 (Di, 12 Mai 2009) $
-Version:   $Revision: 1.12 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkIGTLoggerWidget.h"
 
@@ -44,7 +43,7 @@ QmitkIGTLoggerWidget::QmitkIGTLoggerWidget(QWidget* parent, Qt::WindowFlags f)
   CreateQtPartControl(this);
   CreateConnections();
 
-  //set output file 
+  //set output file
   this->SetOutputFileName();
 
   //update milliseconds and samples
@@ -53,9 +52,9 @@ QmitkIGTLoggerWidget::QmitkIGTLoggerWidget(QWidget* parent, Qt::WindowFlags f)
 
 
 QmitkIGTLoggerWidget::~QmitkIGTLoggerWidget()
-{ 
+{
   m_RecordingTimer->stop();
-  m_Recorder = NULL;  
+  m_Recorder = NULL;
   m_RecordingTimer = NULL;
 }
 
@@ -64,7 +63,7 @@ void QmitkIGTLoggerWidget::CreateQtPartControl(QWidget *parent)
   if (!m_Controls)
   {
     // create GUI widgets
-    m_Controls = new Ui::QmitkIGTLoggerWidgetControls;                         
+    m_Controls = new Ui::QmitkIGTLoggerWidgetControls;
     m_Controls->setupUi(parent);
 
     m_RecordingTimer = new QTimer(this);
@@ -74,14 +73,14 @@ void QmitkIGTLoggerWidget::CreateQtPartControl(QWidget *parent)
 void QmitkIGTLoggerWidget::CreateConnections()
 {
   if ( m_Controls )
-  {     
+  {
     connect( (QObject*)(m_Controls->m_pbLoadDir), SIGNAL(clicked()), this, SLOT(OnChangePressed()) );
     connect( (QObject*)(m_Controls->m_pbStartRecording), SIGNAL(clicked(bool)), this, SLOT(OnStartRecording(bool)) );
-    connect( m_RecordingTimer, SIGNAL(timeout()), this, SLOT(OnRecording()) );    
+    connect( m_RecordingTimer, SIGNAL(timeout()), this, SLOT(OnRecording()) );
     connect( (QObject*)(m_Controls->m_leRecordingValue), SIGNAL(editingFinished()), this, SLOT(UpdateRecordingTime()) );
     connect( (QObject*)(m_Controls->m_cbRecordingType), SIGNAL(activated(int)), this, SLOT(UpdateRecordingTime()) );
     connect( (QObject*)(m_Controls->m_leOutputFile), SIGNAL(editingFinished()), this, SLOT(UpdateOutputFileName()) );
-    
+
   }
 }
 
@@ -108,15 +107,15 @@ void QmitkIGTLoggerWidget::OnStartRecording(bool recording)
   {
 
     if (!m_RecordingActivated)
-    {   
-      m_Recorder->SetFileName(m_CmpFilename.toStdString());  
+    {
+      m_Recorder->SetFileName(m_CmpFilename.toStdString());
 
       try
-      { /*start the recording mechanism */     
-        m_Recorder->StartRecording();  
-        m_RecordingTimer->start(50);    //now every update of the recorder stores one line into the file for each added NavigationData      
+      { /*start the recording mechanism */
+        m_Recorder->StartRecording();
+        m_RecordingTimer->start(50);    //now every update of the recorder stores one line into the file for each added NavigationData
         mitk::StatusBar::GetInstance()->DisplayText("Recording tracking data now"); // Display recording message for 75ms in status bar
-      
+
         emit SignalRecordingStarted();
       }
       catch (std::exception& e)
@@ -140,14 +139,14 @@ void QmitkIGTLoggerWidget::OnStartRecording(bool recording)
       }
     }
     else
-    {  
-      this->StopRecording();   
+    {
+      this->StopRecording();
     }
 
   }
   else
   {
-    this->StopRecording(); 
+    this->StopRecording();
     m_Controls->m_pbStartRecording->setChecked(false);
   }
 
@@ -164,7 +163,7 @@ void QmitkIGTLoggerWidget::StopRecording()
   m_Controls->m_cbRecordingType->setEnabled(true);
   m_RecordingActivated = false;
 
-  emit SignalRecordingStopped(); 
+  emit SignalRecordingStopped();
 }
 
 void QmitkIGTLoggerWidget::OnRecording()
@@ -189,7 +188,7 @@ void QmitkIGTLoggerWidget::OnChangePressed()
   m_CmpFilename.clear();
   m_CmpFilename = QFileDialog::getSaveFileName( QApplication::activeWindow()
     , "Save tracking data", "IGT_Tracking_Data.xml", "XML files (*.xml)" );
-  
+
   if (m_CmpFilename.isEmpty())//if something went wrong or user pressed cancel in the save dialog
   {
     m_CmpFilename=oldName;
@@ -222,7 +221,7 @@ void QmitkIGTLoggerWidget::UpdateRecordingTime()
   if (m_Controls->m_cbRecordingType->currentIndex()==0)
   {
     m_MilliSeconds = m_Controls->m_leRecordingValue->text();
-    
+
     if(m_MilliSeconds.compare("infinite")==0)
     {
       this->SetDefaultRecordingSettings();
@@ -278,7 +277,7 @@ void QmitkIGTLoggerWidget::SetOutputFileName()
   std::string tmpDir = itksys::SystemTools::GetCurrentWorkingDirectory();
   QString dir = QString(tmpDir.c_str());
   QString filename = "IGT_Tracking_Data.xml";
-  m_CmpFilename.append(dir); 
+  m_CmpFilename.append(dir);
 
   if(dir.isEmpty())
   {
@@ -291,8 +290,8 @@ void QmitkIGTLoggerWidget::SetOutputFileName()
   }
   else
   {
-    m_CmpFilename.append("/"); 
-    m_CmpFilename.append(filename); 
+    m_CmpFilename.append("/");
+    m_CmpFilename.append(filename);
   }
   m_Controls->m_leOutputFile->setText(m_CmpFilename);
 }

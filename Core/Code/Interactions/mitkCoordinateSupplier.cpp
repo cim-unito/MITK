@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkDisplayCoordinateOperation.h"
@@ -45,9 +44,9 @@ mitk::CoordinateSupplier::~CoordinateSupplier()
 bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent const* stateEvent)
 {
     bool ok = false;
-  
+
     const PositionEvent* posEvent = dynamic_cast<const PositionEvent*>(stateEvent->GetEvent());
-    
+
     PointOperation* doOp=NULL;
     if(posEvent!=NULL)
     {
@@ -81,6 +80,10 @@ bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent co
           }
           //execute the Operation
           m_Destination->ExecuteOperation(doOp);
+
+          if (!m_UndoEnabled)
+            delete doOp;
+
           ok = true;
           break;
         }
@@ -91,9 +94,9 @@ bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent co
           //move the point to the coordinate //not used, cause same to MovePoint... check xml-file
           mitk::Point3D movePoint = posEvent->GetWorldPosition();
 
-          doOp = new mitk::PointOperation(OpMOVE, timeInMS, movePoint, 0);
+          mitk::PointOperation doPointOp(OpMOVE, timeInMS, movePoint, 0);
           //execute the Operation
-          m_Destination->ExecuteOperation(doOp);
+          m_Destination->ExecuteOperation(&doPointOp);
           ok = true;
           break;
         }
@@ -104,9 +107,9 @@ bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent co
           m_CurrentPoint = movePoint;
           if (m_Destination == NULL)
             return false;
-          doOp = new mitk::PointOperation(OpMOVE, timeInMS, movePoint, 0);
+          mitk::PointOperation doPointOp(OpMOVE, timeInMS, movePoint, 0);
           //execute the Operation
-          m_Destination->ExecuteOperation(doOp);
+          m_Destination->ExecuteOperation(&doPointOp);
           ok = true;
           break;
         }
@@ -114,14 +117,14 @@ bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent co
         {
           if (m_Destination == NULL)
             return false;
-          /*finishes a Movement from the coordinate supplier: 
-          gets the lastpoint from the undolist and writes an undo-operation so 
+          /*finishes a Movement from the coordinate supplier:
+          gets the lastpoint from the undolist and writes an undo-operation so
           that the movement of the coordinatesupplier is undoable.*/
           mitk::Point3D movePoint = posEvent->GetWorldPosition();
           mitk::Point3D oldMovePoint; oldMovePoint.Fill(0);
 
           doOp = new mitk::PointOperation(OpMOVE, timeInMS, movePoint, 0);
-          PointOperation* finishOp = new mitk::PointOperation(OpTERMINATE, movePoint, 0);
+          PointOperation finishOp(OpTERMINATE, movePoint, 0);
           if (m_UndoEnabled )
           {
             //get the last Position from the UndoList
@@ -140,9 +143,12 @@ bool mitk::CoordinateSupplier::ExecuteAction(Action* action, mitk::StateEvent co
           }
           //execute the Operation
           m_Destination->ExecuteOperation(doOp);
-          m_Destination->ExecuteOperation(finishOp);
+
+          if (!m_UndoEnabled)
+            delete doOp;
+
+          m_Destination->ExecuteOperation(&finishOp);
           ok = true;
-          delete finishOp;
 
           break;
         }

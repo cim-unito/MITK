@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef _MITK_STL_VECTOR_CONTAINER_TXX_
 #define _MITK_STL_VECTOR_CONTAINER_TXX_
@@ -23,13 +22,13 @@ PURPOSE.  See the above copyright notices for more information.
 template<typename T>
 unsigned int mitk::STLVectorContainer<T>::GetSize()
 {
-    return this->Get().size();    
+    return this->Get().size();
 }
 
 template<typename T>
 void mitk::STLVectorContainer<T>::Clear()
 {
-    return this->Get().clear();    
+    return this->Get().clear();
     this->Modified();
 }
 
@@ -39,12 +38,12 @@ void mitk::STLVectorContainer<T>::Clear()
 template<typename T>
 void mitk::STLVectorContainer<T>::Resize( unsigned int size )
 {
-    this->Get().resize( size );    
+    this->Get().resize( size );
     this->Modified();
 }
 
 /*
- * sets the n'th element of the underluing stl vector. 
+ * sets the n'th element of the underluing stl vector.
  * if the index is out of range, an assertion is raised
  */
 template<typename T>
@@ -64,8 +63,8 @@ typename mitk::STLVectorContainer<T>::ValueType& mitk::STLVectorContainer<T>::Ge
 {
     assert( index < this->Get().size() );
     return this->Get()[index];
-    
+
 }
-        
+
 
 #endif

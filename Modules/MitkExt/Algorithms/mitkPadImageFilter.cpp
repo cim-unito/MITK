@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkPadImageFilter.h"
@@ -60,20 +59,20 @@ void mitk::PadImageFilter::GenerateData()
   double outputOrigin[3];
   unsigned long padLowerBound[3];
   unsigned long padUpperBound[3];
-  
+
   int i;
   for ( i = 0; i < 3; ++i )
   {
     outputOrigin[i] = referenceOrigin[i];
-   
+
     padLowerBound[i] = static_cast< unsigned long >
       ((origin[i] - referenceOrigin[i]) / spacing[i] + 0.5);
 
-    padUpperBound[i] = referenceImage->GetDimension( i ) 
+    padUpperBound[i] = referenceImage->GetDimension( i )
       - image->GetDimension( i ) - padLowerBound[i];
   }
 
-  // The origin of the input image is passed through the filter and used as 
+  // The origin of the input image is passed through the filter and used as
   // output origin as well. Hence, it needs to be overwritten accordingly.
   itkImage->SetOrigin( outputOrigin );
 

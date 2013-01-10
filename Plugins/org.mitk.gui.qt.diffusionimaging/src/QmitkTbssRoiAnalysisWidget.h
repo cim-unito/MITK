@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-05-15 18:09:46 +0200 (Fr, 15 Mai 2009) $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef QmitkTbssRoiAnalysisWidget_H_
 #define QmitkTbssRoiAnalysisWidget_H_
@@ -27,6 +26,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkImage.h"
 #include "mitkPlanarFigure.h"
 #include "itkVectorImage.h"
+#include <mitkFiberBundleX.h>
+#include <mitkPlanarCircle.h>
 
 
 //#include <itkHistogram.h>
@@ -42,7 +43,13 @@ typedef itk::VectorImage<float,3>     VectorImageType;
 
 typedef std::vector< itk::Index<3> > RoiType;
 
-/** 
+
+typedef itk::Point<float,3>               PointType;
+typedef std::vector< PointType>           TractType;
+typedef std::vector< TractType > TractContainerType;
+
+
+/**
  * \brief Widget for displaying boxplots
  * framework
  */
@@ -63,6 +70,10 @@ public:
   }
 
   void DrawProfiles(std::string preprocessed);
+
+
+  void PlotFiberBundles(TractContainerType tracts, mitk::Image* img, bool avg=false);
+
 
   void Boxplots();
 
@@ -102,10 +113,49 @@ public:
     return m_Vals;
   }
 
+  std::vector <std::vector<double> > GetIndividualProfiles()
+  {
+    return m_IndividualProfiles;
+  }
+
+
+  std::vector<double> GetAverageProfile()
+  {
+    return m_Average;
+  }
+
+
+  void SetPlottingFiber(bool b)
+  {
+    m_PlottingFiberBundle = b;
+  }
+
+  bool IsPlottingFiber()
+  {
+    return m_PlottingFiberBundle;
+  }
+
+
+  void PlotFiberBetweenRois(mitk::FiberBundleX *fib, mitk::Image* img,
+                            mitk::PlanarFigure* startRoi, mitk::PlanarFigure* endRoi, bool avg=-1, int number=25);
+
+
+
+
+  // Takes an index which is an x coordinate from the plot and finds the corresponding position in world space
+  mitk::Point3D GetPositionInWorld(int index);
+  void ModifyPlot(int number, bool avg);
 
 protected:
 
+  mitk::FiberBundleX* m_Fib;
+
+
   std::vector< std::vector<double> > m_Vals;
+
+  std::vector< std::vector<double> > m_IndividualProfiles;
+  std::vector< double > m_Average;
+
 
 
 
@@ -140,6 +190,31 @@ protected:
   RoiType m_Roi;
   std::string m_Structure;
   std::string m_Measure;
+
+  bool m_PlottingFiberBundle; // true when the plot results from a fiber tracking result (vtk .fib file)
+
+
+  // Resample a collection of tracts so that every tract contains #number equidistant samples
+  TractContainerType ParameterizeTracts(TractContainerType tracts, int number);
+
+
+
+
+  TractContainerType m_CurrentTracts;
+
+
+
+  mitk::Image* m_CurrentImage;
+
+  mitk::PlanarFigure* m_CurrentStartRoi;
+  mitk::PlanarFigure* m_CurrentEndRoi;
+
+
+  void DoPlotFiberBundles(mitk::FiberBundleX *fib, mitk::Image* img,
+                          mitk::PlanarFigure* startRoi, mitk::PlanarFigure* endRoi, bool avg=false, int number=25);
+
+
+
 
 
 

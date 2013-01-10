@@ -1,4 +1,4 @@
-SET(CPP_FILES
+set(CPP_FILES
 QmitkApplicationCursor.cpp
 QmitkEnums.h
 QmitkCustomVariants.h
@@ -24,12 +24,13 @@ QmitkRegisterClasses.cpp
 QmitkRenderingManager.cpp
 QmitkRenderingManagerFactory.cpp
 QmitkRenderWindow.cpp
+QmitkServiceListWidget.cpp
 QmitkSliderLevelWindowWidget.cpp
 QmitkStdMultiWidget.cpp
 QmitkMouseModeSwitcher.cpp
 )
 
-SET(MOC_H_FILES
+set(MOC_H_FILES
 QmitkDataStorageComboBox.h
 QmitkDataStorageTableModel.h
 QmitkDataStorageTreeModel.h
@@ -47,18 +48,20 @@ QmitkPropertiesTableEditor.h
 QmitkPropertyDelegate.h
 QmitkRenderingManager.h
 QmitkRenderWindow.h
+QmitkServiceListWidget.h
 QmitkSliderLevelWindowWidget.h
 QmitkStdMultiWidget.h
 QmitkMouseModeSwitcher.h
 )
 
-SET(UI_FILES
+set(UI_FILES
 QmitkLevelWindowPresetDefinition.ui
 QmitkLevelWindowWidget.ui
 QmitkLevelWindowRangeChange.ui
 QmitkMemoryUsageIndicator.ui
+QmitkServiceListWidgetControls.ui
 )
 
-SET(QRC_FILES
-  Qmitk.qrc  
+set(QRC_FILES
+  Qmitk.qrc
 )

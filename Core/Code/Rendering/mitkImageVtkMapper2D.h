@@ -1,13 +1,18 @@
-/*=========================================================================
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+/*===================================================================
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+The Medical Imaging Interaction Toolkit (MITK)
 
-=========================================================================*/
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKIMAGEVTKMAPPER2D_H_HEADER_INCLUDED_C10E906E
 #define MITKIMAGEVTKMAPPER2D_H_HEADER_INCLUDED_C10E906E
@@ -18,9 +23,11 @@ PURPOSE.  See the above copyright notices for more information.
 //MITK Rendering
 #include "mitkBaseRenderer.h"
 #include "mitkVtkMapper2D.h"
+#include "mitkExtractSliceFilter.h"
 
 //VTK
 #include <vtkSmartPointer.h>
+#include <vtkPropAssembly.h>
 
 class vtkActor;
 class vtkPolyDataMapper;
@@ -37,7 +44,7 @@ class vtkMitkApplyLevelWindowToRGBFilter;
 namespace mitk {
 
   /** \brief Mapper to resample and display 2D slices of a 3D image.
- * 
+ *
  * The following image gives a brief overview of the mapping and the involved parts.
  *
  * \image html imageVtkMapper2Darchitecture.png
@@ -74,7 +81,7 @@ namespace mitk {
  *   - \b "bounding box": (BoolProperty) Is the Bounding Box of the image shown or not
  *   - \b "layer": (IntProperty) Layer of the image
  *   - \b "volume annotation color": (ColorProperty) color of the volume annotation, TODO has to be reimplemented
- *   - \b "volume annotation unit": (StringProperty) annotation unit as string (does not implicit convert the unit!) 
+ *   - \b "volume annotation unit": (StringProperty) annotation unit as string (does not implicit convert the unit!)
           unit is ml or cm3, TODO has to be reimplemented
 
  * The default properties are:
@@ -134,10 +141,20 @@ namespace mitk {
     public:
       /** \brief Actor of a 2D render window. */
       vtkSmartPointer<vtkActor> m_Actor;
+
+      vtkSmartPointer<vtkPropAssembly> m_Actors;
       /** \brief Mapper of a 2D render window. */
       vtkSmartPointer<vtkPolyDataMapper> m_Mapper;
-      /** \brief Current slice of a 2D render window. */
+      /** \brief Current slice of a 2D render window.*/
       vtkSmartPointer<vtkImageData> m_ReslicedImage;
+      /** \brief Empty vtkPolyData that is set when rendering geometry does not
+      *   intersect the image geometry.
+      *   \warning This member variable is set to NULL,
+      *   if no image geometry is inside the plane geometry
+      *   of the respective render window. Any user of this
+      *   slice has to check whether it is set to NULL!
+      */
+      vtkSmartPointer<vtkPolyData> m_EmptyPolyData;
       /** \brief Plane on which the slice is rendered as texture. */
       vtkSmartPointer<vtkPlaneSource> m_Plane;
       /** \brief The texture which is used to render the current slice. */
@@ -145,29 +162,20 @@ namespace mitk {
       /** \brief The lookuptable for colors and level window */
       vtkSmartPointer<vtkLookupTable> m_LookupTable;
       /** \brief The actual reslicer (one per renderer) */
-      vtkSmartPointer<vtkImageReslice> m_Reslicer;
-      /** \brief Thickslices post filtering.  */
-      vtkSmartPointer<vtkMitkThickSlicesFilter> m_TSFilter;
-      /** \brief Using unit spacing for resampling makes life easier TODO improve docu ...*/
-      vtkSmartPointer<vtkImageChangeInformation> m_UnitSpacingImageFilter;      
+    mitk::ExtractSliceFilter::Pointer m_Reslicer;
+    /** \brief Filter for thick slices */
+    vtkSmartPointer<vtkMitkThickSlicesFilter> m_TSFilter;
       /** \brief PolyData object containg all lines/points needed for outlining the contour.
           This container is used to save a computed contour for the next rendering execution.
           For instance, if you zoom or pann, there is no need to recompute the contour. */
       vtkSmartPointer<vtkPolyData> m_OutlinePolyData;
 
+
       /** \brief Timestamp of last update of stored data. */
       itk::TimeStamp m_LastUpdateTime;
 
-      /** \brief Origin of the 2D geometry. */
-      mitk::Point3D m_Origin;
-      /** \brief Bottom end point of the y-axis of the 2D geometry. */
-      mitk::Vector3D m_Bottom;
-      /** \brief Right end point of the x-axis of the 2D geometry. */
-      mitk::Vector3D m_Right;
-      /** \brief Normal of the 2D geometry. */
-      mitk::Vector3D m_Normal;
       /** \brief mmPerPixel relation between pixel and mm. (World spacing).*/
-      mitk::ScalarType m_mmPerPixel[2];
+      mitk::ScalarType* m_mmPerPixel;
 
       /** \brief This filter is used to apply the level window to RBG(A) images. */
       vtkMitkApplyLevelWindowToRGBFilter* m_LevelWindowToRGBFilterObject;
@@ -213,9 +221,8 @@ namespace mitk {
     void GeneratePlane(mitk::BaseRenderer* renderer, vtkFloatingPointType planeBounds[6]);
 
     /** \brief Generates a vtkPolyData object containing the outline of a given binary slice.
-      \param binarySlice - The binary image slice. (Volumes are not supported.)
-      \param mmPerPixel - Spacing of the binary image slice. Hence it's 2D, only in x/y-direction.
-      \note This code has been taken from the deprecated library iil.
+      \param renderer: Pointer to the renderer containing the needed information
+      \note This code is based on code from the iil library.
       */
     vtkSmartPointer<vtkPolyData> CreateOutlinePolyData(mitk::BaseRenderer* renderer);
 
@@ -238,15 +245,6 @@ namespace mitk {
     */
     virtual void GenerateDataForRenderer(mitk::BaseRenderer *renderer);
 
-    /** \brief Internal helper method for intersection testing used only in CalculateClippedPlaneBounds() */
-    bool LineIntersectZero( vtkPoints *points, int p1, int p2,
-                            vtkFloatingPointType *bounds );
-
-    /** \brief Calculate the bounding box of the resliced image. This is necessary for
-        arbitrarily rotated planes in an image volume. A rotated plane (e.g. in swivel mode)
-        will have a new bounding box, which needs to be calculated. */
-    bool CalculateClippedPlaneBounds( const Geometry3D *boundingGeometry,
-                                      const PlaneGeometry *planeGeometry, vtkFloatingPointType *bounds );
 
     /** \brief This method uses the vtkCamera clipping range and the layer property
     * to calcualte the depth of the object (e.g. image or contour). The depth is used
@@ -270,6 +268,18 @@ namespace mitk {
 
     /** \brief Set the opacity of the actor. */
     void ApplyOpacity( mitk::BaseRenderer* renderer );
+
+    /**
+    * \brief Calculates whether the given rendering geometry intersects the
+    * given SlicedGeometry3D.
+    *
+    * This method checks if the given Geometry2D intersects the given
+    * SlicedGeometry3D. It calculates the distance of the Geometry2D to all
+    * 8 cornerpoints of the SlicedGeometry3D. If all distances have the same
+    * sign (all positive or all negative) there is no intersection.
+    * If the distances have different sign, there is an intersection.
+    **/
+    bool RenderingGeometryIntersectsImage( const Geometry2D* renderingGeometry, SlicedGeometry3D* imageGeometry );
   };
 
 } // namespace mitk

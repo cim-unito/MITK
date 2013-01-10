@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkBaseData.h"
@@ -22,30 +21,30 @@ PURPOSE.  See the above copyright notices for more information.
 
 #define MITK_WEAKPOINTER_PROBLEM_WORKAROUND_ENABLED
 
-mitk::BaseData::BaseData() : 
-  m_RequestedRegionInitialized(false), m_SmartSourcePointer(NULL), 
-  m_SourceOutputIndexDuplicate(0), m_Initialized(true), 
-  m_Unregistering(false), m_CalculatingExternalReferenceCount(false), 
+mitk::BaseData::BaseData() :
+  m_RequestedRegionInitialized(false), m_SmartSourcePointer(NULL),
+  m_SourceOutputIndexDuplicate(0), m_Initialized(true),
+  m_Unregistering(false), m_CalculatingExternalReferenceCount(false),
   m_ExternalReferenceCount(-1)
 {
   m_TimeSlicedGeometry = TimeSlicedGeometry::New();
-  m_PropertyList = PropertyList::New(); 
+  m_PropertyList = PropertyList::New();
 }
 
-mitk::BaseData::BaseData( const BaseData &other ): 
-itk::DataObject(),
+mitk::BaseData::BaseData( const BaseData &other ):
+itk::DataObject(), mitk::OperationActor(),
 m_RequestedRegionInitialized(other.m_RequestedRegionInitialized),
-m_SmartSourcePointer(other.m_SmartSourcePointer), 
+m_SmartSourcePointer(other.m_SmartSourcePointer),
 m_SourceOutputIndexDuplicate(other.m_SourceOutputIndexDuplicate),
 m_Initialized(other.m_Initialized), m_Unregistering(other.m_Unregistering),
 m_CalculatingExternalReferenceCount(other.m_CalculatingExternalReferenceCount),
 m_ExternalReferenceCount(other.m_ExternalReferenceCount)
 {
   m_TimeSlicedGeometry = dynamic_cast<mitk::TimeSlicedGeometry*>(other.m_TimeSlicedGeometry->Clone().GetPointer());
-  m_PropertyList = other.m_PropertyList->Clone(); 
+  m_PropertyList = other.m_PropertyList->Clone();
 }
 
-mitk::BaseData::~BaseData() 
+mitk::BaseData::~BaseData()
 {
   m_SmartSourcePointer = NULL;
 }
@@ -112,12 +111,12 @@ if(aGeometry3D!=NULL)
     else
     {
       timeSlicedGeometry = TimeSlicedGeometry::New();
-      m_TimeSlicedGeometry = timeSlicedGeometry;   
+      m_TimeSlicedGeometry = timeSlicedGeometry;
       timeSlicedGeometry->InitializeEvenlyTimed(aGeometry3D, 1);
     }
     Modified();
   }
-  else if( m_TimeSlicedGeometry.IsNotNull() ) 
+  else if( m_TimeSlicedGeometry.IsNotNull() )
   {
     m_TimeSlicedGeometry = NULL;
     Modified();
@@ -186,7 +185,7 @@ int mitk::BaseData::GetExternalReferenceCount() const
     unsigned int idx;
     for (idx = 0; idx < outputs.size(); ++idx)
     {
-      //references of outputs that are not referenced from someone else (reference additional to the reference from this BaseProcess object) are interpreted as non-existent 
+      //references of outputs that are not referenced from someone else (reference additional to the reference from this BaseProcess object) are interpreted as non-existent
       if(outputs[idx]==this)
         --realReferenceCount;
     }
@@ -266,7 +265,7 @@ void mitk::BaseData::SetPropertyList(PropertyList *pList)
 void mitk::BaseData::SetOrigin(const mitk::Point3D& origin)
 {
   mitk::TimeSlicedGeometry* timeSlicedGeometry = GetTimeSlicedGeometry();
-  
+
   assert(timeSlicedGeometry!=NULL);
 
   mitk::Geometry3D* geometry;

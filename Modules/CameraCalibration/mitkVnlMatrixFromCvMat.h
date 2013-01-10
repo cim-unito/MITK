@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef mitkVnlMatrixFromCvMat_h
 #define mitkVnlMatrixFromCvMat_h
 
@@ -23,7 +38,7 @@ namespace mitk
     VnlMatrixFromCvMat(
       const cv::Mat* _CvMat,
       vnl_matrix<T>* _VnlMatrix):
-        m_CvMat(_CvMat), 
+        m_CvMat(_CvMat),
         m_VnlMatrix(_VnlMatrix)
     {
     }
@@ -42,7 +57,7 @@ namespace mitk
     }
 
     ///
-    /// executes the Algorithm 
+    /// executes the Algorithm
     ///
     void Update()
     {

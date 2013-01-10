@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKLANDMARKPROJECTOR_H_HEADER_INCLUDED_C1C68A2C
@@ -32,21 +31,21 @@ namespace mitk {
 //##Documentation
 //## @brief Base-class of landmark-projectors, which project the target landmarks
 //## to create source landmarks.
-//## 
+//##
 //## @ingroup Geometry
 class MITK_CORE_EXPORT LandmarkProjector : public itk::Object
 {
 public:
   mitkClassMacro(LandmarkProjector, itk::Object);
-  
+
   //##Documentation
-  //## @brief Set the interpolating (world-space-to-world-space) transform, 
+  //## @brief Set the interpolating (world-space-to-world-space) transform,
   //## which uses the landmarks.
   //##
   //## \sa GetCompleteAbstractTransform
   virtual void SetInterpolatingAbstractTransform(vtkAbstractTransform* anInterpolatingAbstractTransform);
   //##Documentation
-  //## @brief Get the interpolating (world-space-to-world-space) transform, 
+  //## @brief Get the interpolating (world-space-to-world-space) transform,
   //## which uses the landmarks.
   //##
   //## \sa GetCompleteAbstractTransform
@@ -98,7 +97,7 @@ protected:
   //## @brief Compute the transform from parameter space to world space incorporating
   //## the given interpolating transform, which uses the landmarks.
   //##
-  //## Called after a new interpolating transform is set via 
+  //## Called after a new interpolating transform is set via
   //## SetInterpolatingAbstractTransform().
   //## \sa SetInterpolatingAbstractTransform
   //## \sa GetCompleteAbstractTransform

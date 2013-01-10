@@ -20,10 +20,18 @@
 =============================================================================*/
 
 
-#include "usModuleUtils.h"
-#include <usUtils.h>
+#include "usModuleUtils_p.h"
+#include <usUtils_p.h>
 
 US_BEGIN_NAMESPACE
+
+namespace {
+#ifdef US_BUILD_SHARED_LIBS
+  const bool sharedLibMode = true;
+#else
+  const bool sharedLibMode = false;
+#endif
+}
 
 #ifdef __GNUC__
 
@@ -42,15 +50,18 @@ std::string GetLibraryPath_impl(const std::string& /*libName*/, void* symbol)
   }
   else
   {
-    US_DEBUG << GetLastErrorStr();
+    US_DEBUG << "GetLibraryPath_impl() dladdr() failed: " << dlerror();
   }
   return "";
 }
 
 void* GetSymbol_impl(const std::string& libName, const char* symbol)
 {
+  // Clear the last error message
+  dlerror();
+
   void* selfHandle = 0;
-  if (libName.empty())
+  if (libName.empty() || !sharedLibMode)
   {
     // Get the handle of the executable
     selfHandle = dlopen(0, RTLD_LAZY);
@@ -63,12 +74,20 @@ void* GetSymbol_impl(const std::string& libName, const char* symbol)
   if (selfHandle)
   {
     void* addr = dlsym(selfHandle, symbol);
+    if (!addr)
+    {
+      const char* dlerrorMsg = dlerror();
+      if (dlerrorMsg)
+      {
+        US_DEBUG << "GetSymbol_impl() failed: " << dlerrorMsg;
+      }
+    }
     dlclose(selfHandle);
     return addr;
   }
   else
   {
-    US_DEBUG << GetLastErrorStr();
+    US_DEBUG << "GetSymbol_impl() dlopen() failed: " << dlerror();
   }
   return 0;
 }
@@ -80,10 +99,10 @@ void* GetSymbol_impl(const std::string& libName, const char* symbol)
 std::string GetLibraryPath_impl(const std::string& libName, void *symbol)
 {
   HMODULE handle = 0;
-  if (libName.empty())
+  if (libName.empty() || !sharedLibMode)
   {
     // get the handle for the executable
-    handle = GetModuleHandle(0);
+    handle = GetModuleHandle(NULL);
   }
   else
   {
@@ -91,6 +110,7 @@ std::string GetLibraryPath_impl(const std::string& libName, void *symbol)
   }
   if (!handle)
   {
+    // Test
     US_DEBUG << "GetLibraryPath_impl():GetModuleHandle() " << GetLastErrorStr();
     return "";
   }
@@ -108,7 +128,7 @@ std::string GetLibraryPath_impl(const std::string& libName, void *symbol)
 void* GetSymbol_impl(const std::string& libName, const char* symbol)
 {
   HMODULE handle = NULL;
-  if (libName.empty())
+  if (libName.empty() || !sharedLibMode)
   {
     handle = GetModuleHandle(NULL);
   }

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITK_DATATREEFILTERFUNCTOINS_H_INCLUDED
 #define MITK_DATATREEFILTERFUNCTOINS_H_INCLUDED
@@ -26,13 +25,13 @@ PURPOSE.  See the above copyright notices for more information.
 
 namespace mitk
 {
-  class DataNode; 
+  class DataNode;
 
   /*! \brief Base class for all filter function that are accepted by mitk::DataTreeFilter.
 
     Subclasses are required to implement the Clone() method, which should return a copy of
     the object, and the NodeMatches() method. NodeMatches() will receive a
-    mitk::DataNode* everytime it is called, and should return true. <b>This pointer can be NULL</b>. 
+    mitk::DataNode* everytime it is called, and should return true. <b>This pointer can be NULL</b>.
   */
    class MitkExt_EXPORT DataTreeFilterFunction
   {
@@ -83,7 +82,7 @@ namespace mitk
       :m_PropertyName(propertyName)
       {
       }
-      
+
       virtual bool NodeMatches(DataNode* node) const
       {
         return (    node != NULL && node->GetData()                               // node is not NULL, and node->GetData is also not NULL
@@ -101,7 +100,7 @@ namespace mitk
       virtual ~IsBaseDataTypeWithProperty() {}
 
     private:
-      
+
       std::string m_PropertyName;
   };
 
@@ -121,7 +120,7 @@ namespace mitk
       :m_PropertyName(propertyName)
       {
       }
-      
+
       virtual bool NodeMatches(DataNode* node) const
       {
         bool propVal(false);
@@ -140,7 +139,7 @@ namespace mitk
       virtual ~IsBaseDataTypeWithBoolProperty() {}
 
     private:
-      
+
       std::string m_PropertyName;
   };
 
@@ -161,7 +160,7 @@ namespace mitk
       :m_PropertyName(propertyName)
       {
       }
-      
+
       virtual bool NodeMatches(DataNode* node) const
       {
         bool propVal(false);
@@ -183,13 +182,13 @@ namespace mitk
       virtual ~IsBaseDataTypeWithoutProperty() {}
 
     private:
-      
+
       std::string m_PropertyName;
   };
 
 
   // some default filters in mitk:: namespace for use by clients of mitk::DataTreeFilter
-  
+
   /*! \brief Accepts all nodes (accepts nodes that are not NULL).
 
     To be used with mitk::DataTreeFilter, e.g.
@@ -272,7 +271,7 @@ namespace mitk
       :m_PropertyName(propertyName)
       {
       }
-      
+
       virtual bool NodeMatches(DataNode* node) const
       {
         return (    node != NULL && node->GetData()                                // node is not NULL, and node->GetData is also not NULL
@@ -291,7 +290,7 @@ namespace mitk
       virtual ~IsImageWithDimensionAndWithoutProperty() {}
 
     private:
-      
+
       std::string m_PropertyName;
   };
 
@@ -306,7 +305,7 @@ namespace mitk
   class IsImageWithMinimumDimension : public DataTreeFilterFunction
   {
     public:
-      
+
       virtual bool NodeMatches(DataNode* node) const
       {
         return (    node != NULL && node->GetData()                                // node is not NULL, and node->GetData is also not NULL

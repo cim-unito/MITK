@@ -1,26 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date $
-Version:   $Revision $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkToFImageRecorderFilter.h>
 #include <mitkImage.h>
 #include <mitkImageDataItem.h>
 #include "mitkToFNrrdImageWriter.h"
-#include "mitkToFPicImageWriter.h"
 #include "mitkToFImageCsvWriter.h"
 
 // itk includes
@@ -43,10 +40,6 @@ void mitk::ToFImageRecorderFilter::SetFileName(std::string fileName)
   if(m_FileExtension == ".nrrd")
   {
     m_ToFImageWriter = mitk::ToFNrrdImageWriter::New();
-  }
-  else if(m_FileExtension == ".pic")
-  {
-    m_ToFImageWriter = mitk::ToFPicImageWriter::New();
   }
   else if(m_FileExtension == ".csv")
   {
@@ -133,13 +126,13 @@ void mitk::ToFImageRecorderFilter::SetInput( unsigned int idx,  mitk::Image* inp
   {
     this->SetNumberOfInputs(this->GetNumberOfInputs() - 1);
   }
-  else
+  else if(idx == 0 || idx == 1 || idx == 2)
   {
     this->ProcessObject::SetNthInput(idx, input);   // Process object is not const-correct so the const_cast is required here
     unsigned int xDim = input->GetDimension(0);
     unsigned int yDim = input->GetDimension(1);
-    m_ToFImageWriter->SetCaptureWidth(xDim);
-    m_ToFImageWriter->SetCaptureWidth(yDim);
+    m_ToFImageWriter->SetToFCaptureWidth(xDim);
+    m_ToFImageWriter->SetToFCaptureWidth(yDim);
   }
 
   this->CreateOutputsForAllInputs();

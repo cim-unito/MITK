@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$ 
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+The Medical Imaging Interaction Toolkit (MITK)
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-=========================================================================*/
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "QmitkNumberPropertyEditor.h"
 #include <mitkRenderingManager.h>
 #include <QTextStream>
@@ -68,22 +67,22 @@ QmitkNumberPropertyEditor::~QmitkNumberPropertyEditor()
 
 void QmitkNumberPropertyEditor::initialize()
 { // only to be called from constructors
-  
+
   // spinbox settings
   //setValidator(0);
   setSuffix("");
-  
+
   // protected
   m_DecimalPlaces = 0;
   m_FactorPropertyToSpinbox = 1.0;
   m_FactorSpinboxToDisplay = 1.0;
   m_ShowPercents = false;
- 
+
   // private
   m_SelfChangeLock = false;
 
   connect( this, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)) );
- 
+
   // display current value of our property
   DisplayNumber();
 }
@@ -101,7 +100,7 @@ void QmitkNumberPropertyEditor::adjustFactors(short newDecimalPlaces, bool newSh
 
   // commented line would set the default increase/decrease to 1.0, no matter how many decimal places are available
   //setLineStep( ROUND(m_FactorPropertyToSpinbox) );
-       
+
   if ( m_ShowPercents )
   {
     m_FactorPropertyToSpinbox *= 100.0;
@@ -112,7 +111,7 @@ void QmitkNumberPropertyEditor::adjustFactors(short newDecimalPlaces, bool newSh
   {
     setSuffix("");
   }
-  
+
   setMinValue(oldMin);
   setMaxValue(oldMax);
 }
@@ -129,7 +128,7 @@ void QmitkNumberPropertyEditor::setDecimalPlaces(short places)
     case DT_FLOAT:
     case DT_DOUBLE:
       {
-        adjustFactors( places, m_ShowPercents ); 
+        adjustFactors( places, m_ShowPercents );
         DisplayNumber();
         break;
       }
@@ -146,13 +145,13 @@ bool QmitkNumberPropertyEditor::getShowPercent() const
 void QmitkNumberPropertyEditor::setShowPercent(bool showPercent)
 {
   if ( showPercent == m_ShowPercents ) return; // nothing to change
-    
+
   switch (m_DataType)
   {
     case DT_FLOAT:
     case DT_DOUBLE:
     {
-      adjustFactors( m_DecimalPlaces, showPercent ); 
+      adjustFactors( m_DecimalPlaces, showPercent );
       break;
     }
     default:
@@ -160,7 +159,7 @@ void QmitkNumberPropertyEditor::setShowPercent(bool showPercent)
       break;
     }
   }
-  
+
   DisplayNumber();
 }
 
@@ -235,12 +234,12 @@ void QmitkNumberPropertyEditor::onValueChanged(int value)
                                 //   A's onPropertyChanged gets called, sets its display to 4.000
 
   BeginModifyProperty();
-  
+
   double newValue( value / m_FactorPropertyToSpinbox );
-    
+
   switch (m_DataType)
   {
-	/*
+  /*
     case DT_SHORT:
       {
         m_ShortProperty->SetValue(ROUND_SHORT(newValue));
@@ -264,7 +263,7 @@ void QmitkNumberPropertyEditor::onValueChanged(int value)
       }
   }
   mitk::RenderingManager::GetInstance()->RequestUpdateAll();
-  
+
   EndModifyProperty();
 }
 
@@ -286,14 +285,14 @@ void QmitkNumberPropertyEditor::DisplayNumber()
   m_SelfChangeLock = true;
   switch (m_DataType)
   {
-	/*
+  /*
     case DT_SHORT:
       {
         short s = m_ShortProperty->GetValue();
         QSpinBox::setValue( s );
         break;
       }
-	*/
+  */
     case DT_INT:
       {
         int i = m_IntProperty->GetValue();

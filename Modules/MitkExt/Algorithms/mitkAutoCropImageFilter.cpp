@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkAutoCropImageFilter.h"
 
@@ -21,6 +20,8 @@ PURPOSE.  See the above copyright notices for more information.
 #include "mitkImageAccessByItk.h"
 #include "mitkGeometry3D.h"
 #include "mitkStatusBar.h"
+
+#include "mitkPlaneGeometry.h"
 
 #include <itkImageRegionConstIterator.h>
 #include <itkRegionOfInterestImageFilter.h>
@@ -57,7 +58,7 @@ void mitk::AutoCropImageFilter::ITKCrop3DImage( itk::Image< TPixel, VImageDimens
   typedef typename InternalImageType::Pointer   InternalImagePointer;
 
   typedef itk::RegionOfInterestImageFilter < InternalImageType, InternalImageType > ROIFilterType;
-  typedef typename itk::RegionOfInterestImageFilter < InternalImageType, InternalImageType >::Pointer ROIFilterPointer; 
+  typedef typename itk::RegionOfInterestImageFilter < InternalImageType, InternalImageType >::Pointer ROIFilterPointer;
 
   InternalImagePointer outputItk = InternalImageType::New();
 
@@ -70,10 +71,14 @@ void mitk::AutoCropImageFilter::ITKCrop3DImage( itk::Image< TPixel, VImageDimens
 
   mitk::Image::Pointer newMitkImage = mitk::Image::New();
   mitk::CastToMitkImage( outputItk, newMitkImage );
+  MITK_INFO << "Crop-Output dimension: " << (newMitkImage->GetDimension() == 3) << " Filter-Output dimension: "<<this->GetOutput()->GetDimension()<< " Timestep: " << timestep;
 
-  const mitk::ChannelDescriptor desc = newMitkImage->GetChannelDescriptor(0);
-  unsigned char* image3D = desc.GetData();
-  this->GetOutput()->SetVolume( (void*) &image3D , timestep );
+//  const mitk::ChannelDescriptor desc = newMitkImage->GetChannelDescriptor(0);
+//  unsigned char* image3D = desc.GetData();
+//  this->GetOutput()->SetVolume( (void*) &image3D , timestep );
+
+  this->GetOutput()->SetVolume( newMitkImage->GetData(), timestep);
+//  this->SetOutput(newMitkImage);
 }
 
 void mitk::AutoCropImageFilter::GenerateOutputInformation()
@@ -141,24 +146,45 @@ void mitk::AutoCropImageFilter::GenerateOutputInformation()
   itk2vtk(m_InputRequestedRegion.GetSize(), dimensions);
   if(dimension>3)
     memcpy(dimensions+3, input->GetDimensions()+3, (dimension-3)*sizeof(unsigned int));
+
+  // create basic slicedGeometry that will be initialized below
   output->Initialize(mitk::PixelType( GetOutputPixelType() ), dimension, dimensions);
   delete [] dimensions;
 
-  
   //clone the IndexToWorldTransform from the input, otherwise we will overwrite it, when adjusting the origin of the output image!!
   itk::ScalableAffineTransform< mitk::ScalarType,3 >::Pointer cloneTransform = itk::ScalableAffineTransform< mitk::ScalarType,3 >::New();
   cloneTransform->Compose(input->GetGeometry()->GetIndexToWorldTransform());
   output->GetGeometry()->SetIndexToWorldTransform( cloneTransform.GetPointer() );
 
-  // Set the spacing
-  output->SetSpacing( input->GetSlicedGeometry()->GetSpacing() );
-
   // Position the output Image to match the corresponding region of the input image
   mitk::SlicedGeometry3D* slicedGeometry = output->GetSlicedGeometry();
+  mitk::SlicedGeometry3D::Pointer inputGeometry = input->GetSlicedGeometry();
   const mitk::SlicedData::IndexType& start = m_InputRequestedRegion.GetIndex();
   mitk::Point3D origin; vtk2itk(start, origin);
   input->GetSlicedGeometry()->IndexToWorld(origin, origin);
   slicedGeometry->SetOrigin(origin);
+
+  // get the PlaneGeometry for the first slice of the original image
+  mitk::PlaneGeometry::Pointer plane = dynamic_cast<mitk::PlaneGeometry*>( inputGeometry->GetGeometry2D( 0 )->Clone().GetPointer() );
+  assert( plane );
+
+  // re-initialize the plane according to the new requirements:
+  // dimensions of the cropped image
+  // right- and down-vector as well as spacing do not change, so use the ones from
+  // input image
+  ScalarType dimX = output->GetDimensions()[0];
+  ScalarType dimY = output->GetDimensions()[1];
+  mitk::Vector3D right = plane->GetAxisVector(0);
+  mitk::Vector3D down = plane->GetAxisVector(1);
+  mitk::Vector3D spacing = plane->GetSpacing();
+  plane->InitializeStandardPlane( dimX, dimY, right, down, &spacing );
+  // set the new origin on the PlaneGeometry as well
+  plane->SetOrigin(origin);
+
+  // re-initialize the slicedGeometry with the correct planeGeometry
+  // in order to get a fully initialized SlicedGeometry3D
+  slicedGeometry->InitializeEvenlySpaced( plane, inputGeometry->GetSpacing()[2], output->GetSlicedGeometry()->GetSlices() );
+
 
   mitk::TimeSlicedGeometry* timeSlicedGeometry = output->GetTimeSlicedGeometry();
   timeSlicedGeometry->InitializeEvenlyTimed(slicedGeometry, output->GetDimension(3));
@@ -171,7 +197,6 @@ void mitk::AutoCropImageFilter::GenerateOutputInformation()
 
 void mitk::AutoCropImageFilter::GenerateData()
 {
-
   mitk::Image::ConstPointer input = this->GetInput();
   mitk::Image::Pointer output = this->GetOutput();
 
@@ -246,7 +271,7 @@ void mitk::AutoCropImageFilter::ComputeNewImageBounds()
   {
     // Check if a 3D or 4D image is present
     unsigned int timeSteps = 1;
-    if (inputMitk->GetDimension() == 4 ) 
+    if (inputMitk->GetDimension() == 4 )
       timeSteps = inputMitk->GetDimension(3);
 
     ImageType::IndexType minima,maxima;

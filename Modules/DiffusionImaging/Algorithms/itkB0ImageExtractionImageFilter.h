@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-07-14 19:11:20 +0200 (Tue, 14 Jul 2009) $
-Version:   $Revision: 18127 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef __itkB0ImageExtractionImageFilter_h_
 #define __itkB0ImageExtractionImageFilter_h_
@@ -26,10 +25,10 @@ namespace itk{
   *
   */
 
-  template< class TInputImagePixelType, 
+  template< class TInputImagePixelType,
   class TOutputImagePixelType >
   class B0ImageExtractionImageFilter :
-    public ImageToImageFilter< VectorImage<TInputImagePixelType, 3>, 
+    public ImageToImageFilter< VectorImage<TInputImagePixelType, 3>,
     Image< TOutputImagePixelType, 3 > >
   {
 
@@ -38,15 +37,15 @@ namespace itk{
     typedef B0ImageExtractionImageFilter Self;
     typedef SmartPointer<Self>                      Pointer;
     typedef SmartPointer<const Self>                ConstPointer;
-    typedef ImageToImageFilter< VectorImage< TInputImagePixelType, 3 >, 
+    typedef ImageToImageFilter< VectorImage< TInputImagePixelType, 3 >,
       Image< TOutputImagePixelType, 3 >  >
       Superclass;
 
     /** Method for creation through the object factory. */
-    itkNewMacro(Self);  
+    itkNewMacro(Self);
 
     /** Runtime information support. */
-    itkTypeMacro(B0ImageExtractionImageFilter, 
+    itkTypeMacro(B0ImageExtractionImageFilter,
       ImageToImageFilter);
 
     typedef TInputImagePixelType                     InputPixelType;
@@ -70,10 +69,10 @@ namespace itk{
     { this->m_Directions = directions; }
 
   protected:
-    
+
     B0ImageExtractionImageFilter();
-    ~B0ImageExtractionImageFilter() {};
-    
+    virtual ~B0ImageExtractionImageFilter() {};
+
     void GenerateData();
 
     GradientDirectionContainerType::Pointer   m_Directions;

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-04-14 19:45:53 +0200 (Mo, 14 Apr 2008) $
-Version:   $Revision: 14081 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkNewSegmentationDialog.h"
 
@@ -134,12 +133,12 @@ void QmitkNewSegmentationDialog::onColorBtnClicked()
   }
   btnColor->setStyleSheet(QString("background-color:rgb(%1,%2, %3)").arg(m_Color.red()).arg(m_Color.green()).arg(m_Color.blue()));
 }
-    
+
 void QmitkNewSegmentationDialog::setPrompt( const QString& prompt )
 {
   lblPrompt->setText( prompt );
 }
-    
+
 void QmitkNewSegmentationDialog::setSegmentationName( const QString& name )
 {
   edtName->setText( name );

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkColorSequenceRainbow.h"
 #include <vector>
 namespace mitk
@@ -35,7 +34,7 @@ ColorSequenceRainbow::~ColorSequenceRainbow()
 }//end of destructor
 
 Color ColorSequenceRainbow::GetNextColor()
-{ 
+{
   m_Color = m_ColorList[m_ColorIndex];
   if(m_ColorIndex < m_ColorList.size())
   {
@@ -50,7 +49,7 @@ Color ColorSequenceRainbow::GetNextColor()
 
 void ColorSequenceRainbow::InitColorList()
 {
-  
+
   mitk::Color defaultColor, red, green, blue, yellow, magenta, cyan, orange;
   defaultColor.Set(1.0, 0.67, 0.0);
   red.Set(1.0, 0.0, 0.0);
@@ -69,8 +68,8 @@ void ColorSequenceRainbow::InitColorList()
   m_ColorList.push_back(cyan);
   m_ColorList.push_back(orange);
   m_ColorList.push_back(defaultColor);
-  
-  
+
+
 }// end of ColorList
 
 void ColorSequenceRainbow::GoToBegin()

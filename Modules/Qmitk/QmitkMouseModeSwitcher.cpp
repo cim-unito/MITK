@@ -1,20 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile: mitkPropertyManager.cpp,v $
-Language:  C++
-Date:      $Date: 2005/06/28 12:37:25 $
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkMouseModeSwitcher.h"
 
@@ -69,7 +67,7 @@ void QmitkMouseModeSwitcher::setMouseModeSwitcher( mitk::MouseModeSwitcher* mms 
 
   if ( m_MouseModeSwitcher )
   {
-    itk::ReceptorMemberCommand<QmitkMouseModeSwitcher>::Pointer command = 
+    itk::ReceptorMemberCommand<QmitkMouseModeSwitcher>::Pointer command =
       itk::ReceptorMemberCommand<QmitkMouseModeSwitcher>::New();
     command->SetCallbackFunction(this, &QmitkMouseModeSwitcher::OnMouseModeChanged);
     m_ObserverTag = m_MouseModeSwitcher->AddObserver( mitk::MouseModeSwitcher::MouseModeChangedEvent(), command );
@@ -92,7 +90,7 @@ void QmitkMouseModeSwitcher::modeSelectedByUser()
       m_MouseModeSwitcher->SelectMouseMode( id );
     }
     emit MouseModeSelected( id );
-   
+
   }
 }
 
@@ -112,7 +110,7 @@ void QmitkMouseModeSwitcher::OnMouseModeChanged(const itk::EventObject&)
       action->setChecked( true );
     }
   }
-  
+
   m_InObservationReaction = false;
 }
 

@@ -1,19 +1,18 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: 1.12 $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <Poco/TemporaryFile.h>
 #include <Poco/Path.h>
@@ -46,7 +45,7 @@ PURPOSE.  See the above copyright notices for more information.
 #else
   #include <sys/time.h>
 #endif
- 
+
 int mitk::SceneIO::tempDiretoryID = 0;
 
 mitk::SceneIO::SceneIO()
@@ -63,7 +62,7 @@ std::string mitk::SceneIO::CreateEmptyTempDirectory()
 {
   mitk::SceneIO::tempDiretoryID++;
   std::stringstream uniqueNumber;
-  
+
 #ifdef WIN32
   SYSTEMTIME st;
 
@@ -83,11 +82,11 @@ std::string mitk::SceneIO::CreateEmptyTempDirectory()
   //old method (didn't work on dart client): Poco::TemporaryFile::tempName();
   std::string uniquename = returnValue + Poco::Path::separator();
   Poco::File tempdir( uniquename );
-  
+
   try
   {
     bool existsNot = tempdir.createDirectory();
-    if (!existsNot) 
+    if (!existsNot)
       {
       MITK_ERROR << "Warning: Directory already exitsts: " << uniquename << " (choosing another)";
 
@@ -119,13 +118,13 @@ std::string mitk::SceneIO::CreateEmptyTempDirectory()
     MITK_ERROR << "Could not create temporary directory " << uniquename << ":" << e.what();
     return "";
   }
-  
-      
+
+
   return returnValue;
 }
 
-mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename, 
-                                                     DataStorage* pStorage, 
+mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename,
+                                                     DataStorage* pStorage,
                                                      bool clearStorageFirst )
 {
   // prepare data storage
@@ -153,7 +152,7 @@ mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename
     MITK_ERROR << "No filename given. Not possible to load scene.";
     return NULL;
   }
-  
+
   // test if filename can be read
   std::ifstream file( filename.c_str(), std::ios::binary );
   if (!file.good())
@@ -161,7 +160,7 @@ mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename
     MITK_ERROR << "Cannot open '" << filename << "' for reading";
     return NULL;
   }
-  
+
   // get new temporary directory
   m_WorkingDirectory = CreateEmptyTempDirectory();
   if (m_WorkingDirectory.empty())
@@ -192,7 +191,7 @@ mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename
     MITK_ERROR << "Could not open/read/parse " << m_WorkingDirectory << "/index.xml\nTinyXML reports: " << document.ErrorDesc() << std::endl;
     return NULL;
   }
-      
+
   SceneReader::Pointer reader = SceneReader::New();
   if ( !reader->LoadScene( document, m_WorkingDirectory, storage ) )
   {
@@ -214,16 +213,16 @@ mitk::DataStorage::Pointer mitk::SceneIO::LoadScene( const std::string& filename
   return storage;
 
 }
-    
+
 bool mitk::SceneIO::SaveScene( DataStorage::SetOfObjects::ConstPointer sceneNodes, const DataStorage* storage,
                                            const std::string& filename)
 {
-  if (!sceneNodes) 
+  if (!sceneNodes)
   {
     MITK_ERROR << "No set of nodes given. Not possible to save scene.";
     return false;
   }
-  if (!storage) 
+  if (!storage)
   {
     MITK_ERROR << "No data storage given. Not possible to save scene.";  // \TODO: Technically, it would be possible to save the nodes without their relation
     return false;
@@ -480,11 +479,11 @@ TiXmlElement* mitk::SceneIO::SaveBaseData( BaseData* data, const std::string& fi
   //  - TODO what to do about writers that creates one file per timestep?
   TiXmlElement* element = new TiXmlElement("data");
   element->SetAttribute( "type", data->GetNameOfClass() );
- 
+
   // construct name of serializer class
   std::string serializername(data->GetNameOfClass());
   serializername += "Serializer";
-  
+
   std::list<itk::LightObject::Pointer> thingsThatCanSerializeThis = itk::ObjectFactoryBase::CreateAllInstance(serializername.c_str());
   if (thingsThatCanSerializeThis.size() < 1)
   {
@@ -520,13 +519,13 @@ TiXmlElement* mitk::SceneIO::SaveBaseData( BaseData* data, const std::string& fi
 TiXmlElement* mitk::SceneIO::SavePropertyList( PropertyList* propertyList, const std::string& filenamehint)
 {
   assert(propertyList);
-  
+
   //  - TODO what to do about shared properties (same object in two lists or behind several keys)?
   TiXmlElement* element = new TiXmlElement("properties");
- 
+
   // construct name of serializer class
   PropertyListSerializer::Pointer serializer = PropertyListSerializer::New();
-  
+
   serializer->SetPropertyList(propertyList);
   serializer->SetFilenameHint(filenamehint);
   serializer->SetWorkingDirectory( m_WorkingDirectory );
@@ -545,19 +544,19 @@ TiXmlElement* mitk::SceneIO::SavePropertyList( PropertyList* propertyList, const
   {
     MITK_ERROR << "Serializer " << serializer->GetNameOfClass() << " failed: " << e.what();
   }
-    
+
   return element;
 }
 
-    
-const mitk::SceneIO::FailedBaseDataListType* mitk::SceneIO::GetFailedNodes() 
-{ 
-  return m_FailedNodes.GetPointer(); 
+
+const mitk::SceneIO::FailedBaseDataListType* mitk::SceneIO::GetFailedNodes()
+{
+  return m_FailedNodes.GetPointer();
 }
-    
-const mitk::PropertyList* mitk::SceneIO::GetFailedProperties() 
-{ 
-  return m_FailedProperties; 
+
+const mitk::PropertyList* mitk::SceneIO::GetFailedProperties()
+{
+  return m_FailedProperties;
 }
 
 void mitk::SceneIO::OnUnzipError(const void*  /*pSender*/, std::pair<const Poco::Zip::ZipLocalFileHeader, const std::string>& info)

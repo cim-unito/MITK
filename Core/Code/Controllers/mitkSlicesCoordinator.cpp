@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include <mitkSlicesCoordinator.h>
 
@@ -37,7 +36,7 @@ SlicesCoordinator::~SlicesCoordinator()
 void SlicesCoordinator::AddSliceController(SliceNavigationController* snc)
 {
   if (!snc) return;
-    
+
   m_SliceNavigationControllers.push_back(snc);
 
   OnSliceControllerAdded(snc); // notify
@@ -87,17 +86,17 @@ void SlicesCoordinator::OnSliceControllerAdded(SliceNavigationController*)
 {
   // implement in subclasses
 }
-  
+
 void SlicesCoordinator::OnSliceControllerRemoved(SliceNavigationController*)
 {
   // implement in subclasses
 }
 
-bool SlicesCoordinator::ExecuteAction(Action*, StateEvent const*)
+bool SlicesCoordinator::ExecuteAction(Action* a, StateEvent const* e)
 {
-  // implement in subclasses
-  return false;
+  // implement in subclasses, BUT call default implementation to make these CONNECT_ACTION statements work out
+  return Superclass::ExecuteAction(a,e);
 }
 
-} // namespace 
+} // namespace
 

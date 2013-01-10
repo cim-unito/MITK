@@ -1,23 +1,23 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkItkImageFileReader.h"
 #include "mitkConfig.h"
+#include "mitkException.h"
 
 #include <itkImageFileReader.h>
 #include <itksys/SystemTools.hxx>
@@ -62,14 +62,15 @@ void mitk::ItkImageFileReader::GenerateData()
   // Check to see if we can read the file given the name or prefix
   if ( m_FileName == "" )
   {
-    itkWarningMacro( << "File Type not supported!" );
+    mitkThrow() << "Empty filename in mitk::ItkImageFileReader ";
     return ;
   }
 
   itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO( m_FileName.c_str(), itk::ImageIOFactory::ReadMode );
   if ( imageIO.IsNull() )
   {
-    itkWarningMacro( << "File Type not supported!" );
+    //itkWarningMacro( << "File Type not supported!" );
+    mitkThrow() << "Could not create itk::ImageIOBase object for filename " << m_FileName;
     return ;
   }
 
@@ -129,13 +130,8 @@ void mitk::ItkImageFileReader::GenerateData()
   imageIO->SetIORegion( ioRegion );
   void* buffer = new unsigned char[imageIO->GetImageSizeInBytes()];
   imageIO->Read( buffer );
-  //mitk::Image::Pointer image = mitk::Image::New();
-  if((ndim==4) && (dimensions[3]<=1))
-    ndim = 3;
-  if((ndim==3) && (dimensions[2]<=1))
-    ndim = 2;
 
-  mitk::PixelType pixelType = mitk::PixelType(imageIO->GetComponentTypeInfo(), imageIO->GetComponentTypeInfo(),
+  mitk::PixelType pixelType = mitk::PixelType(imageIO->GetComponentTypeInfo(), imageIO->GetPixelType(),
                                               imageIO->GetComponentSize(), imageIO->GetNumberOfComponents(),
                                               imageIO->GetComponentTypeAsString( imageIO->GetComponentType() ).c_str(),
                                               imageIO->GetPixelTypeAsString( imageIO->GetPixelType() ).c_str() );

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkTransition.h"
@@ -30,7 +29,7 @@ mitk::Transition::~Transition()
   m_Actions.clear();
 }
 
-void mitk::Transition::AddAction( Action* action ) 
+void mitk::Transition::AddAction( Action* action )
 {
   m_Actions.push_back( action );
 }
@@ -50,12 +49,12 @@ int mitk::Transition::GetNextStateId() const
   return m_NextStateId;
 }
 
-int mitk::Transition::GetEventId() const 
+int mitk::Transition::GetEventId() const
 {
   return m_EventId;
 }
 
-unsigned int mitk::Transition::GetActionCount() const 
+unsigned int mitk::Transition::GetActionCount() const
 {
   return static_cast<unsigned int>(m_Actions.size());
 }

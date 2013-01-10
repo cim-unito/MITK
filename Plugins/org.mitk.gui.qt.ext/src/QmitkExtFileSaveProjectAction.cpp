@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-10-07 16:14:59 +0200 (Mi, 07 Okt 2009) $
-Version:   $Revision: 19343 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "QmitkExtFileSaveProjectAction.h"
 
@@ -89,14 +88,14 @@ void QmitkExtFileSaveProjectAction::Run()
                                                     m_LastPath,
                                                     "MITK scene files (*.mitk)",
                                                     NULL );
-    
-    if (fileName.isEmpty() ) 
+
+    if (fileName.isEmpty() )
       return;
 
     // remember the location
     m_LastPath = fileName;
 
-    if ( fileName.right(5) != ".mitk" ) 
+    if ( fileName.right(5) != ".mitk" )
       fileName += ".mitk";
 
     mitk::SceneIO::Pointer sceneIO = mitk::SceneIO::New();

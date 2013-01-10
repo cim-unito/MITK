@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision: $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkToFCameraPMDCamBoardController.h"
 
@@ -101,4 +99,46 @@ namespace mitk
     MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
     return true;
   }
+
+  bool ToFCameraPMDCamBoardController::GetAmplitudes(float* amplitudeArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  bool ToFCameraPMDCamBoardController::GetAmplitudes(char* sourceData, float* amplitudeArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  bool ToFCameraPMDCamBoardController::GetIntensities(float* intensityArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  bool ToFCameraPMDCamBoardController::GetIntensities(char* sourceData, float* intensityArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  bool ToFCameraPMDCamBoardController::GetDistances(float* distanceArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  bool ToFCameraPMDCamBoardController::GetDistances(char* sourceData, float* distanceArray)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+    return true;
+  }
+
+  void ToFCameraPMDCamBoardController::TransformCameraOutput(float* in, float* out, bool isDist)
+  {
+    MITK_WARN("ToF") << "Error: PMD CamBoard currently not available";
+  }
+
 }

@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkOptimizerFactory.h"
 #include "mitkOptimizerParameters.h"
@@ -51,7 +50,7 @@ namespace mitk {
 
   OptimizerFactory::OptimizerType::Pointer OptimizerFactory::GetOptimizer( )
   {
-    if( m_OptimizerParameters.IsNull() ) 
+    if( m_OptimizerParameters.IsNull() )
     {
       MITK_ERROR << "No parameters set! Returning\n";
       return NULL;
@@ -66,7 +65,7 @@ namespace mitk {
       {
         steps[i] = m_OptimizerParameters->GetNumberOfStepsExhaustive();
       }
-      
+
       OptimizerPointer->SetNumberOfSteps( steps );
 
       return OptimizerPointer.GetPointer();
@@ -82,7 +81,7 @@ namespace mitk {
     else if (optimizer == OptimizerParameters::QUATERNIONRIGIDTRANSFORMGRADIENTDESCENTOPTIMIZER)
     {
       itk::QuaternionRigidTransformGradientDescentOptimizer::Pointer OptimizerPointer = itk::QuaternionRigidTransformGradientDescentOptimizer::New();
-      OptimizerPointer->SetMaximize( m_OptimizerParameters->GetMaximize());  
+      OptimizerPointer->SetMaximize( m_OptimizerParameters->GetMaximize());
       OptimizerPointer->SetLearningRate(m_OptimizerParameters->GetLearningRateQuaternionRigidTransformGradientDescent());
       OptimizerPointer->SetNumberOfIterations( m_OptimizerParameters->GetNumberOfIterationsQuaternionRigidTransformGradientDescent() );
       return OptimizerPointer.GetPointer();
@@ -185,7 +184,7 @@ namespace mitk {
       itk::AmoebaOptimizer::Pointer OptimizerPointer = itk::AmoebaOptimizer::New();
       OptimizerPointer->SetMaximize( m_OptimizerParameters->GetMaximize() );
       OptimizerPointer->SetParametersConvergenceTolerance(m_OptimizerParameters->GetParametersConvergenceToleranceAmoeba());
-      OptimizerPointer->SetFunctionConvergenceTolerance(m_OptimizerParameters->GetFunctionConvergenceToleranceAmoeba());      
+      OptimizerPointer->SetFunctionConvergenceTolerance(m_OptimizerParameters->GetFunctionConvergenceToleranceAmoeba());
       itk::Array<double> simplexDeltaAmoeba = m_OptimizerParameters->GetSimplexDeltaAmoeba();
       OptimizerType::ParametersType simplexDelta( m_NumberTransformParameters );
       for (int i = 0; i < m_NumberTransformParameters; i++)
@@ -205,7 +204,7 @@ namespace mitk {
       vnlOptimizerType * vnlOptimizer = OptimizerPointer->GetOptimizer();
       vnlOptimizer->set_f_tolerance( 1e-3 );
       vnlOptimizer->set_g_tolerance( 1e-4 );
-      vnlOptimizer->set_x_tolerance( 1e-8 ); 
+      vnlOptimizer->set_x_tolerance( 1e-8 );
       vnlOptimizer->set_epsilon_function( 1e-10 );
       vnlOptimizer->set_max_function_evals( m_Iterations );
       vnlOptimizer->set_check_derivatives( 3 );*/

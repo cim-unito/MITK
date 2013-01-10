@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2007-09-26 18:50:26 +0200 (Mi, 26 Sep 2007) $
-Version:   $Revision: 9585 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "itkTotalVariationDenoisingImageFilter.h"
 #include "itkTotalVariationSingleIterationImageFilter.h"
@@ -21,17 +20,17 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkImageRegionIterator.h"
 
 // image typedefs
-typedef itk::Image<float, 3> 
+typedef itk::Image<float, 3>
 ImageType;
-typedef itk::ImageRegionIterator<ImageType> 
+typedef itk::ImageRegionIterator<ImageType>
 IteratorType;
 
 // vector image typedefs
-typedef itk::Vector<float,2> 
+typedef itk::Vector<float,2>
 VectorPixelType;
 typedef itk::Image<VectorPixelType, 3>
 VectorImageType;
-typedef itk::ImageRegionIterator<VectorImageType> 
+typedef itk::ImageRegionIterator<VectorImageType>
 VectorIteratorType;
 
 /**
@@ -147,7 +146,7 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
 
   try
   {
-    typedef itk::LocalVariationImageFilter<ImageType,ImageType> 
+    typedef itk::LocalVariationImageFilter<ImageType,ImageType>
       LocalFilterType;
     LocalFilterType::Pointer filter = LocalFilterType::New();
     filter->SetInput(image);
@@ -160,7 +159,7 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
     {
       return EXIT_FAILURE;
     }
-    
+
   }
   catch (...)
   {
@@ -169,16 +168,16 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
 
   try
   {
-    typedef itk::TotalVariationSingleIterationImageFilter<ImageType,ImageType> 
+    typedef itk::TotalVariationSingleIterationImageFilter<ImageType,ImageType>
       SingleFilterType;
     SingleFilterType::Pointer sFilter = SingleFilterType::New();
     sFilter->SetInput( image );
     sFilter->SetOriginalImage(GenerateTestImage());
     sFilter->SetLambda(0.5);
     sFilter->SetNumberOfThreads(1);
-    sFilter->Update();  
+    sFilter->Update();
     ImageType::Pointer outImageS = sFilter->GetOutput();
-    
+
     PrintImage(outImageS);
     if(fabs(outImageS->GetPixel(index) - 4.0) > precision)
     {
@@ -193,7 +192,7 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
 
   try
   {
-    typedef itk::TotalVariationDenoisingImageFilter<ImageType,ImageType> 
+    typedef itk::TotalVariationDenoisingImageFilter<ImageType,ImageType>
       TVFilterType;
     TVFilterType::Pointer tvFilter = TVFilterType::New();
     tvFilter->SetInput(image);
@@ -202,7 +201,7 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
     tvFilter->SetLambda(0.1);
     tvFilter->Update();
     ImageType::Pointer outImageTV = tvFilter->GetOutput();
-    
+
     PrintImage(outImageTV);
     if(fabs(outImageTV->GetPixel(index) - 4.0) > precision)
     {
@@ -220,14 +219,14 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
 
   try
   {
-    typedef itk::LocalVariationImageFilter<VectorImageType,ImageType> 
+    typedef itk::LocalVariationImageFilter<VectorImageType,ImageType>
       LocalVecFilterType;
     LocalVecFilterType::Pointer vecFilter = LocalVecFilterType::New();
     vecFilter->SetInput(vecImage);
     vecFilter->SetNumberOfThreads(1);
     vecFilter->Update();
     ImageType::Pointer outVecImage = vecFilter->GetOutput();
-    
+
     PrintImage(outVecImage);
     if(fabs(outVecImage->GetPixel(index) - 6.324) > precision)
     {
@@ -243,16 +242,16 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
   try
   {
     typedef itk::TotalVariationSingleIterationImageFilter
-      <VectorImageType,VectorImageType> 
+      <VectorImageType,VectorImageType>
       SingleVecFilterType;
     SingleVecFilterType::Pointer sVecFilter = SingleVecFilterType::New();
     sVecFilter->SetInput( vecImage );
     sVecFilter->SetOriginalImage(vecImage);
     sVecFilter->SetLambda(0.5);
     sVecFilter->SetNumberOfThreads(1);
-    sVecFilter->UpdateLargestPossibleRegion();  
+    sVecFilter->UpdateLargestPossibleRegion();
     VectorImageType::Pointer outVecImageS = sVecFilter->GetOutput();
-    
+
     PrintVectorImage(outVecImageS);
     if(fabs(outVecImageS->GetPixel(vecIndex)[1] - 4.0) > precision)
     {
@@ -275,7 +274,7 @@ int itkTotalVariationDenoisingImageFilterTest(int /*argc*/, char* /*argv*/[])
     tvVecFilter->SetLambda(0.1);
     tvVecFilter->Update();
     VectorImageType::Pointer outVecImageTV = tvVecFilter->GetOutput();
-    
+
     PrintVectorImage(outVecImageTV);
     if(fabs(outVecImageTV->GetPixel(vecIndex)[1] - 4.0) > precision)
     {

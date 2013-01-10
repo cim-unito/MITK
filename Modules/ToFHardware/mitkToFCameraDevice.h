@@ -1,20 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Module:    $RCSfile$
-Language:  C++
-Date:      $Date: 2010-05-27 16:06:53 +0200 (Do, 27 Mai 2010) $
-Version:   $Revision:  $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #ifndef __mitkToFCameraDevice_h
 #define __mitkToFCameraDevice_h
 
@@ -29,39 +27,49 @@ PURPOSE.  See the above copyright notices for more information.
 #include "itkMultiThreader.h"
 #include "itkFastMutexLock.h"
 
+// Microservices
+#include <usServiceInterface.h>
+#include <usServiceRegistration.h>
+
 namespace mitk
 {
   /**
-  * @brief Virtual interface and base class for all Time-of-Flight devices. 
+  * @brief Virtual interface and base class for all Time-of-Flight devices.
   *
   * @ingroup ToFHardware
   */
   class MITK_TOFHARDWARE_EXPORT ToFCameraDevice : public itk::Object
   {
-  public: 
+  public:
 
     mitkClassMacro(ToFCameraDevice, itk::Object);
     /*!
     \brief opens a connection to the ToF camera
     */
-    virtual bool ConnectCamera() = 0;
+    virtual bool OnConnectCamera() = 0;
+
+    virtual bool ConnectCamera();
     /*!
     \brief closes the connection to the camera
     */
     virtual bool DisconnectCamera() = 0;
     /*!
-    \brief starts the continuous updating of the camera. 
+    \brief starts the continuous updating of the camera.
     A separate thread updates the source data, the main thread processes the source data and creates images and coordinates
     */
     virtual void StartCamera() = 0;
     /*!
     \brief stops the continuous updating of the camera
     */
-    virtual void StopCamera() = 0;
+    virtual void StopCamera();
     /*!
     \brief returns true if the camera is connected and started
     */
-    virtual bool IsCameraActive() = 0;
+    virtual bool IsCameraActive();
+    /*!
+    \brief returns true if the camera is connected
+    */
+    virtual bool IsCameraConnected();
     /*!
     \brief updates the camera for image acquisition
     */
@@ -94,10 +102,10 @@ namespace mitk
     \param requiredImageSequence the required image sequence number
     \param capturedImageSequence the actually captured image sequence number
     */
-    virtual void GetAllImages(float* distanceArray, float* amplitudeArray, float* intensityArray, char* sourceDataArray, 
-                              int requiredImageSequence, int& capturedImageSequence) = 0;
+    virtual void GetAllImages(float* distanceArray, float* amplitudeArray, float* intensityArray, char* sourceDataArray,
+                              int requiredImageSequence, int& capturedImageSequence, unsigned char* rgbDataArray=NULL) = 0;
 //    TODO: Buffer size currently set to 1. Once Buffer handling is working correctly, method may be reactivated
-//    /*!
+//    /* // * TODO: Reenable doxygen comment when uncommenting, disabled to fix doxygen warning see bug 12882
 //    \brief pure virtual method resetting the buffer using the specified bufferSize. Has to be implemented by sub-classes
 //    \param bufferSize buffer size the buffer should be reset to
 //    */
@@ -162,17 +170,21 @@ namespace mitk
     /*!
     \brief get a bool from the property list
     */
-    static bool GetBoolProperty(BaseProperty* propertyValue, bool& boolValue);
+    bool GetBoolProperty(const char *propertyKey, bool& boolValue);
 
     /*!
     \brief get a string from the property list
     */
-    static bool GetStringProperty(BaseProperty* propertyValue, std::string& string);
+    bool GetStringProperty(const char *propertyKey, std::string& string);
 
     /*!
     \brief get an int from the property list
     */
-    static bool GetIntProperty(BaseProperty* propertyValue, int& integer);
+    bool GetIntProperty(const char *propertyKey, int& integer);
+
+    virtual int GetRGBCaptureWidth();
+
+    virtual int GetRGBCaptureHeight();
 
   protected:
 
@@ -199,6 +211,9 @@ namespace mitk
     int m_CaptureWidth; ///< width of the range image (x dimension)
     int m_CaptureHeight; ///< height of the range image (y dimension)
     int m_PixelNumber; ///< number of pixels in the range image (m_CaptureWidth*m_CaptureHeight)
+    int m_RGBImageWidth;
+    int m_RGBImageHeight;
+    int m_RGBPixelNumber;
     int m_SourceDataSize; ///< size of the PMD source data
     itk::MultiThreader::Pointer m_MultiThreader; ///< itk::MultiThreader used for thread handling
     itk::FastMutexLock::Pointer m_ImageMutex; ///< mutex for images provided by the range camera
@@ -212,6 +227,10 @@ namespace mitk
 
   private:
 
+    mitk::ServiceRegistration m_ServiceRegistration;
+
   };
 } //END mitk namespace
+// This is the microservice declaration. Do not meddle!
+US_DECLARE_SERVICE_INTERFACE(mitk::ToFCameraDevice, "org.mitk.services.ToFCameraDevice")
 #endif

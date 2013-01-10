@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+BlueBerry Platform
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryPartPlaceholder.h"
 
@@ -25,7 +24,7 @@ namespace berry
 const std::string PartPlaceholder::WILD_CARD = "*"; //$NON-NLS-1$
 
 PartPlaceholder::PartPlaceholder(const std::string& id) :
-  StackablePart(id)
+  LayoutPart(id)
 {
 
 }
@@ -42,7 +41,7 @@ void* PartPlaceholder::GetControl()
 
 bool PartPlaceholder::HasWildCard()
 {
-  return this->GetId().find_first_of(WILD_CARD) != std::string::npos;
+  return this->GetID().find_first_of(WILD_CARD) != std::string::npos;
 }
 
 bool PartPlaceholder::IsPlaceHolder() const

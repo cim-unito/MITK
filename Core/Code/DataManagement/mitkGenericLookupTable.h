@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2008-06-24 19:37:48 +0200 (Di, 24 Jun 2008) $
-Version:   $Revision: 14641 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #ifndef MITKGENERICLOOKUPTABLE_H_HEADER_INCLUDED_C1061CEE
@@ -34,7 +33,7 @@ namespace mitk {
 
 /**
  * @brief Template class for generating lookup-tables
- * 
+ *
  * This class template can be instantiated for all classes/internal types that fulfills
  *  these requirements:
  * - an operator<< so that the properties value can be put into a std::stringstream
@@ -55,14 +54,14 @@ class GenericLookupTable
     typedef GenericLookupTable        Self;
 
     GenericLookupTable() {}
-    virtual ~GenericLookupTable() 
+    virtual ~GenericLookupTable()
     {
     }
 
-    virtual const char *GetNameOfClass() const 
+    virtual const char *GetNameOfClass() const
     {
       return "GenericLookupTable";
-    } 
+    }
 
     void SetTableValue( IdentifierType id, ValueType value )
     {
@@ -117,7 +116,7 @@ class GenericLookupTable
 } // namespace mitk
 
 /**
-* Generates a specialized subclass of mitk::GenericLookupTable. 
+* Generates a specialized subclass of mitk::GenericLookupTable.
 * This way, GetNameOfClass() returns the value provided by LookupTableName.
 * Please see mitkProperties.h for examples.
 * @param LookupTableName the name of the instantiation of GenericLookupTable

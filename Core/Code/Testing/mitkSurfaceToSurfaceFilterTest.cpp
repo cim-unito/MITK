@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-06-18 16:11:33 +0200 (Do, 18 Jun 2009) $
-Version:   $Revision: 17789 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 
 #include "mitkSurface.h"
@@ -41,7 +40,7 @@ int mitkSurfaceToSurfaceFilterTest(int /*argc*/, char* /*argv*/[])
   vtkPolyData* polys = sphereSource->GetOutput();
   surface->SetVtkPolyData( polys );
   sphereSource->Delete();
-  
+
 
   mitk::SurfaceToSurfaceFilter::Pointer filter = mitk::SurfaceToSurfaceFilter::New();
   std::cout << "Testing mitk::SurfaceToSurfaceFilter::SetInput() and ::GetNumberOfInputs() : " ;
@@ -112,12 +111,12 @@ int mitkSurfaceToSurfaceFilterTest(int /*argc*/, char* /*argv*/[])
   if ( filter->GetNumberOfInputs() != 0 )
   {
     std::cout << "[FAILED] : existing input was not removed correctly." << std::endl;
-    return EXIT_FAILURE; 
+    return EXIT_FAILURE;
   }
   std::cout << "[SUCCESS] : existing input was removed correctly." << std::endl;
 
 
-  
+
   std::cout<<"[TEST DONE]"<<std::endl;
   return EXIT_SUCCESS;
 }

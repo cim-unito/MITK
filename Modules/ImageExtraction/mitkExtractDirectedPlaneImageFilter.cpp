@@ -1,30 +1,36 @@
-/*=========================================================================
- 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision: $
- 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
- 
-=========================================================================*/
+/*===================================================================
 
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkExtractDirectedPlaneImageFilter.h"
 #include "mitkAbstractTransformGeometry.h"
 //#include "mitkImageMapperGL2D.h"
+
+#include <mitkProperties.h>
+#include <mitkDataNode.h>
+#include <mitkDataNodeFactory.h>
+#include <mitkResliceMethodProperty.h>
+#include "vtkMitkThickSlicesFilter.h"
 
 #include <vtkTransform.h>
 #include <vtkGeneralTransform.h>
 #include <vtkImageData.h>
 #include <vtkImageChangeInformation.h>
 #include <vtkPoints.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 #include "pic2vtk.h"
 
@@ -33,14 +39,20 @@ PURPOSE.  See the above copyright notices for more information.
 mitk::ExtractDirectedPlaneImageFilter::ExtractDirectedPlaneImageFilter()
 : m_WorldGeometry(NULL)
 {
+  MITK_WARN << "Class ExtractDirectedPlaneImageFilter is deprecated! Use ExtractSliceFilter instead.";
+
   m_Reslicer = vtkImageReslice::New();
+
   m_TargetTimestep = 0;
-  m_InPlaneResampleExtentByGeometry = false;
+  m_InPlaneResampleExtentByGeometry = true;
+  m_ResliceInterpolationProperty = NULL;//VtkResliceInterpolationProperty::New(); //TODO initial with value
+    m_ThickSlicesMode = 0;
+  m_ThickSlicesNum = 1;
 }
 
 mitk::ExtractDirectedPlaneImageFilter::~ExtractDirectedPlaneImageFilter()
 {
-  m_WorldGeometry = NULL;
+  if(m_ResliceInterpolationProperty!=NULL)m_ResliceInterpolationProperty->Delete();
   m_Reslicer->Delete();
 }
 
@@ -89,9 +101,9 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
   }
 
   // check if there is something to display.
-  if ( ! input->IsVolumeSet( timestep ) ) 
+  if ( ! input->IsVolumeSet( timestep ) )
   {
-    itkWarningMacro(<<"No volume data existent at given timestep "<<timestep); 
+    itkWarningMacro(<<"No volume data existent at given timestep "<<timestep);
     return;
   }
 
@@ -133,7 +145,7 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
 
   ScalarType mmPerPixel[2];
 
-  // Bounds information for reslicing (only required if reference geometry 
+  // Bounds information for reslicing (only required if reference geometry
   // is present)
   vtkFloatingPointType bounds[6];
   bool boundsInitialized = false;
@@ -195,8 +207,8 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
     //heightInMM -= mmPerPixel[1];
 
     // Use inverse transform of the input geometry for reslicing the 3D image
-    m_Reslicer->SetResliceTransform( 
-      inputGeometry->GetVtkTransform()->GetLinearInverse() ); 
+    m_Reslicer->SetResliceTransform(
+      inputGeometry->GetVtkTransform()->GetLinearInverse() );
 
     // Set background level to TRANSLUCENT (see Geometry2DDataVtkMapper3D)
     m_Reslicer->SetBackgroundLevel( -32768 );
@@ -277,7 +289,7 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
 
   m_Reslicer->SetInput( unitSpacingImageFilter->GetOutput() );
   unitSpacingImageFilter->Delete();
-  
+
   //m_Reslicer->SetInput( inputData );
 
   m_Reslicer->SetOutputDimensionality( 2 );
@@ -325,8 +337,8 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
   }
 
   m_Reslicer->SetOutputSpacing( mmPerPixel[0], mmPerPixel[1], 1.0 );
-  // xMax and yMax are meant exclusive until now, whereas 
-  // SetOutputExtent wants an inclusive bound. Thus, we need 
+  // xMax and yMax are meant exclusive until now, whereas
+  // SetOutputExtent wants an inclusive bound. Thus, we need
   // to subtract 1.
   m_Reslicer->SetOutputExtent( xMin, xMax-1, yMin, yMax-1, 0, 1 );
 
@@ -361,7 +373,7 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateData()
   //resultImage->SetPicVolume( pic );
 
   //mitkIpPicFree(pic);
-  
+
   /*unsigned int dimensions[2];
   dimensions[0] = (unsigned int)extent[0]; dimensions[1] = (unsigned int)extent[1];
   Vector3D spacingVector;
@@ -382,13 +394,13 @@ void mitk::ExtractDirectedPlaneImageFilter::GenerateOutputInformation()
 
 
 bool mitk::ExtractDirectedPlaneImageFilter
-::CalculateClippedPlaneBounds( const Geometry3D *boundingGeometry, 
-                              const PlaneGeometry *planeGeometry, vtkFloatingPointType *bounds )
+::CalculateClippedPlaneBounds( const Geometry3D *boundingGeometry,
+                const PlaneGeometry *planeGeometry, vtkFloatingPointType *bounds )
 {
-  // Clip the plane with the bounding geometry. To do so, the corner points 
-  // of the bounding box are transformed by the inverse transformation 
-  // matrix, and the transformed bounding box edges derived therefrom are 
-  // clipped with the plane z=0. The resulting min/max values are taken as 
+  // Clip the plane with the bounding geometry. To do so, the corner points
+  // of the bounding box are transformed by the inverse transformation
+  // matrix, and the transformed bounding box edges derived therefrom are
+  // clipped with the plane z=0. The resulting min/max values are taken as
   // bounds for the image reslicer.
   const BoundingBox *boundingBox = boundingGeometry->GetBoundingBox();
 
@@ -475,7 +487,7 @@ bool mitk::ExtractDirectedPlaneImageFilter
 
 bool mitk::ExtractDirectedPlaneImageFilter
 ::LineIntersectZero( vtkPoints *points, int p1, int p2,
-                    vtkFloatingPointType *bounds )
+          vtkFloatingPointType *bounds )
 {
   vtkFloatingPointType point1[3];
   vtkFloatingPointType point2[3];

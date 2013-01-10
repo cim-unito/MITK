@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   BlueBerry Platform
-Language:  C++
-Date:      $Date: 2010-01-16 19:57:43 +0100 (Sat, 16 Jan 2010) $
-Version:   $Revision: 21070 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #ifndef MITKIINPUTDEVICEDESCRIPTOR_H_
 #define MITKIINPUTDEVICEDESCRIPTOR_H_
@@ -71,7 +70,7 @@ namespace mitk
     /**
     * Returns the name of this input device.
     *
-    * @return the name 
+    * @return the name
     */
     virtual std::string GetName() const = 0;
 
@@ -83,8 +82,8 @@ namespace mitk
     /**
     * Equals this class with the given parameter.
     *
-    * @param object 
-    *			the object for the equation
+    * @param object
+    *      the object for the equation
     * @return true, if the objects are equal :: false, if they differ in any way
     */
     virtual bool operator==(const Object* object) const = 0;

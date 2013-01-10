@@ -1,19 +1,18 @@
-/*=========================================================================
- 
- Program:   BlueBerry Platform
- Language:  C++
- Date:      $Date$
- Version:   $Revision$
- 
- Copyright (c) German Cancer Research Center, Division of Medical and
- Biological Informatics. All rights reserved.
- See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
- 
- =========================================================================*/
+/*===================================================================
+
+BlueBerry Platform
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "berryQtAssistantUtil.h"
 #include <berryPlatformUI.h>
@@ -54,7 +53,7 @@ void QtAssistantUtil::OpenActivePartHelp()
   //Get Plugin-ID
   QString pluginID;
   berry::IWorkbench* currentWorkbench = berry::PlatformUI::GetWorkbench();
-  if (currentWorkbench) 
+  if (currentWorkbench)
   {
     berry::IWorkbenchWindow::Pointer currentWorkbenchWindow = currentWorkbench->GetActiveWorkbenchWindow();
     if (currentWorkbenchWindow)
@@ -91,7 +90,7 @@ void QtAssistantUtil::OpenAssistant(const QString& startPage)
     QStringList assistantArgs;
     if (!helpCollectionFile.isEmpty())
     {
-      assistantArgs << QLatin1String("-collectionFile") 
+      assistantArgs << QLatin1String("-collectionFile")
                      << QLatin1String(helpCollectionFile.toLatin1());
     }
 
@@ -316,11 +315,11 @@ QString QtAssistantUtil::GetAssistantExecutable()
 {
   QFileInfo assistantFile(QT_ASSISTANT_EXECUTABLE);
   QFileInfo localAssistant(QCoreApplication::applicationDirPath() + "/" + assistantFile.fileName() );
-  
+
   if (localAssistant.isExecutable())
-  {  
+  {
     return localAssistant.absoluteFilePath();
-  } 
+  }
   else
   {
     return assistantFile.absoluteFilePath();

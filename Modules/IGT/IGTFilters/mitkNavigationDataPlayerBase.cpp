@@ -1,34 +1,32 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date: 2009-02-10 18:08:54 +0100 (Di, 10 Feb 2009) $
-Version:   $Revision: 16228 $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkNavigationDataPlayerBase.h"
 
 
-mitk::NavigationDataPlayerBase::NavigationDataPlayerBase()
+mitk::NavigationDataPlayerBase::NavigationDataPlayerBase() : m_StreamValid(true), m_ErrorMessage("")
 {
- m_StreamValid = true;
- m_ErrorMessage = "";
+  m_Name ="Navigation Data Player Source";
 }
 
 mitk::NavigationDataPlayerBase::~NavigationDataPlayerBase()
 {
 }
 
- 
+
 
 
 
@@ -42,20 +40,21 @@ void mitk::NavigationDataPlayerBase::UpdateOutputInformation()
 
 mitk::NavigationData::Pointer mitk::NavigationDataPlayerBase::ReadNavigationData(TiXmlElement* elem)
 {
+  if (elem == NULL) {mitkThrow() << "Error: Element is NULL!";}
+
   mitk::NavigationData::Pointer nd = mitk::NavigationData::New();
 
   mitk::NavigationData::PositionType position;
   mitk::NavigationData::OrientationType orientation(0.0,0.0,0.0,0.0);
-  mitk::NavigationData::TimeStampType timestamp = -1; 
+  mitk::NavigationData::TimeStampType timestamp = -1;
   mitk::NavigationData::CovarianceMatrixType matrix;
 
-  bool hasPosition = true;    
-  bool hasOrientation = true; 
+  bool hasPosition = true;
+  bool hasOrientation = true;
   bool dataValid = false;
 
   position.Fill(0.0);
   matrix.SetIdentity();
-
 
   elem->QueryDoubleAttribute("Time",&timestamp);
   if (timestamp == -1)

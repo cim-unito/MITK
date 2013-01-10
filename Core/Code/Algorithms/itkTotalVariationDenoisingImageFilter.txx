@@ -1,18 +1,24 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Insight Segmentation & Registration Toolkit
-Language:  C++
-Date:      $Date: 2006-01-11 19:43:31 $
-Version:   $Revision: x $
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) Insight Software Consortium. All rights reserved.
-See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even 
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
+
+/*===================================================================
+
+This file is based heavily on a corresponding ITK filter.
+
+===================================================================*/
 #ifndef _itkTotalVariationDenoisingImageFilter_txx
 #define _itkTotalVariationDenoisingImageFilter_txx
 #include "itkTotalVariationDenoisingImageFilter.h"
@@ -68,20 +74,20 @@ namespace itk
       filter->SetNumberOfThreads(this->GetNumberOfThreads());
       filter->UpdateLargestPossibleRegion();
       image = filter->GetOutput();
-      std::cout << "Iteration " << i+1 << "/" << 
+      std::cout << "Iteration " << i+1 << "/" <<
         m_NumberIterations << std::endl;
     }
-    
+
     typename OutputImageType::Pointer output = this->GetOutput();
     output->SetSpacing(image->GetSpacing());
     typename OutputImageType::RegionType largestPossibleRegion;
-    largestPossibleRegion.SetSize( 
+    largestPossibleRegion.SetSize(
       image->GetLargestPossibleRegion().GetSize() );
-    largestPossibleRegion.SetIndex( 
+    largestPossibleRegion.SetIndex(
       image->GetLargestPossibleRegion().GetIndex() );
-    output->SetLargestPossibleRegion( 
+    output->SetLargestPossibleRegion(
       image->GetLargestPossibleRegion() );
-    output->SetBufferedRegion( 
+    output->SetBufferedRegion(
       image->GetLargestPossibleRegion() );
     output->Allocate();
 
@@ -109,7 +115,7 @@ namespace itk
   void
     TotalVariationDenoisingImageFilter<TInputImage, TOutput>
     ::PrintSelf(
-    std::ostream& os, 
+    std::ostream& os,
     Indent indent) const
   {
     Superclass::PrintSelf( os, indent );

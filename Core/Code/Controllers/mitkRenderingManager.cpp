@@ -1,19 +1,18 @@
-/*=========================================================================
+/*===================================================================
 
-Program:   Medical Imaging & Interaction Toolkit
-Language:  C++
-Date:      $Date$
-Version:   $Revision$
+The Medical Imaging Interaction Toolkit (MITK)
 
-Copyright (c) German Cancer Research Center, Division of Medical and
-Biological Informatics. All rights reserved.
-See MITKCopyright.txt or http://www.mitk.org/copyright.html for details.
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
 
-This software is distributed WITHOUT ANY WARRANTY; without even
-the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the above copyright notices for more information.
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
 
-=========================================================================*/
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 
 #include "mitkRenderingManager.h"
 #include "mitkRenderingManagerFactory.h"
@@ -44,7 +43,7 @@ RenderingManager
   m_LODIncreaseBlocked( false ),
   m_LODAbortMechanismEnabled( false ),
   m_ClippingPlaneEnabled( false ),
-  m_TimeNavigationController( NULL ),
+  m_TimeNavigationController( SliceNavigationController::New("dummy") ),
   m_DataStorage( NULL ),
   m_ConstrainedPaddingZooming ( true )
 {
@@ -69,9 +68,12 @@ RenderingManager
 
     RenderWindowCallbacksList::iterator callbacks_it = this->m_RenderWindowCallbacksList.find(*it);
 
-    (*it)->RemoveObserver(callbacks_it->second.commands[0u]);
-    (*it)->RemoveObserver(callbacks_it->second.commands[1u]);
-    (*it)->RemoveObserver(callbacks_it->second.commands[2u]);
+    if (callbacks_it != this->m_RenderWindowCallbacksList.end())
+    {
+      (*it)->RemoveObserver(callbacks_it->second.commands[0u]);
+      (*it)->RemoveObserver(callbacks_it->second.commands[1u]);
+      (*it)->RemoveObserver(callbacks_it->second.commands[2u]);
+    }
   }
 }
 
@@ -203,17 +205,22 @@ RenderingManager
   if (m_RenderWindowList.erase( renderWindow ))
   {
     RenderWindowCallbacksList::iterator callbacks_it = this->m_RenderWindowCallbacksList.find(renderWindow);
-
-    renderWindow->RemoveObserver(callbacks_it->second.commands[0u]);
-    renderWindow->RemoveObserver(callbacks_it->second.commands[1u]);
-    renderWindow->RemoveObserver(callbacks_it->second.commands[2u]);
-    this->m_RenderWindowCallbacksList.erase(callbacks_it);
+    if(callbacks_it != this->m_RenderWindowCallbacksList.end())
+    {
+      renderWindow->RemoveObserver(callbacks_it->second.commands[0u]);
+      renderWindow->RemoveObserver(callbacks_it->second.commands[1u]);
+      renderWindow->RemoveObserver(callbacks_it->second.commands[2u]);
+      this->m_RenderWindowCallbacksList.erase(callbacks_it);
+    }
 
     RenderWindowVector::iterator rw_it = std::find( m_AllRenderWindows.begin(), m_AllRenderWindows.end(), renderWindow );
 
-    // Decrease reference count for proper destruction
-    (*rw_it)->UnRegister(NULL);
-    m_AllRenderWindows.erase( rw_it );
+    if(rw_it != m_AllRenderWindows.end())
+    {
+      // Decrease reference count for proper destruction
+      (*rw_it)->UnRegister(NULL);
+      m_AllRenderWindows.erase( rw_it );
+    }
   }
 }
 
@@ -230,12 +237,16 @@ void
 RenderingManager
 ::RequestUpdate( vtkRenderWindow *renderWindow )
 {
-  
-  // do nothing if the renderWindow is not managed by this instance
-  RenderWindowVector::iterator iter = std::find( m_AllRenderWindows.begin(), m_AllRenderWindows.end(), renderWindow );
-  if ( iter == m_AllRenderWindows.end() )
+
+  // If the renderWindow is not valid, we do not want to inadvertantly create
+  // an entry in the m_RenderWindowList map. It is possible if the user is
+  // regularly calling AddRenderer and RemoveRenderer for a rendering update
+  // to come into this method with a renderWindow pointer that is valid in the
+  // sense that the window does exist within the application, but that
+  // renderWindow has been temporarily removed from this RenderingManager for
+  // performance reasons.
+  if (m_RenderWindowList.find( renderWindow ) == m_RenderWindowList.end())
   {
-    MITK_ERROR << "Update requested for vtkRenderWindow that has not been registered in this instance of mitkRenderingManager";
     return;
   }
 
@@ -253,6 +264,18 @@ void
 RenderingManager
 ::ForceImmediateUpdate( vtkRenderWindow *renderWindow )
 {
+  // If the renderWindow is not valid, we do not want to inadvertantly create
+  // an entry in the m_RenderWindowList map. It is possible if the user is
+  // regularly calling AddRenderer and RemoveRenderer for a rendering update
+  // to come into this method with a renderWindow pointer that is valid in the
+  // sense that the window does exist within the application, but that
+  // renderWindow has been temporarily removed from this RenderingManager for
+  // performance reasons.
+  if (m_RenderWindowList.find( renderWindow ) == m_RenderWindowList.end())
+  {
+    return;
+  }
+
   // Erase potentially pending requests for this window
   m_RenderWindowList[renderWindow] = RENDERING_INACTIVE;
 
@@ -518,14 +541,11 @@ RenderingManager
     }
   }
 
-  if ( m_TimeNavigationController != NULL )
+  if ( boundingBoxInitialized )
   {
-    if ( boundingBoxInitialized )
-    {
-      m_TimeNavigationController->SetInputWorldGeometry( geometry );
-    }
-    m_TimeNavigationController->Update();
+    m_TimeNavigationController->SetInputWorldGeometry( geometry );
   }
+  m_TimeNavigationController->Update();
 
   this->RequestUpdateAll( type );
 
@@ -626,14 +646,11 @@ bool RenderingManager::InitializeView( vtkRenderWindow * renderWindow, const Geo
   this->InternalViewInitialization( baseRenderer, geometry,
    boundingBoxInitialized, id );
 
-  if ( m_TimeNavigationController != NULL )
+  if ( boundingBoxInitialized && initializeGlobalTimeSNC )
   {
-   if ( boundingBoxInitialized && initializeGlobalTimeSNC )
-   {
-     m_TimeNavigationController->SetInputWorldGeometry( geometry );
-   }
-   m_TimeNavigationController->Update();
+    m_TimeNavigationController->SetInputWorldGeometry( geometry );
   }
+  m_TimeNavigationController->Update();
 
   this->RequestUpdate( renderWindow );
 
@@ -694,21 +711,15 @@ void RenderingManager::InternalViewInitialization(mitk::BaseRenderer *baseRender
 }
 
 
-void RenderingManager::SetTimeNavigationController( SliceNavigationController *nc )
-{
-  m_TimeNavigationController = nc;
-}
-
-
 const SliceNavigationController* RenderingManager::GetTimeNavigationController() const
 {
-  return m_TimeNavigationController;
+  return m_TimeNavigationController.GetPointer();
 }
 
 
 SliceNavigationController* RenderingManager::GetTimeNavigationController()
 {
-  return m_TimeNavigationController;
+  return m_TimeNavigationController.GetPointer();
 }
 
 
@@ -776,7 +787,7 @@ RenderingManager
   RenderWindowList &renderWindowList = renman->m_RenderWindowList;
 
   RendererIntMap &nextLODMap = renman->m_NextLODMap;
-  
+
   if ( renderWindow )
   {
     BaseRenderer *renderer = BaseRenderer::GetInstance( renderWindow );

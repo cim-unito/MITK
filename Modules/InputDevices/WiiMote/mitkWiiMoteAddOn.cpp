@@ -1,3 +1,18 @@
+/*===================================================================
+
+The Medical Imaging Interaction Toolkit (MITK)
+
+Copyright (c) German Cancer Research Center,
+Division of Medical and Biological Informatics.
+All rights reserved.
+
+This software is distributed WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.
+
+See LICENSE.txt or http://www.mitk.org for details.
+
+===================================================================*/
 #include "mitkWiiMoteAddOn.h"
 
 #include "mitkGlobalInteraction.h"
@@ -130,7 +145,7 @@ void mitk::WiiMoteAddOn::WiiMoteButtonReleased(const itk::EventObject &e)
 }
 
 void mitk::WiiMoteAddOn::WiiMoteCalibrationInput(const itk::EventObject &e)
-{  
+{
   try
   {
   mitk::StateEvent* se = new mitk::StateEvent
@@ -140,7 +155,7 @@ void mitk::WiiMoteAddOn::WiiMoteCalibrationInput(const itk::EventObject &e)
   }
   catch(...)
   {
-    MITK_ERROR << "Incoming event is not a calibration input for headtracking" << 
+    MITK_ERROR << "Incoming event is not a calibration input for headtracking" <<
       "and could not be transformed\n";
   }
 }
@@ -164,7 +179,7 @@ void mitk::WiiMoteAddOn::WiiMoteSurfaceInteractionInput(const itk::EventObject& 
   }
   catch(...)
   {
-    MITK_ERROR << "Incoming event is not an input for surface interaction" << 
+    MITK_ERROR << "Incoming event is not an input for surface interaction" <<
       "and could not be transformed\n";
   }
 }
