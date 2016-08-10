@@ -27,6 +27,18 @@ IF(MITK_USE_CTK)
            -DCTK_LIB_Scripting/Python/Widgets:BOOL=ON
       )
     ENDIF()
+    
+    IF(MITK_USE_DCMTK)
+      LIST(APPEND ctk_optional_cache_args
+           -DDCMTK_DIR:PATH=${DCMTK_DIR}
+          )
+      LIST(APPEND proj_DEPENDENCIES DCMTK)
+    ELSE()
+      LIST(APPEND ctk_optional_cache_args
+           -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
+          )
+    ENDIF()
+    
     FOREACH(type RUNTIME ARCHIVE LIBRARY)
       IF(DEFINED CTK_PLUGIN_${type}_OUTPUT_DIRECTORY)
         LIST(APPEND mitk_optional_cache_args -DCTK_PLUGIN_${type}_OUTPUT_DIRECTORY:PATH=${CTK_PLUGIN_${type}_OUTPUT_DIRECTORY})
