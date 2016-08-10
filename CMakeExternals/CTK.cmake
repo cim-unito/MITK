@@ -27,6 +27,18 @@ if(MITK_USE_CTK)
            -DCTK_LIB_Scripting/Python/Widgets:BOOL=ON
       )
     endif()
+
+    if(MITK_USE_DCMTK)
+      list(APPEND ctk_optional_cache_args
+           -DDCMTK_DIR:PATH=${DCMTK_DIR}
+          )
+      list(APPEND proj_DEPENDENCIES DCMTK)
+    else()
+      list(APPEND ctk_optional_cache_args
+           -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
+          )
+    endif()
+
     foreach(type RUNTIME ARCHIVE LIBRARY)
       if(DEFINED CTK_PLUGIN_${type}_OUTPUT_DIRECTORY)
         list(APPEND mitk_optional_cache_args -DCTK_PLUGIN_${type}_OUTPUT_DIRECTORY:PATH=${CTK_PLUGIN_${type}_OUTPUT_DIRECTORY})
@@ -61,11 +73,11 @@ if(MITK_USE_CTK)
       DEPENDS ${proj_DEPENDENCIES}
      )
   set(CTK_DIR ${CMAKE_CURRENT_BINARY_DIR}/${proj}-build)
-  
+
   else()
 
     mitkMacroEmptyExternalProject(${proj} "${proj_DEPENDENCIES}")
-    
+
   endif()
-  
+
 endif()
