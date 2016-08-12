@@ -49,11 +49,8 @@ IF(MITK_USE_CTK)
       SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}-src
       BINARY_DIR ${proj}-build
       PREFIX ${proj}-cmake
-#      GIT_REPOSITORY http://github.com/commontk/CTK.git
       GIT_REPOSITORY git://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
-      URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
-      URL_MD5 29d075daa07dbc5618158e4f81d5f431
       UPDATE_COMMAND ""
       INSTALL_COMMAND ""
       CMAKE_GENERATOR ${gen}
@@ -65,7 +62,8 @@ IF(MITK_USE_CTK)
         -DGit_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
         -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
         -DCTK_LIB_PluginFramework:BOOL=ON
-        -DCTK_LIB_DICOM/Widgets:BOOL=ON
+        -DCTK_LIB_DICOM/Core:BOOL=OFF
+        -DCTK_LIB_DICOM/Widgets:BOOL=OFF
         -DCTK_PLUGIN_org.commontk.eventadmin:BOOL=ON
         -DCTK_PLUGIN_org.commontk.configadmin:BOOL=ON
         -DCTK_USE_GIT_PROTOCOL:BOOL=OFF
