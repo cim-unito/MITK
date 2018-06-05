@@ -160,7 +160,7 @@ void mitk::ImageWriter::GenerateData()
        && m_Extension.find(".nrrd") == std::string::npos
        && m_Extension.find(".hdr") == std::string::npos
        && m_Extension.find(".nii") == std::string::npos
-       && m_Extension.find(".nii.gz") == std::string::npos
+       && m_Extension.find(".nii.gz") == std::string::npos)
   {
     if(input->GetDimension() > 3)
     {
