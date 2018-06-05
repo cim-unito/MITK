@@ -211,10 +211,10 @@ void QmitkDataManagerView::CreateQtPartControl(QWidget* parent)
   unknownDataNodeDescriptor->AddAction(reinitAction);
   m_DescriptorActionList.push_back(std::pair<QmitkNodeDescriptor*, QAction*>(unknownDataNodeDescriptor,reinitAction));
 
-  m_RenameAction = new QAction("Rename...", this);
-  QObject::connect( m_RenameAction, SIGNAL( triggered(bool) )
-    , this, SLOT( RenameSelectedNode() ) );
-  unknownDataNodeDescriptor->AddAction(m_RenameAction);
+  QAction* renameAction = new QAction(QIcon(":/org.mitk.gui.qt.datamanager/Rename_48.png"), "Rename", this);
+  QObject::connect( renameAction, SIGNAL( triggered(bool) ), this, SLOT( RenameSelectedNodes(bool) ) );
+  unknownDataNodeDescriptor->AddAction(renameAction);
+  m_DescriptorActionList.push_back(std::pair<QmitkNodeDescriptor*, QAction*>(unknownDataNodeDescriptor,renameAction));
 
   // find contextMenuAction extension points and add them to the node descriptor
   berry::IExtensionPointService::Pointer extensionPointService = berry::Platform::GetExtensionPointService();
