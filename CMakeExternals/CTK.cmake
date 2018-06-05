@@ -15,7 +15,7 @@ if(MITK_USE_CTK)
 
   if(NOT DEFINED CTK_DIR)
     
-    #set(revision_tag de466419)
+    #set(revision_tag 6925794b)
     set(revision_tag origin/cim)
     #if(${proj}_REVISION_TAG)
     #  set(revision_tag ${${proj}_REVISION_TAG})
