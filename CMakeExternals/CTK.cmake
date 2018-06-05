@@ -41,7 +41,7 @@ if(MITK_USE_CTK)
       GIT_REPOSITORY git://github.com/cim-unito/CTK.git
       GIT_TAG ${revision_tag}
       URL ${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_${revision_tag}.tar.gz
-      URL_MD5 29d075daa07dbc5618158e4f81d5f431
+      URL_MD5 43430cee2dfec2519cbe33cbfebc3eaf
       UPDATE_COMMAND ""
       INSTALL_COMMAND ""
       CMAKE_GENERATOR ${gen}
