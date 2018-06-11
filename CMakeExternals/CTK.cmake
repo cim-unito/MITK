@@ -14,29 +14,18 @@ if(MITK_USE_CTK)
   set(CTK_DEPENDS ${proj})
 
   if(NOT DEFINED CTK_DIR)
-    
+
     #set(revision_tag 6925794b)
     set(revision_tag origin/cim)
     #if(${proj}_REVISION_TAG)
     #  set(revision_tag ${${proj}_REVISION_TAG})
     #endif()
-    
+
     set(ctk_optional_cache_args )
     if(MITK_USE_Python)
       list(APPEND ctk_optional_cache_args
            -DCTK_LIB_Scripting/Python/Widgets:BOOL=ON
       )
-    endif()
-
-    if(MITK_USE_DCMTK)
-      list(APPEND ctk_optional_cache_args
-           -DDCMTK_DIR:PATH=${DCMTK_DIR}
-          )
-      list(APPEND proj_DEPENDENCIES DCMTK)
-    else()
-      list(APPEND ctk_optional_cache_args
-           -DDCMTK_URL:STRING=${MITK_THIRDPARTY_DOWNLOAD_PREFIX_URL}/CTK_DCMTK_085525e6.tar.gz
-          )
     endif()
 
     foreach(type RUNTIME ARCHIVE LIBRARY)
